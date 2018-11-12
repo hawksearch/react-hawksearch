@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const config: webpack.Configuration = {
-	entry: './src/index.ts',
+	entry: './src/index.tsx',
 
 	output: {
 		filename: 'main.js',
