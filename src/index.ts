@@ -1,9 +1,9 @@
 const fn = (arg: unknown) => {
-	console.log('hello world');
+	document.write('hello world');
 };
 
 const test = {
-	something: 'other;',
+	something: 'other',
 };
 
 fn({ ...test });

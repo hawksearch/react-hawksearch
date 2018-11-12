@@ -9,6 +9,10 @@ const config: webpack.Configuration = {
 		path: path.resolve(__dirname, 'dist'),
 	},
 
+	devServer: {
+		contentBase: './dist',
+	},
+
 	module: {
 		rules: [
 			{
