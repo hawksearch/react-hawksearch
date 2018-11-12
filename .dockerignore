@@ -1,0 +1,17 @@
+
+# exclude common directories and files from build context
+.dockerignore
+Dockerfile
+.env
+.git
+.gitignore
+.vs
+.vscode
+.prettierrc
+*.code-workspace
+
+# node modules should be excluded as the build process will restore them
+node_modules/
+
+# exclude dist outputs as the build process will create them
+dist/
