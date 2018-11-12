@@ -7,7 +7,8 @@ const config: webpack.Configuration = {
 	entry: './src/index.tsx',
 
 	output: {
-		filename: 'main.js',
+		filename: '[name].js',
+		chunkFilename: '[name].[contentHash:8].js',
 		path: path.resolve(__dirname, './dist'),
 	},
 
@@ -27,6 +28,20 @@ const config: webpack.Configuration = {
 		alias: {
 			src: path.resolve(__dirname, './src'),
 		},
+	},
+
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				vendor: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendor',
+					priority: -20,
+					chunks: 'all',
+				},
+			},
+		},
+		runtimeChunk: 'single',
 	},
 
 	module: {
