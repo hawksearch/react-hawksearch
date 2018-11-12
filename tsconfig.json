@@ -23,11 +23,7 @@
 		"allowSyntheticDefaultImports": true
 	},
 	"exclude": [
-		"Areas",
-		"Features",
-		"Views",
 		"node_modules",
-		"wwwroot",
 		"coverage",
 		"config",
 		"dist",
@@ -37,6 +33,7 @@
 		"webpack",
 		"jest",
 		"webpack.config.js",
+		"webpack.config.ts",
 		"babel.config.js",
 		"jest.config.js",
 		"src/setupTests.js",

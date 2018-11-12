@@ -12,6 +12,7 @@ const config: webpack.Configuration = {
 	module: {
 		rules: [
 			{
+				// feed typescript and javascript through babel
 				test: /\.(tsx?)|\.(jsx?)$/,
 				exclude: /node_modules/,
 				loader: 'babel-loader?cacheDirectory=true',
