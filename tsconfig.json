@@ -1,0 +1,45 @@
+{
+	"compilerOptions": {
+		"noEmit": true,
+		"pretty": true,
+		"baseUrl": ".", // all paths are relative to the baseUrl
+		"outDir": "./dist",
+		"module": "commonjs",
+		"target": "esnext",
+		"lib": ["es7", "dom"],
+		"sourceMap": true,
+		"allowJs": true,
+		"jsx": "react",
+		"moduleResolution": "node",
+		"rootDir": "src",
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noImplicitAny": false,
+		"strictNullChecks": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"noUnusedLocals": false,
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true
+	},
+	"exclude": [
+		"Areas",
+		"Features",
+		"Views",
+		"node_modules",
+		"wwwroot",
+		"coverage",
+		"config",
+		"dist",
+		"build",
+		"scripts",
+		"acceptance-tests",
+		"webpack",
+		"jest",
+		"webpack.config.js",
+		"babel.config.js",
+		"jest.config.js",
+		"src/setupTests.js",
+		"postcss.config.js"
+	]
+}
