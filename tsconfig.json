@@ -22,21 +22,6 @@
 		"skipLibCheck": true,
 		"allowSyntheticDefaultImports": true
 	},
-	"exclude": [
-		"node_modules",
-		"coverage",
-		"config",
-		"dist",
-		"build",
-		"scripts",
-		"acceptance-tests",
-		"webpack",
-		"jest",
-		"webpack.config.js",
-		"webpack.config.ts",
-		"babel.config.js",
-		"jest.config.js",
-		"src/setupTests.js",
-		"postcss.config.js"
-	]
+
+	"exclude": ["node_modules", "dist", "webpack.config.ts", "babel.config.js"]
 }
