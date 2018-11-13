@@ -61,6 +61,7 @@ const config: webpack.Configuration = {
 		new HtmlWebpackPlugin({
 			hash: true,
 			filename: 'index.html',
+			template: './src/index.html',
 		}),
 		new webpack.HotModuleReplacementPlugin(),
 	],
