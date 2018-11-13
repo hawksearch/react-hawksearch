@@ -10,8 +10,7 @@ Dockerfile
 .prettierrc
 *.code-workspace
 
-# node modules should be excluded as the build process will restore them
+# directories that aren't part of the docker build
 node_modules/
-
-# exclude dist outputs as the build process will create them
 dist/
+scripts/
