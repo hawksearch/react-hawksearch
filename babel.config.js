@@ -1,25 +1,33 @@
-module.exports = {
-	presets: [
-		[
-			'@babel/env',
-			{
-				targets: {
-					browsers: ['last 2 versions'],
+module.exports = function(api) {
+	api.cache.using(() => process.env.NODE_ENV);
+
+	let presets;
+
+	if (api.env('production')) {
+		presets = [
+			[
+				'@babel/preset-env',
+				{
+					targets: {
+						browsers: ['last 2 versions'],
+					},
 				},
-			},
+			],
+			'@babel/preset-typescript',
+			'@babel/preset-react',
+		];
+	} else if (api.env('development')) {
+		presets = ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react'];
+	}
+
+	return {
+		presets: presets,
+		plugins: [
+			'@babel/plugin-syntax-dynamic-import',
+			['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true }],
+			'@babel/plugin-proposal-class-properties',
+			'@babel/plugin-proposal-object-rest-spread',
+			'react-hot-loader/babel',
 		],
-		'@babel/typescript',
-		'@babel/react',
-	],
-	plugins: [
-		'@babel/plugin-syntax-dynamic-import',
-		'@babel/proposal-class-properties',
-		'@babel/proposal-object-rest-spread',
-		'react-hot-loader/babel',
-	],
-	env: {
-		test: {
-			plugins: ['dynamic-import-node'],
-		},
-	},
+	};
 };
