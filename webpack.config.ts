@@ -17,6 +17,9 @@ const config: webpack.Configuration = {
 		hot: true,
 	},
 
+	// TODO: 'source-map' in prod
+	devtool: 'eval-source-map',
+
 	resolve: {
 		// These are the reasonable defaults supported by the Node ecosystem.
 		// We also include JSX as a common component filename extension to support
@@ -53,7 +56,12 @@ const config: webpack.Configuration = {
 				// feed typescript and javascript through babel
 				test: /\.(tsx?)|\.(jsx?)$/,
 				exclude: /node_modules/,
-				loader: 'babel-loader?cacheDirectory=true',
+				use: {
+					loader: 'babel-loader',
+					options: {
+						cacheDirectory: true,
+					},
+				},
 			},
 		],
 	},
