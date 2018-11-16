@@ -25,9 +25,12 @@ const config: webpack.Configuration = {
 		// `web` extension prefixes have been added for better support
 		// for React Native Web.
 		extensions: ['.mjs', '.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
-		alias: {
-			src: path.resolve(__dirname, './src'),
-		},
+
+		modules: [
+			// adding ./src as a resolve path to match what's configured in tsconfig.json
+			path.resolve(__dirname, './src'),
+			path.resolve(__dirname, './node_modules'),
+		],
 	},
 
 	optimization: {
