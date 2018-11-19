@@ -7,8 +7,17 @@ class App extends React.Component<{ store: Store }> {
 		super(props);
 	}
 
-	public async componentDidMount() {
-		await this.props.store.search('');
+	public componentDidMount() {
+		this.props.store.search('');
+
+		// setTimeout(() => {
+		// 	this.forceUpdate();
+		// }, 1000);
+	}
+
+	public shouldComponentUpdate(): boolean {
+		console.log('sCU');
+		return true;
 	}
 
 	public render() {
