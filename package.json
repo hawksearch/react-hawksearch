@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"axios": "^0.18.0",
-		"react": "^16.6.1",
-		"react-dom": "^16.6.1"
+		"react": "^16.7.0-alpha.2",
+		"react-dom": "^16.7.0-alpha.2"
 	}
 }
