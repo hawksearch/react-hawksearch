@@ -4,12 +4,14 @@
 	"description": "Hawksearch React Library",
 	"private": true,
 	"scripts": {
+		"clean": "rimraf ./dist/ && mkdirp ./dist",
 		"lint": "tslint --project .",
 		"typecheck": "tsc --project .",
 		"test": "exit 0",
-		"build": "npm run-script lint && npm run-script typecheck && npm test && webpack",
-		"start": "webpack-dev-server --open",
-		"analyze-bundle": "webpack -p --profile --json > dist/bundle.json && webpack-bundle-analyzer dist/bundle.json"
+		"build:dev": "npm run lint && npm run typecheck && npm test && npm run clean && webpack",
+		"build:prod": "npm run lint && npm run typecheck && npm test && npm run clean && webpack -p",
+		"start": "npm run clean && webpack-dev-server --open",
+		"analyze-bundle": "npm run clean && webpack -p --profile --json > ./dist/bundle.json && webpack-bundle-analyzer ./dist/bundle.json"
 	},
 	"author": "",
 	"license": "ISC",
@@ -31,7 +33,9 @@
 		"@types/webpack-dev-server": "^3.1.1",
 		"babel-loader": "^8.0.4",
 		"html-webpack-plugin": "^3.2.0",
+		"mkdirp": "^0.5.1",
 		"react-hot-loader": "^4.3.12",
+		"rimraf": "^2.6.2",
 		"ts-node": "^7.0.1",
 		"tslint": "^5.11.0",
 		"tslint-config-prettier": "^1.15.0",
