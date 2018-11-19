@@ -18,6 +18,7 @@
 		"@babel/plugin-proposal-class-properties": "^7.1.0",
 		"@babel/plugin-proposal-object-rest-spread": "^7.0.0",
 		"@babel/plugin-syntax-dynamic-import": "^7.0.0",
+		"@babel/polyfill": "^7.0.0",
 		"@babel/preset-env": "^7.1.5",
 		"@babel/preset-react": "^7.0.0",
 		"@babel/preset-typescript": "^7.1.0",
@@ -25,6 +26,7 @@
 		"@types/node": "^10.12.5",
 		"@types/react-hot-loader": "^4.1.0",
 		"@types/webpack": "^4.4.18",
+		"@types/webpack-bundle-analyzer": "^2.13.0",
 		"@types/webpack-dev-server": "^3.1.1",
 		"babel-loader": "^8.0.4",
 		"html-webpack-plugin": "^3.2.0",
@@ -35,12 +37,11 @@
 		"tslint-react": "^3.6.0",
 		"typescript": "^3.1.6",
 		"webpack": "^4.25.1",
+		"webpack-bundle-analyzer": "^3.0.3",
 		"webpack-cli": "^3.1.2",
 		"webpack-dev-server": "^3.1.10"
 	},
 	"dependencies": {
-		"@babel/plugin-proposal-decorators": "^7.1.6",
-		"@babel/polyfill": "^7.0.0",
 		"axios": "^0.18.0",
 		"react": "^16.6.1",
 		"react-dom": "^16.6.1"
