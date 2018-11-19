@@ -8,7 +8,8 @@
 		"typecheck": "tsc --project .",
 		"test": "exit 0",
 		"build": "npm run-script lint && npm run-script typecheck && npm test && webpack",
-		"start": "webpack-dev-server --open"
+		"start": "webpack-dev-server --open",
+		"analyze-bundle": "webpack -p --profile --json > dist/bundle.json && webpack-bundle-analyzer dist/bundle.json"
 	},
 	"author": "",
 	"license": "ISC",

@@ -2,8 +2,6 @@ import * as webpack from 'webpack';
 
 import * as path from 'path';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
-import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-// import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
 
 export default (env, argv): webpack.Configuration => {
 	let isDevBuild = true;
@@ -83,7 +81,6 @@ export default (env, argv): webpack.Configuration => {
 				template: './src/index.html',
 			}),
 			new webpack.HotModuleReplacementPlugin(),
-			new BundleAnalyzerPlugin(),
 		],
 	};
 };
