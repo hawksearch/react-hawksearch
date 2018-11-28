@@ -3,9 +3,12 @@ import '@babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './App';
-import Store from './store/Store';
+import { HawkStoreProvider } from 'store/Store';
+import App from 'App';
 
-const store = new Store();
-
-ReactDOM.render(<App store={store} />, document.getElementById('app'));
+ReactDOM.render(
+	<HawkStoreProvider>
+		<App />
+	</HawkStoreProvider>,
+	document.getElementById('app')
+);

@@ -1,38 +1,35 @@
-import { hot } from 'react-hot-loader';
-import React from 'react';
-import Store from 'store/Store';
+import React, { useEffect } from 'react';
+import { useHawkStore } from 'store/Store';
 
-class App extends React.Component<{ store: Store }> {
-	constructor(props) {
-		super(props);
-	}
+function App() {
+	const { storeMutator } = useHawkStore();
 
-	public componentDidMount() {
-		this.props.store.search('');
+	useEffect(() => {
+		storeMutator.search('');
+	}, []);
 
-		// setTimeout(() => {
-		// 	this.forceUpdate();
-		// }, 1000);
-	}
-
-	public shouldComponentUpdate(): boolean {
-		console.log('sCU');
-		return true;
-	}
-
-	public render() {
-		const { store } = this.props;
-
-		console.log('rend:', store);
-
-		return store.Results ? (
-			<div>
-				{store.Results.Results.map(item => (
-					<li key={item.DocId}>{item.DocId}</li>
-				))}
-			</div>
-		) : null;
-	}
+	return (
+		<>
+			<ItemList />
+			<hr />
+			<ItemList />
+		</>
+	);
 }
 
-export default hot(module)(App);
+/* tslint:disable:no-string-literal */
+function ItemList() {
+	const { store } = useHawkStore();
+
+	return store.Items ? (
+		<div>
+			{store.Items.map(item => (
+				<li key={item.DocId}>{item.Document['name']}</li>
+			))}
+		</div>
+	) : (
+		<span>No results</span>
+	);
+}
+
+export default App;
