@@ -26,7 +26,8 @@ module.exports = function(api) {
 			'@babel/plugin-syntax-dynamic-import',
 			'@babel/plugin-proposal-class-properties',
 			'@babel/plugin-proposal-object-rest-spread',
-			'react-hot-loader/babel',
+			// TODO: RHL is disabled as it doesn't support React 16.7's hooks!
+			//'react-hot-loader/babel',
 		],
 	};
 };
