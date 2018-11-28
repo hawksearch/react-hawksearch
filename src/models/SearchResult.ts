@@ -1,3 +1,5 @@
+import { Result } from './Result';
+
 export class SearchResult {
 	public Success: boolean;
 
@@ -6,7 +8,7 @@ export class SearchResult {
 	public Keyword: string;
 	public AdjustedKeyword?: string;
 
-	public Results: any[]; // TODO: results object
+	public Results: Result[]; // TODO: results object
 	public Facets: any[]; // TODO: facets object
 	public Selections: any[]; // TODO: selections object
 

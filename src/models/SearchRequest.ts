@@ -1,3 +1,5 @@
+import { ClientData } from './ClientData';
+
 export class SearchRequest {
 	/**
 	 * API Client Guid. Usually comes from the "Tracking Key" in the "Account Info" section of the hawk dashboard.
@@ -14,7 +16,7 @@ export class SearchRequest {
 	public FacetSelections?: Map<string, any[]>; // TODO: array of facet objects
 	public FacetOverride?: string[];
 	public FieldOverride?: string[];
-	public ClientData?: any; // TODO: client data object
+	public ClientData?: ClientData;
 	public IsInPreview?: boolean;
 	public ExplainDocId?: string;
 	public SmartBar?: any[]; // TODO: smart bar objects
