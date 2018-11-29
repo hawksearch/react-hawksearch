@@ -1,4 +1,5 @@
 import { Result } from './Result';
+import { Facet } from './Facet';
 
 export class SearchResult {
 	public Success: boolean;
@@ -9,7 +10,7 @@ export class SearchResult {
 	public AdjustedKeyword?: string;
 
 	public Results: Result[]; // TODO: results object
-	public Facets: any[]; // TODO: facets object
+	public Facets: Facet[]; // TODO: facets object
 	public Selections: any[]; // TODO: selections object
 
 	public Sorting?: any; // TODO: sorting object
