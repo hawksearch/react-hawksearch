@@ -16,7 +16,7 @@ module.exports = function(api) {
 			'@babel/preset-typescript',
 			'@babel/preset-react',
 		];
-	} else if (api.env('development')) {
+	} else if (api.env('development') || api.env('test')) {
 		presets = ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react'];
 	}
 
