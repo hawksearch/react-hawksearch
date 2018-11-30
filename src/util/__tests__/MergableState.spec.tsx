@@ -130,4 +130,35 @@ describe('MergableState', () => {
 		// assert
 		expect(renderer.toJSON()).toMatchSnapshot();
 	});
+
+	it('merges existing state multiple times', () => {
+		// arrange
+		function MergableState() {
+			const [state, setState] = useMergableState({
+				initial: 'state',
+			} as any);
+
+			// act
+			useEffect(() => {
+				setState({
+					otherState: 'other value',
+					initial: 'should be different',
+				});
+
+				setState({
+					initial: 'should really be different',
+				});
+			}, []);
+
+			return <div>{JSON.stringify(state)}</div>;
+		}
+
+		const renderer = TestRenderer.create(<MergableState />);
+
+		// trigger an update so that the `useEffect` is triggered
+		renderer.update(<MergableState />);
+
+		// assert
+		expect(renderer.toJSON()).toMatchSnapshot();
+	});
 });

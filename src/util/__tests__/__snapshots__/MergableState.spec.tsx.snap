@@ -6,6 +6,12 @@ exports[`MergableState merges existing state 1`] = `
 </div>
 `;
 
+exports[`MergableState merges existing state multiple times 1`] = `
+<div>
+  {"initial":"should really be different","otherState":"other value"}
+</div>
+`;
+
 exports[`MergableState merges existing state with function pattern 1`] = `
 <div>
   {"initial":"should be different","counter":3,"otherState":"other value"}

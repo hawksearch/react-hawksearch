@@ -6,19 +6,25 @@ export function useMergableState<T>(initialValue: T): [T, Dispatch<SetStateActio
 	const [state, setState] = useState(initialValue);
 
 	function setStateAndMerge(value: SetStateAction<T>) {
-		let newState: Partial<T> = {};
-
 		if (typeof value === 'function') {
 			// if we're being passed a function, we're setting state in the form of setState(prevState => ...).
-			// so we derive the new state from the previous state (stored in `state`)
-			newState = value(state);
-		} else {
-			// otherwise, the new state was simply passed in
-			newState = value;
+
+			setState(prevState => {
+				// so we derive the new state from the previous state
+				const newState = value(prevState);
+
+				// and then set the new merged state
+				return { ...prevState, ...newState };
+			});
+
+			return;
 		}
 
-		// merge state together and set it
-		setState({ ...state, ...newState });
+		// otherwise, the new state was simply passed in
+		setState(prevState => {
+			// merge state together and set it
+			return { ...prevState, ...value };
+		});
 	}
 
 	return [state, setStateAndMerge];
