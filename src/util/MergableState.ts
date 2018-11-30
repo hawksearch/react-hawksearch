@@ -18,7 +18,7 @@ export function useMergableState<T>(initialValue: T): [T, Dispatch<SetStateActio
 		}
 
 		// merge state together and set it
-		setState({ ...(state as any), ...(newState as any) });
+		setState({ ...state, ...newState });
 	}
 
 	return [state, setStateAndMerge];
