@@ -23,5 +23,5 @@
 		"allowSyntheticDefaultImports": true
 	},
 
-	"exclude": ["node_modules", "dist", "webpack.config.ts", "babel.config.js"]
+	"exclude": ["node_modules", "dist", "webpack.config.ts", "babel.config.js", "jest.config.js"]
 }
