@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MergableState merges existing state 1`] = `
+<div>
+  {"initial":"should be different","otherState":"other value"}
+</div>
+`;
+
+exports[`MergableState merges existing state with function pattern 1`] = `
+<div>
+  {"initial":"should be different","counter":3,"otherState":"other value"}
+</div>
+`;
+
+exports[`MergableState merges new state 1`] = `
+<div>
+  {"initial":"state","otherState":"other value"}
+</div>
+`;
+
+exports[`MergableState merges new state with function pattern 1`] = `
+<div>
+  {"initial":"state","otherState":"other value"}
+</div>
+`;
+
+exports[`MergableState sets initial state 1`] = `
+<div>
+  {"initial":"state"}
+</div>
+`;
