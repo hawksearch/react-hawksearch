@@ -10,16 +10,19 @@ function Results() {
 		return <span>Loading...</span>;
 	}
 
-	if (!store.items) {
+	if (!store.items || store.items.length === 0) {
 		return <span>No Results</span>;
 	}
 
 	return (
-		<div>
-			{store.items.map(item => (
-				<li key={item.DocId}>{item.Document['name']}</li>
-			))}
-		</div>
+		<>
+			<span>Results:</span>
+			<div>
+				{store.items.map(item => (
+					<li key={item.DocId}>{item.Document['name']}</li>
+				))}
+			</div>
+		</>
 	);
 }
 
