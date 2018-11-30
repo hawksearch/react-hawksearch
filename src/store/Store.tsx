@@ -15,30 +15,30 @@ class Store {
 
 export interface StoreMutator {
 	/** Performs a search with the given keyword. */
-	search(keyword: string);
+	search(keyword: string): Promise<void>;
 }
 
-function useHawkState(): [Store, StoreMutator] {
+export function useHawkState(): [Store, StoreMutator] {
 	const client = new HawkClient();
 
-	const [state, setstate] = useMergableState(new Store());
+	const [state, setState] = useMergableState(new Store());
 
 	async function search(keyword: string): Promise<void> {
 		console.debug('Searching for: ', keyword);
 
-		setstate({ isLoading: true });
+		setState({ isLoading: true });
 
 		const searchResults = await client.search({
 			ClientGuid: 'cf0025fa93fa458394abd3c3094a09ac',
 			Keyword: keyword,
 		});
 
-		setstate({ isLoading: false });
+		setState({ isLoading: false });
 
 		if (searchResults) {
 			console.debug('Search results:', searchResults);
 
-			setstate({
+			setState({
 				searchResults,
 				items: searchResults.Results,
 				facets: searchResults.Facets,
@@ -64,7 +64,7 @@ interface HawkContextValue {
 	storeMutator: StoreMutator;
 }
 
-const HawkContext = React.createContext({} as HawkContextValue);
+export const HawkContext = React.createContext({} as HawkContextValue);
 
 /**
  * This component acts as the global store for the hawksearch application state. Only one instance of this component
