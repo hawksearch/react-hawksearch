@@ -1,5 +1,5 @@
 import { Result } from './Result';
-import { Facet } from './Facet';
+import { Facet } from './Facets/Facet';
 
 export class SearchResult {
 	public Success: boolean;
