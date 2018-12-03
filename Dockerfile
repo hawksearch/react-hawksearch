@@ -17,7 +17,7 @@ RUN npm install
 
 # now copy all sources and build
 COPY . .
-RUN npm run build
+RUN npm run build:prod
 
 
 FROM nginx:alpine AS runtime
