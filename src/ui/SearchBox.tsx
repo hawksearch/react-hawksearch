@@ -10,17 +10,13 @@ function SearchBox() {
 		}
 	}
 
-	function onBlur(event: React.FocusEvent<HTMLInputElement>) {
-		doSearch(event.currentTarget.value);
-	}
-
 	function doSearch(keyword: string) {
 		storeMutator.search(keyword);
 	}
 
 	return (
 		<>
-			<input type="text" onKeyUp={onKeyUp} onBlur={onBlur} style={{ width: '100%' }} />
+			<input type="text" onKeyUp={onKeyUp} style={{ width: '100%' }} />
 		</>
 	);
 }
