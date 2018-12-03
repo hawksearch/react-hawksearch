@@ -18,7 +18,18 @@ function Facets() {
 			<span>Facets:</span>
 			<div>
 				{store.facets.map(facet => (
-					<li key={facet.FacetId}>{facet.Name}</li>
+					<li key={facet.FacetId}>
+						<span>{facet.Name}</span>
+						<div>
+							<ol>
+								{facet.Values.map(value => (
+									<li key={facet.FacetId + value.Value}>
+										{value.Label} ({value.Count})
+									</li>
+								))}
+							</ol>
+						</div>
+					</li>
 				))}
 			</div>
 		</>
