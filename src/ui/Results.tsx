@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { useHawkStore } from 'store/Store';
+import { useHawkSearch } from 'store/Store';
 
 /* tslint:disable:no-string-literal */
 function Results() {
-	const { store } = useHawkStore();
+	const { store } = useHawkSearch();
 
 	if ((!store.items || store.items.length === 0) && !store.isLoading) {
 		return <span>No Results</span>;
@@ -16,7 +16,7 @@ function Results() {
 
 			{store.isLoading ? <span>Loading...</span> : null}
 
-			<div>{store.items && store.items.map(item => <li key={item.DocId}>{item.Document['name']}</li>)}</div>
+			<div>{store.items && store.items.map(item => <li key={item.DocId}>{item.Document['itemname']}</li>)}</div>
 		</>
 	);
 }

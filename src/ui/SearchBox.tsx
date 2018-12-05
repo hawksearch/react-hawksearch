@@ -1,8 +1,9 @@
 import React from 'react';
-import { useHawkStore } from 'store/Store';
+
+import { useHawkSearch } from 'store/Store';
 
 function SearchBox() {
-	const { store, storeMutator } = useHawkStore();
+	const { store, actor } = useHawkSearch();
 
 	function onKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.keyCode === 13) {
@@ -11,7 +12,9 @@ function SearchBox() {
 	}
 
 	function doSearch(keyword: string) {
-		storeMutator.search(keyword);
+		actor.setSearch({
+			Keyword: keyword,
+		});
 	}
 
 	return (
