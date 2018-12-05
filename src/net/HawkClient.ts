@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SearchRequest, SearchResult } from 'models';
+import { SearchRequest, SearchResult } from 'models/Search';
 
 class HawkClient {
 	private baseUrl = 'https://searchapi-dev.hawksearch.net';

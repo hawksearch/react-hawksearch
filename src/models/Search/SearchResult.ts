@@ -1,7 +1,7 @@
 import { Pagination } from './Pagination';
 import { Result } from './Result';
-import { Facet } from 'models/Facets/Facet';
 import { Sorting } from './Sorting';
+import { Facet } from 'models/Facets';
 
 export class SearchResult {
 	/** Indicates if request was successful. */
