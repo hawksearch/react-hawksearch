@@ -21,15 +21,19 @@ export function getSearchQueryString(query: any) {
 
 	for (const key in query) {
 		if (query.hasOwnProperty(key)) {
-			let value = query[key];
+			const value = query[key];
 
 			if (key !== 'keyword') {
-				value = value.join(',');
+				values.push(key + '=' + value.join(','));
+			} else {
+				if (typeof value !== 'string') {
+					throw new Error('keyword must be a string');
+				}
+
+				// `keyword` is special and is never an array
+
+				values.push(key + '=' + value);
 			}
-
-			// `keyword` is special and is never an array
-
-			values.push(key + '=' + value);
 		}
 	}
 

@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`QueryString Utils handles keyword when it has multiple values 1`] = `
+Object {
+  "keyword": "this is my keyword,which should be a long string",
+}
+`;
+
+exports[`QueryString Utils handles keyword when parsing 1`] = `
+Object {
+  "brand": Array [
+    "cool",
+    "kinda-cool",
+  ],
+  "color": Array [
+    "black",
+  ],
+  "keyword": "this is my keyword",
+}
+`;
+
+exports[`QueryString Utils parses facets into arrays 1`] = `
+Object {
+  "brand": Array [
+    "cool",
+  ],
+  "color": Array [
+    "black",
+  ],
+}
+`;
+
+exports[`QueryString Utils parses facets into arrays and handles question mark 1`] = `
+Object {
+  "brand": Array [
+    "cool",
+  ],
+  "color": Array [
+    "black",
+  ],
+}
+`;
+
+exports[`QueryString Utils parses multiple facet values into arrays 1`] = `
+Object {
+  "brand": Array [
+    "cool",
+    "kinda-cool",
+  ],
+  "color": Array [
+    "black",
+  ],
+}
+`;
+
+exports[`QueryString Utils turns arrays into query string 1`] = `"?color=black&brand=cool"`;
+
+exports[`QueryString Utils turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
+
+exports[`QueryString Utils turns arrays with multiple values into query string and handles keyword 1`] = `"?color=black&brand=cool,kinda-cool&keyword=this is my keyword"`;
