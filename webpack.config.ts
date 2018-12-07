@@ -11,7 +11,10 @@ export default (env, argv): webpack.Configuration => {
 	}
 
 	return {
-		entry: './src/index.tsx',
+		entry: {
+			index: './src/index.tsx',
+			search: './src/search.tsx',
+		},
 
 		output: {
 			filename: '[name].js',
@@ -77,8 +80,15 @@ export default (env, argv): webpack.Configuration => {
 		plugins: [
 			new HtmlWebpackPlugin({
 				hash: true,
+				chunks: ['index', 'runtime', 'vendor'],
 				filename: 'index.html',
 				template: './src/index.html',
+			}),
+			new HtmlWebpackPlugin({
+				hash: true,
+				chunks: ['search', 'runtime', 'vendor'],
+				filename: 'search.html',
+				template: './src/search.html',
 			}),
 			new webpack.HotModuleReplacementPlugin(),
 		],
