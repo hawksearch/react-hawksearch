@@ -10,6 +10,7 @@ function HomeSearchBox() {
 			{(options: ControllerStateAndHelpers<{}>) => {
 				const { isOpen, inputValue, getInputProps } = options;
 
+				const showSuggestions = isOpen && inputValue && inputValue.length > 0;
 				return (
 					<div>
 						<input
@@ -24,7 +25,7 @@ function HomeSearchBox() {
 								},
 							})}
 						/>
-						{isOpen ? <SearchBoxData query={inputValue} /> : null}
+						{showSuggestions ? <SearchBoxData query={inputValue} /> : null}
 					</div>
 				);
 			}}
@@ -35,13 +36,18 @@ function HomeSearchBox() {
 function SearchBoxData({ query }) {
 	const client = new HawkClient();
 
-	const [results, setResults] = useState<Response>({});
+	const [results, setResults] = useState<Response>({} as Response);
 
 	async function getAutoSuggest(input: string) {
 		const response = await client.autocomplete({
 			ClientGuid: 'f51060e1c38446f0bacdf283390c37e8',
 			Keyword: input,
+			DisplayFullResponse: true,
 		});
+
+		if (response === null) {
+			return;
+		}
 
 		setResults(response);
 	}
@@ -57,7 +63,14 @@ function SearchBoxData({ query }) {
 		[query]
 	);
 
-	return <span>{JSON.stringify(results)}</span>;
+	const { Products: products, Content: content } = results;
+
+	return (
+		<>
+			<ul>{products && products.map(prod => <li key={prod.Results.DocId}>{prod.ProductName}</li>)}</ul>
+			<ul>{content && content.map(cont => <li key={cont.Results.DocId}>{cont.Value}</li>)}</ul>
+		</>
+	);
 }
 
 export default HomeSearchBox;

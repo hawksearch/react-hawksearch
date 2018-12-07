@@ -10,5 +10,5 @@ export class Result {
 	 * of string values. The keys correspond to the name of the field within the hawk dashboard,
 	 * and the value of the map is an array of strings for each of the values for that field.
 	 */
-	public Document: { [key: string]: string[] };
+	public Document?: { [key: string]: string[] };
 }
