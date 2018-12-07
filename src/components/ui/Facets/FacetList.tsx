@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHawkSearch } from 'store/Store';
+import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
 
 function FacetList() {

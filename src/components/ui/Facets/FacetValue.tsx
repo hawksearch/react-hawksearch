@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { useHawkSearch } from 'components/StoreProvider';
 import { Facet, Value } from 'models/Facets';
-import { useHawkSearch } from 'store/Store';
 
 export interface FacetValueProps {
 	facet: Facet;

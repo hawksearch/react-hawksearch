@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { useHawkSearch } from 'store/Store';
-import SearchBox from 'ui/SearchBox';
-import Results from 'ui/Results';
-import { FacetList } from 'ui/Facets';
+import { useHawkSearch } from 'components/StoreProvider';
+import SearchBox from 'components/ui/SearchBox';
+import Results from 'components/ui/Results';
+import { FacetList } from 'components/ui/Facets';
 
 function App() {
 	const { actor } = useHawkSearch();
