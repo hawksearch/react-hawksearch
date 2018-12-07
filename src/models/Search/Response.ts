@@ -3,7 +3,7 @@ import { Result } from './Result';
 import { Sorting } from './Sorting';
 import { Facet } from 'models/Facets';
 
-export class SearchResult {
+export class Response {
 	/** Indicates if request was successful. */
 	public Success: boolean;
 

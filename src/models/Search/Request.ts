@@ -1,7 +1,7 @@
-import { ClientData } from './ClientData';
+import { ClientData } from 'models/ClientData';
 import { SmartBar } from './SmartBar';
 
-export class SearchRequest {
+export class Request {
 	/**
 	 * API Client Guid. Usually comes from the "Tracking Key" in the "Account Info" section of the hawk dashboard.
 	 */
@@ -100,5 +100,5 @@ export class SearchRequest {
 	 * These are options that can be set by the user in the Preview SmartBar. You can use this if you desire
 	 * additional score information returned.
 	 */
-	public SmartBar?: SmartBar[]; // TODO: smart bar objects
+	public SmartBar?: SmartBar[];
 }

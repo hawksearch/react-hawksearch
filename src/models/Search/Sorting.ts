@@ -6,8 +6,8 @@ export class SortingItem {
 	/** Name of the sorting option. This is the label to display to users. */
 	public Label: string;
 	/**
-	 * The value to be used to specify the sort order once user selects it. This value is passed in the @see SearchRequest.SortBy
-	 * field in the @see SearchRequest object.
+	 * The value to be used to specify the sort order once user selects it. This value is passed in the @see Request.SortBy
+	 * field in the @see Request object.
 	 */
 	public Value: string;
 

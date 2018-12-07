@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 
 import { SearchStore, SearchActor, useHawkState } from 'store/Store';
-import { SearchRequest } from 'models/Search';
+import { Request } from 'models/Search';
 
 export const HawkContext = React.createContext({} as HawkContextValue);
 
 export interface HawkStoreProviderProps {
-	initialSearch?: Partial<SearchRequest>;
+	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
 }
 

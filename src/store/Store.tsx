@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 
 import HawkClient from 'net/HawkClient';
 import { useMergableState } from 'util/MergableState';
-import { SearchResult, SearchRequest, Result } from 'models/Search';
+import { Response, Request, Result } from 'models/Search';
 import { Facet } from 'models/Facets';
 
 export class SearchStore {
-	public searchResults?: SearchResult;
+	public searchResults?: Response;
 
-	public pendingSearch: Partial<SearchRequest>;
+	public pendingSearch: Partial<Request>;
 	public doHistory: boolean;
 
 	public isLoading: boolean;
@@ -20,10 +20,10 @@ export class SearchStore {
 export interface SearchActor {
 	/** Performs a search with the given keyword. */
 	search(): Promise<void>;
-	setSearch(search: Partial<SearchRequest>, doHistory?: boolean);
+	setSearch(search: Partial<Request>, doHistory?: boolean);
 }
 
-export function useHawkState(initialSearch?: Partial<SearchRequest>): [SearchStore, SearchActor] {
+export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
 	const client = new HawkClient();
 
 	const [state, setState] = useMergableState<SearchStore>({
@@ -74,7 +74,7 @@ export function useHawkState(initialSearch?: Partial<SearchRequest>): [SearchSto
 		}
 	}
 
-	function setSearch(pendingSearch: Partial<SearchRequest>, doHistory?: boolean) {
+	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean) {
 		if (doHistory === undefined) {
 			doHistory = true;
 		}

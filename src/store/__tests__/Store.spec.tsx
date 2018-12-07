@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import TestRenderer from 'react-test-renderer';
 
 import { useHawkState } from 'store/Store';
 import HawkClient from 'net/HawkClient';
-import { SearchRequest, SearchResult, Pagination, PaginationItem } from 'models/Search';
+import { Request, Response, Pagination } from 'models/Search';
 import { Facet } from 'models/Facets';
 
 jest.mock('net/HawkClient');
 const HawkClientMock = HawkClient as jest.Mock<HawkClient>;
 
 const searchMock = jest.fn(
-	(request: SearchRequest): Promise<SearchResult> => {
+	(request: Request): Promise<Response> => {
 		return Promise.resolve({
 			Success: true,
 			Results: [
