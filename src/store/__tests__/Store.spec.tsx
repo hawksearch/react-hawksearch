@@ -3,7 +3,8 @@ import TestRenderer from 'react-test-renderer';
 
 import { useHawkState } from 'store/Store';
 import HawkClient from 'net/HawkClient';
-import { SearchResult, SearchRequest, Facet } from 'models';
+import { SearchRequest, SearchResult, Pagination, PaginationItem } from 'models/Search';
+import { Facet } from 'models/Facets';
 
 jest.mock('net/HawkClient');
 const HawkClientMock = HawkClient as jest.Mock<HawkClient>;
@@ -31,7 +32,13 @@ const searchMock = jest.fn(
 					MinHitCount: 1,
 				} as Facet,
 			],
-			Pagination: {},
+			Pagination: {
+				CurrentPage: 0,
+				Items: [],
+				MaxPerPage: 24,
+				NoOfPages: 1,
+				NoOfResults: 1,
+			} as Pagination,
 			DidYouMean: ['test'],
 			Keyword: request.Keyword || '',
 			SearchDuration: 100,
@@ -52,11 +59,15 @@ describe('Store', () => {
 
 		// arrange
 		function StoreComponent() {
-			const [store, storeMutator] = useHawkState();
+			const [store, actor] = useHawkState();
 
 			// act
 			useEffect(() => {
-				searchPromise = storeMutator.search('this is my keyword');
+				actor.setSearch({
+					Keyword: 'this is my keyword',
+				});
+
+				searchPromise = actor.search();
 			}, []);
 
 			return <div>{JSON.stringify(store)}</div>;
@@ -67,12 +78,12 @@ describe('Store', () => {
 		// trigger an update so that the `useEffect` is triggered
 		renderer.update(<StoreComponent />);
 
-		searchPromise.then(() => {
-			// assert
-			expect(searchMock).toHaveBeenCalledWith(expect.objectContaining({ Keyword: 'this is my keyword' }));
-			expect(renderer.toJSON()).toMatchSnapshot();
+		// assert
+		await searchPromise;
 
-			done();
-		});
+		expect(searchMock).toHaveBeenCalledWith(expect.objectContaining({ Keyword: 'this is my keyword' }));
+		expect(renderer.toJSON()).toMatchSnapshot();
+
+		done();
 	});
 });

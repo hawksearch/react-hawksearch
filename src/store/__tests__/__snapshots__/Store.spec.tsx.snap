@@ -2,6 +2,6 @@
 
 exports[`Store performs a search 1`] = `
 <div>
-  {"searchResults":{"Success":true,"Results":[{"DocId":"123","Document":{"a":["b"]},"Score":1}],"Facets":[{"FacetId":123,"Name":"123","Field":"123","FieldType":"search","FacetType":"checkbox","DisplayType":"default","MaxCount":10,"MinHitCount":1}],"Pagination":{},"DidYouMean":["test"],"Keyword":"this is my keyword","SearchDuration":100,"Selections":[]},"isLoading":false,"items":[{"DocId":"123","Document":{"a":["b"]},"Score":1}],"facets":[{"FacetId":123,"Name":"123","Field":"123","FieldType":"search","FacetType":"checkbox","DisplayType":"default","MaxCount":10,"MinHitCount":1}]}
+  {"pendingSearch":{"Keyword":"this is my keyword","FacetSelections":{}},"doHistory":true,"isLoading":false,"searchResults":{"Success":true,"Results":[{"DocId":"123","Document":{"a":["b"]},"Score":1}],"Facets":[{"FacetId":123,"Name":"123","Field":"123","FieldType":"search","FacetType":"checkbox","DisplayType":"default","MaxCount":10,"MinHitCount":1}],"Pagination":{"CurrentPage":0,"Items":[],"MaxPerPage":24,"NoOfPages":1,"NoOfResults":1},"DidYouMean":["test"],"Keyword":"this is my keyword","SearchDuration":100,"Selections":[]},"items":[{"DocId":"123","Document":{"a":["b"]},"Score":1}],"facets":[{"FacetId":123,"Name":"123","Field":"123","FieldType":"search","FacetType":"checkbox","DisplayType":"default","MaxCount":10,"MinHitCount":1}]}
 </div>
 `;
