@@ -5,3 +5,4 @@ export * from './Response';
 export * from './Selections';
 export * from './SmartBar';
 export * from './Sorting';
+export * from './ClientData';

@@ -1,4 +1,7 @@
 import { Category } from './Category';
+import { Product } from './Product';
+import { Content } from './Content';
+import { Popular } from './Popular';
 
 export class Response {
 	/** Number of products that would be in search results if search was executed. */
@@ -12,19 +15,19 @@ export class Response {
 	 */
 	public Categories: Category[];
 
-	public Products: any[]; // TODO: products object
+	public Products: Product[];
 
 	/**
 	 * A set of objects for each content item returned. The number returned is configured in the
 	 * Hawksearch Workbench > Keyword Search > Auto-complete > Update Top Content.
 	 */
-	public Content: any[]; // TODO: content object
+	public Content: Content[];
 
 	/**
 	 * A set of Value and Url for each popular search term. The definition of Popular can be defined in
 	 * the Hawksearch Workbench > Keyword Search > Auto-complete > Update Popular Searches.
 	 */
-	public Popular: any[]; // TODO: popular object
+	public Popular: Popular[];
 
 	/** Search website URL to be used to complete links. */
 	public SearchWebsiteUrl: string;

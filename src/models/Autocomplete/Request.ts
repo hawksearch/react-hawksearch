@@ -1,4 +1,4 @@
-import { ClientData } from 'models/ClientData';
+import { ClientData } from 'models/Search';
 
 export class Request {
 	/**

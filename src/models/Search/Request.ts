@@ -1,4 +1,4 @@
-import { ClientData } from 'models/ClientData';
+import { ClientData } from './ClientData';
 import { SmartBar } from './SmartBar';
 
 export class Request {
