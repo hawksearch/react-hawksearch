@@ -11,14 +11,16 @@ function QueryStringListener() {
 		// listen to history so that when we navigate backward/forward, trigger a new search based off
 		// the new query string
 		const unlisten = history.listen(location => {
-			const newSearchQuery = parseSearchQueryString(location.search);
-			const { keyword: newKeyword, ...newFacetSelections } = newSearchQuery;
+			const searchQuery = parseSearchQueryString(location.search);
+			const { keyword, ...facetSelections } = searchQuery;
 
 			actor.setSearch(
 				{
-					Keyword: newKeyword || '',
-					FacetSelections: newFacetSelections,
+					Keyword: keyword || '',
+					FacetSelections: facetSelections,
 				},
+				// explicitly flag this next search as not needing to push additional history, since this search
+				// _is_ the result of history.
 				/*doHistory*/ false
 			);
 		});
