@@ -2,6 +2,7 @@ import * as webpack from 'webpack';
 
 import * as path from 'path';
 import * as HtmlWebpackPlugin from 'html-webpack-plugin';
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 export default (env, argv): webpack.Configuration => {
 	let isDevBuild = true;
@@ -72,6 +73,20 @@ export default (env, argv): webpack.Configuration => {
 						},
 					},
 				},
+				{
+					test: /\.scss$/,
+					use: [
+						'style-loader',
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						//'postcss-loader',
+						'sass-loader',
+					],
+				},
+				{
+					test: /\.css$/,
+					use: ['style-loader', 'css-loader'],
+				},
 			],
 		},
 
@@ -91,6 +106,9 @@ export default (env, argv): webpack.Configuration => {
 				template: './src/search.html',
 			}),
 			new webpack.HotModuleReplacementPlugin(),
+			new MiniCssExtractPlugin({
+				filename: '[name].[hash].css',
+			}),
 		],
 	};
 };

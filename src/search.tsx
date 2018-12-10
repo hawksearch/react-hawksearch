@@ -10,6 +10,7 @@ import { parseSearchQueryString } from 'util/QueryString';
 
 // pull the initial search from the query string
 const { keyword, facetSelections } = parseSearchQueryString(location.search);
+import 'styles/app.scss';
 
 ReactDOM.render(
 	<StoreProvider initialSearch={{ Keyword: keyword, FacetSelections: facetSelections }}>

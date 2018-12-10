@@ -14,6 +14,7 @@ function HomeSearchBox() {
 				return (
 					<div>
 						<input
+							style={{ width: '100%' }}
 							{...getInputProps({
 								onKeyDown: event => {
 									if (event.key === 'Enter') {
