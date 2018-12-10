@@ -3,6 +3,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 
 import HawkClient from 'net/HawkClient';
 import { Response } from 'models/Autocomplete';
+import { useHawkConfig } from 'components/ConfigProvider';
 
 interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
@@ -15,8 +16,9 @@ interface SearchSuggestionsProps {
 function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 	const client = new HawkClient();
 
-	const [results, setResults] = useState<Response>({} as Response);
+	const [results, setResults] = useState({} as Response);
 	const [isLoading, setIsLoading] = useState(false);
+	const { config } = useHawkConfig();
 
 	// debounce the input search string so that we only do an autocomplete query every 200ms
 	useEffect(
@@ -38,7 +40,7 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		setIsLoading(true);
 
 		const response = await client.autocomplete({
-			ClientGuid: 'f51060e1c38446f0bacdf283390c37e8',
+			ClientGuid: config.clientGuid,
 			Keyword: input,
 			DisplayFullResponse: true,
 		});
@@ -52,7 +54,7 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		setResults(response);
 	}
 
-	const { Products: products, Content: content } = results;
+	const { Products: products } = results;
 
 	const { getMenuProps, getItemProps, highlightedIndex } = downshift;
 
@@ -60,6 +62,7 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		<div className="autosuggest-menu">
 			<ul className="dropdown-menu autosuggest-menu__list" {...getMenuProps()}>
 				{isLoading && <li className="autosuggest-menu__item">Loading...</li>}
+
 				{products &&
 					products.map((item, index) => (
 						<li
@@ -77,6 +80,10 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 							{item.ProductName}
 						</li>
 					))}
+
+				{!isLoading && products && products.length === 0 && (
+					<li className="autosuggest-menu__item">No results.</li>
+				)}
 			</ul>
 		</div>
 	);
