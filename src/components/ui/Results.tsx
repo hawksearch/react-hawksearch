@@ -16,7 +16,10 @@ function Results() {
 
 			{store.isLoading ? <span>Loading...</span> : null}
 
-			<div>{store.items && store.items.map(item => <li key={item.DocId}>{item.Document['itemname']}</li>)}</div>
+			<div>
+				{store.items &&
+					store.items.map(item => item.Document && <li key={item.DocId}>{item.Document['itemname']}</li>)}
+			</div>
 		</>
 	);
 }
