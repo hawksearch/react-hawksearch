@@ -4,6 +4,7 @@ import HawkClient from 'net/HawkClient';
 import { useMergableState } from 'util/MergableState';
 import { Response, Request, Result } from 'models/Search';
 import { Facet } from 'models/Facets';
+import { useHawkConfig } from 'components/ConfigProvider';
 
 export class SearchStore {
 	public searchResults?: Response;
@@ -36,6 +37,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		isLoading: false,
 	});
 
+	const { config } = useHawkConfig();
+
 	useEffect(
 		() => {
 			// when the pending search's keyword or facet selections change, trigger a search
@@ -55,7 +58,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setState({ isLoading: true });
 
 		const searchResults = await client.search({
-			ClientGuid: 'f51060e1c38446f0bacdf283390c37e8',
+			ClientGuid: config.clientGuid,
 			Keyword: state.pendingSearch.Keyword,
 
 			FacetSelections: state.pendingSearch.FacetSelections,

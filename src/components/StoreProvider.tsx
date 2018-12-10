@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { SearchStore, SearchActor, useHawkState } from 'store/Store';
 import { Request } from 'models/Search';
 
-export const HawkContext = React.createContext({} as HawkContextValue);
+const HawkContext = React.createContext({} as HawkContextValue);
 
 export interface HawkStoreProviderProps {
 	initialSearch?: Partial<Request>;

@@ -3,8 +3,17 @@ import Downshift, { ControllerStateAndHelpers } from 'downshift';
 
 import { Response } from 'models/Autocomplete';
 import HawkClient from 'net/HawkClient';
+import { useHawkConfig } from 'components/ConfigProvider';
 
 function HomeSearchBox() {
+	const { config } = useHawkConfig();
+
+	let searchUrl = config.searchUrl;
+
+	if (!searchUrl) {
+		searchUrl = '/search';
+	}
+
 	return (
 		<Downshift>
 			{(options: ControllerStateAndHelpers<{}>) => {
@@ -18,10 +27,11 @@ function HomeSearchBox() {
 							{...getInputProps({
 								onKeyDown: event => {
 									if (event.key === 'Enter') {
-										console.log('should redirect to search.html?keyword=' + inputValue);
+										const redirect = `${searchUrl}?keyword=${inputValue}`;
 
-										// TODO: configurable url
-										location.assign('search.html?keyword=' + inputValue);
+										console.log('should redirect to:', redirect);
+
+										location.assign(redirect);
 									}
 								},
 							})}
