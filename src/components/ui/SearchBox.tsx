@@ -1,48 +1,22 @@
 import React from 'react';
-import Downshift, { ControllerStateAndHelpers } from 'downshift';
+import { ControllerStateAndHelpers } from 'downshift';
 
 import { useHawkSearch } from 'components/StoreProvider';
-import SearchSuggestions from './SearchSuggestions';
+import SearchBoxBase from 'components/SearchBoxBase';
+import { Product } from 'models/Autocomplete';
 
 function SearchBox() {
-	const { store, actor } = useHawkSearch();
+	const { actor } = useHawkSearch();
 
-	function onKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		if (event.key === 'Enter') {
-			doSearch(event.currentTarget.value);
+			actor.setSearch({
+				Keyword: event.currentTarget.value,
+			});
 		}
 	}
 
-	function doSearch(keyword: string) {
-		actor.setSearch({
-			Keyword: keyword,
-		});
-	}
-
-	return (
-		<Downshift>
-			{(options: ControllerStateAndHelpers<{}>) => {
-				const { isOpen, inputValue, getInputProps } = options;
-
-				const showSuggestions = isOpen && inputValue && inputValue.length > 0;
-				return (
-					<div>
-						<input
-							style={{ width: '100%' }}
-							{...getInputProps({
-								onKeyDown: event => {
-									if (event.key === 'Enter') {
-										doSearch(event.currentTarget.value);
-									}
-								},
-							})}
-						/>
-						{showSuggestions ? <SearchSuggestions query={inputValue || ''} downshift={options} /> : null}
-					</div>
-				);
-			}}
-		</Downshift>
-	);
+	return <SearchBoxBase onSubmit={handleSubmit} />;
 }
 
 export default SearchBox;
