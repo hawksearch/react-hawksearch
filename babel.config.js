@@ -11,13 +11,23 @@ module.exports = function(api) {
 					targets: {
 						browsers: ['last 2 versions'],
 					},
+					useBuiltIns: 'entry',
 				},
 			],
 			'@babel/preset-typescript',
 			'@babel/preset-react',
 		];
 	} else if (api.env('development') || api.env('test')) {
-		presets = ['@babel/preset-env', '@babel/preset-typescript', '@babel/preset-react'];
+		presets = [
+			[
+				'@babel/preset-env',
+				{
+					useBuiltIns: 'entry',
+				},
+			],
+			'@babel/preset-typescript',
+			'@babel/preset-react',
+		];
 	}
 
 	return {

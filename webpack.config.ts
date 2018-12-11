@@ -70,6 +70,7 @@ export default (env, argv): webpack.Configuration => {
 						loader: 'babel-loader',
 						options: {
 							cacheDirectory: true,
+							envName: isDevBuild ? 'development' : 'production',
 						},
 					},
 				},
