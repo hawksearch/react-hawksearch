@@ -29,5 +29,5 @@ export function initializeSearch(elementId: string, hawkConfig: HawkSearchConfig
 
 initializeSearch('app', {
 	clientGuid: 'f51060e1c38446f0bacdf283390c37e8',
-	searchUrl: 'search.html',
+	searchPageUrl: 'search.html',
 });

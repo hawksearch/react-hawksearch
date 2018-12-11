@@ -20,5 +20,5 @@ export function initializeSearchBox(elementId: string, hawkConfig: HawkSearchCon
 
 initializeSearchBox('searchbox', {
 	clientGuid: 'f51060e1c38446f0bacdf283390c37e8',
-	searchUrl: 'search.html',
+	searchPageUrl: 'search.html',
 });

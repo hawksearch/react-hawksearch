@@ -8,7 +8,7 @@ export interface HawkSearchConfig {
 	 * The url of the search page for this website. Users will be redirected to this page when performing a
 	 * keyword search using the standalone search box.
 	 *
-	 * If not specified, will default to `search/`.
+	 * If not specified, will default to `/search`.
 	 */
 	searchPageUrl?: string;
 

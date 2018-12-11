@@ -7,10 +7,8 @@ import { useHawkConfig } from 'components/ConfigProvider';
 function HomeSearchBox() {
 	const { config } = useHawkConfig();
 
-	let searchUrl = config.searchUrl;
+	const searchUrl = config.searchPageUrl || '/search';
 
-	if (!searchUrl) {
-		searchUrl = '/search';
 	}
 
 	return (
