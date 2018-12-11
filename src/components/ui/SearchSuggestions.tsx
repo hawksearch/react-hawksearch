@@ -20,16 +20,18 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const { config } = useHawkConfig();
 
-	// debounce the input search string so that we only do an autocomplete query every 200ms
+	// debounce the input search string so that we only do an autocomplete query every so often
 	useEffect(
 		() => {
-			const timeout = setTimeout(() => doAutocomplete(query), 200);
+			// default to 200ms if not specified
+			const debounceMs = config.autocompleteDebounce || 200;
+			const timeout = setTimeout(() => doAutocomplete(query), debounceMs);
 
 			return () => {
 				clearTimeout(timeout);
 			};
 		},
-		[query]
+		[query, config.autocompleteDebounce]
 	);
 
 	/**
