@@ -5,15 +5,15 @@ import HawkClient from 'net/HawkClient';
 import { Response } from 'models/Autocomplete';
 import { useHawkConfig } from 'components/ConfigProvider';
 
-interface SearchSuggestionsProps {
+interface SearchSuggestionsProps<Item> {
 	/** The user entered search string in the autocomplete text input. */
 	query: string;
 
 	/** Downshift's render prop parameter. */
-	downshift: ControllerStateAndHelpers<{}>;
+	downshift: ControllerStateAndHelpers<Item>;
 }
 
-function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
+function SearchSuggestions<Item>({ query, downshift }: SearchSuggestionsProps<Item>) {
 	const client = new HawkClient();
 
 	const [results, setResults] = useState({} as Response);
