@@ -1,30 +1,27 @@
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 
 class HawkClient {
 	private baseUrl = 'https://searchapi-dev.hawksearch.net';
 
-	public async search(request: SearchRequest): Promise<SearchResponse | null> {
-		try {
-			const result = await axios.post<SearchResponse>(this.baseUrl + '/api/search', request);
+	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
+		const result = await axios.post<SearchResponse>(this.baseUrl + '/api/search', request, {
+			cancelToken: cancellationToken,
+		});
 
-			return result.data;
-		} catch (error) {
-			console.error('Search error:', error);
-			return null;
-		}
+		return result.data;
 	}
 
-	public async autocomplete(request: AutocompleteRequest): Promise<AutocompleteResponse | null> {
-		try {
-			const result = await axios.post<AutocompleteResponse>(this.baseUrl + '/api/autocomplete', request);
+	public async autocomplete(
+		request: AutocompleteRequest,
+		cancellationToken?: CancelToken
+	): Promise<AutocompleteResponse> {
+		const result = await axios.post<AutocompleteResponse>(this.baseUrl + '/api/autocomplete', request, {
+			cancelToken: cancellationToken,
+		});
 
-			return result.data;
-		} catch (error) {
-			console.error('Autocomplete error:', error);
-			return null;
-		}
+		return result.data;
 	}
 }
 

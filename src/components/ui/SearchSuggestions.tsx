@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ControllerStateAndHelpers } from 'downshift';
+import axios, { CancelToken } from 'axios';
 
 import HawkClient from 'net/HawkClient';
 import { Response, Product } from 'models/Autocomplete';
@@ -18,6 +19,7 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 
 	const [results, setResults] = useState({} as Response);
 	const [isLoading, setIsLoading] = useState(false);
+
 	const { config } = useHawkConfig();
 
 	// debounce the input search string so that we only do an autocomplete query every so often
@@ -25,9 +27,12 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		() => {
 			// default to 200ms if not specified
 			const debounceMs = config.autocompleteDebounce || 200;
-			const timeout = setTimeout(() => doAutocomplete(query), debounceMs);
+
+			const cts = axios.CancelToken.source();
+			const timeout = setTimeout(() => doAutocomplete(query, cts.token), debounceMs);
 
 			return () => {
+				cts.cancel();
 				clearTimeout(timeout);
 			};
 		},
@@ -38,22 +43,36 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 	 * Performs an autocomplete request to the Hawk API and populates the result set of this component.
 	 * @param input The user entered search string that results will be autocompleted for.
 	 */
-	async function doAutocomplete(input: string) {
+	async function doAutocomplete(input: string, cancellationToken?: CancelToken) {
 		setIsLoading(true);
 
-		const response = await client.autocomplete({
-			ClientGuid: config.clientGuid,
-			Keyword: input,
-			DisplayFullResponse: true,
-		});
+		let response: Response | null = null;
+
+		try {
+			response = await client.autocomplete(
+				{
+					ClientGuid: config.clientGuid,
+
+					Keyword: input,
+					DisplayFullResponse: true,
+				},
+				cancellationToken
+			);
+		} catch (error) {
+			if (axios.isCancel(error)) {
+				// if the request was cancelled, it's because this component was updated
+				console.warn('Autocomplete request cancelled', error);
+				return;
+			}
+
+			console.error('Autocomplete request error:', error);
+		}
 
 		setIsLoading(false);
 
-		if (response === null) {
-			return;
+		if (response) {
+			setResults(response);
 		}
-
-		setResults(response);
 	}
 
 	const { Products: products } = results;

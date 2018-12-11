@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import axios, { CancelToken } from 'axios';
 
 import HawkClient from 'net/HawkClient';
 import { useMergableState } from 'util/MergableState';
@@ -42,12 +43,17 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	useEffect(
 		() => {
 			// when the pending search's keyword or facet selections change, trigger a search
-			search();
+			const cts = axios.CancelToken.source();
+			search(cts.token);
+
+			return () => {
+				cts.cancel();
+			};
 		},
 		[state.pendingSearch.Keyword, state.pendingSearch.FacetSelections]
 	);
 
-	async function search() {
+	async function search(cancellationToken?: CancelToken) {
 		console.debug(
 			'Searching for:',
 			state.pendingSearch.Keyword,
@@ -57,12 +63,27 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 		setState({ isLoading: true });
 
-		const searchResults = await client.search({
-			ClientGuid: config.clientGuid,
-			Keyword: state.pendingSearch.Keyword,
+		let searchResults: Response | null = null;
 
-			FacetSelections: state.pendingSearch.FacetSelections,
-		});
+		try {
+			searchResults = await client.search(
+				{
+					ClientGuid: config.clientGuid,
+					Keyword: state.pendingSearch.Keyword,
+
+					FacetSelections: state.pendingSearch.FacetSelections,
+				},
+				cancellationToken
+			);
+		} catch (error) {
+			if (axios.isCancel(error)) {
+				// if the request was cancelled, it's because this component was updated
+				console.warn('Search request cancelled', error);
+				return;
+			}
+
+			console.error('Search request error:', error);
+		}
 
 		setState({ isLoading: false });
 
