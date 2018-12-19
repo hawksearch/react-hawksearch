@@ -12,11 +12,14 @@ function QueryStringListener() {
 		// the new query string
 		const unlisten = history.listen(location => {
 			const searchQuery = parseSearchQueryString(location.search);
-			const { keyword, ...facetSelections } = searchQuery;
+			const { keyword, sort, pg, mpp, ...facetSelections } = searchQuery;
 
 			actor.setSearch(
 				{
-					Keyword: keyword || '',
+					Keyword: keyword,
+					PageNo: pg,
+					SortBy: sort,
+					MaxPerPage: mpp,
 					FacetSelections: facetSelections,
 				},
 				// explicitly flag this next search as not needing to push additional history, since this search
@@ -35,7 +38,14 @@ function QueryStringListener() {
 			// listen to changes in the pending search so that history records can be pushed to the browser's
 			// query string
 
-			const searchQuery = { keyword: store.pendingSearch.Keyword, ...store.pendingSearch.FacetSelections };
+			const searchQuery = {
+				keyword: store.pendingSearch.Keyword,
+				sort: store.pendingSearch.SortBy,
+				pg: store.pendingSearch.PageNo,
+				mpp: store.pendingSearch.MaxPerPage,
+				...store.pendingSearch.FacetSelections,
+			};
+
 			console.log(searchQuery);
 
 			if (store.doHistory) {
@@ -44,7 +54,13 @@ function QueryStringListener() {
 				});
 			}
 		},
-		[store.pendingSearch.Keyword, store.pendingSearch.FacetSelections]
+		[
+			store.pendingSearch.Keyword,
+			store.pendingSearch.SortBy,
+			store.pendingSearch.PageNo,
+			store.pendingSearch.MaxPerPage,
+			store.pendingSearch.FacetSelections,
+		]
 	);
 
 	return <></>;

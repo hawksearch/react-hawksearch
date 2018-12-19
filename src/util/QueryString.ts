@@ -4,7 +4,7 @@ export function parseSearchQueryString(search: string): any {
 	const parsed = {};
 
 	params.forEach((value, key) => {
-		if (key === 'keyword') {
+		if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp') {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = value;
 		} else {
@@ -23,16 +23,21 @@ export function getSearchQueryString(query: any) {
 		if (query.hasOwnProperty(key)) {
 			const value = query[key];
 
-			if (key !== 'keyword') {
-				values.push(key + '=' + value.join(','));
-			} else {
-				if (typeof value !== 'string') {
-					throw new Error('keyword must be a string');
+			if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp') {
+				if (value === undefined || value === null) {
+					// if any of the special keys just aren't defined or are null, don't include them in
+					// the query string
+					continue;
 				}
 
-				// `keyword` is special and is never an array
+				if (typeof value !== 'string') {
+					throw new Error(`${key} must be a string`);
+				}
 
+				// certain strings are special and are never arrays
 				values.push(key + '=' + value);
+			} else {
+				values.push(key + '=' + value.join(','));
 			}
 		}
 	}

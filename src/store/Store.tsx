@@ -50,7 +50,13 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				cts.cancel();
 			};
 		},
-		[state.pendingSearch.Keyword, state.pendingSearch.FacetSelections]
+		[
+			state.pendingSearch.Keyword,
+			state.pendingSearch.SortBy,
+			state.pendingSearch.PageNo,
+			state.pendingSearch.MaxPerPage,
+			state.pendingSearch.FacetSelections,
+		]
 	);
 
 	async function search(cancellationToken?: CancelToken) {
@@ -69,7 +75,11 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			searchResults = await client.search(
 				{
 					ClientGuid: config.clientGuid,
+
 					Keyword: state.pendingSearch.Keyword,
+					PageNo: state.pendingSearch.PageNo,
+					SortBy: state.pendingSearch.SortBy,
+					MaxPerPage: state.pendingSearch.MaxPerPage,
 
 					FacetSelections: state.pendingSearch.FacetSelections,
 				},
