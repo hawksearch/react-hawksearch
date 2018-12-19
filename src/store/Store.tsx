@@ -3,20 +3,15 @@ import axios, { CancelToken } from 'axios';
 
 import HawkClient from 'net/HawkClient';
 import { useMergableState } from 'util/MergableState';
-import { Response, Request, Result } from 'models/Search';
-import { Facet } from 'models/Facets';
+import { Response, Request } from 'models/Search';
 import { useHawkConfig } from 'components/ConfigProvider';
 
 export class SearchStore {
-	public searchResults?: Response;
-
 	public pendingSearch: Partial<Request>;
 	public doHistory: boolean;
 
 	public isLoading: boolean;
-
-	public items?: Result[];
-	public facets?: Facet[];
+	public searchResults?: Response;
 }
 
 export interface SearchActor {
@@ -102,8 +97,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 			setState({
 				searchResults,
-				items: searchResults.Results,
-				facets: searchResults.Facets,
 			});
 		}
 	}

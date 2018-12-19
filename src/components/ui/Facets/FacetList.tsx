@@ -4,9 +4,11 @@ import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
 
 function FacetList() {
-	const { store } = useHawkSearch();
+	const {
+		store: { isLoading, searchResults },
+	} = useHawkSearch();
 
-	if ((!store.facets || store.facets.length === 0) && !store.isLoading) {
+	if ((!searchResults || searchResults.Facets.length === 0) && !isLoading) {
 		return <span>No Facets</span>;
 	}
 
@@ -14,10 +16,12 @@ function FacetList() {
 		<>
 			<span>Facets: </span>
 
-			{store.isLoading ? <span>Loading...</span> : null}
+			{isLoading ? <span>Loading...</span> : null}
 
 			<div>
-				<ul>{store.facets && store.facets.map(facet => <Facet key={facet.FacetId} facet={facet} />)}</ul>
+				<ul>
+					{searchResults && searchResults.Facets.map(facet => <Facet key={facet.FacetId} facet={facet} />)}
+				</ul>
 			</div>
 		</>
 	);

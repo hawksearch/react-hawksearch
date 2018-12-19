@@ -4,9 +4,11 @@ import { useHawkSearch } from 'components/StoreProvider';
 
 /* tslint:disable:no-string-literal */
 function Results() {
-	const { store } = useHawkSearch();
+	const {
+		store: { isLoading, searchResults },
+	} = useHawkSearch();
 
-	if ((!store.items || store.items.length === 0) && !store.isLoading) {
+	if ((!searchResults || searchResults.Results.length === 0) && !isLoading) {
 		return <span>No Results</span>;
 	}
 
@@ -14,11 +16,13 @@ function Results() {
 		<>
 			<span>Results: </span>
 
-			{store.isLoading ? <span>Loading...</span> : null}
+			{isLoading ? <span>Loading...</span> : null}
 
 			<div>
-				{store.items &&
-					store.items.map(item => item.Document && <li key={item.DocId}>{item.Document['itemname']}</li>)}
+				{searchResults &&
+					searchResults.Results.map(
+						item => item.Document && <li key={item.DocId}>{item.Document['itemname']}</li>
+					)}
 			</div>
 		</>
 	);

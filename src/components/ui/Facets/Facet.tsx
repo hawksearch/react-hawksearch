@@ -13,10 +13,8 @@ function Facet({ facet }: FacetProps) {
 			<span>{facet.Name}</span>
 			<ol>
 				{facet.Values.map(
-					value =>
-						value.Value && (
-							<FacetValue key={`${facet.FacetId}|${value.Value}`} facet={facet} value={value} />
-						)
+					(value, idx) =>
+						value.Value && <FacetValue key={`${facet.FacetId}|${idx}`} facet={facet} value={value} />
 				)}
 			</ol>
 		</li>
