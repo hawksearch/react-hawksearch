@@ -6,7 +6,7 @@ import SearchBoxBase from 'components/SearchBoxBase';
 import { Product } from 'models/Autocomplete';
 
 function SearchBox() {
-	const { actor } = useHawkSearch();
+	const { store, actor } = useHawkSearch();
 
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		if (event.key === 'Enter') {
@@ -16,7 +16,12 @@ function SearchBox() {
 		}
 	}
 
-	return <SearchBoxBase onSubmit={handleSubmit} />;
+	return (
+		<SearchBoxBase
+			initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
+			onSubmit={handleSubmit}
+		/>
+	);
 }
 
 export default SearchBox;

@@ -5,10 +5,11 @@ import { Product } from 'models/Autocomplete';
 import SearchSuggestions from './ui/SearchSuggestions';
 
 interface SearchBoxBaseProps {
+	initialValue?: string;
 	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) => void;
 }
 
-function SearchBoxBase({ onSubmit }: SearchBoxBaseProps) {
+function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
 		state: DownshiftState<Product>,
@@ -44,6 +45,7 @@ function SearchBoxBase({ onSubmit }: SearchBoxBaseProps) {
 			stateReducer={handleStateChange}
 			itemToString={(item: Product | null) => (item ? item.ProductName : '')}
 			onChange={handleItemChange}
+			initialInputValue={initialValue}
 		>
 			{(options: ControllerStateAndHelpers<Product>) => {
 				const { isOpen, inputValue, getInputProps, openMenu } = options;
