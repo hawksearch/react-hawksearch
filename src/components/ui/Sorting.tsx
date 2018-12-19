@@ -3,7 +3,10 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 
 function Sorting() {
-	const { store, actor } = useHawkSearch();
+	const {
+		store: { isLoading, searchResults, pendingSearch },
+		actor,
+	} = useHawkSearch();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		actor.setSearch({
@@ -11,10 +14,19 @@ function Sorting() {
 		});
 	}
 
+	if (isLoading && (!searchResults || !searchResults.Sorting)) {
+		return null;
+	}
+
 	return (
-		<select value={store.pendingSearch.SortBy} onChange={onChange}>
-			<option value="score">Best Match</option>
-			<option value="titleasc">Title (A-Z)</option>
+		<select value={pendingSearch.SortBy} onChange={onChange}>
+			{searchResults &&
+				searchResults.Sorting &&
+				searchResults.Sorting.Items.map(sortingItem => (
+					<option key={sortingItem.Value} value={sortingItem.Value}>
+						{sortingItem.Label}
+					</option>
+				))}
 		</select>
 	);
 }
