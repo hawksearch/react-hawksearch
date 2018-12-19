@@ -20,7 +20,15 @@ function ConfigProvider({ config, children }: ConfigProviderProps) {
 }
 
 export function useHawkConfig() {
-	return useContext(ConfigContext);
+	const context = useContext(ConfigContext);
+
+	if (!context.config) {
+		throw new Error(
+			'No HawkSearchConfig is available, did you forget to wrap your components in a ConfigProvider component?'
+		);
+	}
+
+	return context;
 }
 
 export default ConfigProvider;
