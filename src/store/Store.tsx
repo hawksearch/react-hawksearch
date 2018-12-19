@@ -55,12 +55,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	);
 
 	async function search(cancellationToken?: CancelToken) {
-		console.debug(
-			'Searching for:',
-			state.pendingSearch.Keyword,
-			'& facet selections:',
-			state.pendingSearch.FacetSelections
-		);
+		console.debug('Searching for:', state.pendingSearch);
 
 		setState({ isLoading: true });
 

@@ -11,17 +11,10 @@ function QueryStringListener() {
 		// listen to history so that when we navigate backward/forward, trigger a new search based off
 		// the new query string
 		const unlisten = history.listen(location => {
-			const searchQuery = parseSearchQueryString(location.search);
-			const { keyword, sort, pg, mpp, ...facetSelections } = searchQuery;
+			const searchRequest = parseSearchQueryString(location.search);
 
 			actor.setSearch(
-				{
-					Keyword: keyword,
-					PageNo: pg,
-					SortBy: sort,
-					MaxPerPage: mpp,
-					FacetSelections: facetSelections,
-				},
+				searchRequest,
 				// explicitly flag this next search as not needing to push additional history, since this search
 				// _is_ the result of history.
 				/*doHistory*/ false
@@ -38,19 +31,9 @@ function QueryStringListener() {
 			// listen to changes in the pending search so that history records can be pushed to the browser's
 			// query string
 
-			const searchQuery = {
-				keyword: store.pendingSearch.Keyword,
-				sort: store.pendingSearch.SortBy,
-				pg: store.pendingSearch.PageNo,
-				mpp: store.pendingSearch.MaxPerPage,
-				...store.pendingSearch.FacetSelections,
-			};
-
-			console.log(searchQuery);
-
 			if (store.doHistory) {
 				history.push({
-					search: getSearchQueryString(searchQuery),
+					search: getSearchQueryString(store.pendingSearch),
 				});
 			}
 		},
@@ -63,7 +46,7 @@ function QueryStringListener() {
 		]
 	);
 
-	return <></>;
+	return null;
 }
 
 export default QueryStringListener;

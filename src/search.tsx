@@ -14,11 +14,11 @@ import 'styles/app.scss';
 
 export function initializeSearch(elementId: string, hawkConfig: HawkSearchConfig) {
 	// pull the initial search from the query string
-	const { keyword, facetSelections } = parseSearchQueryString(location.search);
+	const searchRequest = parseSearchQueryString(location.search);
 
 	ReactDOM.render(
 		<ConfigProvider config={hawkConfig}>
-			<StoreProvider initialSearch={{ Keyword: keyword, FacetSelections: facetSelections }}>
+			<StoreProvider initialSearch={searchRequest}>
 				<QueryStringListener />
 				<App />
 			</StoreProvider>
