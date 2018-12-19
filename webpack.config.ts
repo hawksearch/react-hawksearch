@@ -77,16 +77,19 @@ export default (env, argv): webpack.Configuration => {
 				{
 					test: /\.scss$/,
 					use: [
-						'style-loader',
+						// and now lastly extract the css into a dist file
 						MiniCssExtractPlugin.loader,
-						'css-loader',
-						//'postcss-loader',
+						// then load the css
+						{
+							loader: 'css-loader',
+							options: {
+								sourceMap: true,
+								importLoaders: 2,
+							},
+						},
+						// first, transpile sass to css
 						'sass-loader',
 					],
-				},
-				{
-					test: /\.css$/,
-					use: ['style-loader', 'css-loader'],
 				},
 			],
 		},
