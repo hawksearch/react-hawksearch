@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
+import { CancelToken } from 'axios';
 import TestRenderer from 'react-test-renderer';
 
 import { useHawkState } from 'store/Store';
 import HawkClient from 'net/HawkClient';
 import { Request, Response, Pagination } from 'models/Search';
 import { Facet } from 'models/Facets';
+import ConfigProvider from 'components/ConfigProvider';
 
 jest.mock('net/HawkClient');
 const HawkClientMock = HawkClient as jest.Mock<HawkClient>;
 
 const searchMock = jest.fn(
-	(request: Request): Promise<Response> => {
-		return Promise.resolve({
+	(request: Request, cancellationToken?: CancelToken): Promise<Response> => {
+		return Promise.resolve<Response>({
 			Success: true,
 			Results: [
 				{
@@ -30,7 +32,27 @@ const searchMock = jest.fn(
 					DisplayType: 'default',
 					MaxCount: 10,
 					MinHitCount: 1,
-				} as Facet,
+					SortBy: 'name',
+					ExpandSelection: false,
+					IsNumeric: false,
+					IsCurrency: false,
+					IsCollapsible: true,
+					IsCollapsedDefault: false,
+					IsVisible: true,
+					IsSearch: false,
+					ScrollHeight: 100,
+					ScrollThreshold: 200,
+					TruncateThreshold: 200,
+					SearchThreshold: 200,
+					AlwaysVisible: true,
+					SortOrder: 1,
+					NofVisible: 10,
+					FacetRangeDisplayType: 100,
+					PreloadChildren: true,
+					ShowSliderInputs: false,
+					Ranges: [],
+					Values: [],
+				},
 			],
 			Pagination: {
 				CurrentPage: 0,
@@ -38,7 +60,7 @@ const searchMock = jest.fn(
 				MaxPerPage: 24,
 				NoOfPages: 1,
 				NoOfResults: 1,
-			} as Pagination,
+			},
 			DidYouMean: ['test'],
 			Keyword: request.Keyword || '',
 			SearchDuration: 100,
@@ -50,6 +72,7 @@ const searchMock = jest.fn(
 HawkClientMock.mockImplementation(() => {
 	return {
 		search: searchMock,
+		autocomplete: jest.fn(),
 	};
 });
 
@@ -73,15 +96,26 @@ describe('Store', () => {
 			return <div>{JSON.stringify(store)}</div>;
 		}
 
-		const renderer = TestRenderer.create(<StoreComponent />);
+		function TestedComponent() {
+			return (
+				<ConfigProvider config={{ clientGuid: '123' }}>
+					<StoreComponent />
+				</ConfigProvider>
+			);
+		}
+
+		const renderer = TestRenderer.create(<TestedComponent />);
 
 		// trigger an update so that the `useEffect` is triggered
-		renderer.update(<StoreComponent />);
+		renderer.update(<TestedComponent />);
 
-		// assert
 		await searchPromise;
 
-		expect(searchMock).toHaveBeenCalledWith(expect.objectContaining({ Keyword: 'this is my keyword' }));
+		// assert
+		expect(searchMock).toHaveBeenCalledWith(
+			expect.objectContaining({ Keyword: 'this is my keyword' }),
+			expect.anything()
+		);
 		expect(renderer.toJSON()).toMatchSnapshot();
 
 		done();
