@@ -4,6 +4,8 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { history } from 'util/History';
 import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
 
+let doSearch = true;
+
 function QueryStringListener() {
 	const { store, actor } = useHawkSearch();
 
@@ -11,6 +13,12 @@ function QueryStringListener() {
 		// listen to history so that when we navigate backward/forward, trigger a new search based off
 		// the new query string
 		const unlisten = history.listen(location => {
+			if (!doSearch) {
+				// if the previous history change specified that we shouldn't do a search, clear the flag and bail
+				doSearch = true;
+				return;
+			}
+
 			const searchRequest = parseSearchQueryString(location.search);
 
 			actor.setSearch(
@@ -32,6 +40,10 @@ function QueryStringListener() {
 			// query string
 
 			if (store.doHistory) {
+				// if we're pushing history, we don't want to to trigger a search as a result of this history
+				// change
+				doSearch = false;
+
 				history.push({
 					search: getSearchQueryString(store.pendingSearch),
 				});

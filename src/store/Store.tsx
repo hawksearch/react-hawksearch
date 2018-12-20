@@ -79,14 +79,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		try {
 			searchResults = await client.search(
 				{
+					...state.pendingSearch,
+
 					ClientGuid: config.clientGuid,
-
-					Keyword: state.pendingSearch.Keyword,
-					PageNo: state.pendingSearch.PageNo,
-					SortBy: state.pendingSearch.SortBy,
-					MaxPerPage: state.pendingSearch.MaxPerPage,
-
-					FacetSelections: state.pendingSearch.FacetSelections,
 				},
 				cancellationToken
 			);
@@ -115,6 +110,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		if (doHistory === undefined) {
 			doHistory = true;
 		}
+
+		console.log('setSearch:', pendingSearch, 'doHistory:', doHistory);
 
 		setState(prevState => {
 			return {
