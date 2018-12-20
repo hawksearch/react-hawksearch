@@ -12,24 +12,26 @@ function Selections() {
 	}
 
 	return (
-		<div>
-			<p>You've Selected</p>
+		<div style={{ borderBottom: '1px solid black' }}>
+			<span>You've Selected</span>
 
-			{Object.keys(searchResults.Selections).map(key => {
-				const selection = searchResults.Selections[key];
+			<ul>
+				{Object.keys(searchResults.Selections).map(key => {
+					const selection = searchResults.Selections[key];
 
-				return (
-					<div key={key}>
-						<span>{selection.Label}</span>
+					return (
+						<li key={key}>
+							<span>{selection.Label}</span>
 
-						<ul>
-							{selection.Items.map(item => (
-								<li key={item.Value}>{item.Label}</li>
-							))}
-						</ul>
-					</div>
-				);
-			})}
+							<ul>
+								{selection.Items.map(item => (
+									<li key={item.Value}>{item.Label}</li>
+								))}
+							</ul>
+						</li>
+					);
+				})}
+			</ul>
 		</div>
 	);
 }

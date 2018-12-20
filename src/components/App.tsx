@@ -23,16 +23,23 @@ function App() {
 						<div style={{ flex: '0 0 100%' }}>
 							<SearchBox />
 						</div>
-						<div style={{ width: '400px' }}>
+						<div style={{ width: '350px' }}>
 							<FacetList />
 						</div>
-						<div>
-							<Sorting />
-							<Pagination />
-							<ItemsPerPage />
-						</div>
-						<div style={{}}>
+						<div style={{ paddingLeft: '1rem' }}>
+							<div>
+								<Sorting />
+								<Pagination />
+								<ItemsPerPage />
+							</div>
+
 							<Results />
+
+							<div>
+								<Sorting />
+								<Pagination />
+								<ItemsPerPage />
+							</div>
 						</div>
 					</>
 				)}

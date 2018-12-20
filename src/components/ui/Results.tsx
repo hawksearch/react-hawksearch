@@ -13,7 +13,7 @@ function Results() {
 	}
 
 	return (
-		<>
+		<div>
 			<span>Results: </span>
 
 			{isLoading ? <span>Loading...</span> : null}
@@ -26,7 +26,7 @@ function Results() {
 						)}
 				</ul>
 			</div>
-		</>
+		</div>
 	);
 }
 
