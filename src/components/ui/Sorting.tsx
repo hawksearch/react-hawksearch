@@ -14,14 +14,13 @@ function Sorting() {
 		});
 	}
 
-	if (isLoading && (!searchResults || !searchResults.Sorting)) {
+	if (!searchResults) {
 		return null;
 	}
 
 	return (
 		<select value={pendingSearch.SortBy} onChange={onChange}>
 			{searchResults &&
-				searchResults.Sorting &&
 				searchResults.Sorting.Items.map(sortingItem => (
 					<option key={sortingItem.Value} value={sortingItem.Value}>
 						{sortingItem.Label}

@@ -37,7 +37,7 @@ export class Response {
 	 */
 	public Selections: Selection[];
 
-	public Sorting?: Sorting;
+	public Sorting: Sorting;
 
 	/**
 	 * If any strings are returned in the array, they should be displayed to the user as suggested
