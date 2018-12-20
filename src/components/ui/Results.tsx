@@ -19,10 +19,12 @@ function Results() {
 			{isLoading ? <span>Loading...</span> : null}
 
 			<div>
-				{searchResults &&
-					searchResults.Results.map(
-						item => item.Document && <li key={item.DocId}>{item.Document['itemname']}</li>
-					)}
+				<ul>
+					{searchResults &&
+						searchResults.Results.map(
+							item => item.Document && <li key={item.DocId}>{item.Document['itemname']}</li>
+						)}
+				</ul>
 			</div>
 		</>
 	);
