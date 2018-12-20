@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { history } from 'util/History';
@@ -37,13 +37,7 @@ function QueryStringListener() {
 				});
 			}
 		},
-		[
-			store.pendingSearch.Keyword,
-			store.pendingSearch.SortBy,
-			store.pendingSearch.PageNo,
-			store.pendingSearch.MaxPerPage,
-			store.pendingSearch.FacetSelections,
-		]
+		[store.pendingSearch]
 	);
 
 	return null;
