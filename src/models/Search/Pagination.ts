@@ -1,6 +1,6 @@
 export class Pagination {
 	/** Number of total items in the result set. */
-	public NoOfResults: number;
+	public NofResults: number;
 
 	/** The page number returned. */
 	public CurrentPage: number;
@@ -9,7 +9,7 @@ export class Pagination {
 	public MaxPerPage: number;
 
 	/** The total number of pages for the result set - with the current @see MaxPerPage. */
-	public NoOfPages: number;
+	public NofPages: number;
 
 	/** Set of pagination options */
 	public Items: PaginationItem[];
