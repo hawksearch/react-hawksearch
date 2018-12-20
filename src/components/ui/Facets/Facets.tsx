@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
+import Checkbox from './Checkbox';
 
 function Facets() {
 	const {
@@ -12,15 +13,25 @@ function Facets() {
 		return <span>No Facets</span>;
 	}
 
+	const components = {
+		checkbox: Checkbox,
+	};
+
 	return (
 		<div>
 			<span>Facets: </span>
-
-			{isLoading ? <span>Loading...</span> : null}
-
 			<div>
 				<ul>
-					{searchResults && searchResults.Facets.map(facet => <Facet key={facet.FacetId} facet={facet} />)}
+					{searchResults &&
+						searchResults.Facets.map(facet => {
+							const Component = components[facet.FacetType];
+
+							return (
+								<Facet key={facet.FacetId} facet={facet}>
+									{Component ? <Component /> : <div>{facet.FacetType} is not implemented!</div>}
+								</Facet>
+							);
+						})}
 				</ul>
 			</div>
 		</div>
