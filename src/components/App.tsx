@@ -5,6 +5,7 @@ import SearchBox from 'components/ui/SearchBox';
 import Results from 'components/ui/Results';
 import { FacetList } from 'components/ui/Facets';
 import Sorting from 'components/ui/Sorting';
+import Pagination from 'components/ui/Pagination';
 
 function App() {
 	const { store } = useHawkSearch();
@@ -26,6 +27,7 @@ function App() {
 						</div>
 						<div>
 							<Sorting />
+							<Pagination />
 						</div>
 						<div style={{}}>
 							<Results />
