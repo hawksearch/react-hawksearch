@@ -6,7 +6,7 @@ import Results from 'components/ui/Results';
 import { FacetList } from 'components/ui/Facets';
 import Sorting from 'components/ui/Sorting';
 import Pagination from 'components/ui/Pagination';
-import ItemsPerPage from './ui/ItemsPerPage';
+import ItemsPerPage from 'components/ui/ItemsPerPage';
 
 function App() {
 	const { store } = useHawkSearch();
