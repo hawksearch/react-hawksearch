@@ -111,8 +111,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			doHistory = true;
 		}
 
-		console.log('setSearch:', pendingSearch, 'doHistory:', doHistory);
-
 		setState(prevState => {
 			return {
 				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },

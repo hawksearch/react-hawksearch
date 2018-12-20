@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import { useHawkSearch } from 'components/StoreProvider';
 import { LeftChevronSVG, RightChevronSVG } from 'components/svg';
 
@@ -9,6 +10,8 @@ function Pagination() {
 		actor,
 	} = useHawkSearch();
 
+	const [page, setPage] = useState(String(getCurrentPage()));
+
 	function goToPreviousPage() {
 		goToPage(getCurrentPage() - 1);
 	}
@@ -18,10 +21,29 @@ function Pagination() {
 	}
 
 	function goToPage(pageNo: number) {
-		console.debug('Going to page', pageNo);
+		if (pageNo < 1) {
+			// can't go beyond the first page
+			return;
+		}
+
+		if (searchResults && pageNo > searchResults.Pagination.NofPages) {
+			// can't go beyond the last page
+			return;
+		}
+
+		// set our local page number
+		setPage(String(pageNo));
+
+		// and also trigger a search for this page
 		actor.setSearch({
 			PageNo: pageNo,
 		});
+	}
+
+	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+		if (event.key === 'Enter') {
+			goToPage(Number(event.currentTarget.value));
+		}
 	}
 
 	function getCurrentPage() {
@@ -54,7 +76,14 @@ function Pagination() {
 				<LeftChevronSVG class="listing-pagination__left" />
 				<span className="visually-hidden">Previous page</span>
 			</button>
-			<input type="number" value={pendingSearch.PageNo || searchResults.Pagination.CurrentPage} />
+			<input
+				type="number"
+				value={page}
+				onKeyDown={onKeyDown}
+				onChange={e => {
+					setPage(e.currentTarget.value);
+				}}
+			/>
 			&nbsp; of {searchResults.Pagination.NofPages}
 			&nbsp;
 			<button className="listing-pagination__item" onClick={goToNextPage}>
