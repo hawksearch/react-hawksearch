@@ -1,4 +1,5 @@
 import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
+import { Request } from 'models/Search';
 
 describe('QueryString Utils', () => {
 	it('parses facets into arrays', () => {
@@ -58,9 +59,11 @@ describe('QueryString Utils', () => {
 
 	it('turns arrays into query string', () => {
 		// arrange
-		const obj = {
-			color: ['black'],
-			brand: ['cool'],
+		const obj: Partial<Request> = {
+			FacetSelections: {
+				color: ['black'],
+				brand: ['cool'],
+			},
 		};
 
 		// act
@@ -72,9 +75,11 @@ describe('QueryString Utils', () => {
 
 	it('turns arrays with multiple values into query string', () => {
 		// arrange
-		const obj = {
-			color: ['black'],
-			brand: ['cool', 'kinda-cool'],
+		const obj: Partial<Request> = {
+			FacetSelections: {
+				color: ['black'],
+				brand: ['cool', 'kinda-cool'],
+			},
 		};
 
 		// act
@@ -86,10 +91,12 @@ describe('QueryString Utils', () => {
 
 	it('turns arrays with multiple values into query string and handles keyword', () => {
 		// arrange
-		const obj = {
-			color: ['black'],
-			brand: ['cool', 'kinda-cool'],
-			keyword: 'this is my keyword',
+		const obj: Partial<Request> = {
+			FacetSelections: {
+				color: ['black'],
+				brand: ['cool', 'kinda-cool'],
+			},
+			Keyword: 'this is my keyword',
 		};
 
 		// act
@@ -97,19 +104,5 @@ describe('QueryString Utils', () => {
 
 		// assert
 		expect(queryString).toMatchSnapshot();
-	});
-
-	it('throws when keyword is not a string', () => {
-		// arrange
-		const obj = {
-			color: ['black'],
-			brand: ['cool', 'kinda-cool'],
-			keyword: ['this is my keyword'],
-		};
-
-		// act & assert
-		expect(() => {
-			getSearchQueryString(obj);
-		}).toThrowError();
 	});
 });

@@ -2,54 +2,81 @@
 
 exports[`QueryString Utils handles keyword when it has multiple values 1`] = `
 Object {
-  "keyword": "this is my keyword,which should be a long string",
+  "FacetSelections": Object {},
+  "Keyword": "this is my keyword,which should be a long string",
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SortBy": undefined,
 }
 `;
 
 exports[`QueryString Utils handles keyword when parsing 1`] = `
 Object {
-  "brand": Array [
-    "cool",
-    "kinda-cool",
-  ],
-  "color": Array [
-    "black",
-  ],
-  "keyword": "this is my keyword",
+  "FacetSelections": Object {
+    "brand": Array [
+      "cool",
+      "kinda-cool",
+    ],
+    "color": Array [
+      "black",
+    ],
+  },
+  "Keyword": "this is my keyword",
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SortBy": undefined,
 }
 `;
 
 exports[`QueryString Utils parses facets into arrays 1`] = `
 Object {
-  "brand": Array [
-    "cool",
-  ],
-  "color": Array [
-    "black",
-  ],
+  "FacetSelections": Object {
+    "brand": Array [
+      "cool",
+    ],
+    "color": Array [
+      "black",
+    ],
+  },
+  "Keyword": undefined,
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SortBy": undefined,
 }
 `;
 
 exports[`QueryString Utils parses facets into arrays and handles question mark 1`] = `
 Object {
-  "brand": Array [
-    "cool",
-  ],
-  "color": Array [
-    "black",
-  ],
+  "FacetSelections": Object {
+    "brand": Array [
+      "cool",
+    ],
+    "color": Array [
+      "black",
+    ],
+  },
+  "Keyword": undefined,
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SortBy": undefined,
 }
 `;
 
 exports[`QueryString Utils parses multiple facet values into arrays 1`] = `
 Object {
-  "brand": Array [
-    "cool",
-    "kinda-cool",
-  ],
-  "color": Array [
-    "black",
-  ],
+  "FacetSelections": Object {
+    "brand": Array [
+      "cool",
+      "kinda-cool",
+    ],
+    "color": Array [
+      "black",
+    ],
+  },
+  "Keyword": undefined,
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SortBy": undefined,
 }
 `;
 
@@ -57,4 +84,4 @@ exports[`QueryString Utils turns arrays into query string 1`] = `"?color=black&b
 
 exports[`QueryString Utils turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
 
-exports[`QueryString Utils turns arrays with multiple values into query string and handles keyword 1`] = `"?color=black&brand=cool,kinda-cool&keyword=this is my keyword"`;
+exports[`QueryString Utils turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this is my keyword&color=black&brand=cool,kinda-cool"`;
