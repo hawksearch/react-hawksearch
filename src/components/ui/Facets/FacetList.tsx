@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
+import Selections from './Selections';
 
 function FacetList() {
 	const {
@@ -14,6 +15,8 @@ function FacetList() {
 
 	return (
 		<>
+			<Selections />
+
 			<span>Facets: </span>
 
 			{isLoading ? <span>Loading...</span> : null}

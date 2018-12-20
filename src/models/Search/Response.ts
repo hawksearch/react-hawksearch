@@ -1,6 +1,7 @@
 import { Pagination } from './Pagination';
 import { Result } from './Result';
 import { Sorting } from './Sorting';
+import { Selections } from './Selections';
 import { Facet } from 'models/Facets';
 
 export class Response {
@@ -35,7 +36,7 @@ export class Response {
 	 * Will contain an entry for each facet that has one or more selections. Will be empty if no facet
 	 * selections have been made.
 	 */
-	public Selections: Selection[];
+	public Selections: Selections;
 
 	public Sorting: Sorting;
 
