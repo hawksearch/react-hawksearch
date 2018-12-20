@@ -1,0 +1,58 @@
+.pagination {
+	flex-wrap: wrap;
+	justify-content: center;
+
+	@include sm {
+		justify-content: flex-start;
+	}
+}
+
+.listing-pagination {
+	margin-bottom: 0;
+
+	.pagination {
+		margin-bottom: 0;
+	}
+
+	input[type='number'] {
+		width: 67px;
+		display: inline-block;
+		text-align: center;
+
+		-moz-appearance: textfield;
+
+		/* Webkit browsers like Safari and Chrome */
+		&::-webkit-inner-spin-button,
+		&::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+	}
+}
+
+.listing-pagination__item {
+	@include HoverCircleAccent;
+	cursor: pointer;
+	margin: 0 10px;
+
+	&:last-child {
+		margin-right: 0;
+	}
+}
+
+@mixin paginationControl() {
+	height: 15px;
+	cursor: pointer;
+
+	path {
+		fill: $pagination-control-path;
+	}
+}
+
+.listing-pagination__left {
+	@include paginationControl;
+}
+
+.listing-pagination__right {
+	@include paginationControl;
+}
