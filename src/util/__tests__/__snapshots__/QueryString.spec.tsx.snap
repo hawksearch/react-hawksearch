@@ -28,6 +28,16 @@ Object {
 }
 `;
 
+exports[`QueryString Utils handles query params with no values 1`] = `
+Object {
+  "FacetSelections": Object {},
+  "Keyword": "men",
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SortBy": undefined,
+}
+`;
+
 exports[`QueryString Utils parses facets into arrays 1`] = `
 Object {
   "FacetSelections": Object {

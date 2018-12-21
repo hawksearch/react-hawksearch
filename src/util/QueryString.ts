@@ -35,6 +35,12 @@ function parseQueryStringToObject(search: string) {
 			parsed[key] = value;
 		} else {
 			// everything else should be turned into an array
+
+			if (!value) {
+				// no useful value for this query param, so skip it
+				return;
+			}
+
 			parsed[key] = value.split(',');
 		}
 	});

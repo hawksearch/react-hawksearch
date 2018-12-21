@@ -105,4 +105,15 @@ describe('QueryString Utils', () => {
 		// assert
 		expect(queryString).toMatchSnapshot();
 	});
+
+	it('handles query params with no values', () => {
+		// arrange
+		const queryString = 'keyword=men&brand=';
+
+		// act
+		const obj = parseSearchQueryString(queryString);
+
+		// assert
+		expect(obj).toMatchSnapshot();
+	});
 });
