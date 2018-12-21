@@ -58,13 +58,16 @@ const searchMock = jest.fn(
 				CurrentPage: 0,
 				Items: [],
 				MaxPerPage: 24,
-				NoOfPages: 1,
-				NoOfResults: 1,
+				NofPages: 1,
+				NofResults: 1,
+			},
+			Sorting: {
+				Items: [],
 			},
 			DidYouMean: ['test'],
 			Keyword: request.Keyword || '',
 			SearchDuration: 100,
-			Selections: [],
+			Selections: {},
 		});
 	}
 );
