@@ -98,11 +98,15 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setState({ isLoading: false });
 
 		if (searchResults) {
-			console.warn('Search results:', searchResults);
+			if (!searchResults.Success) {
+				console.error('Search result error:', searchResults);
+			} else {
+				console.warn('Search results:', searchResults);
 
-			setState({
-				searchResults,
-			});
+				setState({
+					searchResults,
+				});
+			}
 		}
 	}
 
