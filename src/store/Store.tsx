@@ -6,7 +6,6 @@ import HawkClient from 'net/HawkClient';
 import { Response, Request } from 'models/Search';
 import { Value, Facet } from 'models/Facets';
 import { useMergableState } from 'util/MergableState';
-import { constants } from 'http2';
 
 export class SearchStore {
 	/** This represents the next search request that will be executed. */
@@ -40,6 +39,31 @@ export class SearchStore {
 	}
 }
 
+export enum FacetSelectionState {
+	/** The facet value is not selected. */
+	NotSelected,
+	/** The facet value is selected. */
+	Selected,
+	/** The facet value is selected, but negated. */
+	Negated,
+}
+
+export interface SelectionInfo {
+	/** The facet value selection state. */
+	state: FacetSelectionState;
+
+	/**
+	 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the value of
+	 * the facet value. For negated facet values this will be prefixed with the negation character `'-'`.
+	 */
+	selectedValue?: string;
+	/**
+	 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the index
+	 * into the `pendingSearch.FacetSelections[facetName]` array for this facet value.
+	 */
+	selectionIndex?: number;
+}
+
 export interface SearchActor {
 	/**
 	 * Performs a search with the currently configured pending search request. The search request can be
@@ -59,6 +83,12 @@ export interface SearchActor {
 	 */
 	setSearch(search: Partial<Request>, doHistory?: boolean);
 
+	/**
+	 * Determines whether or not the given facet and facet value is selected, and returns info regarding the selection.
+	 * @param facet The facet for which the facet value will be checked for selection.
+	 * @param facetValue The facet value that will be checked for selection.
+	 */
+	isFacetSelected(facet: Facet, facetValue: Value): SelectionInfo;
 	/**
 	 * Selects a facet value for the next search request that will be executed. Internally, this will call
 	 * `setSearch` to configure the next search with this selected facet.
@@ -145,36 +175,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
-	enum FacetSelectionState {
-		/** The facet value is not selected. */
-		NotSelected,
-		/** The facet value is selected. */
-		Selected,
-		/** The facet value is selected, but negated. */
-		Negated,
-	}
-
-	interface SelectionInfo {
-		/** The facet value selection state. */
-		state: FacetSelectionState;
-
-		/**
-		 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the value of
-		 * the facet value. For negated facet values this will be prefixed with the negation character `'-'`.
-		 */
-		selectedValue?: string;
-		/**
-		 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the index
-		 * into the `pendingSearch.FacetSelections[facetName]` array for this facet value.
-		 */
-		selectionIndex?: number;
-	}
-
-	/**
-	 * Determines whether or not the given facet and facet value is selected, and returns info regarding the selection.
-	 * @param facet
-	 * @param facetValue
-	 */
 	function isFacetSelected(facet: Facet, facetValue: Value): SelectionInfo {
 		if (!facetValue.Value) {
 			console.error(`Facet ${facet.Name} (${facet.Field}) has no facet value for ${facetValue.Label}`);
@@ -264,6 +264,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	const actor: SearchActor = {
 		search,
 		setSearch,
+		isFacetSelected,
 		selectFacet,
 	};
 

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useFacet } from './Facet';
 import { Value } from 'models/Facets';
 import { useHawkSearch } from 'components/StoreProvider';
+import { FacetSelectionState } from 'store/Store';
 
 function Checkbox() {
 	const { actor } = useHawkSearch();
@@ -45,13 +46,18 @@ function Checkbox() {
 				</div>
 
 				<ul>
-					{filteredFacets.map(value => (
-						<li key={value.Value}>
-							{value.Selected ? '[x]' : null}
-							<button onClick={e => selectFacet(value)}>{value.Label}</button>
-							<button onClick={e => negateFacet(value)}>X</button>
-						</li>
-					))}
+					{filteredFacets.map(value => {
+						const isSelected =
+							actor.isFacetSelected(facet, value).state !== FacetSelectionState.NotSelected;
+
+						return (
+							<li key={value.Value}>
+								{isSelected ? '[x]' : null}
+								<button onClick={e => selectFacet(value)}>{value.Label}</button>
+								<button onClick={e => negateFacet(value)}>X</button>
+							</li>
+						);
+					})}
 				</ul>
 			</div>
 		</div>
