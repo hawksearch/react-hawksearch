@@ -168,7 +168,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			delete facetSelections[facetField];
 		}
 
-		setSearch({ FacetSelections: facetSelections });
+		setSearch({
+			FacetSelections: facetSelections,
+			// when we change facet selections, also clear the current page so that we navigate
+			// back to the first page of results
+			PageNo: undefined,
+		});
 	}
 
 	const actor: SearchActor = {
