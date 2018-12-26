@@ -4,7 +4,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
 import Checkbox from './Checkbox';
 
-function Facets() {
+function FacetList() {
 	const {
 		store: { isLoading, searchResults },
 	} = useHawkSearch();
@@ -38,4 +38,4 @@ function Facets() {
 	);
 }
 
-export default Facets;
+export default FacetList;
