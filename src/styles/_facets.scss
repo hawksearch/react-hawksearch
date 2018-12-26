@@ -13,6 +13,10 @@
 }
 
 .hawk__facet-rail__facet {
+	h4 {
+		margin: 5px 0 5px 0;
+	}
+
 	padding-left: 10px;
 	padding-right: 10px;
 
@@ -21,10 +25,6 @@
 
 	padding-top: 10px;
 	padding-bottom: 10px;
-
-	h4 {
-		margin: 5px 0 5px 0;
-	}
 }
 
 .hawk__facet-rail__facet__quick-lookup {
@@ -43,6 +43,8 @@
 	background-color: $white;
 
 	border: 1px solid $grey;
+
+	padding: 5px;
 }
 
 .hawk__facet-rail__facet-values__checkbox {
@@ -52,6 +54,25 @@
 	}
 
 	li {
+		button {
+			padding: 5px;
+		}
+
+		div {
+			display: inline-block;
+			width: 20px;
+		}
+
+		.hawk__btn__select-facet {
+			width: 200px;
+			text-align: left;
+
+			margin-right: 5px;
+		}
+
 		list-style: none;
+
+		padding-top: 2px;
+		padding-bottom: 2px;
 	}
 }

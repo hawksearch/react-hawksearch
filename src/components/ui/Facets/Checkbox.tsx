@@ -22,15 +22,15 @@ function Checkbox() {
 						<li key={value.Value}>
 							{/* todo: this should emulate the look of a checkbox (but still retain the functionality
 							of a button */}
-							{isSelected ? '[x]' : '[ ]'}
+							<div>{isSelected ? '[x]' : '[ ]'}</div>
 
-							<button onClick={e => actor.selectFacet(value)}>
+							<button onClick={e => actor.selectFacet(value)} className="hawk__btn__select-facet">
 								<span style={isNegated ? { textDecoration: 'line-through' } : undefined}>
 									{value.Label}
 								</span>
 							</button>
 
-							<button onClick={e => actor.negateFacet(value)}>
+							<button onClick={e => actor.negateFacet(value)} className="hawk__btn__negate-facet">
 								X <span className="visually-hidden">Negate facet</span>
 							</button>
 						</li>
