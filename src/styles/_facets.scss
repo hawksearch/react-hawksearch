@@ -1,0 +1,57 @@
+.hawk__facet-rail {
+	margin-top: 10px;
+
+	border: 1px solid $black;
+	background-color: $grey2;
+}
+
+.hawk__facet-rail__heading {
+	color: $white;
+	background-color: $grey5;
+
+	padding: 10px;
+}
+
+.hawk__facet-rail__facet {
+	padding-left: 10px;
+	padding-right: 10px;
+
+	border-bottom: 1px solid $grey;
+	border-top: 1px solid $white;
+
+	padding-top: 10px;
+	padding-bottom: 10px;
+
+	h4 {
+		margin: 5px 0 5px 0;
+	}
+}
+
+.hawk__facet-rail__facet__quick-lookup {
+	input {
+		width: 100%;
+		box-sizing: border-box;
+		border: 1px solid $grey;
+
+		padding: 5px;
+	}
+
+	margin-bottom: 5px;
+}
+
+.hawk__facet-rail__facet-values {
+	background-color: $white;
+
+	border: 1px solid $grey;
+}
+
+.hawk__facet-rail__facet-values__checkbox {
+	ul {
+		padding-left: 0;
+		margin: 0;
+	}
+
+	li {
+		list-style: none;
+	}
+}

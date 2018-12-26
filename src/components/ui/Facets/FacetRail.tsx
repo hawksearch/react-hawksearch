@@ -5,7 +5,9 @@ import FacetList from './FacetList';
 
 function FacetRail() {
 	return (
-		<div style={{ borderRight: '1px solid black' }}>
+		<div className="hawk__facet-rail">
+			<div className="hawk__facet-rail__heading">Narrow Results</div>
+
 			<Selections />
 
 			<FacetList />

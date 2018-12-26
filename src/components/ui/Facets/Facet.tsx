@@ -65,11 +65,11 @@ function Facet({ facet, children }: FacetProps) {
 
 	return (
 		<FacetContext.Provider value={{ facet, actor, facetValues: filteredFacets }}>
-			<div>
+			<div className="hawk__facet-rail__facet">
 				<h4>{facet.Name}</h4>
 
 				{facet.IsSearch && (
-					<div>
+					<div className="hawk__facet-rail__facet__quick-lookup">
 						<input
 							value={filter}
 							onChange={e => setFilter(e.currentTarget.value)}
@@ -80,7 +80,7 @@ function Facet({ facet, children }: FacetProps) {
 				)}
 
 				{/* render listing component */}
-				{children}
+				<div className="hawk__facet-rail__facet-values">{children}</div>
 			</div>
 		</FacetContext.Provider>
 	);

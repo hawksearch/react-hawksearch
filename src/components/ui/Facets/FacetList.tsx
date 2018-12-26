@@ -19,21 +19,16 @@ function FacetList() {
 
 	return (
 		<div>
-			<span>Facets: </span>
-			<div>
-				<ul>
-					{searchResults &&
-						searchResults.Facets.map(facet => {
-							const Component = components[facet.FacetType];
+			{searchResults &&
+				searchResults.Facets.map(facet => {
+					const Component = components[facet.FacetType];
 
-							return (
-								<Facet key={facet.FacetId} facet={facet}>
-									{Component ? <Component /> : <div>{facet.FacetType} is not implemented!</div>}
-								</Facet>
-							);
-						})}
-				</ul>
-			</div>
+					return (
+						<Facet key={facet.FacetId} facet={facet}>
+							{Component ? <Component /> : <div>{facet.FacetType} is not implemented!</div>}
+						</Facet>
+					);
+				})}
 		</div>
 	);
 }
