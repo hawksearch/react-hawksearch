@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
-import { SearchStore, SearchActor, useHawkState } from 'store/Store';
+import { SearchStore, SearchActor } from 'store/Store';
+import { useHawkState } from 'store/HawkState';
 import { Request } from 'models/Search';
 
 const HawkContext = React.createContext({} as HawkContextValue);
