@@ -1,66 +1,39 @@
 import React, { useState } from 'react';
 
 import { useFacet } from './Facet';
-import { Value } from 'models/Facets';
 import { useHawkSearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 
 function Checkbox() {
-	const { store, actor } = useHawkSearch();
-	const { facet } = useFacet();
-
-	const [filter, setFilter] = useState('');
-
-	function selectFacet(facetValue: Value) {
-		setFilter('');
-		actor.selectFacet(facet, facetValue);
-	}
-
-	function negateFacet(facetValue: Value) {
-		setFilter('');
-		actor.selectFacet(facet, facetValue, /* negate */ true);
-	}
-
-	const filteredFacets = facet.Values.filter(val => {
-		if (!val.Label) {
-			// if a facet value doesn't have a label, we can't really filter down to it
-			// so exclude it
-			return false;
-		}
-
-		return val.Label.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
-	});
+	const { store } = useHawkSearch();
+	const { facet, facetValues, actor } = useFacet();
 
 	return (
-		<div>
-			<h4>{facet.Name}</h4>
+		<ul>
+			{facetValues.map(value => {
+				// facets can be selected or negated, so explicitly check that the facet is not selected
+				const selectionState = store.isFacetSelected(facet, value).state;
 
-			<div>
-				<div>
-					<input
-						value={filter}
-						onChange={e => setFilter(e.currentTarget.value)}
-						type="text"
-						placeholder="Quick Lookup"
-					/>
-				</div>
+				const isSelected = selectionState !== FacetSelectionState.NotSelected;
+				const isNegated = selectionState === FacetSelectionState.Negated;
 
-				<ul>
-					{filteredFacets.map(value => {
-						const isSelected =
-							store.isFacetSelected(facet, value).state !== FacetSelectionState.NotSelected;
+				return (
+					<li key={value.Value}>
+						{isSelected ? '[x]' : '[ ]'}
 
-						return (
-							<li key={value.Value}>
-								{isSelected ? '[x]' : null}
-								<button onClick={e => selectFacet(value)}>{value.Label}</button>
-								<button onClick={e => negateFacet(value)}>X</button>
-							</li>
-						);
-					})}
-				</ul>
-			</div>
-		</div>
+						<button onClick={e => actor.selectFacet(value)}>
+							<span style={isNegated ? { textDecoration: 'line-through' } : undefined}>
+								{value.Label}
+							</span>
+						</button>
+
+						<button onClick={e => actor.negateFacet(value)}>
+							X <span className="visually-hidden">Negate facet</span>
+						</button>
+					</li>
+				);
+			})}
+		</ul>
 	);
 }
 

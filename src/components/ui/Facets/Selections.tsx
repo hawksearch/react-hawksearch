@@ -6,7 +6,6 @@ import { SelectionFacetValue } from 'models/Search';
 function Selections() {
 	const {
 		store: { facetSelections },
-		store,
 		actor,
 	} = useHawkSearch();
 
