@@ -1,1 +1,1 @@
-export { default as FacetList } from './FacetList';
+export { default as FacetRail } from './FacetRail';

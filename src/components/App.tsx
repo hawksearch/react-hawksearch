@@ -3,7 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import SearchBox from 'components/ui/SearchBox';
 import Results from 'components/ui/Results';
-import { FacetList } from 'components/ui/Facets';
+import { FacetRail } from 'components/ui/Facets';
 import Sorting from 'components/ui/Sorting';
 import Pagination from 'components/ui/Pagination';
 import ItemsPerPage from 'components/ui/ItemsPerPage';
@@ -24,7 +24,7 @@ function App() {
 							<SearchBox />
 						</div>
 						<div style={{ width: '350px' }}>
-							<FacetList />
+							<FacetRail />
 						</div>
 						<div style={{ paddingLeft: '1rem' }}>
 							<div>
