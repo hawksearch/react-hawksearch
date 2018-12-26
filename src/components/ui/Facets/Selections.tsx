@@ -4,11 +4,13 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { SelectionFacetValue } from 'models/Search';
 
 function Selections() {
-	const { actor } = useHawkSearch();
+	const {
+		store: { facetSelections },
+		store,
+		actor,
+	} = useHawkSearch();
 
-	const selections = actor.getFacetSelections();
-
-	const keys = Object.keys(selections);
+	const keys = Object.keys(facetSelections);
 
 	if (keys.length === 0) {
 		// no selections, so render nothing
@@ -26,7 +28,7 @@ function Selections() {
 
 			<ul>
 				{keys.map(key => {
-					const selection = selections[key];
+					const selection = facetSelections[key];
 
 					return (
 						<li key={key}>

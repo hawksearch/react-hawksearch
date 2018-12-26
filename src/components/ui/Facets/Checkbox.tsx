@@ -6,7 +6,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 
 function Checkbox() {
-	const { actor } = useHawkSearch();
+	const { store, actor } = useHawkSearch();
 	const { facet } = useFacet();
 
 	const [filter, setFilter] = useState('');
@@ -48,7 +48,7 @@ function Checkbox() {
 				<ul>
 					{filteredFacets.map(value => {
 						const isSelected =
-							actor.isFacetSelected(facet, value).state !== FacetSelectionState.NotSelected;
+							store.isFacetSelected(facet, value).state !== FacetSelectionState.NotSelected;
 
 						return (
 							<li key={value.Value}>
