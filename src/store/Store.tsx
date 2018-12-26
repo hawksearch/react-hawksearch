@@ -89,6 +89,7 @@ export interface SearchActor {
 	 * @param facetValue The facet value that will be checked for selection.
 	 */
 	isFacetSelected(facet: Facet, facetValue: Value): SelectionInfo;
+
 	/**
 	 * Selects a facet value for the next search request that will be executed. Internally, this will call
 	 * `setSearch` to configure the next search with this selected facet.
@@ -119,6 +120,13 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		[state.pendingSearch]
 	);
 
+	/**
+	 * Performs a search with the currently configured pending search request. The search request can be
+	 * configured via the `setSearch` method. This method usually doesn't need to be called directly, as
+	 * the `StoreProvider` component will usually trigger searches directly in response to calls to
+	 * `setSearch`.
+	 * @returns A promise that resolves when the search request has been completed.
+	 */
 	async function search(cancellationToken?: CancelToken) {
 		console.debug('Searching for:', state.pendingSearch);
 
@@ -162,6 +170,13 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 	}
 
+	/**
+	 * Configures the next search request that will be executed. This will also execute a search in response to
+	 * the next search request changing.
+	 * @param search The partial search request object. This will be merged with previous calls to `setSearch`.
+	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
+	 * 					not specified, the default is `true`.
+	 */
 	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean) {
 		if (doHistory === undefined) {
 			doHistory = true;
@@ -175,6 +190,11 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
+	/**
+	 * Determines whether or not the given facet and facet value is selected, and returns info regarding the selection.
+	 * @param facet The facet for which the facet value will be checked for selection.
+	 * @param facetValue The facet value that will be checked for selection.
+	 */
 	function isFacetSelected(facet: Facet, facetValue: Value): SelectionInfo {
 		if (!facetValue.Value) {
 			console.error(`Facet ${facet.Name} (${facet.Field}) has no facet value for ${facetValue.Label}`);
@@ -211,6 +231,13 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return { state: FacetSelectionState.NotSelected };
 	}
 
+	/**
+	 * Selects a facet value for the next search request that will be executed. Internally, this will call
+	 * `setSearch` to configure the next search with this selected facet.
+	 * @param facet The facet for which the value is being selected.
+	 * @param facetValue The facet value being selected.
+	 * @param negate  Whether or not this selection is considered a negation.
+	 */
 	function selectFacet(facet: Facet, facetValue: Value, negate?: boolean) {
 		if (negate === undefined) {
 			negate = false;
@@ -241,12 +268,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			// first, remove it from our selections
 			facetSelections[facetName]!.splice(selectionIndex!, 1);
 
-			if (negate) {
-				// and the new selection should be negated
-				facetSelections[facetName]!.push(`-${facetValue.Value}`);
-				console.log('negated');
+			if (
+				(selState === FacetSelectionState.Selected && negate) ||
+				(selState === FacetSelectionState.Negated && !negate)
+			) {
+				// if we're toggling from negation to non-negation or vice versa, then push the new selection
+				facetSelections[facetName]!.push(negate ? `-${facetValue.Value}` : facetValue.Value);
 			} else {
-				// if we're not negating, there's nothing to do because we've already removed it from selections above
+				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
 		} else {
 			// not selected, so we want to select it
