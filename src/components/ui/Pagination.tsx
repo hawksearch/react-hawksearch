@@ -14,6 +14,7 @@ function Pagination() {
 	}
 
 	function onPageChange(pageNo: number) {
+		// when the pager's page changes, trigger a new search
 		actor.setSearch({
 			PageNo: pageNo,
 		});

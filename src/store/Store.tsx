@@ -3,7 +3,7 @@ import axios, { CancelToken } from 'axios';
 
 import { useHawkConfig } from 'components/ConfigProvider';
 import HawkClient from 'net/HawkClient';
-import { Response, Request } from 'models/Search';
+import { Response, Request, Selections, SelectionFacetValue } from 'models/Search';
 import { Value, Facet } from 'models/Facets';
 import { useMergableState } from 'util/MergableState';
 
@@ -88,7 +88,7 @@ export interface SearchActor {
 	 * @param facet The facet for which the facet value will be checked for selection.
 	 * @param facetValue The facet value that will be checked for selection.
 	 */
-	isFacetSelected(facet: Facet, facetValue: Value): SelectionInfo;
+	isFacetSelected(facet: Facet | string, facetValue: Value | string): SelectionInfo;
 
 	/**
 	 * Selects a facet value for the next search request that will be executed. Internally, this will call
@@ -97,7 +97,15 @@ export interface SearchActor {
 	 * @param facetValue The facet value being selected.
 	 * @param negate  Whether or not this selection is considered a negation.
 	 */
-	selectFacet(facet: Facet, facetValue: Value, negate?: boolean);
+	selectFacet(facet: Facet | string, facetValue: Value | string, negate?: boolean);
+
+	/**
+	 * Returns an object containing the selections that have been made in both the next search request and also
+	 * in the previous search request. This should be used when iterating selections instead of pulling the values
+	 * out from the search result or pending search - as this will merge the values together and provide an accurate
+	 * view of all facet selections.
+	 */
+	getFacetSelections(): Selections;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -127,7 +135,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * `setSearch`.
 	 * @returns A promise that resolves when the search request has been completed.
 	 */
-	async function search(cancellationToken?: CancelToken) {
+	async function search(cancellationToken?: CancelToken): Promise<void> {
 		console.debug('Searching for:', state.pendingSearch);
 
 		setState({ isLoading: true });
@@ -177,7 +185,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
 	 * 					not specified, the default is `true`.
 	 */
-	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean) {
+	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean): void {
 		if (doHistory === undefined) {
 			doHistory = true;
 		}
@@ -195,35 +203,39 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param facet The facet for which the facet value will be checked for selection.
 	 * @param facetValue The facet value that will be checked for selection.
 	 */
-	function isFacetSelected(facet: Facet, facetValue: Value): SelectionInfo {
-		if (!facetValue.Value) {
-			console.error(`Facet ${facet.Name} (${facet.Field}) has no facet value for ${facetValue.Label}`);
+	function isFacetSelected(facet: Facet | string, facetValue: Value | string): SelectionInfo {
+		const facetName = typeof facet === 'string' ? facet : facet.Name;
+		const facetField = typeof facet === 'string' ? facet : facet.ParamName ? facet.ParamName : facet.Field;
+
+		const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
+		const valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
+
+		if (!valueValue) {
+			console.error(`Facet ${facetName} (${facetField}) has no facet value for ${valueLabel}`);
 			return { state: FacetSelectionState.NotSelected };
 		}
-
-		const facetName = facet.ParamName ? facet.ParamName : facet.Field;
 
 		const facetSelections = state.pendingSearch.FacetSelections;
 
-		if (!facetSelections || !facetSelections[facetName]) {
+		if (!facetSelections || !facetSelections[facetField]) {
 			return { state: FacetSelectionState.NotSelected };
 		}
 
-		const selectionIdx = facetSelections[facetName]!.indexOf(facetValue.Value);
-		const negationIdx = facetSelections[facetName]!.indexOf(`-${facetValue.Value}`);
+		const selectionIdx = facetSelections[facetField]!.indexOf(valueValue);
+		const negationIdx = facetSelections[facetField]!.indexOf(`-${valueValue}`);
 
 		if (selectionIdx !== -1) {
 			// if the exact facet value exists, then we're normally selected
 			return {
 				state: FacetSelectionState.Selected,
-				selectedValue: facetValue.Value,
+				selectedValue: valueValue,
 				selectionIndex: selectionIdx,
 			};
 		} else if (negationIdx !== -1) {
 			// if the facet value is selected but prefixed with a -, then we're negated
 			return {
 				state: FacetSelectionState.Negated,
-				selectedValue: `-${facetValue.Value}`,
+				selectedValue: `-${valueValue}`,
 				selectionIndex: negationIdx,
 			};
 		}
@@ -238,15 +250,19 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param facetValue The facet value being selected.
 	 * @param negate  Whether or not this selection is considered a negation.
 	 */
-	function selectFacet(facet: Facet, facetValue: Value, negate?: boolean) {
+	function selectFacet(facet: Facet | string, facetValue: Value | string, negate?: boolean): void {
 		if (negate === undefined) {
 			negate = false;
 		}
 
-		const facetName = facet.ParamName ? facet.ParamName : facet.Field;
+		const facetName = typeof facet === 'string' ? facet : facet.Name;
+		const facetField = typeof facet === 'string' ? facet : facet.ParamName ? facet.ParamName : facet.Field;
 
-		if (!facetValue.Value) {
-			console.error(`Facet ${facet.Name} (${facet.Field}) has no facet value for ${facetValue.Label}`);
+		const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
+		const valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
+
+		if (!valueValue) {
+			console.error(`Facet ${facetName} (${facetField}) has no facet value for ${valueLabel}`);
 			return;
 		}
 
@@ -256,8 +272,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			facetSelections = {};
 		}
 
-		if (!facetSelections[facetName]) {
-			facetSelections[facetName] = [];
+		if (!facetSelections[facetField]) {
+			facetSelections[facetField] = [];
 		}
 
 		const { state: selState, selectionIndex } = isFacetSelected(facet, facetValue);
@@ -266,28 +282,104 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			// we're selecting this facet, and it's already selected
 
 			// first, remove it from our selections
-			facetSelections[facetName]!.splice(selectionIndex!, 1);
+			facetSelections[facetField]!.splice(selectionIndex!, 1);
 
 			if (
 				(selState === FacetSelectionState.Selected && negate) ||
 				(selState === FacetSelectionState.Negated && !negate)
 			) {
 				// if we're toggling from negation to non-negation or vice versa, then push the new selection
-				facetSelections[facetName]!.push(negate ? `-${facetValue.Value}` : facetValue.Value);
+				facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
 			} else {
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
 		} else {
 			// not selected, so we want to select it
-			facetSelections[facetName]!.push(negate ? `-${facetValue.Value}` : facetValue.Value);
+			facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
 		}
 
-		if (facetSelections[facetName]!.length === 0) {
+		if (facetSelections[facetField]!.length === 0) {
 			// clean up any facets that no longer have any selected facet values
-			delete facetSelections[facetName];
+			delete facetSelections[facetField];
 		}
 
 		setSearch({ FacetSelections: facetSelections });
+	}
+
+	/**
+	 * Returns an object containing the selections that have been made in both the next search request and also
+	 * in the previous search request. This should be used when iterating selections instead of pulling the values
+	 * out from the search result or pending search - as this will merge the values together and provide an accurate
+	 * view of all facet selections.
+	 */
+	function getFacetSelections(): Selections {
+		const {
+			pendingSearch: { FacetSelections: clientSelections },
+			searchResults,
+		} = state;
+
+		const selections: Selections = {};
+
+		if (!clientSelections) {
+			return selections;
+		}
+
+		// if we've made selections on the client, transform these into more detailed selections.
+		// the client-side selections are just facet fields and values without any labels - so we
+		// need to combine this information with the list of facets received from the server in the
+		// previous search in order to return a rich list of selections
+
+		const facets = searchResults ? searchResults.Facets : null;
+
+		if (!facets) {
+			// but we can only do this if we've received facet information from the server. without this
+			// info we can't determine what labels should be used
+			return selections;
+		}
+
+		Object.keys(clientSelections).forEach(fieldName => {
+			const selectionValues = clientSelections[fieldName];
+
+			if (!selectionValues) {
+				// if this selection has no values, it's not really selected
+				return;
+			}
+
+			// `ParamName` can override the `Field` value, so search by both
+			const facet = facets.find(f => (f.ParamName && f.ParamName === fieldName) || f.Field === fieldName);
+
+			if (!facet) {
+				// if there's no matching facet from the server, we can't show this since we'll have no labels
+				return;
+			}
+
+			const items: SelectionFacetValue[] = [];
+
+			selectionValues.forEach(selectionValue => {
+				const matchingVal = facet.Values.find(
+					// note that we need to search by regular value and also negated values
+					facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
+				);
+
+				if (!matchingVal || !matchingVal.Label) {
+					// if there's no matching value from the server, we cannot display because there would
+					// be no label - same if there's no label at all
+					return;
+				}
+
+				items.push({
+					Label: matchingVal.Label,
+					Value: selectionValue,
+				});
+			});
+
+			selections[fieldName] = {
+				Label: facet.Name,
+				Items: items,
+			};
+		});
+
+		return selections;
 	}
 
 	const actor: SearchActor = {
@@ -295,6 +387,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setSearch,
 		isFacetSelected,
 		selectFacet,
+		getFacetSelections,
 	};
 
 	return [state, actor];
