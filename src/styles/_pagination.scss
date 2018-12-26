@@ -15,6 +15,11 @@
 	}
 
 	input[type='number'] {
+		&.error {
+			animation-name: shake;
+			animation-duration: 0.5s;
+		}
+
 		width: 67px;
 		display: inline-block;
 		text-align: center;
@@ -55,4 +60,25 @@
 
 .listing-pagination__right {
 	@include paginationControl;
+}
+
+@keyframes shake {
+	0% {
+		transform: translateX(0);
+	}
+	6.5% {
+		transform: rotateY(-9deg) translateX(-6px);
+	}
+	18.5% {
+		transform: rotateY(7deg) translateX(5px);
+	}
+	31.5% {
+		transform: rotateY(5deg) translateX(-3px);
+	}
+	43.5% {
+		transform: rotateY(3deg) translateX(2px);
+	}
+	50% {
+		transform: translateX(0);
+	}
 }
