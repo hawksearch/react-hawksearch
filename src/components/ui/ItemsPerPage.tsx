@@ -20,15 +20,17 @@ function ItemsPerPage() {
 	}
 
 	return (
-		<select value={pendingSearch.MaxPerPage} onChange={onChange}>
-			{searchResults &&
-				searchResults.Pagination &&
-				searchResults.Pagination.Items.map(paginationItem => (
-					<option key={paginationItem.PageSize} value={paginationItem.PageSize}>
-						{paginationItem.Label}
-					</option>
-				))}
-		</select>
+		<div className="hawk__items-per-page">
+			<select value={pendingSearch.MaxPerPage} onChange={onChange}>
+				{searchResults &&
+					searchResults.Pagination &&
+					searchResults.Pagination.Items.map(paginationItem => (
+						<option key={paginationItem.PageSize} value={paginationItem.PageSize}>
+							{paginationItem.Label}
+						</option>
+					))}
+			</select>
+		</div>
 	);
 }
 

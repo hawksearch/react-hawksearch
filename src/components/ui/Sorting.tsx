@@ -19,14 +19,18 @@ function Sorting() {
 	}
 
 	return (
-		<select value={pendingSearch.SortBy} onChange={onChange}>
-			{searchResults &&
-				searchResults.Sorting.Items.map(sortingItem => (
-					<option key={sortingItem.Value} value={sortingItem.Value}>
-						{sortingItem.Label}
-					</option>
-				))}
-		</select>
+		<div className="hawk__sorting">
+			<span>Sort By</span>
+
+			<select value={pendingSearch.SortBy} onChange={onChange}>
+				{searchResults &&
+					searchResults.Sorting.Items.map(sortingItem => (
+						<option key={sortingItem.Value} value={sortingItem.Value}>
+							{sortingItem.Label}
+						</option>
+					))}
+			</select>
+		</div>
 	);
 }
 

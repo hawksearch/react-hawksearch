@@ -17,10 +17,12 @@ function SearchBox() {
 	}
 
 	return (
-		<SearchBoxBase
-			initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
-			onSubmit={handleSubmit}
-		/>
+		<div>
+			<SearchBoxBase
+				initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
+				onSubmit={handleSubmit}
+			/>
+		</div>
 	);
 }
 

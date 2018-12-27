@@ -83,9 +83,9 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 	}
 
 	return (
-		<div className="listing-pagination">
-			<button className="listing-pagination__item" onClick={goToPreviousPage}>
-				<LeftChevronSVG class="listing-pagination__left" />
+		<div className="hawk__pagination__controls">
+			<button className="hawk__pagination__item" onClick={goToPreviousPage}>
+				<LeftChevronSVG class="hawk__pagination__left" />
 				<span className="visually-hidden">Previous page</span>
 			</button>
 			<input
@@ -97,8 +97,8 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 			/>
 			&nbsp; of {totalPages}
 			&nbsp;
-			<button className="listing-pagination__item" onClick={goToNextPage}>
-				<RightChevronSVG class="listing-pagination__right" />
+			<button className="hawk__pagination__item" onClick={goToNextPage}>
+				<RightChevronSVG class="hawk__pagination__right" />
 				<span className="visually-hidden">Next page</span>
 			</button>
 		</div>

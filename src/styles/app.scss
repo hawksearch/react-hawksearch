@@ -3,8 +3,9 @@
 @import 'mixins';
 @import 'dropdown';
 @import 'autosuggest-menu';
-@import 'pagination';
 @import 'facets';
+@import 'tools';
+@import 'results';
 
 .visually-hidden {
 	position: absolute;

@@ -1,18 +1,26 @@
-.pagination {
-	flex-wrap: wrap;
-	justify-content: center;
+/*
+ * Sorting
+ */
 
-	@include sm {
-		justify-content: flex-start;
+.hawk__sorting {
+	display: inline-block;
+	width: 66%;
+
+	select {
+		margin-left: 5px;
 	}
 }
 
-.listing-pagination {
+/*
+ * Pagination
+ */
+
+.hawk__pagination {
 	margin-bottom: 0;
 
-	.pagination {
-		margin-bottom: 0;
-	}
+	display: inline-block;
+	width: 33%;
+	text-align: right;
 
 	input[type='number'] {
 		&.error {
@@ -20,7 +28,7 @@
 			animation-duration: 0.5s;
 		}
 
-		width: 67px;
+		width: 47px;
 		display: inline-block;
 		text-align: center;
 
@@ -35,14 +43,14 @@
 	}
 }
 
-.listing-pagination__item {
+.hawk__pagination__controls {
+	display: inline-block;
+}
+
+.hawk__pagination__item {
 	@include HoverCircleAccent;
 	cursor: pointer;
 	margin: 0 10px;
-
-	&:last-child {
-		margin-right: 0;
-	}
 }
 
 @mixin paginationControl() {
@@ -54,11 +62,11 @@
 	}
 }
 
-.listing-pagination__left {
+.hawk__pagination__left {
 	@include paginationControl;
 }
 
-.listing-pagination__right {
+.hawk__pagination__right {
 	@include paginationControl;
 }
 
@@ -81,4 +89,12 @@
 	50% {
 		transform: translateX(0);
 	}
+}
+
+/*
+ * Items Per Page
+ */
+
+.hawk__items-per-page {
+	display: inline-block;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import Pager from 'components/ui/Pager';
+import ItemsPerPage from 'components/ui/ItemsPerPage';
 
 function Pagination() {
 	const {
@@ -21,11 +22,15 @@ function Pagination() {
 	}
 
 	return (
-		<Pager
-			page={pendingSearch.PageNo || 1}
-			totalPages={searchResults.Pagination.NofPages}
-			onPageChange={onPageChange}
-		/>
+		<div className="hawk__pagination">
+			<Pager
+				page={pendingSearch.PageNo || 1}
+				totalPages={searchResults.Pagination.NofPages}
+				onPageChange={onPageChange}
+			/>
+
+			<ItemsPerPage />
+		</div>
 	);
 }
 
