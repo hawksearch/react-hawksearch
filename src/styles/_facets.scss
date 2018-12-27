@@ -16,10 +16,6 @@
 }
 
 .hawk__facet-rail__facet {
-	h4 {
-		margin: 5px 0 5px 0;
-	}
-
 	padding-left: 10px;
 	padding-right: 10px;
 
@@ -28,6 +24,21 @@
 
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+.hawk__facet-rail__facet-heading {
+	h4 {
+		margin: 5px 0 5px 0;
+		display: inline-block;
+	}
+
+	span {
+		float: right;
+
+		font-weight: bold;
+	}
+
+	cursor: pointer;
 }
 
 .hawk__facet-rail__facet__quick-lookup {

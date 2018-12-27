@@ -21,7 +21,7 @@ function Checkbox() {
 					return (
 						<li key={value.Value}>
 							{/* todo: this should emulate the look of a checkbox (but still retain the functionality
-							of a button */}
+							of a button) */}
 							<div>{isSelected ? '[x]' : '[ ]'}</div>
 
 							<button onClick={e => actor.selectFacet(value)} className="hawk__btn__select-facet">

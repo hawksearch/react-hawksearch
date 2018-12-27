@@ -36,7 +36,15 @@ export interface FacetActor {
 function Facet({ facet, children }: FacetProps) {
 	const { actor: searchActor } = useHawkSearch();
 
+	// the facet does truncated listing of values if configured for truncating and we have too many facets
+	const shouldTruncate =
+		facet.DisplayType === 'truncating' &&
+		facet.Values.length > facet.TruncateThreshold &&
+		facet.TruncateThreshold > 0;
+
 	const [filter, setFilter] = useState('');
+	const [isTruncated, setTruncated] = useState(shouldTruncate);
+	const [isCollapsed, setCollapsed] = useState(facet.IsCollapsible && facet.IsCollapsedDefault);
 
 	function selectFacet(facetValue: Value) {
 		setFilter('');
@@ -48,15 +56,31 @@ function Facet({ facet, children }: FacetProps) {
 		searchActor.selectFacet(facet, facetValue, /* negate */ true);
 	}
 
-	const filteredFacets = facet.Values.filter(val => {
-		if (!val.Label) {
-			// if a facet value doesn't have a label, we can't really filter down to it
-			// so exclude it
-			return false;
-		}
+	let facetValues = facet.Values;
 
-		return val.Label.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
-	});
+	// first, perform any filtering if enabled and a filter has been typed in
+	if (facet.IsSearch && filter) {
+		facetValues = facet.Values.filter(val => {
+			if (!val.Label) {
+				// if a facet value doesn't have a label, we can't really filter down to it
+				// so exclude it
+				return false;
+			}
+
+			return val.Label.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
+		});
+	}
+
+	// next, handle truncation
+	let remainingFacets = 0;
+
+	if (shouldTruncate && isTruncated) {
+		const valuesBeforeTrunc = facetValues.length;
+
+		facetValues = facetValues.slice(0, facet.TruncateThreshold);
+
+		remainingFacets = valuesBeforeTrunc - facet.TruncateThreshold;
+	}
 
 	const actor = {
 		selectFacet,
@@ -64,23 +88,40 @@ function Facet({ facet, children }: FacetProps) {
 	};
 
 	return (
-		<FacetContext.Provider value={{ facet, actor, facetValues: filteredFacets }}>
+		<FacetContext.Provider value={{ facet, actor, facetValues }}>
 			<div className="hawk__facet-rail__facet">
-				<h4>{facet.Name}</h4>
+				<div className="hawk__facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
+					<h4>{facet.Name}</h4>
+					<span>{isCollapsed ? '+' : '-'}</span>
+				</div>
 
-				{facet.IsSearch && (
-					<div className="hawk__facet-rail__facet__quick-lookup">
-						<input
-							value={filter}
-							onChange={e => setFilter(e.currentTarget.value)}
-							type="text"
-							placeholder="Quick Lookup"
-						/>
-					</div>
+				{!isCollapsed && (
+					<>
+						{facet.IsSearch && (
+							<div className="hawk__facet-rail__facet__quick-lookup">
+								<input
+									value={filter}
+									onChange={e => setFilter(e.currentTarget.value)}
+									type="text"
+									placeholder="Quick Lookup"
+								/>
+							</div>
+						)}
+
+						{/* render listing component */}
+						<div className="hawk__facet-rail__facet-values">
+							{children}
+
+							{/*	only show the toggle button if the facet is configured for truncation
+						and we're not filtering */}
+							{shouldTruncate && !filter && (
+								<div onClick={() => setTruncated(!isTruncated)}>
+									{isTruncated ? `(+) Show ${remainingFacets} More` : '(-) Show Less'}
+								</div>
+							)}
+						</div>
+					</>
 				)}
-
-				{/* render listing component */}
-				<div className="hawk__facet-rail__facet-values">{children}</div>
 			</div>
 		</FacetContext.Provider>
 	);
