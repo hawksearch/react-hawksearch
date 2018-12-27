@@ -14,7 +14,7 @@ exports[`MergableState merges existing state multiple times 1`] = `
 
 exports[`MergableState merges existing state with function pattern 1`] = `
 <div>
-  {"initial":"should be different","counter":3,"otherState":"other value"}
+  {"initial":"should be different","otherState":"other value","counter":3}
 </div>
 `;
 
@@ -28,6 +28,19 @@ exports[`MergableState merges new state with function pattern 1`] = `
 <div>
   {"initial":"state","otherState":"other value"}
 </div>
+`;
+
+exports[`MergableState retains methods on the state object 1`] = `
+Array [
+  <div>
+    {"initial":"should be different"}
+  </div>,
+  <div>
+    function doSomething() {
+          return this.initial;
+        }
+  </div>,
+]
 `;
 
 exports[`MergableState sets initial state 1`] = `

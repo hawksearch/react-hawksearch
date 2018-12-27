@@ -2,10 +2,9 @@ import React, { useEffect } from 'react';
 import { CancelToken } from 'axios';
 import TestRenderer from 'react-test-renderer';
 
-import { useHawkState } from 'store/Store';
+import { useHawkState } from 'store/HawkState';
 import HawkClient from 'net/HawkClient';
-import { Request, Response, Pagination } from 'models/Search';
-import { Facet } from 'models/Facets';
+import { Request, Response } from 'models/Search';
 import ConfigProvider from 'components/ConfigProvider';
 
 jest.mock('net/HawkClient');
