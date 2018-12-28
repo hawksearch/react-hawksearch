@@ -105,7 +105,7 @@ export class SearchStore {
 	 */
 	public get facetSelections(): Selections {
 		const {
-			pendingSearch: { FacetSelections: clientSelections },
+			pendingSearch: { FacetSelections: clientSelections, SearchWithin },
 			searchResults,
 		} = this;
 
@@ -126,6 +126,26 @@ export class SearchStore {
 			// but we can only do this if we've received facet information from the server. without this
 			// info we can't determine what labels should be used
 			return selections;
+		}
+
+		// manually handle the `searchWithin` selection, as this doesn't usually behave like a normal facet selection
+		// but instead a field on the search request
+		if (SearchWithin) {
+			const facet = facets.find(
+				f => (f.ParamName && f.ParamName === 'searchWithin') || f.Field === 'searchWithin'
+			);
+
+			if (facet) {
+				selections.searchWithin = {
+					Label: facet.Name,
+					Items: [
+						{
+							Label: SearchWithin,
+							Value: SearchWithin,
+						},
+					],
+				};
+			}
 		}
 
 		Object.keys(clientSelections).forEach(fieldName => {

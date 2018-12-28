@@ -7,24 +7,41 @@ function Search() {
 	const { store, actor: hawkActor } = useHawkSearch();
 	const { facet, actor } = useFacet();
 
-	const [input, setInput] = useState(store.pendingSearch.SearchWithin || '');
+	const [input, setInput] = useState<string | undefined>(undefined);
 
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key === 'Enter') {
-			actor.selectFacet(input);
+			setInput(undefined); // clear the user's entered value as we want to be driven by the store again
+
+			actor.selectFacet(event.currentTarget.value);
 		}
 	}
 
 	function clearFacet() {
-		setInput(''); // clear the text input since it will be cleared as a facet
+		setInput(undefined); // clear the user's entered value as we want to be driven by the store again
+
 		hawkActor.clearFacet(facet);
+	}
+
+	function getInputValue() {
+		if (input !== undefined) {
+			// if the user type an input, that's the value for the input
+			return input;
+		}
+
+		// otherwise, use the value from the store
+		return store.pendingSearch.SearchWithin || '';
 	}
 
 	return (
 		<>
 			<div className="hawk__facet-rail__facet-values">
 				<div className="hawk__facet-rail__facet-values__search">
-					<input value={input} onChange={e => setInput(e.currentTarget.value)} onKeyDown={onKeyDown} />
+					<input
+						value={getInputValue()}
+						onChange={e => setInput(e.currentTarget.value)}
+						onKeyDown={onKeyDown}
+					/>
 				</div>
 			</div>
 
