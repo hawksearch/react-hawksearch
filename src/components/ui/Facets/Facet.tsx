@@ -66,6 +66,10 @@ export interface FacetActor {
 }
 
 export interface FacetRenderer {
+	/**
+	 * Conditionally renders the default truncation UI (the "Show More"/"Show Less" buttons). Nothing will render
+	 * if the facet is configured to not be truncated.
+	 */
 	renderTruncation();
 }
 
@@ -94,8 +98,7 @@ function Facet({ facet, children }: FacetProps) {
 	}
 
 	function renderTruncation() {
-		/*	only show the toggle button if the facet is configured for truncation
-			and we're not filtering */
+		// only show the toggle button if the facet is configured for truncation and we're not filtering
 
 		return (
 			<>
@@ -108,6 +111,7 @@ function Facet({ facet, children }: FacetProps) {
 		);
 	}
 
+	// TODO: sort facet values
 	let facetValues = facet.Values;
 
 	// first, perform any filtering if enabled and a filter has been typed in
