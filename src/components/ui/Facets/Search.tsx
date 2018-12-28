@@ -4,10 +4,10 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from './Facet';
 
 function Search() {
-	const { actor: hawkActor } = useHawkSearch();
+	const { store, actor: hawkActor } = useHawkSearch();
 	const { facet, actor } = useFacet();
 
-	const [input, setInput] = useState('');
+	const [input, setInput] = useState(store.pendingSearch.SearchWithin || '');
 
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key === 'Enter') {
@@ -16,6 +16,7 @@ function Search() {
 	}
 
 	function clearFacet() {
+		setInput(''); // clear the text input since it will be cleared as a facet
 		hawkActor.clearFacet(facet);
 	}
 
