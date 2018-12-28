@@ -21,8 +21,8 @@ function Selections() {
 	}
 
 	return (
-		<div style={{ borderBottom: '1px solid black' }}>
-			<span>You've Selected</span>
+		<div className="hawk__facet-rail__selections">
+			<h4>You've Selected</h4>
 
 			<ul>
 				{keys.map(key => {

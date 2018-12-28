@@ -1,7 +1,7 @@
 .hawk__facet-rail {
 	margin-top: 10px;
 
-	border: 1px solid $black;
+	border: 1px solid $grey6;
 	background-color: $grey2;
 
 	width: 300px;
@@ -15,15 +15,37 @@
 	padding: 10px;
 }
 
+.hawk__facet-rail__selections {
+	h4 {
+		margin: 0;
+		margin-bottom: 10px;
+	}
+
+	ul {
+		list-style-type: none;
+	}
+
+	> ul {
+		> li {
+			padding-bottom: 15px;
+		}
+
+		padding: 0;
+		margin: 0;
+	}
+
+	padding: 10px;
+
+	border-bottom: 1px solid $grey6;
+
+	background-color: $grey;
+}
+
 .hawk__facet-rail__facet {
-	padding-left: 10px;
-	padding-right: 10px;
+	padding: 10px;
 
 	border-bottom: 1px solid $grey;
 	border-top: 1px solid $white;
-
-	padding-top: 10px;
-	padding-bottom: 10px;
 }
 
 .hawk__facet-rail__facet-heading {
