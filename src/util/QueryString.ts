@@ -6,6 +6,7 @@ interface ParsedQueryStringFixed {
 	sort?: string;
 	pg?: string;
 	mpp?: string;
+	searchWithin?: string;
 }
 
 /**
@@ -30,7 +31,7 @@ function parseQueryStringToObject(search: string) {
 	const parsed: ParsedQueryString = {};
 
 	params.forEach((value, key) => {
-		if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp') {
+		if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp' || key === 'searchWithin') {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = value;
 		} else {
@@ -56,7 +57,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, ...facetSelections } = queryObj;
+	const { keyword, sort, pg, mpp, searchWithin, ...facetSelections } = queryObj;
 
 	return {
 		Keyword: keyword,
@@ -64,6 +65,8 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		SortBy: sort,
 		PageNo: pg ? Number(pg) : undefined,
 		MaxPerPage: mpp ? Number(mpp) : undefined,
+
+		SearchWithin: searchWithin,
 
 		FacetSelections: facetSelections,
 	};
@@ -81,7 +84,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 		if (queryObj.hasOwnProperty(key)) {
 			const value = queryObj[key];
 
-			if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp') {
+			if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp' || key === 'searchWithin') {
 				if (value === undefined || value === null) {
 					// if any of the special keys just aren't defined or are null, don't include them in
 					// the query string
@@ -114,6 +117,8 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 		sort: searchRequest.SortBy,
 		pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
 		mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
+
+		searchWithin: searchRequest.SearchWithin,
 
 		...searchRequest.FacetSelections,
 	} as ParsedQueryString;

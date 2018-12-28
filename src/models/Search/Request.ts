@@ -52,7 +52,7 @@ export class Request {
 	 * This is the dictionary of key-value pairs where the key is the name of the facet. The value is the array
 	 * of values for the selection.
 	 */
-	public FacetSelections?: { [key: string]: string[] | undefined };
+	public FacetSelections?: FacetSelections;
 
 	/**
 	 * An array of facet names that should be returned in the response. If provided, only the facets listed will
@@ -101,4 +101,8 @@ export class Request {
 	 * additional score information returned.
 	 */
 	public SmartBar?: SmartBar[];
+}
+
+export interface FacetSelections {
+	[key: string]: string[] | undefined;
 }

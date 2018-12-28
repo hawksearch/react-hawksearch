@@ -18,7 +18,7 @@ function Selections() {
 
 	function clearSelection(facet: string, value: SelectionFacetValue) {
 		// since this facet is already selected, selecting it again will clear it
-		actor.selectFacet(facet, value.Value);
+		actor.toggleFacetValue(facet, value.Value);
 	}
 
 	return (

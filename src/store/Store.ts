@@ -1,6 +1,31 @@
 import { Response, Request, Selections, SelectionFacetValue } from 'models/Search';
 import { Value, Facet } from 'models/Facets';
 
+export enum FacetSelectionState {
+	/** The facet value is not selected. */
+	NotSelected,
+	/** The facet value is selected. */
+	Selected,
+	/** The facet value is selected, but negated. */
+	Negated,
+}
+
+export interface SelectionInfo {
+	/** The facet value selection state. */
+	state: FacetSelectionState;
+
+	/**
+	 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the value of
+	 * the facet value. For negated facet values this will be prefixed with the negation character `'-'`.
+	 */
+	selectedValue?: string;
+	/**
+	 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the index
+	 * into the `pendingSearch.FacetSelections[facetName]` array for this facet value.
+	 */
+	selectionIndex?: number;
+}
+
 export class SearchStore {
 	/** This represents the next search request that will be executed. */
 	public pendingSearch: Partial<Request>;
@@ -147,58 +172,4 @@ export class SearchStore {
 
 		return selections;
 	}
-}
-
-export enum FacetSelectionState {
-	/** The facet value is not selected. */
-	NotSelected,
-	/** The facet value is selected. */
-	Selected,
-	/** The facet value is selected, but negated. */
-	Negated,
-}
-
-export interface SelectionInfo {
-	/** The facet value selection state. */
-	state: FacetSelectionState;
-
-	/**
-	 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the value of
-	 * the facet value. For negated facet values this will be prefixed with the negation character `'-'`.
-	 */
-	selectedValue?: string;
-	/**
-	 * If the facet value is `FacetSelectionState.Selected` or `FacetSelectionState.Negated`, this is the index
-	 * into the `pendingSearch.FacetSelections[facetName]` array for this facet value.
-	 */
-	selectionIndex?: number;
-}
-
-export interface SearchActor {
-	/**
-	 * Performs a search with the currently configured pending search request. The search request can be
-	 * configured via the `setSearch` method. This method usually doesn't need to be called directly, as
-	 * the `StoreProvider` component will usually trigger searches directly in response to calls to
-	 * `setSearch`.
-	 * @returns A promise that resolves when the search request has been completed.
-	 */
-	search(): Promise<void>;
-
-	/**
-	 * Configures the next search request that will be executed. This will also execute a search in response to
-	 * the next search request changing.
-	 * @param search The partial search request object. This will be merged with previous calls to `setSearch`.
-	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
-	 * 					not specified, the default is `true`.
-	 */
-	setSearch(search: Partial<Request>, doHistory?: boolean);
-
-	/**
-	 * Selects a facet value for the next search request that will be executed. Internally, this will call
-	 * `setSearch` to configure the next search with this selected facet.
-	 * @param facet The facet for which the value is being selected.
-	 * @param facetValue The facet value being selected.
-	 * @param negate  Whether or not this selection is considered a negation.
-	 */
-	selectFacet(facet: Facet | string, facetValue: Value | string, negate?: boolean);
 }
