@@ -12,4 +12,8 @@ export class Swatch {
 
 	/** Color of the asset. */
 	public Color: string;
+
+	public constructor(init: Swatch) {
+		Object.assign(this, init);
+	}
 }

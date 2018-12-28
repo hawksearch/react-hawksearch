@@ -1,5 +1,12 @@
 export class Sorting {
+	/** The sorting items. */
 	public Items: SortingItem[];
+
+	public constructor(init: Sorting) {
+		Object.assign(this, init);
+
+		this.Items = init.Items.map(i => new SortingItem(i));
+	}
 }
 
 export class SortingItem {
@@ -15,4 +22,8 @@ export class SortingItem {
 	public IsDefault: boolean;
 	/** Indicates if this sorting option is currently being used for the current result set. */
 	public Selected: boolean;
+
+	public constructor(init: SortingItem) {
+		Object.assign(this, init);
+	}
 }

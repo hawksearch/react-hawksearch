@@ -57,4 +57,14 @@ export class Response {
 	public FeaturedItems?: any[]; // TODO: featured items object
 
 	public SearchDuration: number;
+
+	public constructor(init: Response) {
+		Object.assign(this, init);
+
+		this.Pagination = new Pagination(init.Pagination);
+		this.Results = init.Results.map(r => new Result(r));
+		this.Facets = init.Facets.map(f => new Facet(f));
+		this.Selections = new Selections(init.Selections);
+		this.Sorting = new Sorting(init.Sorting);
+	}
 }

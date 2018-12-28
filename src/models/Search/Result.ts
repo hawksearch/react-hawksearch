@@ -11,4 +11,8 @@ export class Result {
 	 * and the value of the map is an array of strings for each of the values for that field.
 	 */
 	public Document?: { [key: string]: string[] };
+
+	public constructor(init: Result) {
+		Object.assign(this, init);
+	}
 }

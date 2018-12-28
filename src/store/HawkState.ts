@@ -126,7 +126,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				console.warn('Search results:', searchResults);
 
 				setStore({
-					searchResults,
+					searchResults: new Response(searchResults),
 				});
 			}
 		}

@@ -35,4 +35,8 @@ export class Value {
 
 	/** Used for nested facets. */
 	public Path?: string;
+
+	public constructor(init: Value) {
+		Object.assign(this, init);
+	}
 }

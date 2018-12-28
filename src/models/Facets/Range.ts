@@ -11,4 +11,8 @@ export class Range {
 	public LBound: string;
 	/** Upper value of the range. */
 	public UBound: string;
+
+	public constructor(init: Range) {
+		Object.assign(this, init);
+	}
 }

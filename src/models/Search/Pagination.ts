@@ -13,6 +13,12 @@ export class Pagination {
 
 	/** Set of pagination options */
 	public Items: PaginationItem[];
+
+	public constructor(init: Pagination) {
+		Object.assign(this, init);
+
+		this.Items = init.Items.map(i => new PaginationItem(i));
+	}
 }
 
 export class PaginationItem {
@@ -26,4 +32,8 @@ export class PaginationItem {
 
 	/** Indicates if this is the default option. Only one pagination item will have this set to `true`. */
 	public Default: boolean;
+
+	public constructor(init: PaginationItem) {
+		Object.assign(this, init);
+	}
 }
