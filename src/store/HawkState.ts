@@ -16,7 +16,7 @@ export interface SearchActor {
 	 * `setSearch`.
 	 * @returns A promise that resolves when the search request has been completed.
 	 */
-	search(): Promise<void>;
+	search(cancellationToken?: CancelToken): Promise<void>;
 
 	/**
 	 * Configures the next search request that will be executed. This will also execute a search in response to
