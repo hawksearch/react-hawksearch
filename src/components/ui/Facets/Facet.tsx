@@ -41,11 +41,6 @@ export interface FacetState {
 	/** Whether or not this facet is collapsed. */
 	isCollapsed: boolean;
 
-	/** Whether or not this facet is configured to enable truncating. */
-	shouldTruncate: boolean;
-	/** Whether or not this facet is configured to enable filtering. */
-	shouldSearch: boolean;
-
 	/** If filter is enabled, contains the number of facets that are truncated. */
 	remainingFacets: number;
 }
@@ -76,15 +71,8 @@ export interface FacetRenderer {
 function Facet({ facet, children }: FacetProps) {
 	const { actor: searchActor } = useHawkSearch();
 
-	// the facet does truncated listing of values if configured for truncating and we have too many facets
-	const shouldTruncate = facet.DisplayType === 'truncating' && facet.Values.length > facet.TruncateThreshold;
-
-	// the facet should have a search box if configured to do so, and the number of facet values is greater
-	// than the threshold
-	const shouldSearch = facet.IsSearch && facet.Values.length > facet.SearchThreshold;
-
 	const [filter, setFilter] = useState('');
-	const [isTruncated, setTruncated] = useState(shouldTruncate);
+	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);
 	const [isCollapsed, setCollapsed] = useState(facet.IsCollapsible && facet.IsCollapsedDefault);
 
 	function selectFacet(facetValue: Value | string) {
@@ -102,7 +90,7 @@ function Facet({ facet, children }: FacetProps) {
 
 		return (
 			<>
-				{shouldTruncate && !filter && (
+				{facet.shouldTruncate && !filter && (
 					<div onClick={() => actor.setTruncated(!isTruncated)}>
 						{isTruncated ? `(+) Show ${remainingFacets} More` : '(-) Show Less'}
 					</div>
@@ -115,7 +103,7 @@ function Facet({ facet, children }: FacetProps) {
 	let facetValues = facet.Values;
 
 	// first, perform any filtering if enabled and a filter has been typed in
-	if (shouldSearch && filter) {
+	if (facet.shouldSearch && filter) {
 		facetValues = facet.Values.filter(val => {
 			if (!val.Label) {
 				// if a facet value doesn't have a label, we can't really filter down to it
@@ -130,7 +118,7 @@ function Facet({ facet, children }: FacetProps) {
 	// next, handle truncation
 	let remainingFacets = 0;
 
-	if (shouldTruncate && isTruncated) {
+	if (facet.shouldTruncate && isTruncated) {
 		const valuesBeforeTrunc = facetValues.length;
 
 		facetValues = facetValues.slice(0, facet.TruncateThreshold);
@@ -155,10 +143,6 @@ function Facet({ facet, children }: FacetProps) {
 
 		isTruncated,
 		isCollapsed,
-
-		shouldTruncate,
-		shouldSearch,
-
 		remainingFacets,
 	};
 
@@ -177,7 +161,7 @@ function Facet({ facet, children }: FacetProps) {
 
 				{!isCollapsed && (
 					<>
-						{shouldSearch && (
+						{facet.shouldSearch && (
 							<div className="hawk__facet-rail__facet__quick-lookup">
 								<input
 									value={filter}
