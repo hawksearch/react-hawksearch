@@ -32,7 +32,7 @@ function Checkbox() {
 
 								<button onClick={e => actor.selectFacet(value)} className="hawk__btn__select-facet">
 									<span style={isNegated ? { textDecoration: 'line-through' } : undefined}>
-										{value.Label}
+										{value.Label} ({value.Count})
 									</span>
 								</button>
 
