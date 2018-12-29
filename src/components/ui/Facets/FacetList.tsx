@@ -2,8 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
-import Checkbox from './Checkbox';
-import Search from './Search';
+import { Checkbox, Search } from './FacetTypes';
 
 function FacetList() {
 	const {

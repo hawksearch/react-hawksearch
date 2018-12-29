@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useFacet } from './Facet';
 import { useHawkSearch } from 'components/StoreProvider';
+import { useFacet } from 'components/ui/Facets';
 import { FacetSelectionState } from 'store/Store';
 
 function Checkbox() {
