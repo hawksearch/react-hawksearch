@@ -5,3 +5,37 @@
 
 	overflow: hidden;
 }
+
+.hawk__results__item {
+	display: inline-block;
+	vertical-align: top;
+
+	box-sizing: border-box;
+
+	width: 24%;
+	min-height: 300px;
+
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
+
+	border: 1px solid $grey6;
+}
+
+.hawk__results__item-image {
+	img {
+		display: block;
+		margin: auto;
+
+		width: 175px;
+		height: 175px;
+	}
+}
+
+.hawk__results__item-name {
+	width: 75%;
+	margin: auto;
+	margin-top: 10px;
+
+	text-align: center;
+}
