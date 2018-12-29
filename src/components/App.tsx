@@ -2,9 +2,8 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import SearchBox from 'components/ui/SearchBox';
-import Results from 'components/ui/Results';
 import { FacetRail } from 'components/ui/Facets';
-import ToolRow from 'components/ui/ToolRow';
+import { Results } from 'components/ui/Results';
 
 function App() {
 	const { store } = useHawkSearch();
@@ -21,13 +20,7 @@ function App() {
 
 					<FacetRail />
 
-					<div className="hawk__results">
-						<ToolRow />
-
-						<Results />
-
-						<ToolRow />
-					</div>
+					<Results />
 				</>
 			)}
 		</div>

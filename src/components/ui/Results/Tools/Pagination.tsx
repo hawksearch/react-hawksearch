@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
-import Pager from 'components/ui/Pager';
-import ItemsPerPage from 'components/ui/ItemsPerPage';
+import Pager from './Pager';
+import ItemsPerPage from './ItemsPerPage';
 
 function Pagination() {
 	const {
@@ -11,6 +11,7 @@ function Pagination() {
 	} = useHawkSearch();
 
 	if (!searchResults || searchResults.Pagination.NofPages === 1) {
+		// TODO: this should still render if there's 1 page
 		return null;
 	}
 

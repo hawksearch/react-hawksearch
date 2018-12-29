@@ -1,8 +1,9 @@
 import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
+import ToolRow from './ToolRow';
+import ResultListing from './ResultListing';
 
-/* tslint:disable:no-string-literal */
 function Results() {
 	const {
 		store: { isLoading, searchResults },
@@ -13,19 +14,12 @@ function Results() {
 	}
 
 	return (
-		<div>
-			<span>Results: </span>
+		<div className="hawk__results">
+			<ToolRow />
 
-			{isLoading ? <span>Loading...</span> : null}
+			<ResultListing />
 
-			<div>
-				<ul>
-					{searchResults &&
-						searchResults.Results.map(
-							item => item.Document && <li key={item.DocId}>{item.Document['itemname']}</li>
-						)}
-				</ul>
-			</div>
+			<ToolRow />
 		</div>
 	);
 }

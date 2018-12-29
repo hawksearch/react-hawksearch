@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Sorting from './Sorting';
-import Pagination from './Pagination';
+import { Sorting, Pagination } from './Tools';
 
 function ToolRow() {
 	return (
