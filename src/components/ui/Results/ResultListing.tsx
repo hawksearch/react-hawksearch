@@ -8,15 +8,20 @@ function ResultListing() {
 		store: { isLoading, searchResults },
 	} = useHawkSearch();
 
+	let results = searchResults ? searchResults.Results : [];
+
+	// sort by score, descending
+	results = results.sort((a, b) => {
+		return b.Score - a.Score;
+	});
+
 	return (
 		<div className="hawk__results__listing">
 			{isLoading ? <span>Loading...</span> : null}
 
-			<div>
-				{searchResults &&
-					// TODO: sort search results
-					searchResults.Results.map(result => <ResultItem key={result.DocId} item={result} />)}
-			</div>
+			{results.map(result => (
+				<ResultItem key={result.DocId} item={result} />
+			))}
 		</div>
 	);
 }

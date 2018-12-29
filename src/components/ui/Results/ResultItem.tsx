@@ -10,11 +10,11 @@ function ResultItem({ item }: ResultItemProps) {
 	return (
 		<div className="hawk__results__item">
 			<div className="hawk__results__item-image">
-				<img src={item.Document.image} />
+				<img src={item.getDocumentValue('image')} />
 			</div>
 
 			<div className="hawk__results__item-name">
-				<span>{item.Document.itemname}</span>
+				<span>{item.getDocumentValue('itemname')}</span>
 			</div>
 		</div>
 	);
