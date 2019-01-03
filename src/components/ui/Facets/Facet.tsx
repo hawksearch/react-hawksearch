@@ -2,6 +2,8 @@ import React, { useContext, useState } from 'react';
 
 import { Facet as FacetModel, Value } from 'models/Facets';
 import { useHawkSearch } from 'components/StoreProvider';
+import PlusSVG from 'components/svg/PlusSVG';
+import MinusSVG from 'components/svg/MinusSVG';
 
 const FacetContext = React.createContext({} as FacetContextValue);
 
@@ -156,7 +158,7 @@ function Facet({ facet, children }: FacetProps) {
 				<div className="hawk-facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
 					<h4>{facet.Name}</h4>
 
-					<span>{isCollapsed ? '+' : '-'}</span>
+					{isCollapsed ? <PlusSVG /> : <MinusSVG />}
 				</div>
 
 				{!isCollapsed && (

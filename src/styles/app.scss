@@ -16,9 +16,10 @@
 * Components
 *
 */
+@import 'components/icon';
 @import 'components/dropdown';
 @import 'components/autosuggest-menu';
-@import 'components/facets';
-@import 'components/tools';
-@import 'components/results';
+@import 'components/hawk-facet-rail';
+@import 'components/hawk-tools';
+@import 'components/hawk-results';
 @import 'components/accessibility';

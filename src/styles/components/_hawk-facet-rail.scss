@@ -49,15 +49,20 @@
 }
 
 .hawk-facet-rail__facet-heading {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+
 	h4 {
 		margin: 5px 0 5px 0;
 		display: inline-block;
+		flex-grow: 1;
+		padding: 0 5px 0 0;
 	}
 
-	span {
-		float: right;
-
-		font-weight: bold;
+	.icon {
+		width: 1em;
+		height: 1em;
 	}
 
 	cursor: pointer;
