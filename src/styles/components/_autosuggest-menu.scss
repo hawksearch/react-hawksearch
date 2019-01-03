@@ -6,26 +6,27 @@
 	.body & {
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
-		padding: 1px 0;
+		padding: 0;
 		left: auto;
 		top: auto;
-		margin-top: 0;
+		margin-top: -3px;
 		display: block;
-		width: 89%;
 		overflow-y: scroll;
 		line-height: 35px;
+		border: 1px solid #ccc;
 		cursor: default;
 	}
 }
 
 .body .autosuggest-menu__item {
 	padding-left: 10px;
+	background-color: $autosuggest-item-bg;
 
 	cursor: pointer;
 	&:hover,
 	&:focus,
 	&--highlighted {
-		background-color: $primary;
+		background-color: $autosuggest-item-hover-bg;
 		color: #fff;
 	}
 }
