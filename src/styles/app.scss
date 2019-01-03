@@ -1,19 +1,17 @@
-@import 'theme';
-@import 'media';
-@import 'mixins';
-@import 'dropdown';
-@import 'autosuggest-menu';
-@import 'facets';
-@import 'tools';
-@import 'results';
+/*
+* Utils
+*
+*/
+@import 'utils/theme';
+@import 'utils/media';
+@import 'utils/mixins';
 
-.visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	border: 0;
-}
+/*
+* Components
+*
+*/
+@import 'components/dropdown';
+@import 'components/autosuggest-menu';
+@import 'components/facets';
+@import 'components/tools';
+@import 'components/results';

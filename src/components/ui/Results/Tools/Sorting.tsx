@@ -19,7 +19,7 @@ function Sorting() {
 	}
 
 	return (
-		<div className="hawk__sorting">
+		<div className="hawk-sorting">
 			<span>Sort By</span>
 
 			<select value={pendingSearch.SortBy} onChange={onChange}>

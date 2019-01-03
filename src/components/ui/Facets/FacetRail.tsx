@@ -5,8 +5,8 @@ import FacetList from './FacetList';
 
 function FacetRail() {
 	return (
-		<div className="hawk__facet-rail">
-			<div className="hawk__facet-rail__heading">Narrow Results</div>
+		<div className="hawk-facet-rail">
+			<div className="hawk-facet-rail__heading">Narrow Results</div>
 
 			<Selections />
 

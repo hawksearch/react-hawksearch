@@ -152,8 +152,8 @@ function Facet({ facet, children }: FacetProps) {
 
 	return (
 		<FacetContext.Provider value={{ facet, state, actor, renderer }}>
-			<div className="hawk__facet-rail__facet">
-				<div className="hawk__facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
+			<div className="hawk-facet-rail__facet">
+				<div className="hawk-facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
 					<h4>{facet.Name}</h4>
 
 					<span>{isCollapsed ? '+' : '-'}</span>
@@ -162,7 +162,7 @@ function Facet({ facet, children }: FacetProps) {
 				{!isCollapsed && (
 					<>
 						{facet.shouldSearch && (
-							<div className="hawk__facet-rail__facet__quick-lookup">
+							<div className="hawk-facet-rail__facet__quick-lookup">
 								<input
 									value={filter}
 									onChange={e => setFilter(e.currentTarget.value)}

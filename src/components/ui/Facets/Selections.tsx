@@ -21,7 +21,7 @@ function Selections() {
 	}
 
 	return (
-		<div className="hawk__facet-rail__selections">
+		<div className="hawk-facet-rail__selections">
 			<h4>You've Selected</h4>
 
 			<ul>

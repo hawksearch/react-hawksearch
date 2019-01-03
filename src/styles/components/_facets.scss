@@ -1,4 +1,4 @@
-.hawk__facet-rail {
+.hawk-facet-rail {
 	margin-top: 10px;
 
 	border: 1px solid $grey6;
@@ -8,14 +8,14 @@
 	float: left;
 }
 
-.hawk__facet-rail__heading {
+.hawk-facet-rail__heading {
 	color: $white;
 	background-color: $grey5;
 
 	padding: 10px;
 }
 
-.hawk__facet-rail__selections {
+.hawk-facet-rail__selections {
 	h4 {
 		margin: 0;
 		margin-bottom: 10px;
@@ -41,14 +41,14 @@
 	background-color: $grey;
 }
 
-.hawk__facet-rail__facet {
+.hawk-facet-rail__facet {
 	padding: 10px;
 
 	border-bottom: 1px solid $grey;
 	border-top: 1px solid $white;
 }
 
-.hawk__facet-rail__facet-heading {
+.hawk-facet-rail__facet-heading {
 	h4 {
 		margin: 5px 0 5px 0;
 		display: inline-block;
@@ -63,7 +63,7 @@
 	cursor: pointer;
 }
 
-.hawk__facet-rail__facet__quick-lookup {
+.hawk-facet-rail__facet__quick-lookup {
 	input {
 		width: 100%;
 		box-sizing: border-box;
@@ -75,7 +75,7 @@
 	margin-bottom: 5px;
 }
 
-.hawk__facet-rail__facet-values {
+.hawk-facet-rail__facet-values {
 	background-color: $white;
 
 	border: 1px solid $grey;
@@ -83,7 +83,7 @@
 	padding: 5px;
 }
 
-.hawk__facet-rail__facet-values__checkbox {
+.hawk-facet-rail__facet-values__checkbox {
 	ul {
 		padding-left: 0;
 		margin: 0;
@@ -113,14 +113,14 @@
 	}
 }
 
-.hawk__facet-rail__facet-values__search {
+.hawk-facet-rail__facet-values__search {
 	input {
 		border: none;
 		width: 100%;
 	}
 }
 
-.hawk__facet-rail__facet-values__search-clear {
+.hawk-facet-rail__facet-values__search-clear {
 	span {
 		&:hover {
 			text-decoration: underline;

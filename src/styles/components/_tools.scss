@@ -2,7 +2,7 @@
  * Sorting
  */
 
-.hawk__sorting {
+.hawk-sorting {
 	display: inline-block;
 	width: 66%;
 
@@ -15,7 +15,7 @@
  * Pagination
  */
 
-.hawk__pagination {
+.hawk-pagination {
 	margin-bottom: 0;
 
 	display: inline-block;
@@ -43,11 +43,11 @@
 	}
 }
 
-.hawk__pagination__controls {
+.hawk-pagination__controls {
 	display: inline-block;
 }
 
-.hawk__pagination__item {
+.hawk-pagination__item {
 	@include HoverCircleAccent;
 	cursor: pointer;
 	margin: 0 10px;
@@ -62,11 +62,11 @@
 	}
 }
 
-.hawk__pagination__left {
+.hawk-pagination__left {
 	@include paginationControl;
 }
 
-.hawk__pagination__right {
+.hawk-pagination__right {
 	@include paginationControl;
 }
 
@@ -95,6 +95,6 @@
  * Items Per Page
  */
 
-.hawk__items-per-page {
+.hawk-items-per-page {
 	display: inline-block;
 }

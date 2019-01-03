@@ -16,7 +16,7 @@ function ResultListing() {
 	});
 
 	return (
-		<div className="hawk__results__listing">
+		<div className="hawk-results__listing">
 			{isLoading ? <span>Loading...</span> : null}
 
 			{results.map(result => (

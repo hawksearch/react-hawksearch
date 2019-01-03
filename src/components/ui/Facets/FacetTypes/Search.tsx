@@ -35,8 +35,8 @@ function Search() {
 
 	return (
 		<>
-			<div className="hawk__facet-rail__facet-values">
-				<div className="hawk__facet-rail__facet-values__search">
+			<div className="hawk-facet-rail__facet-values">
+				<div className="hawk-facet-rail__facet-values__search">
 					<input
 						value={getInputValue()}
 						onChange={e => setInput(e.currentTarget.value)}
@@ -45,7 +45,7 @@ function Search() {
 				</div>
 			</div>
 
-			<div className="hawk__facet-rail__facet-values__search-clear">
+			<div className="hawk-facet-rail__facet-values__search-clear">
 				<span onClick={clearFacet}>Clear</span>
 			</div>
 		</>

@@ -14,8 +14,8 @@ function Checkbox() {
 	} = useFacet();
 
 	return (
-		<div className="hawk__facet-rail__facet-values">
-			<div className="hawk__facet-rail__facet-values__checkbox">
+		<div className="hawk-facet-rail__facet-values">
+			<div className="hawk-facet-rail__facet-values__checkbox">
 				<ul>
 					{facetValues.map(value => {
 						// facets can be selected or negated, so explicitly check that the facet is not selected

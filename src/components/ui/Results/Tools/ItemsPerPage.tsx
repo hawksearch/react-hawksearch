@@ -20,7 +20,7 @@ function ItemsPerPage() {
 	}
 
 	return (
-		<div className="hawk__items-per-page">
+		<div className="hawk-items-per-page">
 			<select value={pendingSearch.MaxPerPage} onChange={onChange}>
 				{searchResults &&
 					searchResults.Pagination &&

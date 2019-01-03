@@ -14,7 +14,7 @@ function Results() {
 	}
 
 	return (
-		<div className="hawk__results">
+		<div className="hawk-results">
 			<ToolRow />
 
 			<ResultListing />

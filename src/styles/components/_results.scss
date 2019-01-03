@@ -1,4 +1,4 @@
-.hawk__results {
+.hawk-results {
 	margin-top: 10px;
 
 	padding-left: 10px;
@@ -6,7 +6,7 @@
 	overflow: hidden;
 }
 
-.hawk__results__item {
+.hawk-results__item {
 	display: inline-block;
 	vertical-align: top;
 
@@ -22,7 +22,7 @@
 	border: 1px solid $grey6;
 }
 
-.hawk__results__item-image {
+.hawk-results__item-image {
 	img {
 		display: block;
 		margin: auto;
@@ -32,7 +32,7 @@
 	}
 }
 
-.hawk__results__item-name {
+.hawk-results__item-name {
 	width: 75%;
 	margin: auto;
 	margin-top: 10px;

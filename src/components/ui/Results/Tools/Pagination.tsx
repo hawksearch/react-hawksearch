@@ -23,7 +23,7 @@ function Pagination() {
 	}
 
 	return (
-		<div className="hawk__pagination">
+		<div className="hawk-pagination">
 			<Pager
 				page={pendingSearch.PageNo || 1}
 				totalPages={searchResults.Pagination.NofPages}
