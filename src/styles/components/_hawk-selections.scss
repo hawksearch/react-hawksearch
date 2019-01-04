@@ -1,0 +1,40 @@
+.hawk-selections__item-remove {
+	@include ButtonLink;
+}
+
+.hawk-selections__category-name {
+	display: block;
+	font-weight: bold;
+	margin: 0 0 0.5em;
+}
+
+.hawk-selections__item-list {
+	border: 1px solid black;
+	border-radius: 4px;
+	padding: 8px;
+}
+
+.hawk-selections__item {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.hawk-selections__item-name {
+	margin-right: 5px;
+}
+
+.hawk-selections__item-remove {
+	background-color: transparent;
+	border-radius: 0;
+	border: none;
+	outline: none;
+	padding: 0;
+	margin: 0;
+	height: auto;
+	cursor: pointer;
+}

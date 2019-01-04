@@ -10,15 +10,19 @@
 
 .hawk-facet-rail__heading {
 	color: $white;
-	background-color: $grey5;
+	background-color: $hawk-facet-rail-heading-bg;
 
 	padding: 10px;
 }
 
 .hawk-facet-rail__selections {
+	padding: 10px;
+	border-bottom: 1px solid $grey6;
+
 	h4 {
 		margin: 0;
 		margin-bottom: 10px;
+		font-size: 1.2em;
 	}
 
 	ul {
@@ -33,12 +37,6 @@
 		padding: 0;
 		margin: 0;
 	}
-
-	padding: 10px;
-
-	border-bottom: 1px solid $grey6;
-
-	background-color: $grey;
 }
 
 .hawk-facet-rail__facet {
@@ -58,6 +56,7 @@
 		display: inline-block;
 		flex-grow: 1;
 		padding: 0 5px 0 0;
+		font-size: 1.2em;
 	}
 
 	.icon {

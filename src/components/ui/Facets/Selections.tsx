@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { SelectionFacetValue } from 'models/Search';
+import XCircleSVG from 'components/svg/XCircleSVG';
 
 function Selections() {
 	const {
@@ -24,26 +25,35 @@ function Selections() {
 		<div className="hawk-facet-rail__selections">
 			<h4>You've Selected</h4>
 
-			<ul>
+			<ul className="hawk-selections">
 				{keys.map(key => {
 					const selection = facetSelections[key];
 
 					return (
-						<li key={key}>
-							<span>{selection.Label}</span>
+						<li key={key} className="hawk-selections__category">
+							<span className="hawk-selections__category-name">{selection.Label}</span>
 
-							<ul>
+							<ul className="hawk-selections__item-list">
 								{selection.Items.map(item => {
 									const negation = item.Value.startsWith('-');
 
 									return (
-										<li key={item.Value}>
-											<span style={negation ? { textDecoration: 'line-through' } : undefined}>
+										<li key={item.Value} className="hawk-selections__item">
+											<span
+												className={
+													negation
+														? 'hawk-selections__item-name hawk-selections__item-name--negated'
+														: 'hawk-selections__item-name'
+												}
+											>
 												{item.Label}
 											</span>
 
-											<button onClick={() => clearSelection(key, item)}>
-												X <span className="visually-hidden">Clear facet</span>
+											<button
+												onClick={() => clearSelection(key, item)}
+												className="hawk-selections__item-remove"
+											>
+												<XCircleSVG /> <span className="visually-hidden">Clear facet</span>
 											</button>
 										</li>
 									);
