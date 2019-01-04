@@ -49,7 +49,12 @@ export interface SearchActor {
 	 * @param facet The facet to clear.
 	 * @param facetValue The facet value to clear.
 	 */
-	clearFacetValue(facet: Facet | string, facetValue: Value | string): void;
+	clearFacetValue(facet: Facet | string, facetValue?: Value | string): void;
+
+	/**
+	 * Clears all selected facets from the current selection.
+	 */
+	clearAllFacets(): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -315,12 +320,20 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
 	}
 
+	/**
+	 * Clears all selected facets from the current selection.
+	 */
+	function clearAllFacets(): void {
+		setSearchSelections(undefined, store.pendingSearch.SearchWithin);
+	}
+
 	const actor: SearchActor = {
 		search,
 		setSearch,
 		toggleFacetValue,
 		clearFacet,
 		clearFacetValue,
+		clearAllFacets,
 	};
 
 	return [store, actor];

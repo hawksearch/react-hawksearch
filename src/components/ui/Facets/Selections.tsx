@@ -16,8 +16,16 @@ function Selections() {
 		return null;
 	}
 
-	function clearSelection(facet: string, value: SelectionFacetValue) {
-		actor.clearFacetValue(facet, value.Value);
+	function clearSelection(facet: string, value?: SelectionFacetValue) {
+		if (value) {
+			actor.clearFacetValue(facet, value.Value);
+		} else {
+			actor.clearFacet(facet);
+		}
+	}
+
+	function clearAll() {
+		actor.clearAllFacets();
 	}
 
 	return (
@@ -30,6 +38,9 @@ function Selections() {
 
 					return (
 						<li key={key}>
+							<button onClick={() => clearSelection(key)}>
+								X<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
+							</button>
 							<span>{selection.Label}</span>
 
 							<ul>
@@ -38,13 +49,16 @@ function Selections() {
 
 									return (
 										<li key={item.Value}>
+											<button onClick={() => clearSelection(key, item)}>
+												X
+												<span className="visually-hidden">
+													Unselect facet {selection.Label} {item.Label}
+												</span>
+											</button>
+
 											<span style={negation ? { textDecoration: 'line-through' } : undefined}>
 												{item.Label}
 											</span>
-
-											<button onClick={() => clearSelection(key, item)}>
-												X <span className="visually-hidden">Clear facet</span>
-											</button>
 										</li>
 									);
 								})}
@@ -53,6 +67,10 @@ function Selections() {
 					);
 				})}
 			</ul>
+
+			<div>
+				<button onClick={clearAll}>Clear All</button>
+			</div>
 		</div>
 	);
 }
