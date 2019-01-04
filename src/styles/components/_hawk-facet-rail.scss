@@ -1,9 +1,8 @@
 .hawk-facet-rail {
-	margin-top: 10px;
 	border: 1px solid $primary;
 	background-color: $grey2;
-	width: 300px;
-	float: left;
+	min-width: 300px;
+	margin-right: 1em;
 }
 
 .hawk-facet-rail__facet-list {
@@ -26,7 +25,7 @@
 
 .hawk-facet-rail__selections {
 	padding: 10px;
-	border-bottom: 1px solid $grey6;
+	border-bottom: 1px solid #d9d9d6;
 
 	h4 {
 		margin: 0;

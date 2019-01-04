@@ -7,11 +7,15 @@ import { Results } from 'components/ui/Results';
 function App() {
 	return (
 		<div className="hawk">
-			<SearchBox />
+			<div className="hawk__header">
+				<SearchBox />
+			</div>
 
-			<FacetRail />
+			<div className="hawk__body">
+				<FacetRail />
 
-			<Results />
+				<Results />
+			</div>
 		</div>
 	);
 }
