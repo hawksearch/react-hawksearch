@@ -1,17 +1,26 @@
 .hawk-facet-rail {
 	margin-top: 10px;
-
-	border: 1px solid $grey6;
+	border: 1px solid $primary;
 	background-color: $grey2;
-
 	width: 300px;
 	float: left;
+}
+
+.hawk-facet-rail__facet-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.hawk-facet-rail__facet-list-item {
+	display: flex;
+	margin: 0 0 6px;
 }
 
 .hawk-facet-rail__heading {
 	color: $white;
 	background-color: $hawk-facet-rail-heading-bg;
-
+	font-size: 1.2em;
 	padding: 10px;
 }
 
@@ -23,19 +32,6 @@
 		margin: 0;
 		margin-bottom: 10px;
 		font-size: 1.2em;
-	}
-
-	ul {
-		list-style-type: none;
-	}
-
-	> ul {
-		> li {
-			padding-bottom: 15px;
-		}
-
-		padding: 0;
-		margin: 0;
 	}
 }
 
@@ -67,6 +63,10 @@
 	cursor: pointer;
 }
 
+.hawk-facet-rail__facet-body {
+	margin-top: 10px;
+}
+
 .hawk-facet-rail__facet__quick-lookup {
 	input {
 		width: 100%;
@@ -81,40 +81,19 @@
 
 .hawk-facet-rail__facet-values {
 	background-color: $white;
-
 	border: 1px solid $grey;
-
-	padding: 5px;
+	padding: 10px;
 }
 
 .hawk-facet-rail__facet-values__checkbox {
-	ul {
-		padding-left: 0;
-		margin: 0;
-	}
+}
 
-	li {
-		button {
-			padding: 5px;
-		}
-
-		div {
-			display: inline-block;
-			width: 20px;
-		}
-
-		.hawk__btn__select-facet {
-			width: 200px;
-			text-align: left;
-
-			margin-right: 5px;
-		}
-
-		list-style: none;
-
-		padding-top: 2px;
-		padding-bottom: 2px;
-	}
+.hawk__btn__select-facet {
+	width: 200px;
+	text-align: left;
+	margin-right: 5px;
+	font-size: 12px;
+	background-color: #007041;
 }
 
 .hawk-facet-rail__facet-values__search {
@@ -139,4 +118,23 @@
 	}
 
 	height: 20px;
+}
+
+.hawk-facet-rail__facet-btn {
+	@include ButtonLink;
+
+	font-size: 14px;
+	color: $primary;
+	padding: 0;
+	flex-grow: 1;
+	text-align: left;
+	margin: 0 5px;
+}
+
+.hawk-facet-rail__facet-btn-negate {
+	@include ButtonLink;
+}
+
+.hawk-facet-rail__show-more-btn {
+	@include ButtonLink;
 }

@@ -6,7 +6,7 @@ import { Results } from 'components/ui/Results';
 
 function App() {
 	return (
-		<div>
+		<div className="hawk">
 			<SearchBox />
 
 			<FacetRail />

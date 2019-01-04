@@ -9,7 +9,7 @@
 
 .dropdown-toggle:not(:disabled):not(.disabled):active:focus,
 .dropdown-toggle:not(:disabled):not(.disabled).active:focus,
-.show > .dropdown-toggle.dropdown-toggle:focus .btn-outline-secondary {
+.show > .dropdown-toggle.dropdown-toggle:focus .hawk-btn-outline-secondary {
 	color: $dropdown-toggle;
 }
 

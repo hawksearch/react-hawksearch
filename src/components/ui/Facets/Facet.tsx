@@ -93,9 +93,9 @@ function Facet({ facet, children }: FacetProps) {
 		return (
 			<>
 				{facet.shouldTruncate && !filter && (
-					<div onClick={() => actor.setTruncated(!isTruncated)}>
+					<button onClick={() => actor.setTruncated(!isTruncated)} className="hawk-facet-rail__show-more-btn">
 						{isTruncated ? `(+) Show ${remainingFacets} More` : '(-) Show Less'}
-					</div>
+					</button>
 				)}
 			</>
 		);
@@ -162,7 +162,7 @@ function Facet({ facet, children }: FacetProps) {
 				</div>
 
 				{!isCollapsed && (
-					<>
+					<div className="hawk-facet-rail__facet-body">
 						{facet.shouldSearch && (
 							<div className="hawk-facet-rail__facet__quick-lookup">
 								<input
@@ -176,7 +176,7 @@ function Facet({ facet, children }: FacetProps) {
 
 						{/* render listing component */}
 						{children}
-					</>
+					</div>
 				)}
 			</div>
 		</FacetContext.Provider>
