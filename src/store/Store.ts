@@ -59,7 +59,7 @@ export class SearchStore {
 	 */
 	public isFacetSelected(facet: Facet | string, facetValue: Value | string): SelectionInfo {
 		const facetName = typeof facet === 'string' ? facet : facet.Name;
-		const facetField = typeof facet === 'string' ? facet : facet.ParamName ? facet.ParamName : facet.Field;
+		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 
 		const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
 		const valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
@@ -131,9 +131,7 @@ export class SearchStore {
 		// manually handle the `searchWithin` selection, as this doesn't usually behave like a normal facet selection
 		// but instead a field on the search request
 		if (SearchWithin) {
-			const facet = facets.find(
-				f => (f.ParamName && f.ParamName === 'searchWithin') || f.Field === 'searchWithin'
-			);
+			const facet = facets.find(f => f.selectionField === 'searchWithin');
 
 			if (facet) {
 				selections.searchWithin = {
@@ -156,8 +154,7 @@ export class SearchStore {
 				return;
 			}
 
-			// `ParamName` can override the `Field` value, so search by both
-			const facet = facets.find(f => (f.ParamName && f.ParamName === fieldName) || f.Field === fieldName);
+			const facet = facets.find(f => f.selectionField === fieldName);
 
 			if (!facet) {
 				// if there's no matching facet from the server, we can't show this since we'll have no labels

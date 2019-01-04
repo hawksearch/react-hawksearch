@@ -182,7 +182,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		const facetName = typeof facet === 'string' ? facet : facet.Name;
-		const facetField = typeof facet === 'string' ? facet : facet.ParamName ? facet.ParamName : facet.Field;
+		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 
 		const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
 		const valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
@@ -246,7 +246,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param facet The facet to clear.
 	 */
 	function clearFacet(facet: Facet | string) {
-		const facetField = typeof facet === 'string' ? facet : facet.ParamName ? facet.ParamName : facet.Field;
+		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 
 		const facetSelections = store.pendingSearch.FacetSelections;
 
@@ -276,7 +276,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 */
 	function clearFacetValue(facet: Facet | string, facetValue: Value | string) {
 		const facetName = typeof facet === 'string' ? facet : facet.Name;
-		const facetField = typeof facet === 'string' ? facet : facet.ParamName ? facet.ParamName : facet.Field;
+		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 
 		const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
 		const valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
