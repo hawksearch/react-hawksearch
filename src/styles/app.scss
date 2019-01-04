@@ -16,6 +16,7 @@
 * Components
 *
 */
+@import 'components/accessibility';
 @import 'components/hawk';
 @import 'components/hawk-button';
 @import 'components/icon';
@@ -25,4 +26,6 @@
 @import 'components/hawk-tools';
 @import 'components/hawk-results';
 @import 'components/hawk-selections';
-@import 'components/accessibility';
+@import 'components/hawk-tool-row';
+@import 'components/hawk-sorting';
+@import 'components/hawk-pagination';

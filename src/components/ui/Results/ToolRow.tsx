@@ -4,7 +4,7 @@ import { Sorting, Pagination } from './Tools';
 
 function ToolRow() {
 	return (
-		<div className="hawk__tool-row">
+		<div className="hawk-tool-row">
 			<Sorting />
 
 			<Pagination />
