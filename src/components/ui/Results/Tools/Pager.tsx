@@ -96,7 +96,6 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 				className={hasError ? 'error' : ''}
 			/>
 			&nbsp; of {totalPages}
-			&nbsp;
 			<button className="hawk-pagination__item" onClick={goToNextPage}>
 				<RightChevronSVG class="hawk-pagination__right" />
 				<span className="visually-hidden">Next page</span>
