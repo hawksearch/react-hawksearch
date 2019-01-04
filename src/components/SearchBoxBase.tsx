@@ -54,6 +54,7 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 				return (
 					<div>
 						<input
+							type="text"
 							style={{ width: '100%' }}
 							{...getInputProps({
 								onKeyDown: event => {

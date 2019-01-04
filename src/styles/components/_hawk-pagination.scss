@@ -1,0 +1,15 @@
+.hawk-pagination {
+	display: flex;
+	align-items: center;
+}
+
+.hawk-pagination__controls {
+	display: flex;
+	align-items: center;
+}
+
+.hawk-pagination__item {
+	@include HoverCircleAccent;
+
+	cursor: pointer;
+}

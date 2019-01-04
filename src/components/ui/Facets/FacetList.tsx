@@ -19,7 +19,7 @@ function FacetList() {
 	};
 
 	return (
-		<div>
+		<div className="hawk-facet-rail__facet-list">
 			{searchResults &&
 				searchResults.Facets.map(facet => {
 					const Component = components[facet.FacetType];

@@ -7,12 +7,25 @@
 @import 'utils/mixins';
 
 /*
+* General
+*
+*/
+@import 'general/elements';
+
+/*
 * Components
 *
 */
+@import 'components/accessibility';
+@import 'components/hawk';
+@import 'components/hawk-button';
+@import 'components/icon';
 @import 'components/dropdown';
 @import 'components/autosuggest-menu';
-@import 'components/facets';
-@import 'components/tools';
-@import 'components/results';
-@import 'components/accessibility';
+@import 'components/hawk-facet-rail';
+@import 'components/hawk-tools';
+@import 'components/hawk-results';
+@import 'components/hawk-selections';
+@import 'components/hawk-tool-row';
+@import 'components/hawk-sorting';
+@import 'components/hawk-pagination';

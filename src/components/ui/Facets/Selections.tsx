@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { SelectionFacetValue } from 'models/Search';
+import XCircleSVG from 'components/svg/XCircleSVG';
 
 function Selections() {
 	const {
@@ -32,31 +33,42 @@ function Selections() {
 		<div className="hawk-facet-rail__selections">
 			<h4>You've Selected</h4>
 
-			<ul>
+			<ul className="hawk-selections">
 				{keys.map(key => {
 					const selection = facetSelections[key];
 
 					return (
-						<li key={key}>
-							<button onClick={() => clearSelection(key)}>
-								X<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
+						<li key={key} className="hawk-selections__category">
+							<button onClick={() => clearSelection(key)} className="hawk-selections__item-remove">
+								<XCircleSVG />{' '}
+								<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
 							</button>
-							<span>{selection.Label}</span>
 
-							<ul>
+							<span className="hawk-selections__category-name">{selection.Label}</span>
+
+							<ul className="hawk-selections__item-list">
 								{selection.Items.map(item => {
 									const negation = item.Value.startsWith('-');
 
 									return (
-										<li key={item.Value}>
-											<button onClick={() => clearSelection(key, item)}>
-												X
+										<li key={item.Value} className="hawk-selections__item">
+											<button
+												onClick={() => clearSelection(key, item)}
+												className="hawk-selections__item-remove"
+											>
+												<XCircleSVG />
 												<span className="visually-hidden">
 													Unselect facet {selection.Label} {item.Label}
 												</span>
 											</button>
 
-											<span style={negation ? { textDecoration: 'line-through' } : undefined}>
+											<span
+												className={
+													negation
+														? 'hawk-selections__item-name hawk-selections__item-name--negated'
+														: 'hawk-selections__item-name'
+												}
+											>
 												{item.Label}
 											</span>
 										</li>

@@ -6,12 +6,16 @@ import { Results } from 'components/ui/Results';
 
 function App() {
 	return (
-		<div>
-			<SearchBox />
+		<div className="hawk">
+			<div className="hawk__header">
+				<SearchBox />
+			</div>
 
-			<FacetRail />
+			<div className="hawk__body">
+				<FacetRail />
 
-			<Results />
+				<Results />
+			</div>
 		</div>
 	);
 }
