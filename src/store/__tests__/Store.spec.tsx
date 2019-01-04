@@ -12,7 +12,7 @@ const HawkClientMock = HawkClient as jest.Mock<HawkClient>;
 
 const searchMock = jest.fn(
 	(request: Request, cancellationToken?: CancelToken): Promise<Response> => {
-		return Promise.resolve<Response>({
+		const response = {
 			Success: true,
 			Results: [
 				{
@@ -67,7 +67,9 @@ const searchMock = jest.fn(
 			Keyword: request.Keyword || '',
 			SearchDuration: 100,
 			Selections: {},
-		});
+		};
+
+		return Promise.resolve<Response>(new Response((response as unknown) as Response));
 	}
 );
 
@@ -95,7 +97,7 @@ describe('Store', () => {
 				searchPromise = actor.search();
 			}, []);
 
-			return <div>{JSON.stringify(store)}</div>;
+			return <div>{JSON.stringify(store, null, 2)}</div>;
 		}
 
 		function TestedComponent() {

@@ -152,7 +152,7 @@ export class Facet {
 		Object.assign(this, init);
 
 		// TODO: why is this a STRINGrigfhgiasfhgiasdfh
-		//this.SwatchData = init.SwatchData ? init.SwatchData.map(s => new Swatch(s)) : undefined;
+		// this.SwatchData = init.SwatchData ? init.SwatchData.map(s => new Swatch(s)) : undefined;
 
 		this.Ranges = init.Ranges.map(r => new Range(r));
 		this.Values = init.Values.map(v => new Value(v));
