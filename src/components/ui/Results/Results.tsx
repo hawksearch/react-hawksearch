@@ -3,6 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import ToolRow from './ToolRow';
 import ResultListing from './ResultListing';
+import Selections from '../Facets/Selections';
 
 function Results() {
 	const {
@@ -15,6 +16,8 @@ function Results() {
 
 	return (
 		<div className="hawk-results">
+			<Selections />
+
 			<ToolRow />
 
 			<ResultListing />
