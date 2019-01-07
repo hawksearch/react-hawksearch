@@ -39,12 +39,14 @@ function Selections() {
 
 					return (
 						<li key={key} className="hawk-selections__category">
-							<button onClick={() => clearSelection(key)} className="hawk-selections__item-remove">
-								<XCircleSVG />{' '}
-								<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
-							</button>
+							<div className="hawk-selections__category-name-wrapper">
+								<button onClick={() => clearSelection(key)} className="hawk-selections__item-remove">
+									<XCircleSVG />{' '}
+									<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
+								</button>
 
-							<span className="hawk-selections__category-name">{selection.Label}</span>
+								<span className="hawk-selections__category-name">{selection.Label}</span>
+							</div>
 
 							<ul className="hawk-selections__item-list">
 								{selection.Items.map(item => {
@@ -81,7 +83,9 @@ function Selections() {
 			</ul>
 
 			<div>
-				<button onClick={clearAll}>Clear All</button>
+				<button onClick={clearAll} className="hawk-btn">
+					Clear All
+				</button>
 			</div>
 		</div>
 	);

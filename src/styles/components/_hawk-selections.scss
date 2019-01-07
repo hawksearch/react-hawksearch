@@ -3,11 +3,13 @@
 	background-color: #fff;
 	border: 1px solid #d9d9d6;
 	padding: 10px;
-	margin: 0;
+	margin: 0 0 0.6em;
 }
 
 .hawk-selections__item-remove {
 	@include ButtonLink;
+
+	margin-right: 5px;
 }
 
 .hawk-selections__category {
@@ -18,10 +20,15 @@
 	}
 }
 
+.hawk-selections__category-name-wrapper {
+	display: flex;
+	align-items: center;
+	margin: 0 0 0.5em;
+}
+
 .hawk-selections__category-name {
 	display: block;
 	font-weight: bold;
-	margin: 0 0 0.5em;
 }
 
 .hawk-selections__item-list {
@@ -46,13 +53,13 @@
 	font-size: 14px;
 }
 
-.hawk-selections__item-remove {
-	background-color: transparent;
-	border-radius: 0;
-	border: none;
-	outline: none;
-	padding: 0;
-	margin: 0;
-	height: auto;
-	cursor: pointer;
-}
+// .hawk-selections__item-remove {
+// 	background-color: transparent;
+// 	border-radius: 0;
+// 	border: none;
+// 	outline: none;
+// 	padding: 0;
+// 	margin: 0;
+// 	height: auto;
+// 	cursor: pointer;
+// }
