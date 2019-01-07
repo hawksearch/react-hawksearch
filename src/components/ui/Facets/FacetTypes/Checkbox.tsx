@@ -33,7 +33,11 @@ function Checkbox() {
 
 								{/* <div>{isSelected ? '[x]' : '[ ]'}</div> */}
 
-								<button onClick={e => actor.selectFacet(value)} className="hawk-facet-rail__facet-btn">
+								<button
+									onClick={e => actor.selectFacet(value)}
+									className="hawk-facet-rail__facet-btn"
+									aria-pressed={isSelected}
+								>
 									<span
 										className={
 											isSelected
