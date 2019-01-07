@@ -9,8 +9,12 @@
 }
 
 .hawk-tool-row__item {
-	padding: 15px 0;
 	margin-right: 15px;
+	padding: 0 0 15px;
+
+	@include md {
+		padding: 15px 0;
+	}
 
 	&:last-child {
 		margin-right: 0;
