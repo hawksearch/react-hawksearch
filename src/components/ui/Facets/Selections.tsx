@@ -39,54 +39,54 @@ function Selections() {
 
 					return (
 						<li key={key} className="hawk-selections__category">
-							<div className="hawk-selections__category-name-wrapper">
-								<button onClick={() => clearSelection(key)} className="hawk-selections__item-remove">
-									<XCircleSVG />{' '}
-									<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
-								</button>
+							<div className="hawk-selections__category-wrapper">
+								<span className="hawk-selections__category-name">{selection.Label}:</span>
 
-								<span className="hawk-selections__category-name">{selection.Label}</span>
+								<ul className="hawk-selections__item-list">
+									{selection.Items.map(item => {
+										const negation = item.Value.startsWith('-');
+
+										return (
+											<li key={item.Value} className="hawk-selections__item">
+												<button
+													onClick={() => clearSelection(key, item)}
+													className="hawk-selections__item-remove"
+												>
+													<XCircleSVG />
+													<span className="visually-hidden">
+														Unselect facet {selection.Label} {item.Label}
+													</span>
+												</button>
+
+												<span
+													className={
+														negation
+															? 'hawk-selections__item-name hawk-selections__item-name--negated'
+															: 'hawk-selections__item-name'
+													}
+												>
+													{item.Label}
+												</span>
+											</li>
+										);
+									})}
+								</ul>
 							</div>
 
-							<ul className="hawk-selections__item-list">
-								{selection.Items.map(item => {
-									const negation = item.Value.startsWith('-');
-
-									return (
-										<li key={item.Value} className="hawk-selections__item">
-											<button
-												onClick={() => clearSelection(key, item)}
-												className="hawk-selections__item-remove"
-											>
-												<XCircleSVG />
-												<span className="visually-hidden">
-													Unselect facet {selection.Label} {item.Label}
-												</span>
-											</button>
-
-											<span
-												className={
-													negation
-														? 'hawk-selections__item-name hawk-selections__item-name--negated'
-														: 'hawk-selections__item-name'
-												}
-											>
-												{item.Label}
-											</span>
-										</li>
-									);
-								})}
-							</ul>
+							<button onClick={() => clearSelection(key)} className="hawk-selections__category-remove">
+								<XCircleSVG />{' '}
+								<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
+							</button>
 						</li>
 					);
 				})}
-			</ul>
 
-			<div>
-				<button onClick={clearAll} className="hawk-btn">
-					Clear All
-				</button>
-			</div>
+				<li className="hawk-selections__category">
+					<button onClick={clearAll} className="hawk-btn">
+						Clear All
+					</button>
+				</li>
+			</ul>
 		</div>
 	);
 }
