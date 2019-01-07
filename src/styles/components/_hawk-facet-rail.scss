@@ -35,6 +35,11 @@
 
 .hawk-facet-rail__selections {
 	border-bottom: 1px solid #d9d9d6;
+	margin: 1em 0;
+
+	@include md {
+		margin: 0;
+	}
 
 	h4 {
 		margin: 0;
