@@ -4,6 +4,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets';
 import { FacetSelectionState } from 'store/Store';
 import DashCircleSVG from 'components/svg/DashCircleSVG';
+import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 
 function Checkbox() {
 	const { store } = useHawkSearch();
@@ -30,11 +31,25 @@ function Checkbox() {
 								{/*	todo: this should emulate the look of a checkbox (but still retain the functionality
 									of a button) */}
 
-								<input type="checkbox" className="" checked={isSelected} />
 								{/* <div>{isSelected ? '[x]' : '[ ]'}</div> */}
 
 								<button onClick={e => actor.selectFacet(value)} className="hawk-facet-rail__facet-btn">
-									<span style={isNegated ? { textDecoration: 'line-through' } : undefined}>
+									<span
+										className={
+											isSelected
+												? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked'
+												: 'hawk-facet-rail__facet-checkbox'
+										}
+									>
+										{isSelected ? (
+											<CheckmarkSVG class="hawk-facet-rail__facet-checkbox-icon" />
+										) : null}
+									</span>
+
+									<span
+										style={isNegated ? { textDecoration: 'line-through' } : undefined}
+										className="hawk-facet-rail__facet-name"
+									>
 										{value.Label} ({value.Count})
 									</span>
 								</button>

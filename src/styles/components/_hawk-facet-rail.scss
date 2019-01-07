@@ -123,12 +123,25 @@
 .hawk-facet-rail__facet-btn {
 	@include ButtonLink;
 
+	display: flex;
+	align-items: center;
 	font-size: 14px;
 	color: $primary;
 	padding: 0;
 	flex-grow: 1;
 	text-align: left;
 	margin: 0 5px;
+	box-shadow: none;
+
+	&:focus,
+	&:active {
+		box-shadow: none;
+
+		.hawk-facet-rail__facet-name {
+			outline: none;
+			box-shadow: 0 0 0 3px #5bc0de;
+		}
+	}
 }
 
 .hawk-facet-rail__facet-btn-negate {
@@ -137,4 +150,21 @@
 
 .hawk-facet-rail__show-more-btn {
 	@include ButtonLink;
+}
+
+.hawk-facet-rail__facet-checkbox {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	background: transparent;
+	border: 1px solid $primary;
+	border-radius: 4px;
+	margin-right: 5px;
+}
+
+.hawk-facet-rail__facet-checkbox-icon {
+	width: 1em;
+	height: 1em;
 }
