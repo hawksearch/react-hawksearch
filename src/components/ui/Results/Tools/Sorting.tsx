@@ -4,7 +4,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 
 function Sorting() {
 	const {
-		store: { isLoading, searchResults, pendingSearch },
+		store: { searchResults, pendingSearch },
 		actor,
 	} = useHawkSearch();
 
