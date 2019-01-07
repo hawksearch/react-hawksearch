@@ -17,12 +17,14 @@
 }
 
 .hawk-results__item-image {
+	padding: 10px;
+
 	img {
 		display: block;
 		margin: auto;
 
 		width: 175px;
-		height: 175px;
+		max-width: 100%;
 	}
 }
 
