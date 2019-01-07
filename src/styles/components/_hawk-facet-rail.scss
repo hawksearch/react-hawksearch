@@ -143,8 +143,14 @@
 	}
 }
 
-.hawk-facet-rail__facet-btn-negate {
+.hawk-facet-rail__facet-btn-exclude {
 	@include ButtonLink;
+}
+
+.hawk-facet-rail__facet-btn-include {
+	@include ButtonLink;
+
+	color: $primary;
 }
 
 .hawk-facet-rail__show-more-btn {

@@ -5,6 +5,7 @@ import { useFacet } from 'components/ui/Facets';
 import { FacetSelectionState } from 'store/Store';
 import DashCircleSVG from 'components/svg/DashCircleSVG';
 import CheckmarkSVG from 'components/svg/CheckmarkSVG';
+import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 
 function Checkbox() {
 	const { store } = useHawkSearch();
@@ -60,9 +61,19 @@ function Checkbox() {
 
 								<button
 									onClick={e => actor.negateFacet(value)}
-									className="hawk-facet-rail__facet-btn-negate"
+									className="hawk-facet-rail__facet-btn-exclude"
 								>
-									<DashCircleSVG /> <span className="visually-hidden">Negate facet</span>
+									{isNegated ? (
+										<>
+											<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
+											<span className="visually-hidden">Include facet</span>
+										</>
+									) : (
+										<>
+											<DashCircleSVG />
+											<span className="visually-hidden">Exclude facet</span>
+										</>
+									)}
 								</button>
 							</li>
 						);
