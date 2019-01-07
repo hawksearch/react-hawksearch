@@ -158,7 +158,15 @@ function Facet({ facet, children }: FacetProps) {
 				<div className="hawk-facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
 					<h4>{facet.Name}</h4>
 
-					{isCollapsed ? <PlusSVG /> : <MinusSVG />}
+					{isCollapsed ? (
+						<>
+							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
+						</>
+					) : (
+						<>
+							<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
+						</>
+					)}
 				</div>
 
 				{!isCollapsed && (
