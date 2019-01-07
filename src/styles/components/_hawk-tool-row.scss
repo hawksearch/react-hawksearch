@@ -3,9 +3,6 @@
 	align-items: center;
 	justify-content: center;
 	flex-wrap: wrap;
-	margin: 0 0 1em;
-	padding: 0;
-	border-bottom: 1px solid #ccc;
 
 	@include lg {
 		flex-wrap: nowrap;

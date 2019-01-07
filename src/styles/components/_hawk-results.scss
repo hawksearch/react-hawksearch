@@ -31,3 +31,13 @@
 	display: flex;
 	flex-wrap: wrap;
 }
+
+.hawk-results__top-tool-row {
+	margin-bottom: 1em;
+	border-bottom: 1px solid #ccc;
+}
+
+.hawk-results__bottom-tool-row {
+	margin-top: 1em;
+	border-top: 1px solid #ccc;
+}

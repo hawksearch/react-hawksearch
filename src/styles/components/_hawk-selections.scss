@@ -25,7 +25,7 @@
 	background-color: #ccebcd;
 	display: flex;
 	align-items: center;
-	padding: 10.5px 9px;
+	padding: 5.8px 9px;
 	border-top-left-radius: 0.25rem !important;
 	border-bottom-left-radius: 0.25rem !important;
 }
@@ -65,18 +65,16 @@
 
 .hawk-selections__item-list {
 	display: flex;
+	flex-wrap: wrap;
 	padding: 0;
 }
 
 .hawk-selections__item {
 	display: flex;
 	align-items: center;
-	margin-bottom: 0;
+	margin-bottom: 5px;
+	margin-top: 5px;
 	margin-right: 5px;
-
-	&:last-child {
-		margin-bottom: 0;
-	}
 }
 
 .hawk-selections__item-name {

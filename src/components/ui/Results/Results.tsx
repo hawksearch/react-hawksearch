@@ -18,11 +18,15 @@ function Results() {
 		<div className="hawk-results">
 			<Selections />
 
-			<ToolRow />
+			<div className="hawk-results__top-tool-row">
+				<ToolRow />
+			</div>
 
 			<ResultListing />
 
-			<ToolRow />
+			<div className="hawk-results__bottom-tool-row">
+				<ToolRow />
+			</div>
 		</div>
 	);
 }
