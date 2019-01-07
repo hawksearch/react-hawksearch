@@ -36,12 +36,12 @@
 		&:focus {
 			outline: none;
 		}
+	}
 
-		&[type='number'],
-		&[type='week'],
-		&[type='time'] {
-			width: auto;
-		}
+	input[type='number'],
+	input[type='week'],
+	input[type='time'] {
+		width: auto;
 	}
 
 	textarea {

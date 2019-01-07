@@ -93,7 +93,7 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 				value={getInputValue()}
 				onChange={onChange}
 				onKeyDown={onKeyDown}
-				className={hasError ? 'error' : ''}
+				className={hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'}
 			/>
 			&nbsp; of {totalPages}
 			<button className="hawk-pagination__item" onClick={goToNextPage}>

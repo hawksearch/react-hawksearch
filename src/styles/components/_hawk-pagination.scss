@@ -19,3 +19,10 @@
 		box-shadow: none;
 	}
 }
+
+.hawk-pagination__input[type='number'] {
+	.hawk & {
+		width: 90px;
+		padding-right: 30px;
+	}
+}
