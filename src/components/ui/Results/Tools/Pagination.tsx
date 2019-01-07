@@ -10,8 +10,7 @@ function Pagination() {
 		actor,
 	} = useHawkSearch();
 
-	if (!searchResults || searchResults.Pagination.NofPages === 1) {
-		// TODO: this should still render if there's 1 page
+	if (!searchResults) {
 		return null;
 	}
 

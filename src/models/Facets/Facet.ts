@@ -140,11 +140,19 @@ export class Facet {
 		return this.IsSearch && this.Values.length > this.SearchThreshold;
 	}
 
+	/**
+	 * Returns the name of the key when using this facet for a selection. This will take into consideration
+	 * @see ParamName and @see Field in determining which value should be returned.
+	 */
+	public get selectionField() {
+		return this.ParamName ? this.ParamName : this.Field;
+	}
+
 	public constructor(init: Facet) {
 		Object.assign(this, init);
 
 		// TODO: why is this a STRINGrigfhgiasfhgiasdfh
-		//this.SwatchData = init.SwatchData ? init.SwatchData.map(s => new Swatch(s)) : undefined;
+		// this.SwatchData = init.SwatchData ? init.SwatchData.map(s => new Swatch(s)) : undefined;
 
 		this.Ranges = init.Ranges.map(r => new Range(r));
 		this.Values = init.Values.map(v => new Value(v));

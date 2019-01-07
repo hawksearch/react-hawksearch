@@ -6,6 +6,7 @@ Object {
   "Keyword": "this is my keyword,which should be a long string",
   "MaxPerPage": undefined,
   "PageNo": undefined,
+  "SearchWithin": undefined,
   "SortBy": undefined,
 }
 `;
@@ -24,6 +25,7 @@ Object {
   "Keyword": "this is my keyword",
   "MaxPerPage": undefined,
   "PageNo": undefined,
+  "SearchWithin": undefined,
   "SortBy": undefined,
 }
 `;
@@ -34,6 +36,7 @@ Object {
   "Keyword": "men",
   "MaxPerPage": undefined,
   "PageNo": undefined,
+  "SearchWithin": undefined,
   "SortBy": undefined,
 }
 `;
@@ -51,6 +54,7 @@ Object {
   "Keyword": undefined,
   "MaxPerPage": undefined,
   "PageNo": undefined,
+  "SearchWithin": undefined,
   "SortBy": undefined,
 }
 `;
@@ -68,6 +72,7 @@ Object {
   "Keyword": undefined,
   "MaxPerPage": undefined,
   "PageNo": undefined,
+  "SearchWithin": undefined,
   "SortBy": undefined,
 }
 `;
@@ -86,6 +91,25 @@ Object {
   "Keyword": undefined,
   "MaxPerPage": undefined,
   "PageNo": undefined,
+  "SearchWithin": undefined,
+  "SortBy": undefined,
+}
+`;
+
+exports[`QueryString Utils parses search within 1`] = `
+Object {
+  "FacetSelections": Object {
+    "brand": Array [
+      "cool",
+    ],
+    "color": Array [
+      "black",
+    ],
+  },
+  "Keyword": undefined,
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SearchWithin": "blah blah",
   "SortBy": undefined,
 }
 `;

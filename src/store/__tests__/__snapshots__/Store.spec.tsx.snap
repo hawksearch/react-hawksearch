@@ -2,6 +2,75 @@
 
 exports[`Store performs a search 1`] = `
 <div>
-  {"pendingSearch":{"Keyword":"this is my keyword","FacetSelections":{}},"doHistory":true,"isLoading":false,"searchResults":{"Success":true,"Results":[{"DocId":"123","Document":{"a":["b"]},"Score":1}],"Facets":[{"FacetId":123,"Name":"123","Field":"123","FieldType":"search","FacetType":"checkbox","DisplayType":"default","MaxCount":10,"MinHitCount":1,"SortBy":"name","ExpandSelection":false,"IsNumeric":false,"IsCurrency":false,"IsCollapsible":true,"IsCollapsedDefault":false,"IsVisible":true,"IsSearch":false,"ScrollHeight":100,"ScrollThreshold":200,"TruncateThreshold":200,"SearchThreshold":200,"AlwaysVisible":true,"SortOrder":1,"NofVisible":10,"FacetRangeDisplayType":100,"PreloadChildren":true,"ShowSliderInputs":false,"Ranges":[],"Values":[]}],"Pagination":{"CurrentPage":0,"Items":[],"MaxPerPage":24,"NofPages":1,"NofResults":1},"Sorting":{"Items":[]},"DidYouMean":["test"],"Keyword":"this is my keyword","SearchDuration":100,"Selections":{}}}
+  {
+  "pendingSearch": {
+    "Keyword": "this is my keyword",
+    "FacetSelections": {}
+  },
+  "doHistory": true,
+  "isLoading": false,
+  "searchResults": {
+    "Success": true,
+    "Pagination": {
+      "NofResults": 1,
+      "CurrentPage": 0,
+      "MaxPerPage": 24,
+      "NofPages": 1,
+      "Items": []
+    },
+    "Keyword": "this is my keyword",
+    "Results": [
+      {
+        "DocId": "123",
+        "Score": 1,
+        "Document": {
+          "a": [
+            "b"
+          ]
+        }
+      }
+    ],
+    "Facets": [
+      {
+        "FacetId": 123,
+        "Name": "123",
+        "Field": "123",
+        "FieldType": "search",
+        "FacetType": "checkbox",
+        "DisplayType": "default",
+        "MaxCount": 10,
+        "MinHitCount": 1,
+        "SortBy": "name",
+        "ExpandSelection": false,
+        "IsNumeric": false,
+        "IsCurrency": false,
+        "IsCollapsible": true,
+        "IsCollapsedDefault": false,
+        "IsVisible": true,
+        "IsSearch": false,
+        "ScrollHeight": 100,
+        "ScrollThreshold": 200,
+        "TruncateThreshold": 200,
+        "SearchThreshold": 200,
+        "AlwaysVisible": true,
+        "SortOrder": 1,
+        "NofVisible": 10,
+        "FacetRangeDisplayType": 100,
+        "PreloadChildren": true,
+        "ShowSliderInputs": false,
+        "Ranges": [],
+        "Values": []
+      }
+    ],
+    "Selections": {},
+    "Sorting": {
+      "Items": []
+    },
+    "DidYouMean": [
+      "test"
+    ],
+    "SearchDuration": 100
+  }
+}
 </div>
 `;

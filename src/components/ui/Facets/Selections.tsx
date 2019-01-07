@@ -17,8 +17,16 @@ function Selections() {
 		return null;
 	}
 
-	function clearSelection(facet: string, value: SelectionFacetValue) {
-		actor.clearFacetValue(facet, value.Value);
+	function clearSelection(facet: string, value?: SelectionFacetValue) {
+		if (value) {
+			actor.clearFacetValue(facet, value.Value);
+		} else {
+			actor.clearFacet(facet);
+		}
+	}
+
+	function clearAll() {
+		actor.clearAllFacets();
 	}
 
 	return (
@@ -31,6 +39,11 @@ function Selections() {
 
 					return (
 						<li key={key} className="hawk-selections__category">
+							<button onClick={() => clearSelection(key)} className="hawk-selections__item-remove">
+								<XCircleSVG />{' '}
+								<span className="visually-hidden">Unselect all facets for {selection.Label}</span>
+							</button>
+
 							<span className="hawk-selections__category-name">{selection.Label}</span>
 
 							<ul className="hawk-selections__item-list">
@@ -39,6 +52,16 @@ function Selections() {
 
 									return (
 										<li key={item.Value} className="hawk-selections__item">
+											<button
+												onClick={() => clearSelection(key, item)}
+												className="hawk-selections__item-remove"
+											>
+												<XCircleSVG />
+												<span className="visually-hidden">
+													Unselect facet {selection.Label} {item.Label}
+												</span>
+											</button>
+
 											<span
 												className={
 													negation
@@ -48,13 +71,6 @@ function Selections() {
 											>
 												{item.Label}
 											</span>
-
-											<button
-												onClick={() => clearSelection(key, item)}
-												className="hawk-selections__item-remove"
-											>
-												<XCircleSVG /> <span className="visually-hidden">Clear facet</span>
-											</button>
 										</li>
 									);
 								})}
@@ -63,6 +79,10 @@ function Selections() {
 					);
 				})}
 			</ul>
+
+			<div>
+				<button onClick={clearAll}>Clear All</button>
+			</div>
 		</div>
 	);
 }

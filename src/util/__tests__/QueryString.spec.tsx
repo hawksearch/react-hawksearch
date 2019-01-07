@@ -116,4 +116,15 @@ describe('QueryString Utils', () => {
 		// assert
 		expect(obj).toMatchSnapshot();
 	});
+
+	it('parses search within', () => {
+		// arrange
+		const queryString = 'color=black&brand=cool&searchWithin=blah blah';
+
+		// act
+		const obj = parseSearchQueryString(queryString);
+
+		// assert
+		expect(obj).toMatchSnapshot();
+	});
 });
