@@ -1,10 +1,18 @@
 .hawk-sorting {
 	display: flex;
 	align-items: center;
-	margin-right: 15px;
 }
 
 .hawk-sorting__label {
 	white-space: nowrap;
 	margin-right: 10px;
+}
+
+.hawk-tool-row__item {
+	padding: 15px 0;
+	margin-right: 15px;
+
+	&:last-child {
+		margin-right: 0;
+	}
 }

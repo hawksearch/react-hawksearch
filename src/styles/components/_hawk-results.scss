@@ -1,7 +1,12 @@
 .hawk-results__item {
-	width: 25%;
 	max-width: 300px;
 	margin: 0 0 2em;
+
+	width: 50%;
+
+	@include lg {
+		width: 25%;
+	}
 }
 
 .hawk-results__item-image {
