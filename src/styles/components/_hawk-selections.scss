@@ -24,7 +24,7 @@
 .hawk-selections__category-wrapper {
 	background-color: #ccebcd;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	padding: 5.8px 9px;
 	border-top-left-radius: 0.25rem !important;
 	border-bottom-left-radius: 0.25rem !important;
@@ -61,6 +61,7 @@
 	font-weight: bold;
 	margin-right: 5px;
 	font-size: 14px;
+	margin-top: 5px;
 }
 
 .hawk-selections__item-list {

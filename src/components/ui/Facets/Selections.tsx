@@ -82,7 +82,7 @@ function Selections() {
 				})}
 
 				<li className="hawk-selections__category">
-					<button onClick={clearAll} className="hawk-btn">
+					<button onClick={clearAll} className="hawk-btn hawk-btn-primary-outline">
 						Clear All
 					</button>
 				</li>
