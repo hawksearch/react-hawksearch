@@ -95,7 +95,7 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 				onKeyDown={onKeyDown}
 				className={hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'}
 			/>
-			&nbsp; of {totalPages}
+			<span className="hawk-pagination__total-text">&nbsp; of {totalPages}</span>
 			<button className="hawk-pagination__item" onClick={goToNextPage}>
 				<RightChevronSVG class="hawk-pagination__right" />
 				<span className="visually-hidden">Next page</span>
