@@ -127,4 +127,31 @@ describe('QueryString Utils', () => {
 		// assert
 		expect(obj).toMatchSnapshot();
 	});
+
+	it('escapes commas', () => {
+		// arrange
+		const obj: Partial<Request> = {
+			FacetSelections: {
+				priceslider: ['123,456'],
+			},
+			Keyword: 'this is my keyword',
+		};
+
+		// act
+		const queryString = getSearchQueryString(obj);
+
+		// assert
+		expect(queryString).toMatchSnapshot();
+	});
+
+	it('unescapes commas', () => {
+		// arrange
+		const queryString = '?keyword=this is my keyword&priceslider=123::456';
+
+		// act
+		const obj = parseSearchQueryString(queryString);
+
+		// assert
+		expect(obj).toMatchSnapshot();
+	});
 });

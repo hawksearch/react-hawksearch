@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`QueryString Utils escapes commas 1`] = `"?keyword=this is my keyword&priceslider=123::456"`;
+
 exports[`QueryString Utils handles keyword when it has multiple values 1`] = `
 Object {
   "FacetSelections": Object {},
@@ -119,3 +121,18 @@ exports[`QueryString Utils turns arrays into query string 1`] = `"?color=black&b
 exports[`QueryString Utils turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
 
 exports[`QueryString Utils turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this is my keyword&color=black&brand=cool,kinda-cool"`;
+
+exports[`QueryString Utils unescapes commas 1`] = `
+Object {
+  "FacetSelections": Object {
+    "priceslider": Array [
+      "123,456",
+    ],
+  },
+  "Keyword": "this is my keyword",
+  "MaxPerPage": undefined,
+  "PageNo": undefined,
+  "SearchWithin": undefined,
+  "SortBy": undefined,
+}
+`;

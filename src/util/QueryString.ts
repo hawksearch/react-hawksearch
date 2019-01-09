@@ -42,7 +42,15 @@ function parseQueryStringToObject(search: string) {
 				return;
 			}
 
-			parsed[key] = value.split(',');
+			// multiple selections are split by commas, so split into an array
+			const multipleValues = value.split(',');
+
+			// and now handle any comma escaping - any single value that contained a comma is escaped to '::'
+			for (let x = 0; x < multipleValues.length; ++x) {
+				multipleValues[x] = multipleValues[x].replace('::', ',');
+			}
+
+			parsed[key] = multipleValues;
 		}
 	});
 
@@ -98,7 +106,13 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				// certain strings are special and are never arrays
 				values.push(key + '=' + value);
 			} else {
-				values.push(key + '=' + value.join(','));
+				const multipleValues = value;
+
+				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
+				for (let x = 0; x < multipleValues.length; ++x) {
+					multipleValues[x] = multipleValues[x].replace(',', '::');
+				}
+				values.push(key + '=' + multipleValues.join(','));
 			}
 		}
 	}
