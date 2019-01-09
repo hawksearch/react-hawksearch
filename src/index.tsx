@@ -3,6 +3,8 @@ import '@babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import 'rheostat/initialize';
+
 import HomeSearchBox from 'components/ui/HomeSearchBox';
 import ConfigProvider from 'components/ConfigProvider';
 import { HawkSearchConfig } from 'HawkSearch';

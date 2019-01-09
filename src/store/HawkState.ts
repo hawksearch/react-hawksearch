@@ -38,6 +38,8 @@ export interface SearchActor {
 	 */
 	toggleFacetValue(facet: Facet | string, facetValue: Value | string, negate?: boolean): void;
 
+	setFacetValues(facet: Facet | string, facetValues: Value[] | string[]): void;
+
 	/**
 	 * Entirely clears all the values of the given facet from the current selection.
 	 * @param facet The facet to clear.
@@ -246,6 +248,33 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
 	}
 
+	function setFacetValues(facet: Facet | string, facetValues: Value[] | string[]): void {
+		const facetName = typeof facet === 'string' ? facet : facet.Name;
+		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
+
+		let facetSelections = store.pendingSearch.FacetSelections;
+
+		if (!facetSelections) {
+			facetSelections = {};
+		}
+
+		facetSelections[facetField] = [];
+
+		for (const facetValue of facetValues) {
+			const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
+			const valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
+
+			if (!valueValue) {
+				console.error(`Facet ${facetName} (${facetField}) has no facet value for ${valueLabel}`);
+				return;
+			}
+
+			facetSelections[facetField]!.push(valueValue);
+		}
+
+		setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
+	}
+
 	/**
 	 * Entirely clears all the values of the given facet from the current selection.
 	 * @param facet The facet to clear.
@@ -331,6 +360,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		search,
 		setSearch,
 		toggleFacetValue,
+		setFacetValues,
 		clearFacet,
 		clearFacetValue,
 		clearAllFacets,

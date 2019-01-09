@@ -3,6 +3,8 @@ import '@babel/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import 'rheostat/initialize';
+
 import StoreProvider from 'components/StoreProvider';
 import ConfigProvider from 'components/ConfigProvider';
 import QueryStringListener from 'components/QueryStringListener';

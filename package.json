@@ -34,6 +34,7 @@
 		"@types/react-dom": "^16.0.11",
 		"@types/react-hot-loader": "^4.1.0",
 		"@types/react-test-renderer": "^16.0.3",
+		"@types/rheostat": "^2.1.4",
 		"@types/webpack": "^4.4.19",
 		"@types/webpack-bundle-analyzer": "^2.13.0",
 		"@types/webpack-dev-server": "^3.1.1",
@@ -66,6 +67,7 @@
 		"downshift": "^3.1.5",
 		"history": "^4.7.2",
 		"react": "^16.7.0-alpha.2",
-		"react-dom": "^16.7.0-alpha.2"
+		"react-dom": "^16.7.0-alpha.2",
+		"rheostat": "^3.0.2"
 	}
 }

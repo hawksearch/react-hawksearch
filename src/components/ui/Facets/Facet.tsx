@@ -53,6 +53,9 @@ export interface FacetActor {
 	/** Selects and negates the given facet value. */
 	negateFacet(facetValue: Value | string): void;
 
+	/** Sets the selected facet values by replacing existing selections for this facet.  */
+	setFacets(facetValues: Value[] | string[]): void;
+
 	/** Sets the filter for this facet container. */
 	setFilter(filter: string): void;
 
@@ -77,12 +80,17 @@ function Facet({ facet, children }: FacetProps) {
 	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);
 	const [isCollapsed, setCollapsed] = useState(facet.IsCollapsible && facet.IsCollapsedDefault);
 
-	function selectFacet(facetValue: Value | string) {
+	function selectFacet(facetValue: Value | string): void {
 		setFilter('');
 		searchActor.toggleFacetValue(facet, facetValue);
 	}
 
-	function negateFacet(facetValue: Value | string) {
+	function setFacets(values: Value[] | string[]): void {
+		setFilter('');
+		searchActor.setFacetValues(facet, values);
+	}
+
+	function negateFacet(facetValue: Value | string): void {
 		setFilter('');
 		searchActor.toggleFacetValue(facet, facetValue, /* negate */ true);
 	}
@@ -131,6 +139,8 @@ function Facet({ facet, children }: FacetProps) {
 	const actor: FacetActor = {
 		selectFacet,
 		negateFacet,
+
+		setFacets,
 
 		setFilter,
 
