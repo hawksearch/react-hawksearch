@@ -46,7 +46,7 @@ function Search() {
 			</div>
 
 			<div className="hawk-facet-rail__facet-values__search-clear">
-				<span onClick={clearFacet}>Clear</span>
+				<button onClick={clearFacet}>Clear</button>
 			</div>
 		</>
 	);
