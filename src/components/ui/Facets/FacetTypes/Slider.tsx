@@ -1,39 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Rheostat, { PublicState } from 'rheostat';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets';
-import { FacetSelectionState } from 'store/Store';
-import Rheostat, { PublicState } from 'rheostat';
 
 function Link() {
-	const { store } = useHawkSearch();
+	const {} = useHawkSearch();
 	const {
-		facet,
 		state: { facetValues },
 		actor,
-		renderer,
 	} = useFacet();
 
-	if (facet.Values.length === 0) {
+	if (facetValues.length === 0) {
+		// if the range facet doesn't have any values, we can't get a min or max
 		return null;
 	}
 
+	const range = facetValues[0];
+
+	const rangeMin = parseInt(range.RangeMin || '', 10);
+	const rangeMax = parseInt(range.RangeMax || '', 10);
+
+	if (isNaN(rangeMin) || isNaN(rangeMax)) {
+		// this facet is somehow misconfigured so don't render
+		return null;
+	}
+
+	const [minValue, setMinValue] = useState(rangeMin);
+	const [maxValue, setMaxValue] = useState(rangeMax);
+
 	function onChange(state: PublicState) {
-		const [minValue, maxValue] = state.values;
-		const selection = `${min},${max}`;
+		const [newMin, newMax] = state.values;
+
+		setMinValue(newMin);
+		setMaxValue(newMax);
+
+		// this selection is sent to hawk separated by commas, so build the value here
+		const selection = `${newMin},${newMax}`;
 
 		actor.setFacets([selection]);
 	}
 
-	const range = facet.Values[0];
-
-	const min = parseInt(range.RangeMin || '', 10);
-	const max = parseInt(range.RangeMax || '', 10);
-
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
-				<Rheostat min={min} max={max} values={[min, max]} onChange={onChange} />
+				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onChange} />
 			</div>
 		</div>
 	);
