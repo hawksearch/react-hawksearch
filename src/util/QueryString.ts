@@ -86,13 +86,13 @@ export function parseSearchQueryString(search: string): Partial<Request> {
  * @param queryObj The query object to convert to a query string.
  */
 function convertObjectToQueryString(queryObj: ParsedQueryString) {
-	const values: string[] = [];
+	const queryStringValues: string[] = [];
 
 	for (const key in queryObj) {
 		if (queryObj.hasOwnProperty(key)) {
-			const value = queryObj[key];
-
 			if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp' || key === 'searchWithin') {
+				const value = queryObj[key];
+
 				if (value === undefined || value === null) {
 					// if any of the special keys just aren't defined or are null, don't include them in
 					// the query string
@@ -104,20 +104,23 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				}
 
 				// certain strings are special and are never arrays
-				values.push(key + '=' + value);
+				queryStringValues.push(key + '=' + value);
 			} else {
-				const multipleValues = value;
+				const values = queryObj[key];
 
 				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
-				for (let x = 0; x < multipleValues.length; ++x) {
-					multipleValues[x] = multipleValues[x].replace(',', '::');
+				const escapedValues: string[] = [];
+
+				for (const unescapedValue of values) {
+					escapedValues.push(unescapedValue.replace(',', '::'));
 				}
-				values.push(key + '=' + multipleValues.join(','));
+
+				queryStringValues.push(key + '=' + escapedValues.join(','));
 			}
 		}
 	}
 
-	return '?' + values.join('&');
+	return '?' + queryStringValues.join('&');
 }
 
 /**
