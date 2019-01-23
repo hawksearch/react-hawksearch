@@ -22,7 +22,11 @@ function HomeSearchBox() {
 		}
 	}
 
-	return <SearchBoxBase onSubmit={handleSubmit} />;
+	return (
+		<div className="hawk">
+			<SearchBoxBase onSubmit={handleSubmit} />
+		</div>
+	);
 }
 
 export default HomeSearchBox;
