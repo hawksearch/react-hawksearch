@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import ResultItem from './ResultItem';
+import Spinner from 'components/ui/Spinner';
 
 function ResultListing() {
 	const {
@@ -17,7 +18,7 @@ function ResultListing() {
 
 	return (
 		<div className="hawk-results__listing">
-			{isLoading ? <span>Loading...</span> : null}
+			<Spinner isVisible={isLoading} />
 
 			{results.map(result => (
 				<ResultItem key={result.DocId} item={result} />
