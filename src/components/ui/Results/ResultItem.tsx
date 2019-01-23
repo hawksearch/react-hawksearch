@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Result } from 'models/Search';
+import PlaceholderImage from 'components/ui/Results/PlaceholderImage';
 
 export interface ResultItemProps {
 	item: Result;
 }
 
 function ResultItem({ item }: ResultItemProps) {
+	const [isLoaded, setIsLoaded] = useState(false);
+
 	return (
 		<div className="hawk-results__item">
 			<div className="hawk-results__item-image">
-				<img src={item.getDocumentValue('image')} />
+				<div style={isLoaded ? {} : { overflow: 'hidden', width: '0px', height: '0px' }}>
+					<img onLoad={() => setIsLoaded(true)} src={item.getDocumentValue('image')} />
+				</div>
+
+				{!isLoaded ? <PlaceholderImage /> : null}
 			</div>
 
 			<div className="hawk-results__item-name">
