@@ -23,7 +23,7 @@ function ResultItem({ item }: ResultItemProps) {
 					/>
 				</div>
 
-				{!isLoaded ? <PlaceholderImage /> : null}
+				{!isLoaded ? <PlaceholderImage showSpinner={true} /> : null}
 			</div>
 
 			<div className="hawk-results__item-name">
