@@ -10,10 +10,6 @@ function Pagination() {
 		actor,
 	} = useHawkSearch();
 
-	if (!searchResults) {
-		return null;
-	}
-
 	function onPageChange(pageNo: number) {
 		// when the pager's page changes, trigger a new search
 		actor.setSearch({
@@ -24,8 +20,8 @@ function Pagination() {
 	return (
 		<div className="hawk-pagination">
 			<Pager
-				page={pendingSearch.PageNo || 1}
-				totalPages={searchResults.Pagination.NofPages}
+				page={searchResults ? pendingSearch.PageNo || 1 : 0}
+				totalPages={searchResults ? searchResults.Pagination.NofPages : 0}
 				onPageChange={onPageChange}
 			/>
 

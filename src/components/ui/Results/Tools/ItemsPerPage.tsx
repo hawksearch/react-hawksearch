@@ -4,7 +4,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 
 function ItemsPerPage() {
 	const {
-		store: { isLoading, searchResults, pendingSearch },
+		store: { searchResults, pendingSearch },
 		actor,
 	} = useHawkSearch();
 
@@ -13,10 +13,6 @@ function ItemsPerPage() {
 			MaxPerPage: Number(event.currentTarget.value),
 			PageNo: 1, // if we change our max items per page, reset to page 1
 		});
-	}
-
-	if (isLoading && (!searchResults || !searchResults.Sorting)) {
-		return null;
 	}
 
 	return (

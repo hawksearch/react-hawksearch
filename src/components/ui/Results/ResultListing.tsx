@@ -3,6 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import ResultItem from './ResultItem';
 import Spinner from 'components/ui/Spinner';
+import PlaceholderItem from './PlaceholderItem';
 
 function ResultListing() {
 	const {
@@ -20,9 +21,11 @@ function ResultListing() {
 		<div className="hawk-results__listing">
 			<Spinner isVisible={isLoading} />
 
-			{results.map(result => (
-				<ResultItem key={result.DocId} item={result} />
-			))}
+			{results.length
+				? // if we have results, display them
+				  results.map(result => <ResultItem key={result.DocId} item={result} />)
+				: // otherwise display placeholder items as we're loading
+				  [...Array(12)].map((_, i) => <PlaceholderItem key={i} />)}
 		</div>
 	);
 }

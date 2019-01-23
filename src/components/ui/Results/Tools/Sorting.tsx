@@ -14,10 +14,6 @@ function Sorting() {
 		});
 	}
 
-	if (!searchResults) {
-		return null;
-	}
-
 	return (
 		<div className="hawk-sorting">
 			<span className="hawk-sorting__label">Sort By</span>

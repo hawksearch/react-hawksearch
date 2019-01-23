@@ -26,6 +26,19 @@
 		width: 175px;
 		max-width: 100%;
 	}
+
+	.hawk-results__item-placeholder {
+		display: block;
+		margin: auto;
+
+		width: 175px;
+		height: 175px;
+		max-width: 100%;
+
+		background-color: $grey;
+
+		border-radius: 20px 20px;
+	}
 }
 
 .hawk-results__item-name {
