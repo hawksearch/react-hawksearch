@@ -14,6 +14,14 @@ $foreground: $green;
 	align-items: center;
 }
 
+.hawk-results__item-name-placeholder {
+	height: 20px;
+	width: 125px;
+
+	background-color: rgba($grey4, 1);
+	border-radius: 20px;
+}
+
 .hawk-facet-rail__facet-heading-placeholder {
 	height: 30px;
 

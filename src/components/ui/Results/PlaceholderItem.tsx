@@ -9,7 +9,9 @@ function PlaceholderItem() {
 				<PlaceholderImage showSpinner={false} />
 			</div>
 
-			<div className="hawk-results__item-name">Loading...</div>
+			<div className="hawk-results__item-name">
+				<div className="hawk-results__item-name-placeholder" />
+			</div>
 		</div>
 	);
 }
