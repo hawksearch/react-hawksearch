@@ -18,13 +18,15 @@ function ItemsPerPage() {
 	return (
 		<div className="hawk-items-per-page">
 			<select value={pendingSearch.MaxPerPage} onChange={onChange}>
-				{searchResults &&
-					searchResults.Pagination &&
+				{searchResults ? (
 					searchResults.Pagination.Items.map(paginationItem => (
 						<option key={paginationItem.PageSize} value={paginationItem.PageSize}>
 							{paginationItem.Label}
 						</option>
-					))}
+					))
+				) : (
+					<option>12 Items Per Page</option>
+				)}
 			</select>
 		</div>
 	);

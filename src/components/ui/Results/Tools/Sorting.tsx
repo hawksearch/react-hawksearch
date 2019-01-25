@@ -19,12 +19,15 @@ function Sorting() {
 			<span className="hawk-sorting__label">Sort By</span>
 
 			<select value={pendingSearch.SortBy} onChange={onChange}>
-				{searchResults &&
+				{searchResults ? (
 					searchResults.Sorting.Items.map(sortingItem => (
 						<option key={sortingItem.Value} value={sortingItem.Value}>
 							{sortingItem.Label}
 						</option>
-					))}
+					))
+				) : (
+					<option value="score">Best Match</option>
+				)}
 			</select>
 		</div>
 	);
