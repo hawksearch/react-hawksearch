@@ -2,6 +2,8 @@
 	"name": "react-hawksearch",
 	"version": "0.0.1",
 	"description": "Hawksearch React Library",
+	"author": "Hawksearch",
+	"license": "Proprietary",
 	"private": true,
 	"scripts": {
 		"clean": "rimraf ./dist/ && mkdirp ./dist",
@@ -14,8 +16,6 @@
 		"start": "npm run clean && webpack-dev-server --open",
 		"analyze-bundle": "npm run clean && webpack -p --profile --json > ./dist/bundle.json && webpack-bundle-analyzer ./dist/bundle.json"
 	},
-	"author": "",
-	"license": "ISC",
 	"devDependencies": {
 		"@babel/cli": "^7.1.5",
 		"@babel/core": "^7.1.6",
