@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PlaceholderImage from 'components/ui/Results/PlaceholderImage';
+import PlaceholderImage from './PlaceholderImage';
 
 function PlaceholderItem() {
 	return (

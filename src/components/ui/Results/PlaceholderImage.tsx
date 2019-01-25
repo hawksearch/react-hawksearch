@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 export interface PlaceholderImageProps {
+	/** Whether or not to display a spinner in the center of the placeholder. */
 	showSpinner: boolean;
 }
 
 function PlaceholderImage({ showSpinner }: PlaceholderImageProps) {
-	const [height] = useState(Math.random() * (175 - 125) + 125);
+	const [height] = useState(Math.round(Math.random() * (175 - 125) + 125));
 
 	return (
 		<div className="hawk-results__item-placeholder" style={{ height: `${height}px` }}>

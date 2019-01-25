@@ -14,6 +14,28 @@ $foreground: $green;
 	align-items: center;
 }
 
+.hawk-facet-rail__facet-heading-placeholder {
+	height: 30px;
+
+	background-color: $grey;
+	border-radius: 20px;
+}
+
+.hawk-facet-rail__facet-values-placeholder {
+	border-radius: 10px;
+}
+
+.hawk-facet-rail__facet-checkbox-placeholder {
+	border-width: 2px;
+	border-color: rgba($grey4, 1);
+}
+.hawk-facet-rail__facet-name-placeholder {
+	height: 20px;
+
+	background-color: rgba($grey4, 1);
+	border-radius: 15px;
+}
+
 .hawk-placeholder__image {
 	font-size: 10px;
 	margin: 50px auto;
