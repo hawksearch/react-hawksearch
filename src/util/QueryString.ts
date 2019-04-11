@@ -58,6 +58,19 @@ function parseQueryStringToObject(search: string) {
 }
 
 /**
+ * Parses the abosulte url into a `HawkClient` client search request object.
+ * @param location The input location
+ */
+export function parseLocation(location: Location): Partial<Request> {
+	const searchRequest = parseSearchQueryString(location.search);
+	
+	if(checkIfRequestForLandingPage(location.pathname)){
+		searchRequest.Keyword = "";
+		searchRequest.CustomUrl = location.pathname;
+	}
+	return searchRequest;
+}
+/**
  * Parses the input query string into a `HawkClient` client search request object.
  * @param search The input query string.
  */
@@ -78,6 +91,12 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 
 		FacetSelections: facetSelections,
 	};
+}
+
+function checkIfRequestForLandingPage(path: string) : boolean{
+	return path !== "" && 
+			!path.includes("/search") &&
+			!path.includes(".html");
 }
 
 /**

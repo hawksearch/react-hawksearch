@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawkSearch } from './StoreProvider';
 import { history } from 'util/History';
 import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
 
