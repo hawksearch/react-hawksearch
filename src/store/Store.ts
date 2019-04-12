@@ -164,21 +164,30 @@ export class SearchStore {
 			const items: SelectionFacetValue[] = [];
 
 			selectionValues.forEach(selectionValue => {
-				const matchingVal = facet.Values.find(
-					// note that we need to search by regular value and also negated values
-					facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
-				);
-
-				if (!matchingVal || !matchingVal.Label) {
-					// if there's no matching value from the server, we cannot display because there would
-					// be no label - same if there's no label at all
-					return;
+				if (facet.FieldType == 'range' && selectionValue.includes(',')) {
+					var selectionLabel = selectionValue.replace(',',' - ');
+					items.push({
+						Label: selectionLabel,
+						Value: selectionValue,
+					});
 				}
+				else {
+					const matchingVal = facet.Values.find(
+						// note that we need to search by regular value and also negated values
+						facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
+					);
 
-				items.push({
-					Label: matchingVal.Label,
-					Value: selectionValue,
-				});
+					if (!matchingVal || !matchingVal.Label) {
+						// if there's no matching value from the server, we cannot display because there would
+						// be no label - same if there's no label at all
+						return;
+					}
+
+					items.push({
+						Label: matchingVal.Label,
+						Value: selectionValue,
+					});
+				}
 			});
 
 			selections[fieldName] = {

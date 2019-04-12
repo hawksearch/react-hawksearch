@@ -24,13 +24,16 @@ function Slider() {
 	const rangeMin = parseInt(range.RangeMin || '', 10);
 	const rangeMax = parseInt(range.RangeMax || '', 10);
 
-	if (isNaN(rangeMin) || isNaN(rangeMax)) {
+	const rangeStart = parseInt(range.RangeStart || '', 10);
+	const rangeEnd = parseInt(range.RangeEnd || '', 10);
+
+	if (isNaN(rangeMin) || isNaN(rangeMax) || isNaN(rangeStart) || isNaN(rangeEnd)) {
 		// this facet is somehow misconfigured so don't render
 		return null;
 	}
 
-	const [minValue, setMinValue] = useState(rangeMin);
-	const [maxValue, setMaxValue] = useState(rangeMax);
+	const [minValue, setMinValue] = useState(rangeStart);
+	const [maxValue, setMaxValue] = useState(rangeEnd);
 
 	function onChange(state: PublicState) {
 		const [newMin, newMax] = state.values;
