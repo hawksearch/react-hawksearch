@@ -137,3 +137,20 @@
 	top: 0px;
 	height: 100%;
 }
+
+.hawk-sliderNumeric {
+	margin-bottom: 10px;
+}
+
+.hawk-sliderNumeric{
+	min-height: 36px;
+	input.hawk-numericInput {
+		width: 80px;		
+		&.numeric-from {
+			float: left;
+		}
+		&.numeric-to {
+			float: right;
+		}
+	}
+}
