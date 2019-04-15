@@ -173,10 +173,10 @@ function Facet({ facet, children }: FacetProps) {
 							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
 						</>
 					) : (
-						<>
-							<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
-						</>
-					)}
+							<>
+								<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
+							</>
+						)}
 				</div>
 
 				{!isCollapsed && (

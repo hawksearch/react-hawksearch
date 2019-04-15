@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Rheostat, { PublicState } from 'rheostat';
 
-import { useHawkSearch } from 'components/StoreProvider';
-import { useFacet } from 'components/ui/Facets';
-import SliderNumericInputs from '../Controls/SliderNumericInputs';
+import { useHawkSearch } from '../../../StoreProvider';
+import { useFacet } from '..';
+import SliderNumericInputs from '../SliderNumericInputs';
 
 function Slider() {
-	const {} = useHawkSearch();
+	const { } = useHawkSearch();
 
 	const {
 		state: { facetValues },
@@ -18,7 +18,6 @@ function Slider() {
 		// if the range facet doesn't have any values, we can't get a min or max
 		return null;
 	}
-
 	const range = facetValues[0];
 
 	const rangeMin = parseInt(range.RangeMin || '', 10);
@@ -35,43 +34,32 @@ function Slider() {
 	const [minValue, setMinValue] = useState(rangeStart);
 	const [maxValue, setMaxValue] = useState(rangeEnd);
 
-	function onChange(state: PublicState) {
+	function onSliderValueChange(state: PublicState) {
 		const [newMin, newMax] = state.values;
 
-		setMinValue(newMin);
-		setMaxValue(newMax);
+		setFacetValues(newMin, newMax);
+	}
+
+	function onValueChange(isMax: boolean, value: string) {
+		isMax ? setFacetValues(minValue, parseFloat(value)) : setFacetValues(parseFloat(value), maxValue);
+	}
+
+	function setFacetValues(minVal: number, maxVal: number) {
+		setMinValue(minVal);
+		setMaxValue(maxVal);
 
 		// this selection is sent to hawk separated by commas, so build the value here
-		const selection = `${newMin},${newMax}`;
+		const selection = `${minVal},${maxVal}`;
 
 		actor.setFacets([selection]);
 	}
 
-	function onMinChange(event: React.FormEvent<HTMLInputElement>) {
-		onNumericInputChange(false,event.currentTarget.value);
-	}
-
-	function onMaxChange(event: React.FormEvent<HTMLInputElement>) {		
-		onNumericInputChange(true,event.currentTarget.value);
-	}
-
-	function onNumericInputChange(isMax: boolean, value: string){		
-		isMax ? setMaxValue(parseFloat(value)) : setMinValue(parseFloat(value))
-
-		// this selection is sent to hawk separated by commas, so build the value here
-		const selection = `${minValue},${maxValue}`;
-
-		actor.setFacets([selection]);
-	}
-
-	return (		
+	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
 
-				<SliderNumericInputs min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onMinChange={onMinChange} onMaxChange={onMaxChange} />				
-				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onChange} />
-				
-
+				<SliderNumericInputs min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onValueChange={onValueChange} />
+				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onSliderValueChange} />
 			</div>
 		</div>
 	);

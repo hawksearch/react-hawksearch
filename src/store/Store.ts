@@ -163,31 +163,31 @@ export class SearchStore {
 
 			const items: SelectionFacetValue[] = [];
 
-			selectionValues.forEach(selectionValue => {
-				if (facet.FieldType == 'range' && selectionValue.includes(',')) {
-					var selectionLabel = selectionValue.replace(',',' - ');
-					items.push({
-						Label: selectionLabel,
-						Value: selectionValue,
-					});
-				}
-				else {
-					const matchingVal = facet.Values.find(
-						// note that we need to search by regular value and also negated values
-						facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
-					);
+			selectionValues.forEach((selectionValue, itemIndex) => {
+				let matchingVal = facet.Values.find(
+					// note that we need to search by regular value and also negated values
+					facetValue =>
+						facetValue.Value === selectionValue ||
+						`-${facetValue.Value}` === selectionValue
+				);
 
-					if (!matchingVal || !matchingVal.Label) {
-						// if there's no matching value from the server, we cannot display because there would
-						// be no label - same if there's no label at all
-						return;
-					}
-
-					items.push({
-						Label: matchingVal.Label,
-						Value: selectionValue,
-					});
+				// currently, for range type there is no way to identify correct value so we use itemIndex to handle multiple values in the future				
+				if (!matchingVal && facet.FieldType == 'range' && selectionValue.includes(',')) {
+					matchingVal = facet.Values[itemIndex];
+					matchingVal.Label = selectionValue;
 				}
+
+				if (!matchingVal || !matchingVal.Label) {
+					// if there's no matching value from the server, we cannot display because there would
+					// be no label - same if there's no label at all
+					return;
+				}
+
+				items.push({
+					Label: matchingVal.Label,
+					Value: selectionValue,
+				});
+
 			});
 
 			selections[fieldName] = {
