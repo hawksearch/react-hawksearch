@@ -74,10 +74,11 @@ const searchMock = jest.fn(
 );
 
 HawkClientMock.mockImplementation(() => {
-	return {
+	return ({
+		baseUrl: '',
 		search: searchMock,
 		autocomplete: jest.fn(),
-	};
+	} as unknown) as HawkClient;
 });
 
 describe('Store', () => {
