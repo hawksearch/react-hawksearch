@@ -11,23 +11,20 @@ function Link() {
 		actor,
 	} = useFacet();
 
-	if (facetValues.length === 0) {
-		// if the range facet doesn't have any values, we can't get a min or max
-		return null;
-	}
+	// the range of the slider is defined by the first facet value. or null if there is no first value
+	const range = facetValues.length > 0 ? facetValues[0] : null;
 
-	const range = facetValues[0];
+	const rangeMin = range && parseInt(range.RangeMin || '', 10);
+	const rangeMax = range && parseInt(range.RangeMax || '', 10);
 
-	const rangeMin = parseInt(range.RangeMin || '', 10);
-	const rangeMax = parseInt(range.RangeMax || '', 10);
+	// if there's no range, initialize to zeros
+	const [minValue, setMinValue] = useState(rangeMin || 0);
+	const [maxValue, setMaxValue] = useState(rangeMax || 0);
 
-	if (isNaN(rangeMin) || isNaN(rangeMax)) {
+	if (rangeMin === null || isNaN(rangeMin) || rangeMax === null || isNaN(rangeMax)) {
 		// this facet is somehow misconfigured so don't render
 		return null;
 	}
-
-	const [minValue, setMinValue] = useState(rangeMin);
-	const [maxValue, setMaxValue] = useState(rangeMax);
 
 	function onChange(state: PublicState) {
 		const [newMin, newMax] = state.values;
