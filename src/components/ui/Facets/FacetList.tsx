@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import Facet from './Facet';
-import { Checkbox, Search, Link, Slider } from './FacetTypes';
+import { Checkbox, Search, Link, Slider, NestedCheckbox } from './FacetTypes';
 import PlaceholderFacet from './PlaceholderFacet';
 
 function FacetList() {
@@ -18,6 +18,7 @@ function FacetList() {
 		search: Search,
 		link: Link,
 		slider: Slider,
+		nestedcheckbox: NestedCheckbox
 	};
 
 	return (

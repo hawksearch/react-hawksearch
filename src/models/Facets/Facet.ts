@@ -1,6 +1,7 @@
 import { Value } from './Value';
 import { Swatch } from './Swatch';
 import { Range } from './Range';
+import { prepareHierarchicalFacetValues } from 'util/FacetHelper';
 
 export class Facet {
 	/** Unique identifier of the facet. */
@@ -156,5 +157,7 @@ export class Facet {
 
 		this.Ranges = init.Ranges.map(r => new Range(r));
 		this.Values = init.Values.map(v => new Value(v));
+		
+		prepareHierarchicalFacetValues(this.Values);
 	}
 }
