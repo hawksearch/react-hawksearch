@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useHawkSearch } from '../../StoreProvider';
+import { useHawkSearch } from 'components/StoreProvider';
 import { SelectionFacetValue } from 'models/Search';
-import XCircleSVG from '../../svg/XCircleSVG';
+import XCircleSVG from 'components/svg/XCircleSVG';
 
 function Selections() {
 	const {
