@@ -6,7 +6,7 @@ import { useFacet } from '..';
 import SliderNumericInputs from '../SliderNumericInputs';
 
 function Slider() {
-	const { } = useHawkSearch();
+	const {} = useHawkSearch();
 
 	const {
 		state: { facetValues },
@@ -18,24 +18,27 @@ function Slider() {
 	const range = facetValues.length > 0 ? facetValues[0] : null;
 
 	const rangeMin = range && parseInt(range.RangeMin || '', 10);
-    const rangeMax = range && parseInt(range.RangeMax || '', 10);
-    const rangeStart = parseInt(range.RangeStart || '', 10);
-    const rangeEnd = parseInt(range.RangeEnd || '', 10);
+	const rangeMax = range && parseInt(range.RangeMax || '', 10);
+	const rangeStart = range && parseInt(range.RangeStart || '', 10);
+	const rangeEnd = range && parseInt(range.RangeEnd || '', 10);
 
-	// if there's no range, initialize to zeros
-	const [minValue, setMinValue] = useState(rangeMin || 0);
-	const [maxValue, setMaxValue] = useState(rangeMax || 0);
-
-    if (rangeMin === null || isNaN(rangeMin) ||
-        rangeMax === null || isNaN(rangeMax) ||
-        rangeStart === null || isNaN(rangeStart) ||
-        rangeEnd === null || isNaN(rangeEnd)) {
+	if (
+		rangeMin === null ||
+		isNaN(rangeMin) ||
+		rangeMax === null ||
+		isNaN(rangeMax) ||
+		rangeStart === null ||
+		isNaN(rangeStart) ||
+		rangeEnd === null ||
+		isNaN(rangeEnd)
+	) {
 		// this facet is somehow misconfigured so don't render
 		return null;
 	}
 
-	const [minValue, setMinValue] = useState(rangeStart);
-	const [maxValue, setMaxValue] = useState(rangeEnd);
+	// if there's no range, initialize to zeros
+	const [minValue, setMinValue] = useState(rangeStart || rangeMin || 0);
+	const [maxValue, setMaxValue] = useState(rangeEnd || rangeMax || 0);
 
 	function onSliderValueChange(state: PublicState) {
 		const [newMin, newMax] = state.values;
@@ -60,8 +63,12 @@ function Slider() {
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
-
-				<SliderNumericInputs min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onValueChange={onValueChange} />
+				<SliderNumericInputs
+					min={rangeMin}
+					max={rangeMax}
+					values={[minValue, maxValue]}
+					onValueChange={onValueChange}
+				/>
 				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onSliderValueChange} />
 			</div>
 		</div>
