@@ -23,21 +23,18 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
 
 	// debounce the input search string so that we only do an autocomplete query every so often
-	useEffect(
-		() => {
-			// default to 200ms if not specified
-			const debounceMs = config.autocompleteDebounce || 200;
+	useEffect(() => {
+		// default to 200ms if not specified
+		const debounceMs = config.autocompleteDebounce || 200;
 
-			const cts = axios.CancelToken.source();
-			const timeout = setTimeout(() => doAutocomplete(query, cts.token), debounceMs);
+		const cts = axios.CancelToken.source();
+		const timeout = setTimeout(() => doAutocomplete(query, cts.token), debounceMs);
 
-			return () => {
-				cts.cancel();
-				clearTimeout(timeout);
-			};
-		},
-		[query, config.autocompleteDebounce]
-	);
+		return () => {
+			cts.cancel();
+			clearTimeout(timeout);
+		};
+	}, [query, config.autocompleteDebounce]);
 
 	/**
 	 * Performs an autocomplete request to the Hawk API and populates the result set of this component.
