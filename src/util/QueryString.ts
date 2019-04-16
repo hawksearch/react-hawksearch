@@ -63,8 +63,8 @@ function parseQueryStringToObject(search: string) {
  */
 export function parseLocation(location: Location): Partial<Request> {
 	const searchRequest = parseSearchQueryString(location.search);
-	
-	if(checkIfRequestForLandingPage(location.pathname)){
+
+	if (checkIfRequestForLandingPage(location.pathname)) {
 		searchRequest.Keyword = "";
 		searchRequest.CustomUrl = location.pathname;
 	}
@@ -93,10 +93,10 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	};
 }
 
-function checkIfRequestForLandingPage(path: string) : boolean{
-	return path !== "" && 
-			!path.includes("/search") &&
-			!path.includes(".html");
+function checkIfRequestForLandingPage(path: string): boolean {
+	return path !== "" &&
+		!path.includes("/search") &&
+		!path.includes(".html");
 }
 
 /**
