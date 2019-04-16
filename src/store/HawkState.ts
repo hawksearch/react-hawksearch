@@ -76,19 +76,16 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	const { config } = useHawkConfig();
 
-	useEffect(
-		() => {
-			// when the pending search changes, trigger a search
+	useEffect(() => {
+		// when the pending search changes, trigger a search
 
-			const cts = axios.CancelToken.source();
-			search(cts.token);
+		const cts = axios.CancelToken.source();
+		search(cts.token);
 
-			return () => {
-				cts.cancel();
-			};
-		},
-		[store.pendingSearch]
-	);
+		return () => {
+			cts.cancel();
+		};
+	}, [store.pendingSearch]);
 
 	/**
 	 * Performs a search with the currently configured pending search request. The search request can be

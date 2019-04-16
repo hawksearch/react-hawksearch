@@ -34,23 +34,20 @@ function QueryStringListener() {
 		};
 	});
 
-	useEffect(
-		() => {
-			// listen to changes in the pending search so that history records can be pushed to the browser's
-			// query string
+	useEffect(() => {
+		// listen to changes in the pending search so that history records can be pushed to the browser's
+		// query string
 
-			if (store.doHistory) {
-				// if we're pushing history, we don't want to to trigger a search as a result of this history
-				// change
-				doSearch = false;
+		if (store.doHistory) {
+			// if we're pushing history, we don't want to to trigger a search as a result of this history
+			// change
+			doSearch = false;
 
-				history.push({
-					search: getSearchQueryString(store.pendingSearch),
-				});
-			}
-		},
-		[store.pendingSearch]
-	);
+			history.push({
+				search: getSearchQueryString(store.pendingSearch),
+			});
+		}
+	}, [store.pendingSearch]);
 
 	return null;
 }
