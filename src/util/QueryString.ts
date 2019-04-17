@@ -65,7 +65,7 @@ export function parseLocation(location: Location): Partial<Request> {
 	const searchRequest = parseSearchQueryString(location.search);
 
 	if (checkIfRequestForLandingPage(location.pathname)) {
-		searchRequest.Keyword = "";
+		searchRequest.Keyword = '';
 		searchRequest.CustomUrl = location.pathname;
 	}
 	return searchRequest;
@@ -94,9 +94,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 }
 
 function checkIfRequestForLandingPage(path: string): boolean {
-	return path !== "" &&
-		!path.includes("/search") &&
-		!path.includes(".html");
+	return path !== '' && !path.includes('/search') && !path.includes('.html');
 }
 
 /**
