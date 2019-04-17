@@ -23,6 +23,7 @@ export class Facet {
 		| 'rating'
 		| 'size'
 		| 'searchwithin'
+		| 'openrange'
 		| 'recentsearches'
 		| 'relatedsearches';
 
