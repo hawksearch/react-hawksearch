@@ -1,4 +1,5 @@
 # package manager modules
+.vs/
 node_modules/
 jspm_packages/
 

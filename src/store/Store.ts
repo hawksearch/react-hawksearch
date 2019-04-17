@@ -166,13 +166,11 @@ export class SearchStore {
 			selectionValues.forEach((selectionValue, itemIndex) => {
 				let matchingVal = facet.Values.find(
 					// note that we need to search by regular value and also negated values
-					facetValue =>
-						facetValue.Value === selectionValue ||
-						`-${facetValue.Value}` === selectionValue
+					facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
 				);
 
-				// currently, for range type there is no way to identify correct value so we use itemIndex to handle multiple values in the future				
-				if (!matchingVal && facet.FieldType == 'range' && selectionValue.includes(',')) {
+				// currently, for range type there is no way to identify correct value so we use itemIndex to handle multiple values in the future
+				if (!matchingVal && facet.FieldType === 'range' && selectionValue.includes(',')) {
 					matchingVal = facet.Values[itemIndex];
 					matchingVal.Label = selectionValue;
 				}
@@ -187,7 +185,6 @@ export class SearchStore {
 					Label: matchingVal.Label,
 					Value: selectionValue,
 				});
-
 			});
 
 			selections[fieldName] = {

@@ -5,9 +5,7 @@ export interface SliderNumericInputsProps {
 	values: number[];
 	onValueChange(isMax: boolean, value: string): void;
 }
-function SliderNumericInputs(
-	sliderProps: SliderNumericInputsProps) {
-
+function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 	function onMinChange(event: React.FormEvent<HTMLInputElement>) {
 		sliderProps.onValueChange(false, event.currentTarget.value);
 	}
@@ -18,7 +16,8 @@ function SliderNumericInputs(
 
 	return (
 		<div className="hawk-sliderNumeric">
-			<input type="text"
+			<input
+				type="text"
 				className="hawk-numericInput numeric-from"
 				min={sliderProps.min}
 				max={sliderProps.max}
@@ -26,14 +25,15 @@ function SliderNumericInputs(
 				data-type="currency"
 				onChange={onMinChange}
 			/>
-			<input type="text"
+			<input
+				type="text"
 				className="hawk-numericInput numeric-to"
 				min={sliderProps.min}
 				max={sliderProps.max}
 				value={sliderProps.values[1]}
 				onChange={onMaxChange}
-				data-type="currency" />
-
+				data-type="currency"
+			/>
 		</div>
 	);
 }
