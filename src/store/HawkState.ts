@@ -66,7 +66,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		new SearchStore({
 			pendingSearch: initialSearch || {
 				Keyword: '',
-				CustomUrl: '',
 				FacetSelections: {},
 			},
 			isLoading: true,
