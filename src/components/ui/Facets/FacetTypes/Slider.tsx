@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import Rheostat, { PublicState } from 'rheostat';
-
-import { useHawkSearch } from '../../../StoreProvider';
-import { useFacet } from '..';
-import SliderNumericInputs from '../SliderNumericInputs';
+import { useHawkSearch } from 'components/StoreProvider';
+import { useFacet } from 'components/ui/Facets';
+import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
 
 function Slider() {
 	const {} = useHawkSearch();
