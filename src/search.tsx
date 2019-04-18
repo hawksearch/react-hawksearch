@@ -9,14 +9,14 @@ import StoreProvider from 'components/StoreProvider';
 import ConfigProvider from 'components/ConfigProvider';
 import QueryStringListener from 'components/QueryStringListener';
 import App from 'components/App';
-import { parseSearchQueryString } from 'util/QueryString';
+import { parseLocation } from 'util/QueryString';
 import { HawkSearchConfig } from 'HawkSearch';
 
 import 'styles/app.scss';
 
 export function initializeSearch(elementId: string, hawkConfig: HawkSearchConfig) {
-	// pull the initial search from the query string
-	const searchRequest = parseSearchQueryString(location.search);
+	// pull the initial search from location
+	const searchRequest = parseLocation(location);
 
 	ReactDOM.render(
 		<ConfigProvider config={hawkConfig}>

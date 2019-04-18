@@ -14,7 +14,7 @@ export default (env, argv): webpack.Configuration => {
 	return {
 		entry: {
 			index: './src/index.tsx',
-			search: './src/search.tsx',
+			search: './src/search.tsx'
 		},
 
 		output: {
@@ -26,6 +26,12 @@ export default (env, argv): webpack.Configuration => {
 		devServer: {
 			contentBase: './dist',
 			hot: true,
+			historyApiFallback: {
+				rewrites: [
+					{ from: /search/, to: '/search.html' },
+				  	{ from: /^\/[\w\/]*$/, to: '/search.html' }
+				]
+			  }
 		},
 
 		devtool: isDevBuild ? 'eval-source-map' : 'source-map',
