@@ -163,11 +163,17 @@ export class SearchStore {
 
 			const items: SelectionFacetValue[] = [];
 
-			selectionValues.forEach(selectionValue => {
-				const matchingVal = facet.Values.find(
+			selectionValues.forEach((selectionValue, itemIndex) => {
+				let matchingVal = facet.Values.find(
 					// note that we need to search by regular value and also negated values
 					facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
 				);
+
+				// currently, for range type there is no way to identify correct value so we use itemIndex to handle multiple values in the future
+				if (!matchingVal && facet.FieldType === 'range' && selectionValue.includes(',')) {
+					matchingVal = facet.Values[itemIndex];
+					matchingVal.Label = selectionValue;
+				}
 
 				if (!matchingVal || !matchingVal.Label) {
 					// if there's no matching value from the server, we cannot display because there would

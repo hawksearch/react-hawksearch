@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import Rheostat, { PublicState } from 'rheostat';
-
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets';
+import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
 
-function Link() {
+function Slider() {
 	const {} = useHawkSearch();
+
 	const {
 		state: { facetValues },
+		facet,
 		actor,
 	} = useFacet();
 
@@ -16,24 +18,43 @@ function Link() {
 
 	const rangeMin = range && parseInt(range.RangeMin || '', 10);
 	const rangeMax = range && parseInt(range.RangeMax || '', 10);
+	const rangeStart = range && parseInt(range.RangeStart || '', 10);
+	const rangeEnd = range && parseInt(range.RangeEnd || '', 10);
 
 	// if there's no range, initialize to zeros
-	const [minValue, setMinValue] = useState(rangeMin || 0);
-	const [maxValue, setMaxValue] = useState(rangeMax || 0);
+	const [minValue, setMinValue] = useState(rangeStart || rangeMin || 0);
+	const [maxValue, setMaxValue] = useState(rangeEnd || rangeMax || 0);
 
-	if (rangeMin === null || isNaN(rangeMin) || rangeMax === null || isNaN(rangeMax)) {
+	if (
+		rangeMin === null ||
+		isNaN(rangeMin) ||
+		rangeMax === null ||
+		isNaN(rangeMax) ||
+		rangeStart === null ||
+		isNaN(rangeStart) ||
+		rangeEnd === null ||
+		isNaN(rangeEnd)
+	) {
 		// this facet is somehow misconfigured so don't render
 		return null;
 	}
 
-	function onChange(state: PublicState) {
+	function onSliderValueChange(state: PublicState) {
 		const [newMin, newMax] = state.values;
 
-		setMinValue(newMin);
-		setMaxValue(newMax);
+		setFacetValues(newMin, newMax);
+	}
+
+	function onValueChange(isMax: boolean, value: string) {
+		isMax ? setFacetValues(minValue, parseFloat(value)) : setFacetValues(parseFloat(value), maxValue);
+	}
+
+	function setFacetValues(minVal: number, maxVal: number) {
+		setMinValue(minVal);
+		setMaxValue(maxVal);
 
 		// this selection is sent to hawk separated by commas, so build the value here
-		const selection = `${newMin},${newMax}`;
+		const selection = `${minVal},${maxVal}`;
 
 		actor.setFacets([selection]);
 	}
@@ -41,10 +62,16 @@ function Link() {
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
-				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onChange} />
+				<SliderNumericInputs
+					min={rangeMin}
+					max={rangeMax}
+					values={[minValue, maxValue]}
+					onValueChange={onValueChange}
+				/>
+				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onSliderValueChange} />
 			</div>
 		</div>
 	);
 }
 
-export default Link;
+export default Slider;

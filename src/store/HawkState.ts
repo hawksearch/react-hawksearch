@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import axios, { CancelToken } from 'axios';
 
-import { SearchStore, FacetSelectionState } from 'store/Store';
+import { SearchStore, FacetSelectionState } from './Store';
 import HawkClient from 'net/HawkClient';
 import { Response, Request, FacetSelections } from 'models/Search';
 import { useMergableState } from 'util/MergableState';
