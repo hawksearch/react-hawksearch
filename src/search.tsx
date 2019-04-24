@@ -16,7 +16,7 @@ import 'styles/app.scss';
 
 export function initializeSearch(elementId: string, hawkConfig: HawkSearchConfig) {
 	// pull the initial search from location
-	const searchRequest = parseLocation(location);
+	const searchRequest = parseLocation(location, hawkConfig.searchPageUrl);
 
 	ReactDOM.render(
 		<ConfigProvider config={hawkConfig}>

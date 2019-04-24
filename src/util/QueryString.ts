@@ -61,10 +61,10 @@ function parseQueryStringToObject(search: string) {
  * Parses the abosulte url into a `HawkClient` client search request object.
  * @param location The input location
  */
-export function parseLocation(location: Location): Partial<Request> {
+export function parseLocation(location: Location, searchUrl: string = '/search'): Partial<Request> {
 	const searchRequest = parseSearchQueryString(location.search);
 
-	if (checkIfRequestForLandingPage(location.pathname)) {
+	if (checkIfRequestForLandingPage(location.pathname, searchUrl)) {
 		searchRequest.Keyword = '';
 		searchRequest.CustomUrl = location.pathname;
 	}
@@ -93,8 +93,8 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	};
 }
 
-function checkIfRequestForLandingPage(path: string): boolean {
-	return path !== '' && !path.includes('/search') && !path.includes('.html');
+function checkIfRequestForLandingPage(path: string, searchUrl: string): boolean {
+	return path !== '' && path !== searchUrl && !path.includes('.html');
 }
 
 /**
