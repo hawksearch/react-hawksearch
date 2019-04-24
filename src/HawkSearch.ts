@@ -1,5 +1,21 @@
 export interface HawkSearchConfig {
 	/**
+	 * Optional API base url that allow users to use proxy server as a middleware between FE app and Hawk Search API.
+	 * It will use default Elastic Search API url if not set.
+	 */
+	apiUrl?: string;
+
+	/**
+	 * Relative URL of the endpoint call for getting results. It will use '/api/search' if not provided
+	 */
+	searchUrl?: string;
+
+	/**
+	 * Relative URL of the endpoint call for autocomplete. It will use '/api/autocomplete' if not provided
+	 */
+
+	autocompleteUrl?: string;
+	/**
 	 * API Client Guid. Usually comes from the "Tracking Key" in the "Account Info" section of the hawk dashboard.
 	 */
 	clientGuid: string;

@@ -60,7 +60,9 @@ export interface SearchActor {
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
-	const client = new HawkClient();
+	const { config } = useHawkConfig();
+
+	const client = new HawkClient(config);
 
 	const [store, setStore] = useMergableState(
 		new SearchStore({
@@ -72,8 +74,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}),
 		SearchStore
 	);
-
-	const { config } = useHawkConfig();
 
 	useEffect(() => {
 		// when the pending search changes, trigger a search

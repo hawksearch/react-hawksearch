@@ -15,12 +15,12 @@ interface SearchSuggestionsProps {
 }
 
 function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
-	const client = new HawkClient();
+	const { config } = useHawkConfig();
+
+	const client = new HawkClient(config);
 
 	const [results, setResults] = useState({} as Response);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const { config } = useHawkConfig();
 
 	// debounce the input search string so that we only do an autocomplete query every so often
 	useEffect(() => {
