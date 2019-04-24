@@ -14,7 +14,8 @@ export default (env, argv): webpack.Configuration => {
 	return {
 		entry: {
 			index: './src/index.tsx',
-			search: './src/search.tsx'
+			search: './src/search.tsx',
+			customsearch: './src/customsearch.tsx',
 		},
 
 		output: {
@@ -28,10 +29,11 @@ export default (env, argv): webpack.Configuration => {
 			hot: true,
 			historyApiFallback: {
 				rewrites: [
-					{ from: /search/, to: '/search.html' },
-				  	{ from: /^\/[\w\/]*$/, to: '/search.html' }
-				]
-			  }
+					{ from: /^search/, to: '/search.html' },
+					{ from: /^customsearch/, to: '/customsearch.html' },
+					{ from: /^\/[\w\/]*$/, to: '/search.html' },
+				],
+			},
 		},
 
 		devtool: isDevBuild ? 'eval-source-map' : 'source-map',
@@ -114,6 +116,12 @@ export default (env, argv): webpack.Configuration => {
 				chunks: ['search', 'runtime', 'vendor'],
 				filename: 'search.html',
 				template: './src/search.html',
+			}),
+			new HtmlWebpackPlugin({
+				hash: true,
+				chunks: ['customsearch', 'runtime', 'vendor'],
+				filename: 'customsearch.html',
+				template: './src/customsearch.html',
 			}),
 			new webpack.HotModuleReplacementPlugin(),
 			new MiniCssExtractPlugin({

@@ -1,3 +1,5 @@
+import { FacetComponent } from 'types/FacetComponent';
+
 export interface HawkSearchConfig {
 	/**
 	 * Optional API base url that allow users to use proxy server as a middleware between FE app and Hawk Search API.
@@ -33,4 +35,9 @@ export interface HawkSearchConfig {
 	 * letter presses and autocomplete triggering.
 	 */
 	autocompleteDebounce?: number;
+
+	/**
+	 * The definition of custom components that overrides default ones in facets rail panel
+	 */
+	facetOverrides?: FacetComponent[];
 }
