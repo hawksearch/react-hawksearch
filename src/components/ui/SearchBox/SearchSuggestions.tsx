@@ -58,7 +58,6 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
-				console.warn('Autocomplete request cancelled', error);
 				return;
 			}
 

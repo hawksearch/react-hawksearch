@@ -94,8 +94,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @returns A promise that resolves when the search request has been completed.
 	 */
 	async function search(cancellationToken?: CancelToken): Promise<void> {
-		console.debug('Searching for:', store.pendingSearch);
-
 		setStore({ isLoading: true });
 
 		let searchResults: Response | null = null;
@@ -114,7 +112,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
-				console.warn('Search request cancelled', error);
 				return;
 			}
 
@@ -127,8 +124,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			if (!searchResults.Success) {
 				console.error('Search result error:', searchResults);
 			} else {
-				console.warn('Search results:', searchResults);
-
 				setStore({
 					searchResults: new Response(searchResults),
 				});

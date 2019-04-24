@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
-import { useFacet } from 'components/ui/Facets';
+import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 
 function Link() {

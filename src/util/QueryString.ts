@@ -93,8 +93,21 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	};
 }
 
-function checkIfRequestForLandingPage(path: string, searchUrl: string): boolean {
-	return path !== '' && path !== searchUrl && !path.includes('.html');
+export function checkIfRequestForLandingPage(path: string, searchUrl: string): boolean {
+	if (!path) {
+		// if there's no path, this request can't be for a landing page
+		return false;
+	}
+
+	if (!path.endsWith('/')) {
+		path = path + '/';
+	}
+
+	if (!searchUrl.endsWith('/')) {
+		searchUrl = searchUrl + '/';
+	}
+
+	return path !== searchUrl;
 }
 
 /**

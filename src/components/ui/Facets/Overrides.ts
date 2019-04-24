@@ -21,10 +21,9 @@ const defaultFacetComponents: FacetComponent[] = [
 export function getFacetComponents(overridedComponents: FacetComponent[]) {
 	const facetComponents: FacetComponent[] = [];
 
-	for (const fType in FacetType) {
-		if (typeof fType !== 'string') {
-			continue;
-		}
+	// tslint:disable-next-line:forin
+	for (const key in FacetType) {
+		const fType = FacetType[key];
 
 		const fComponent =
 			// check to see if the facet is overridden

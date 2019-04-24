@@ -1,7 +1,7 @@
-import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
+import { parseSearchQueryString, getSearchQueryString, checkIfRequestForLandingPage } from 'util/QueryString';
 import { Request } from 'models/Search';
 
-describe('QueryString Utils', () => {
+describe('parseSearchQueryString', () => {
 	it('parses facets into arrays', () => {
 		// arrange
 		const queryString = 'color=black&brand=cool';
@@ -57,6 +57,30 @@ describe('QueryString Utils', () => {
 		expect(obj).toMatchSnapshot();
 	});
 
+	it('handles query params with no values', () => {
+		// arrange
+		const queryString = 'keyword=men&brand=';
+
+		// act
+		const obj = parseSearchQueryString(queryString);
+
+		// assert
+		expect(obj).toMatchSnapshot();
+	});
+
+	it('parses search within', () => {
+		// arrange
+		const queryString = 'color=black&brand=cool&searchWithin=blah blah';
+
+		// act
+		const obj = parseSearchQueryString(queryString);
+
+		// assert
+		expect(obj).toMatchSnapshot();
+	});
+});
+
+describe('getSearchQueryString', () => {
 	it('turns arrays into query string', () => {
 		// arrange
 		const obj: Partial<Request> = {
@@ -106,28 +130,6 @@ describe('QueryString Utils', () => {
 		expect(queryString).toMatchSnapshot();
 	});
 
-	it('handles query params with no values', () => {
-		// arrange
-		const queryString = 'keyword=men&brand=';
-
-		// act
-		const obj = parseSearchQueryString(queryString);
-
-		// assert
-		expect(obj).toMatchSnapshot();
-	});
-
-	it('parses search within', () => {
-		// arrange
-		const queryString = 'color=black&brand=cool&searchWithin=blah blah';
-
-		// act
-		const obj = parseSearchQueryString(queryString);
-
-		// assert
-		expect(obj).toMatchSnapshot();
-	});
-
 	it('escapes commas', () => {
 		// arrange
 		const obj: Partial<Request> = {
@@ -143,15 +145,50 @@ describe('QueryString Utils', () => {
 		// assert
 		expect(queryString).toMatchSnapshot();
 	});
+});
 
-	it('unescapes commas', () => {
+describe('checkIfRequestForLandingPage', () => {
+	it('matches exactly', () => {
 		// arrange
-		const queryString = '?keyword=this is my keyword&priceslider=123::456';
+		const path = '/search';
+		const searchPage = '/search';
 
 		// act
-		const obj = parseSearchQueryString(queryString);
+		const isLandingPage = checkIfRequestForLandingPage(path, searchPage);
 
 		// assert
-		expect(obj).toMatchSnapshot();
+		expect(isLandingPage).toBe(false);
+	});
+
+	it('does not match for different paths', () => {
+		// arrange
+		const path = '/my-search-page';
+		const searchPage = '/search';
+
+		// act
+		const isLandingPage = checkIfRequestForLandingPage(path, searchPage);
+
+		// assert
+		expect(isLandingPage).toBe(true);
+	});
+
+	it('does not match for subfolders', () => {
+		// arrange
+		const path = '/my-site/search';
+		const searchPage = '/search';
+
+		// act
+		const isLandingPage = checkIfRequestForLandingPage(path, searchPage);
+
+		// assert
+		expect(isLandingPage).toBe(true);
+	});
+
+	it('matches without regard to slashes', () => {
+		// arrange, act, assert
+		expect(checkIfRequestForLandingPage('/search/', '/search')).toBe(false);
+		expect(checkIfRequestForLandingPage('/search', '/search/')).toBe(false);
+		expect(checkIfRequestForLandingPage('/search/', '/search/')).toBe(false);
+		expect(checkIfRequestForLandingPage('/search', '/search')).toBe(false);
 	});
 });

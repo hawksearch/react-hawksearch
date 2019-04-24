@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import Rheostat, { PublicState } from 'rheostat';
+import { PublicState } from 'rheostat';
+
 import { useHawkSearch } from 'components/StoreProvider';
-import { useFacet } from 'components/ui/Facets';
+import { useFacet } from 'components/ui/Facets/Facet';
 import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
+
+const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
 function Slider() {
 	const {} = useHawkSearch();
@@ -62,13 +65,20 @@ function Slider() {
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
-				<SliderNumericInputs
-					min={rangeMin}
-					max={rangeMax}
-					values={[minValue, maxValue]}
-					onValueChange={onValueChange}
-				/>
-				<Rheostat min={rangeMin} max={rangeMax} values={[minValue, maxValue]} onChange={onSliderValueChange} />
+				<React.Suspense fallback={<div>Loading...</div>}>
+					<SliderNumericInputs
+						min={rangeMin}
+						max={rangeMax}
+						values={[minValue, maxValue]}
+						onValueChange={onValueChange}
+					/>
+					<Rheostat
+						min={rangeMin}
+						max={rangeMax}
+						values={[minValue, maxValue]}
+						onChange={onSliderValueChange}
+					/>
+				</React.Suspense>
 			</div>
 		</div>
 	);

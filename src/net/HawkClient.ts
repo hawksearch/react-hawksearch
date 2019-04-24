@@ -1,7 +1,7 @@
 import axios, { CancelToken } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
-import { HawkSearchConfig } from 'HawkSearch';
+import { HawkSearchConfig } from 'types/HawkSearchConfig';
 
 class HawkClient {
 	private baseUrl: string;
@@ -15,7 +15,7 @@ class HawkClient {
 	}
 
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
-		const result = await axios.post<SearchResponse>(this.baseUrl + this.searchUrl, request, {
+		const result = await axios.post<SearchResponse>(new URL(this.searchUrl, this.baseUrl).href, request, {
 			cancelToken: cancellationToken,
 		});
 
@@ -26,9 +26,13 @@ class HawkClient {
 		request: AutocompleteRequest,
 		cancellationToken?: CancelToken
 	): Promise<AutocompleteResponse> {
-		const result = await axios.post<AutocompleteResponse>(this.baseUrl + this.autocompleteUrl, request, {
-			cancelToken: cancellationToken,
-		});
+		const result = await axios.post<AutocompleteResponse>(
+			new URL(this.autocompleteUrl, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
 
 		return result.data;
 	}
