@@ -1,5 +1,6 @@
-import { Response, Request, Selections, SelectionFacetValue } from 'models/Search';
+import { Response, Request } from 'models/Search';
 import { Value, Facet } from 'models/Facets';
+import { ClientSelections, ClientSelectionValue } from 'store/ClientSelections';
 
 export enum FacetSelectionState {
 	/** The facet value is not selected. */
@@ -103,13 +104,13 @@ export class SearchStore {
 	 * out from the search result or pending search - as this will merge the values together and provide an accurate
 	 * view of all facet selections.
 	 */
-	public get facetSelections(): Selections {
+	public get facetSelections(): ClientSelections {
 		const {
 			pendingSearch: { FacetSelections: clientSelections, SearchWithin },
 			searchResults,
 		} = this;
 
-		const selections: Selections = {};
+		const selections: ClientSelections = {};
 
 		if (!clientSelections) {
 			return selections;
@@ -135,11 +136,12 @@ export class SearchStore {
 
 			if (facet) {
 				selections.searchWithin = {
-					Label: facet.Name,
-					Items: [
+					facet,
+					label: facet.Name,
+					items: [
 						{
-							Label: SearchWithin,
-							Value: SearchWithin,
+							label: SearchWithin,
+							value: SearchWithin,
 						},
 					],
 				};
@@ -161,35 +163,44 @@ export class SearchStore {
 				return;
 			}
 
-			const items: SelectionFacetValue[] = [];
+			const items: ClientSelectionValue[] = [];
 
-			selectionValues.forEach((selectionValue, itemIndex) => {
-				let matchingVal = facet.Values.find(
-					// note that we need to search by regular value and also negated values
-					facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
-				);
+			if (facet.FieldType === 'range') {
+				// if the facet this selection is for is a range, there won't be a matching value and thus there won't be a label.
+				// so because of this we'll just use the selection value as the label
 
-				// currently, for range type there is no way to identify correct value so we use itemIndex to handle multiple values in the future
-				if (!matchingVal && facet.FieldType === 'range' && selectionValue.includes(',')) {
-					matchingVal = facet.Values[itemIndex];
-					matchingVal.Label = selectionValue;
-				}
-
-				if (!matchingVal || !matchingVal.Label) {
-					// if there's no matching value from the server, we cannot display because there would
-					// be no label - same if there's no label at all
-					return;
-				}
-
-				items.push({
-					Label: matchingVal.Label,
-					Value: selectionValue,
+				selectionValues.forEach(selectionValue => {
+					items.push({
+						label: selectionValue,
+						value: selectionValue,
+					});
 				});
-			});
+			} else {
+				// for other types of facets, try to find a matching value
+
+				selectionValues.forEach(selectionValue => {
+					const matchingVal = facet.Values.find(
+						// note that we need to search by regular value and also negated values
+						facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
+					);
+
+					if (!matchingVal || !matchingVal.Label) {
+						// if there's no matching value from the server, we cannot display because there would
+						// be no label - same if there's no label at all
+						return;
+					}
+
+					items.push({
+						label: matchingVal.Label,
+						value: selectionValue,
+					});
+				});
+			}
 
 			selections[fieldName] = {
-				Label: facet.Name,
-				Items: items,
+				facet,
+				label: facet.Name,
+				items,
 			};
 		});
 
