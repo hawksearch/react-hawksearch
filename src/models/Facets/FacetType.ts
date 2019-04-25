@@ -7,7 +7,7 @@ export enum FacetType {
 	Swatch = 'swatch',
 	Rating = 'rating',
 	Size = 'size',
-	SearchWithin = 'searchwithin',
+	SearchWithin = 'search',
 	RecentSearches = 'recentsearches',
 	RelatedSearches = 'relatedsearches',
 }
