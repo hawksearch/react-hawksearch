@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import TestRenderer from 'react-test-renderer';
 
 import { useMergableState } from 'util/MergableState';
-import { initializeSearch } from 'search';
 
 describe('MergableState', () => {
 	class MergableStore {

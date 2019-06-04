@@ -1,8 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`QueryString Utils escapes commas 1`] = `"?keyword=this is my keyword&priceslider=123::456"`;
+exports[`getSearchQueryString escapes commas 1`] = `"?keyword=this is my keyword&priceslider=123::456"`;
 
-exports[`QueryString Utils handles keyword when it has multiple values 1`] = `
+exports[`getSearchQueryString turns arrays into query string 1`] = `"?color=black&brand=cool"`;
+
+exports[`getSearchQueryString turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
+
+exports[`getSearchQueryString turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this is my keyword&color=black&brand=cool,kinda-cool"`;
+
+exports[`parseSearchQueryString handles keyword when it has multiple values 1`] = `
 Object {
   "FacetSelections": Object {},
   "Keyword": "this is my keyword,which should be a long string",
@@ -13,7 +19,7 @@ Object {
 }
 `;
 
-exports[`QueryString Utils handles keyword when parsing 1`] = `
+exports[`parseSearchQueryString handles keyword when parsing 1`] = `
 Object {
   "FacetSelections": Object {
     "brand": Array [
@@ -32,7 +38,7 @@ Object {
 }
 `;
 
-exports[`QueryString Utils handles query params with no values 1`] = `
+exports[`parseSearchQueryString handles query params with no values 1`] = `
 Object {
   "FacetSelections": Object {},
   "Keyword": "men",
@@ -43,7 +49,7 @@ Object {
 }
 `;
 
-exports[`QueryString Utils parses facets into arrays 1`] = `
+exports[`parseSearchQueryString parses facets into arrays 1`] = `
 Object {
   "FacetSelections": Object {
     "brand": Array [
@@ -61,7 +67,7 @@ Object {
 }
 `;
 
-exports[`QueryString Utils parses facets into arrays and handles question mark 1`] = `
+exports[`parseSearchQueryString parses facets into arrays and handles question mark 1`] = `
 Object {
   "FacetSelections": Object {
     "brand": Array [
@@ -79,7 +85,7 @@ Object {
 }
 `;
 
-exports[`QueryString Utils parses multiple facet values into arrays 1`] = `
+exports[`parseSearchQueryString parses multiple facet values into arrays 1`] = `
 Object {
   "FacetSelections": Object {
     "brand": Array [
@@ -98,7 +104,7 @@ Object {
 }
 `;
 
-exports[`QueryString Utils parses search within 1`] = `
+exports[`parseSearchQueryString parses search within 1`] = `
 Object {
   "FacetSelections": Object {
     "brand": Array [
@@ -112,27 +118,6 @@ Object {
   "MaxPerPage": undefined,
   "PageNo": undefined,
   "SearchWithin": "blah blah",
-  "SortBy": undefined,
-}
-`;
-
-exports[`QueryString Utils turns arrays into query string 1`] = `"?color=black&brand=cool"`;
-
-exports[`QueryString Utils turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
-
-exports[`QueryString Utils turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this is my keyword&color=black&brand=cool,kinda-cool"`;
-
-exports[`QueryString Utils unescapes commas 1`] = `
-Object {
-  "FacetSelections": Object {
-    "priceslider": Array [
-      "123,456",
-    ],
-  },
-  "Keyword": "this is my keyword",
-  "MaxPerPage": undefined,
-  "PageNo": undefined,
-  "SearchWithin": undefined,
   "SortBy": undefined,
 }
 `;

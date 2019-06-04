@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from '../../StoreProvider';
+import { useHawkSearch } from 'components/StoreProvider';
+import { useHawkConfig } from 'components/ConfigProvider';
 import Facet from './Facet';
-import { Checkbox, Search, Link, Slider } from './FacetTypes';
 import PlaceholderFacet from './PlaceholderFacet';
-import Swatch from './FacetTypes/Swatch';
+import { getFacetComponents } from 'components/ui/Facets/Overrides';
 
 function FacetList() {
 	const {
 		store: { searchResults },
 	} = useHawkSearch();
 
+	const { config } = useHawkConfig();
+
 	// the number of random placeholders to render while we wait for results
 	const [numPlaceholders] = useState(Math.round(Math.random() * (5 - 3) + 3));
 
-	const components = {
-		checkbox: Checkbox,
-		search: Search,
-		link: Link,
-		slider: Slider,
-		swatch: Swatch
-	};
+	const components = getFacetComponents(config.facetOverrides || []);
 
 	return (
 		<div className="hawk-facet-rail__facet-list">
 			{searchResults
 				? // if there are search results, render the facets
-				searchResults.Facets.map(facet => {
-					const Component = components[facet.FacetType];
+				  searchResults.Facets.map(facet => {
+						const registeredComponent = components.find(
+							component => component.facetType === facet.FacetType
+						);
+						const Component = !registeredComponent ? null : registeredComponent.component;
 
 					return (
 						<Facet key={facet.FacetId} facet={facet}>
