@@ -1,4 +1,5 @@
 import { FacetComponent } from 'types/FacetComponent';
+import { string } from 'prop-types';
 
 export interface HawkSearchConfig {
 	/**
@@ -11,8 +12,16 @@ export interface HawkSearchConfig {
 	apiUrl?: string;
 
 	/**
+	 * Optional URL of the Hawksearch Dashboard, that is used eg. as baseUrl for assets.
+	 *
+	 * If not specified, this will default to `http://test.hawksearch.net/`.
+	 */
+	//
+	dashboardUrl?: string;
+	/**
 	 * Relative URL of the endpoint call for getting results. It will use `/api/search` if not provided.
 	 */
+
 	searchUrl?: string;
 
 	/**

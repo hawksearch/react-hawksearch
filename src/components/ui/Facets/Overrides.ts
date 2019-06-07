@@ -3,6 +3,7 @@ import {
 	Search as DefaultSearch,
 	Link as DefaultLink,
 	Slider as DefaultSlider,
+	Swatch as DefaultSwatch,
 } from 'components/ui/Facets/FacetTypes';
 import { FacetComponent } from 'types/FacetComponent';
 import { FacetType } from 'models/Facets/FacetType';
@@ -13,6 +14,7 @@ const defaultFacetComponents: FacetComponent[] = [
 	{ facetType: FacetType.SearchWithin, component: DefaultSearch },
 	{ facetType: FacetType.Link, component: DefaultLink },
 	{ facetType: FacetType.Slider, component: DefaultSlider },
+	{ facetType: FacetType.Swatch, component: DefaultSwatch },
 ];
 
 /**

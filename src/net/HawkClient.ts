@@ -6,11 +6,13 @@ import { HawkSearchConfig } from 'types/HawkSearchConfig';
 class HawkClient {
 	private baseUrl: string;
 	private searchUrl: string;
+	private dashboardUrl: string;
 	private autocompleteUrl: string;
 
 	constructor(config: HawkSearchConfig) {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
-		this.searchUrl = config.searchUrl || '/api/search';
+		this.dashboardUrl = config.dashboardUrl || 'http://test.hawksearch.net/';
+		this.searchUrl = config.searchUrl || '/api/v2/search';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
 	}
 

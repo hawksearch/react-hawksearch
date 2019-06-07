@@ -28,20 +28,20 @@ function FacetList() {
 						);
 						const Component = !registeredComponent ? null : registeredComponent.component;
 
-					return (
-						<Facet key={facet.FacetId} facet={facet}>
-							{Component ? (
-								<Component />
-							) : (
+						return (
+							<Facet key={facet.FacetId} facet={facet}>
+								{Component ? (
+									<Component />
+								) : (
 									<div>
 										{facet.FieldType} {facet.FacetType} is not implemented!
 									</div>
 								)}
-						</Facet>
-					);
-				})
+							</Facet>
+						);
+				  })
 				: // otherwise render a couple placeholders
-				[...Array(numPlaceholders)].map((_, i) => <PlaceholderFacet key={i} />)}
+				  [...Array(numPlaceholders)].map((_, i) => <PlaceholderFacet key={i} />)}
 		</div>
 	);
 }
