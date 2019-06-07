@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
-import { useFacet } from 'components/ui/Facets';
+import { useFacet } from 'components/ui/Facets/Facet';
 
 function Search() {
 	const { store, actor: hawkActor } = useHawkSearch();

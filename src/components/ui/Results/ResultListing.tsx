@@ -1,11 +1,14 @@
 import React from 'react';
-
-import { useHawkSearch } from 'components/StoreProvider';
-import ResultItem from './ResultItem';
-import Spinner from 'components/ui/Spinner';
 import PlaceholderItem from './PlaceholderItem';
+import Spinner from 'components/ui/Spinner';
+import { default as DefaultResultItem, ResultItemProps } from './ResultItem';
+import { useHawkSearch } from 'components/StoreProvider';
 
-function ResultListing() {
+export interface ResultsListingProps {
+	ResultItem: React.ComponentType<ResultItemProps>;
+}
+
+function ResultListing({ ResultItem = DefaultResultItem }: ResultsListingProps) {
 	const {
 		store: { isLoading, searchResults },
 	} = useHawkSearch();

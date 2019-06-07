@@ -1,4 +1,5 @@
 import React from 'react';
+
 import FacetList from './FacetList';
 
 function FacetRail() {

@@ -1,6 +1,7 @@
 import { Value } from './Value';
 import { Swatch } from './Swatch';
 import { Range } from './Range';
+import { FacetType } from 'models/Facets/FacetType';
 
 export class Facet {
 	/** Unique identifier of the facet. */
@@ -13,19 +14,7 @@ export class Facet {
 	public Field: string;
 
 	public FieldType: 'string' | 'range' | 'numeric' | 'search';
-	public FacetType:
-		| 'checkbox'
-		| 'nestedcheckbox'
-		| 'link'
-		| 'nestedlink'
-		| 'slider'
-		| 'swatch'
-		| 'rating'
-		| 'size'
-		| 'searchwithin'
-		| 'openrange'
-		| 'recentsearches'
-		| 'relatedsearches';
+	public FacetType: FacetType;
 
 	public DisplayType: 'default' | 'scrolling' | 'truncating';
 
