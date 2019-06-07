@@ -3,9 +3,14 @@ import { ControllerStateAndHelpers } from 'downshift';
 
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
-import SearchBoxBase from 'components/SearchBoxBase';
+import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
 
-function HomeSearchBox() {
+/**
+ * This component is a simple search input box (with autosuggest) that can be placed globally throughout the site.
+ * This search box is intended to be used on non-search pages. On search pages, the `SearchBox` component should be
+ * used instead.
+ */
+function GlobalSearchBox() {
 	const { config } = useHawkConfig();
 
 	const searchUrl = config.searchPageUrl || '/search';
@@ -15,8 +20,6 @@ function HomeSearchBox() {
 
 		if (event.key === 'Enter') {
 			const redirect = `${searchUrl}?keyword=${inputValue}`;
-
-			console.log('should redirect to:', redirect);
 
 			location.assign(redirect);
 		}
@@ -29,4 +32,4 @@ function HomeSearchBox() {
 	);
 }
 
-export default HomeSearchBox;
+export default GlobalSearchBox;

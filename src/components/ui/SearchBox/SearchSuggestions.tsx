@@ -15,12 +15,12 @@ interface SearchSuggestionsProps {
 }
 
 function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
-	const client = new HawkClient();
+	const { config } = useHawkConfig();
+
+	const client = new HawkClient(config);
 
 	const [results, setResults] = useState({} as Response);
 	const [isLoading, setIsLoading] = useState(false);
-
-	const { config } = useHawkConfig();
 
 	// debounce the input search string so that we only do an autocomplete query every so often
 	useEffect(() => {
@@ -58,7 +58,6 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
-				console.warn('Autocomplete request cancelled', error);
 				return;
 			}
 

@@ -1,6 +1,10 @@
 # package manager modules
+.vs/
 node_modules/
 jspm_packages/
 
 # build outputs
 dist/
+
+# rollup
+.rpt2_cache

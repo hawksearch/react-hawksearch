@@ -1,7 +1,6 @@
 import * as webpack from 'webpack';
 
 import * as path from 'path';
-import * as HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 export default (env, argv): webpack.Configuration => {
@@ -13,19 +12,18 @@ export default (env, argv): webpack.Configuration => {
 
 	return {
 		entry: {
-			index: './src/index.tsx',
-			search: './src/search.tsx',
+			styles: './src/styles/app.scss',
+			searchbox: './src/app/SearchBox.tsx',
+			search: './src/app/Search.tsx',
 		},
 
 		output: {
-			filename: '[name].js',
-			chunkFilename: '[name].[contentHash:8].js',
-			path: isDevBuild ? undefined : path.resolve(__dirname, './dist'),
-		},
+			filename: 'react-hawksearch-[name].js',
+			path: path.resolve(__dirname, './dist/min'),
 
-		devServer: {
-			contentBase: './dist',
-			hot: true,
+			// by default, we expect our library assets to exist at /assets/
+			// this is configurable by consumers via the HawkSearchConfig
+			publicPath: '/assets/',
 		},
 
 		devtool: isDevBuild ? 'eval-source-map' : 'source-map',
@@ -50,14 +48,12 @@ export default (env, argv): webpack.Configuration => {
 			splitChunks: {
 				cacheGroups: {
 					vendor: {
-						test: /[\\/]node_modules[\\/]/,
 						name: 'vendor',
-						priority: -20,
-						chunks: 'all',
+						test: /[\\/]node_modules[\\/]/,
+						chunks: 'initial',
 					},
 				},
 			},
-			runtimeChunk: 'single',
 		},
 
 		module: {
@@ -97,21 +93,8 @@ export default (env, argv): webpack.Configuration => {
 		mode: isDevBuild ? 'development' : 'production',
 
 		plugins: [
-			new HtmlWebpackPlugin({
-				hash: true,
-				chunks: ['index', 'runtime', 'vendor'],
-				filename: 'index.html',
-				template: './src/index.html',
-			}),
-			new HtmlWebpackPlugin({
-				hash: true,
-				chunks: ['search', 'runtime', 'vendor'],
-				filename: 'search.html',
-				template: './src/search.html',
-			}),
-			new webpack.HotModuleReplacementPlugin(),
 			new MiniCssExtractPlugin({
-				filename: '[name].[hash].css',
+				filename: 'react-hawksearch.css',
 			}),
 		],
 	};

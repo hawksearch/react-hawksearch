@@ -6,12 +6,7 @@ import { Request } from 'models/Search';
 
 const HawkContext = React.createContext({} as HawkContextValue);
 
-export interface HawkStoreProviderProps {
-	initialSearch?: Partial<Request>;
-	children: React.ReactNode;
-}
-
-interface HawkContextValue {
+export interface HawkContextValue {
 	/** The store of data used throughout the application. */
 	store: SearchStore;
 	/**
@@ -19,6 +14,12 @@ interface HawkContextValue {
 	 * changing pages, etc).
 	 */
 	actor: SearchActor;
+}
+
+export interface HawkStoreProviderProps {
+	/** The initial search to perform when initializing the search components. */
+	initialSearch?: Partial<Request>;
+	children: React.ReactNode;
 }
 
 /**
