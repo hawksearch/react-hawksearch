@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
-import { useFacet } from 'components/ui/Facets';
+import { useFacet } from 'components/ui/Facets/Facet';
 
 function OpenRange() {
-	const {} = useHawkSearch();
+	const { actor: hawkActor } = useHawkSearch();
+
 	const {
 		state: { facetValues },
+		facet,
 		actor,
 	} = useFacet();
 
@@ -36,19 +38,15 @@ function OpenRange() {
 	function setFacetValues(startVal: string, endVal: string) {
 		setStartValue(startVal);
 		setEndValue(endVal);
-		// TODO: api doesn't handle case when there is single boundary condition
-		// this hack replace empty string with space which will not working but API will handle the request
-		if (startVal === '') {
-			startVal = ' ';
-		}
-		if (endVal === '') {
-			endVal = ' ';
-		}
-		// end of the hack
 
 		// this selection is sent to hawk separated by commas, so build the value here
-		const selection = `${startVal},${endVal}`;
-		actor.setFacets([selection]);
+
+		if (startVal === '' && endVal === '') {
+			hawkActor.clearFacet(facet);
+		} else {
+			const selection = `${startVal},${endVal}`;
+			actor.setFacets([selection]);
+		}
 	}
 
 	return (
