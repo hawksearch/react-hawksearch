@@ -12,6 +12,10 @@
 	@include lg {
 		min-width: 300px;
 	}
+
+	.w-100 {
+		width: 100%;
+	}
 }
 
 .hawk-facet-rail__facet-list {
@@ -24,6 +28,15 @@
 	display: flex;
 	align-items: flex-start;
 	margin: 0 0 6px;
+	&.hawkFacet-group {
+		flex-direction: column;
+		.hawkFacet-group__inline {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+			margin-bottom: 6px;
+		}
+	}
 }
 
 .hawk-facet-rail__heading {
@@ -159,6 +172,26 @@
 			outline: none;
 			box-shadow: 0 0 0 3px #5bc0de;
 		}
+	}
+}
+
+.hawk-collapseState {
+	cursor: pointer;
+	position: absolute;
+	&:after {
+		display: inline-block;
+		position: absolute;
+		content: '\2212';
+		font-size: 10px;
+		font-family: 'hawksearch';
+		color: #b8b8b8;
+		right: 2px;
+		top: 4px;
+		cursor: pointer;
+	}
+
+	&.collapsed:after {
+		content: '\2b';
 	}
 }
 
