@@ -24,8 +24,11 @@
 		border: 3px solid #fff;
 	}
 
-	.hawk-negativeIcon {
+	button.hawk-negativeIcon {
 		display: none;
+		background-color: inherit;
+		border: none;
+		padding: 0;
 		float: right;
 		color: #999;
 		position: absolute;
@@ -35,7 +38,7 @@
 		.hawkIcon-blocked {
 			min-width: 10px;
 			line-height: 1;
-			display: block;
+			display: inline-block;
 			font-style: normal;
 			font-weight: normal;
 			font-variant: normal;
@@ -57,7 +60,8 @@
 
 	&.hawkFacet-negative,
 	&.hawkFacet-hover {
-		button.hawk-facet-rail__facet-btn.hawk-styleSwatch .hawk-negativeIcon {
+		button.hawk-negativeIcon {
+			cursor: pointer;
 			display: block;
 		}
 	}

@@ -20,8 +20,6 @@ function SwatchItem(item: SwatchItemProps) {
 	const facetValue = item.swatchValue.Value || '';
 
 	// facets can be selected or negated, so explicitly check that the facet is not selected
-	// TODO: currently API doesn't return values for negated colors
-
 	const swatchUrl =
 		config.dashboardUrl + (!item.facetSwatch.AssetUrl ? item.facetSwatch.AssetName : item.facetSwatch.AssetUrl);
 
@@ -54,15 +52,9 @@ function SwatchItem(item: SwatchItemProps) {
 						<img src={swatchUrl} alt={item.facetSwatch.Value} />
 					)}
 				</span>
-				<span className="hawk-negativeIcon">
-					<i
-						className="hawkIcon-blocked"
-						onClick={e => {
-							item.onSwatchSelected(facetValue, true);
-							e.stopPropagation();
-						}}
-					/>
-				</span>
+			</button>
+			<button className="hawk-negativeIcon">
+				<i className="hawkIcon-blocked" onClick={e => item.onSwatchSelected(facetValue, true)} />
 			</button>
 		</li>
 	);
