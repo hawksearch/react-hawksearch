@@ -95,19 +95,17 @@ function NestedItem(item: NestedItemProps) {
 					)}
 				</button>
 				{hierarchyChildren.length > 0 ? (
-					<span
+					<button
 						className={isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed'}
 						aria-expanded="false"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
 						&nbsp;
-					</span>
-				) : (
-					''
-				)}
+					</button>
+				) : null}
 			</div>
 			{isExpanded && hierarchyChildren ? (
-				<div className="w-100">
+				<div className="hawk-facet-rail__w-100">
 					<ul className="hawkFacet-group-inside">
 						{hierarchyChildren.map(value => {
 							const selectionState = store.isFacetSelected(facet, value).state;

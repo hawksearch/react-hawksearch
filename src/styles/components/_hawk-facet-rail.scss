@@ -13,7 +13,7 @@
 		min-width: 300px;
 	}
 
-	.w-100 {
+	.hawk-facet-rail__w-100 {
 		width: 100%;
 	}
 }
@@ -175,9 +175,14 @@
 	}
 }
 
-.hawk-collapseState {
-	cursor: pointer;
+button.hawk-collapseState {
 	position: absolute;
+	background-color: inherit;
+	border: none;
+	display: inline-block;
+	padding: 0;
+	cursor: pointer;
+
 	&:after {
 		display: inline-block;
 		position: absolute;
@@ -187,7 +192,6 @@
 		color: #b8b8b8;
 		right: 2px;
 		top: 4px;
-		cursor: pointer;
 	}
 
 	&.collapsed:after {
