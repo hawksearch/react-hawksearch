@@ -1,3 +1,5 @@
+import { Explain } from './Explain';
+
 export class Result {
 	/** Unique identifier for this search result item. */
 	public DocId: string;
@@ -12,6 +14,9 @@ export class Result {
 	 */
 	public Document?: { [field: string]: string[] };
 
+	public Explain?: Explain;
+
+	public IsPin: boolean;
 	/**
 	 * Returns a single document value, by the given field name. If the field does not exist in
 	 * the document, or has no values, then `undefined` is returned instead.
