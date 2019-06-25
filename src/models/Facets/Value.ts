@@ -40,7 +40,6 @@ export class Value {
 	public Children: Value[];
 
 	public Level: number;
-	public ValuePath: string;
 
 	public constructor(init: Value) {
 		Object.assign(this, init);
