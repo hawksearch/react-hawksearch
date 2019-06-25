@@ -59,7 +59,7 @@
 	}
 
 	&.hawkFacet-negative,
-	&.hawkFacet-hover {
+	&:hover {
 		button.hawk-negativeIcon {
 			cursor: pointer;
 			display: block;

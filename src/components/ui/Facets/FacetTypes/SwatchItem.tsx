@@ -14,7 +14,6 @@ export interface SwatchItemProps {
 }
 
 function SwatchItem(item: SwatchItemProps) {
-	const [isHower, setIsHower] = useState(false);
 	const { config } = useHawkConfig();
 
 	const facetValue = item.swatchValue.Value || '';
@@ -30,16 +29,10 @@ function SwatchItem(item: SwatchItemProps) {
 	const listItemClassNames =
 		'hawk-facet-rail__facet-list-item' +
 		(item.isSelected ? ' hawkFacet-active' : '') +
-		(item.isNegated ? ' hawkFacet-negative' : '') +
-		(isHower ? ' hawkFacet-hover' : '');
+		(item.isNegated ? ' hawkFacet-negative' : '');
 
 	return (
-		<li
-			key={item.facetSwatch.Value}
-			className={listItemClassNames}
-			onMouseEnter={e => setIsHower(true)}
-			onMouseLeave={e => setIsHower(false)}
-		>
+		<li key={item.facetSwatch.Value} className={listItemClassNames}>
 			<button
 				onClick={e => item.onSwatchSelected(facetValue, false)}
 				className="hawk-facet-rail__facet-btn hawk-styleSwatch"
