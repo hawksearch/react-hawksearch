@@ -10,7 +10,7 @@ class HawkClient {
 
 	constructor(config: HawkSearchConfig) {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
-		this.searchUrl = config.searchUrl || '/api/search';
+		this.searchUrl = config.searchUrl || '/api/v2/search';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
 	}
 
@@ -18,7 +18,6 @@ class HawkClient {
 		const result = await axios.post<SearchResponse>(new URL(this.searchUrl, this.baseUrl).href, request, {
 			cancelToken: cancellationToken,
 		});
-
 		return result.data;
 	}
 
