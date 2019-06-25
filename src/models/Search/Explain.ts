@@ -1,5 +1,3 @@
-import { Rule } from 'webpack';
-
 export class Explain {
 	/** Unique identifier for this search result item. */
 	public TotalBoost: number;
