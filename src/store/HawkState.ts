@@ -95,7 +95,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 */
 	async function search(cancellationToken?: CancelToken): Promise<void> {
 		setStore({ isLoading: true });
-
 		let searchResults: Response | null = null;
 
 		try {
@@ -103,7 +102,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				{
 					// the search request being executed is spread from the pendingSearch
 					...store.pendingSearch,
-
+					// pass parameter for extended response
+					IsInPreview: config.isInPreview,
 					// and override some of the request fields with config values
 					ClientGuid: config.clientGuid,
 				},

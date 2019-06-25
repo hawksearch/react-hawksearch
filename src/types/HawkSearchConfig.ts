@@ -67,4 +67,8 @@ export interface HawkSearchConfig {
 	 * The definition of custom components that overrides default ones in facets rail panel
 	 */
 	facetOverrides?: FacetComponent[];
+	/**
+	 * Additional flag that if set will request extended results data
+	 */
+	isInPreview?: boolean;
 }
