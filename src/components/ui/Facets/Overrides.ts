@@ -1,5 +1,6 @@
 import {
 	Checkbox as DefaultCheckbox,
+	NestedCheckbox as DefaultNestedCheckbox,
 	Search as DefaultSearch,
 	Link as DefaultLink,
 	Slider as DefaultSlider,
@@ -10,6 +11,7 @@ import { FacetType } from 'models/Facets/FacetType';
 // the default set of facet components that we support
 const defaultFacetComponents: FacetComponent[] = [
 	{ facetType: FacetType.Checkbox, component: DefaultCheckbox },
+	{ facetType: FacetType.NestedCheckbox, component: DefaultNestedCheckbox },
 	{ facetType: FacetType.SearchWithin, component: DefaultSearch },
 	{ facetType: FacetType.Link, component: DefaultLink },
 	{ facetType: FacetType.Slider, component: DefaultSlider },
