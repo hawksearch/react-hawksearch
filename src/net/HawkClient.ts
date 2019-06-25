@@ -20,7 +20,6 @@ class HawkClient {
 		const result = await axios.post<SearchResponse>(new URL(this.searchUrl, this.baseUrl).href, request, {
 			cancelToken: cancellationToken,
 		});
-
 		return result.data;
 	}
 

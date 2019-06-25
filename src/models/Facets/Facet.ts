@@ -125,7 +125,6 @@ export class Facet {
 		// the facet does truncated listing of values if configured for truncating and we have too many facets
 		return this.DisplayType === 'truncating' && this.Values.length > this.TruncateThreshold;
 	}
-
 	/** Whether or not the facet should have a quick lookup search input. */
 	public get shouldSearch() {
 		// the facet should have a search box if configured to do so, and the number of facet values is greater
