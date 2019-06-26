@@ -13,12 +13,7 @@ function ResultListing({ ResultItem = DefaultResultItem }: ResultsListingProps) 
 		store: { isLoading, searchResults },
 	} = useHawkSearch();
 
-	let results = searchResults ? searchResults.Results : [];
-
-	// sort by score, descending
-	results = results.sort((a, b) => {
-		return b.Score - a.Score;
-	});
+	const results = searchResults ? searchResults.Results : [];
 
 	return (
 		<div className="hawk-results__listing">
