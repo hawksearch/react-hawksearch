@@ -1,4 +1,4 @@
-import axios, { CancelToken } from 'axios';
+import axios, { CancelToken, AxiosRequestConfig } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 import { HawkSearchConfig } from 'types/HawkSearchConfig';
@@ -6,10 +6,12 @@ import { HawkSearchConfig } from 'types/HawkSearchConfig';
 class HawkClient {
 	private baseUrl: string;
 	private searchUrl: string;
+	private dashboardUrl: string;
 	private autocompleteUrl: string;
 
 	constructor(config: HawkSearchConfig) {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
+		this.dashboardUrl = config.dashboardUrl || 'http://test.hawksearch.net/';
 		this.searchUrl = config.searchUrl || '/api/v2/search';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
 	}
@@ -18,7 +20,6 @@ class HawkClient {
 		const result = await axios.post<SearchResponse>(new URL(this.searchUrl, this.baseUrl).href, request, {
 			cancelToken: cancellationToken,
 		});
-
 		return result.data;
 	}
 

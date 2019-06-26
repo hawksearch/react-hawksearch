@@ -55,6 +55,7 @@ exports[`Store performs a search 1`] = `
         "AlwaysVisible": true,
         "SortOrder": 1,
         "NofVisible": 10,
+        "SwatchData": [],
         "FacetRangeDisplayType": 100,
         "PreloadChildren": true,
         "ShowSliderInputs": false,

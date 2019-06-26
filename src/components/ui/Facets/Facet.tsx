@@ -42,7 +42,6 @@ export interface FacetState {
 	isTruncated: boolean;
 	/** Whether or not this facet is collapsed. */
 	isCollapsed: boolean;
-
 	/** If filter is enabled, contains the number of facets that are truncated. */
 	remainingFacets: number;
 }

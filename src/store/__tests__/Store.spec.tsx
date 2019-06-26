@@ -46,6 +46,7 @@ const searchMock = jest.fn(
 					AlwaysVisible: true,
 					SortOrder: 1,
 					NofVisible: 10,
+					SwatchData: [],
 					FacetRangeDisplayType: 100,
 					PreloadChildren: true,
 					ShowSliderInputs: false,

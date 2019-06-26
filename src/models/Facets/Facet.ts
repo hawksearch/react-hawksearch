@@ -52,7 +52,6 @@ export class Facet {
 	public IsCollapsedDefault: boolean;
 	/** Indicates if the facet is set to be visible. */
 	public IsVisible: boolean;
-
 	/**
 	 * Indicates if search is enabled for this facet. If it is enabled, a search box should be available for
 	 * users to filter the facet values by typing in the search box.
@@ -98,7 +97,7 @@ export class Facet {
 	public NofVisible: number;
 
 	/** Will be included if @see FacetType is `"swatch"`. */
-	public SwatchData?: Swatch[];
+	public SwatchData: Swatch[];
 
 	/** Indicates type of facet range display. */
 	public FacetRangeDisplayType: number;
@@ -122,7 +121,6 @@ export class Facet {
 		// the facet does truncated listing of values if configured for truncating and we have too many facets
 		return this.DisplayType === 'truncating' && this.Values.length > this.TruncateThreshold;
 	}
-
 	/** Whether or not the facet should have a quick lookup search input. */
 	public get shouldSearch() {
 		// the facet should have a search box if configured to do so, and the number of facet values is greater
@@ -141,9 +139,7 @@ export class Facet {
 	public constructor(init: Facet) {
 		Object.assign(this, init);
 
-		// TODO: why is this a STRINGrigfhgiasfhgiasdfh
-		// this.SwatchData = init.SwatchData ? init.SwatchData.map(s => new Swatch(s)) : undefined;
-
+		this.SwatchData = init.SwatchData.map(s => new Swatch(s));
 		this.Ranges = init.Ranges.map(r => new Range(r));
 		this.Values = init.Values.map(v => new Value(v));
 	}
