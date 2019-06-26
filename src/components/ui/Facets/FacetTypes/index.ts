@@ -5,3 +5,4 @@ export { default as Slider } from './Slider';
 export { default as Swatch } from './Swatch';
 export { default as SwatchItem } from './SwatchItem';
 export { default as NestedCheckbox } from './Nested';
+export { default as OpenRange } from './OpenRange';

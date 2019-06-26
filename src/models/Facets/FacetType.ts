@@ -10,4 +10,5 @@ export enum FacetType {
 	SearchWithin = 'search',
 	RecentSearches = 'recentsearches',
 	RelatedSearches = 'relatedsearches',
+	OpenRange = 'openRange',
 }

@@ -5,6 +5,7 @@ import {
 	Link as DefaultLink,
 	Slider as DefaultSlider,
 	Swatch as DefaultSwatch,
+	OpenRange as DefaultOpenRange,
 } from 'components/ui/Facets/FacetTypes';
 import { FacetComponent } from 'types/FacetComponent';
 import { FacetType } from 'models/Facets/FacetType';
@@ -17,6 +18,7 @@ const defaultFacetComponents: FacetComponent[] = [
 	{ facetType: FacetType.Link, component: DefaultLink },
 	{ facetType: FacetType.Slider, component: DefaultSlider },
 	{ facetType: FacetType.Swatch, component: DefaultSwatch },
+	{ facetType: FacetType.OpenRange, component: DefaultOpenRange },
 ];
 
 /**
