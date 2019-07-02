@@ -58,6 +58,8 @@ export class Response {
 
 	public SearchDuration: number;
 
+	public DocExplain?: string;
+
 	public constructor(init: Response) {
 		Object.assign(this, init);
 
