@@ -7,6 +7,7 @@ import { Response, Request, FacetSelections } from 'models/Search';
 import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
+import { FacetType } from 'models/Facets/FacetType';
 
 export interface SearchActor {
 	/**
@@ -180,7 +181,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			negate = false;
 		}
 
-		const facetName = typeof facet === 'string' ? facet : facet.Name;
+		const facetName: string = typeof facet === 'string' ? facet : facet.Name;
 		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 
 		const valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;

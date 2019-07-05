@@ -179,10 +179,7 @@ export class SearchStore {
 				// for other types of facets, try to find a matching value
 
 				selectionValues.forEach(selectionValue => {
-					const matchingVal = facet.Values.find(
-						// note that we need to search by regular value and also negated values
-						facetValue => facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue
-					);
+					const matchingVal = this.findMatchingValue(selectionValue, facet.Values);
 
 					if (!matchingVal || !matchingVal.Label) {
 						// if there's no matching value from the server, we cannot display because there would
@@ -205,5 +202,28 @@ export class SearchStore {
 		});
 
 		return selections;
+	}
+
+	private findMatchingValue(selectionValue: string, facetValues: Value[]): Value | null {
+		let matchingValue: Value | null = null;
+		if (!facetValues || facetValues.length === 0) {
+			return null;
+		}
+
+		for (const facetValue of facetValues) {
+			const isMatchingVal = facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue;
+			// loop through children
+			if (!isMatchingVal) {
+				matchingValue = this.findMatchingValue(selectionValue, facetValue.Children);
+			} else {
+				matchingValue = facetValue;
+			}
+
+			if (matchingValue) {
+				return matchingValue;
+			}
+		}
+
+		return matchingValue;
 	}
 }

@@ -56,7 +56,7 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 
 					const showSuggestions = isOpen && inputValue && inputValue.length > 0;
 					return (
-						<div>
+						<div className="hawk__searchBox__searchInput">
 							<input
 								type="text"
 								style={{ width: '100%' }}

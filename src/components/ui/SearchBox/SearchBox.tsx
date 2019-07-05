@@ -21,7 +21,7 @@ function SearchBox() {
 	}
 
 	return (
-		<div>
+		<div className="hawk__searchBox">
 			<SearchBoxBase
 				initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
 				onSubmit={handleSubmit}
