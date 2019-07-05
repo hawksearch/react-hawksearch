@@ -6,7 +6,7 @@ import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
 
 function Selections() {
 	const {
-		store: { facetSelections },
+		store: { facetSelections, pendingSearch },
 		actor,
 	} = useHawkSearch();
 
@@ -44,6 +44,7 @@ function Selections() {
 
 	return (
 		<div className="hawk-facet-rail__selections">
+			<h3>Search Results {pendingSearch.Keyword ? 'for ' + pendingSearch.Keyword : null}</h3>
 			<h4>You've Selected</h4>
 
 			<ul className="hawk-selections">

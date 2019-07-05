@@ -12,7 +12,7 @@ export interface NestedItemProps {
 	hierarchyValue: Value;
 	isNegated: boolean;
 	isSelected: boolean;
-	onValueSelected(facetValue: string, isNegated: boolean): void;
+	onValueSelected(facetValue: Value, isNegated: boolean): void;
 }
 
 function NestedItem(item: NestedItemProps) {
@@ -22,7 +22,7 @@ function NestedItem(item: NestedItemProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isTruncated, setIsTruncated] = useState(facet.shouldTruncate);
 
-	const hierarchyValue = item.hierarchyValue.Value || '';
+	const hierarchyValue = item.hierarchyValue || '';
 	let hierarchyChildren = item.hierarchyValue.Children || [];
 
 	let remainingValues = 0;
