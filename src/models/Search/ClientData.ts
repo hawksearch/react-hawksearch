@@ -10,6 +10,7 @@ export class ClientData {
 	/** Browser user agent used for evaluating Visitor Targets. */
 	public UserAgent?: string;
 
+	public PreviewBuckets?: number[];
 	/**
 	 * The source used for evaluating Visitor Targets. This was previously called 'hawksource' and can
 	 * be used to track the source the user came from (i.e. email, instagram, etc).

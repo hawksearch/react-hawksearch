@@ -6,3 +6,5 @@ export * from './Selections';
 export * from './SmartBar';
 export * from './Sorting';
 export * from './ClientData';
+export * from './Merchandising';
+export * from './ContentType';
