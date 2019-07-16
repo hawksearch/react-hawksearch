@@ -9,4 +9,6 @@ export class SmartBar {
 	public PopularityBoost?: boolean;
 	/** This is used by the Hawksearch Preview to enable or disable Pinning Rules. */
 	public ItemPin?: boolean;
+	/** This is used by the Hawksearch Elastic API to filter results by date. */
+	public PreviewDate?: string;
 }

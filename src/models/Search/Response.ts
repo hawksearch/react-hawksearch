@@ -3,6 +3,7 @@ import { Result } from './Result';
 import { Sorting } from './Sorting';
 import { Selections } from './Selections';
 import { Facet } from 'models/Facets';
+import { Merchandising } from './Merchandising';
 
 export class Response {
 	/** Indicates if request was successful. */
@@ -53,7 +54,7 @@ export class Response {
 	 * Merchandising can be placed by using Campaigns in the Hawksearch Workbench. The Campaign will
 	 * determine if the content should appear and in what zone.
 	 */
-	public Merchandising?: any[]; // TODO: merchandising object
+	public Merchandising?: Merchandising; // TODO: merchandising object
 	public FeaturedItems?: any[]; // TODO: featured items object
 
 	public SearchDuration: number;

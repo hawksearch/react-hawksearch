@@ -29,6 +29,7 @@ export { default as Pagination } from 'components/ui/Results/Tools/Pagination';
 export { default as Results } from 'components/ui/Results/Results';
 export { default as ResultListing } from 'components/ui/Results/ResultListing';
 export { default as ResultImage } from 'components/ui/Results/ResultImage';
+export { ContentType } from 'models/Search/ContentType';
 
 // hooks
 export { useHawkSearch } from 'components/StoreProvider';
