@@ -1,10 +1,25 @@
 import { ContentType } from './ContentType';
+import { Result } from './Result';
 
-export class Merchandising {
-	public Items?: MerchandisingItem[];
+export class FeaturedItems {
+	public Items: FeaturedItem[];
+
+	public constructor(init: FeaturedItems) {
+		Object.assign(this, init);
+		this.Items = init.Items.map(i => new FeaturedItem(i));
+	}
 }
 
-export class MerchandisingItem {
+export class Merchandising {
+	public Items: MerchandisingItem[];
+
+	public constructor(init: Merchandising) {
+		Object.assign(this, init);
+		this.Items = init.Items.map(i => new MerchandisingItem(i));
+	}
+}
+
+export abstract class PageContentItem {
 	public ContentType: ContentType;
 	public ImageUrl: string;
 	public AltTag: string;
@@ -29,4 +44,21 @@ export class MerchandisingItem {
 	public MobileForwardUrl: string;
 	public MobileWidth: string;
 	public MobileHeight: string;
+}
+
+export class FeaturedItem extends PageContentItem {
+	public Items: Result[];
+
+	public constructor(init: FeaturedItem) {
+		super();
+		Object.assign(this, init);
+		this.Items = init.Items.map(i => new Result(i));
+	}
+}
+
+export class MerchandisingItem extends PageContentItem {
+	public constructor(init: MerchandisingItem) {
+		super();
+		Object.assign(this, init);
+	}
 }

@@ -3,7 +3,7 @@ import { Result } from './Result';
 import { Sorting } from './Sorting';
 import { Selections } from './Selections';
 import { Facet } from 'models/Facets';
-import { Merchandising } from './Merchandising';
+import { Merchandising, FeaturedItems } from './Merchandising';
 
 export class Response {
 	/** Indicates if request was successful. */
@@ -54,8 +54,8 @@ export class Response {
 	 * Merchandising can be placed by using Campaigns in the Hawksearch Workbench. The Campaign will
 	 * determine if the content should appear and in what zone.
 	 */
-	public Merchandising?: Merchandising; // TODO: merchandising object
-	public FeaturedItems?: any[]; // TODO: featured items object
+	public Merchandising: Merchandising; // TODO: merchandising object
+	public FeaturedItems: FeaturedItems; // TODO: featured items object
 
 	public SearchDuration: number;
 
@@ -65,6 +65,8 @@ export class Response {
 		Object.assign(this, init);
 
 		this.Pagination = new Pagination(init.Pagination);
+		this.Merchandising = new Merchandising(init.Merchandising);
+		this.FeaturedItems = new FeaturedItems(init.FeaturedItems);
 		this.Results = init.Results.map(r => new Result(r));
 		this.Facets = init.Facets.map(f => new Facet(f));
 		this.Selections = new Selections(init.Selections);
