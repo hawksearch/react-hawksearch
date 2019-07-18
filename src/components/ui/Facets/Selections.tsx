@@ -44,9 +44,7 @@ function Selections() {
 
 	return (
 		<div className="hawk-facet-rail__selections">
-			<h3>Search Results {pendingSearch.Keyword ? 'for ' + pendingSearch.Keyword : null}</h3>
 			<h4>You've Selected</h4>
-
 			<ul className="hawk-selections">
 				{keys.map(key => {
 					const selection = facetSelections[key];
