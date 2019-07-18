@@ -17,6 +17,8 @@ export { default as SearchBox } from 'components/ui/SearchBox/SearchBox';
 export { default as FacetRail } from 'components/ui/Facets/FacetRail';
 export { default as FacetList } from 'components/ui/Facets/FacetList';
 export { default as Facet } from 'components/ui/Facets/Facet';
+export { default as Selections } from 'components/ui/Facets/Selections';
+export { default as SearchResultsLabel } from 'components/ui/Facets/SearchResultsLabel';
 export * from 'components/ui/Facets/FacetTypes';
 export { FacetType } from 'models/Facets/FacetType';
 export { FacetSelectionState } from 'store/Store';
@@ -29,6 +31,7 @@ export { default as Pagination } from 'components/ui/Results/Tools/Pagination';
 export { default as Results } from 'components/ui/Results/Results';
 export { default as ResultListing } from 'components/ui/Results/ResultListing';
 export { default as ResultImage } from 'components/ui/Results/ResultImage';
+export { default as ToolRow } from 'components/ui/Results/ToolRow';
 export { ContentType } from 'models/Search/ContentType';
 
 // hooks

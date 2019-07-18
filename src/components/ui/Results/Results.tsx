@@ -4,6 +4,7 @@ import ToolRow from 'components/ui/Results/ToolRow';
 import ResultListing from 'components/ui/Results/ResultListing';
 import Selections from 'components/ui/Facets/Selections';
 import { default as DefaultResultItem, ResultItemProps } from 'components/ui/Results/ResultItem';
+import SearchResultsLabel from 'components/ui/Facets/SearchResultsLabel';
 
 export interface ResultsProps {
 	ResultItem?: React.ComponentType<ResultItemProps>;
@@ -21,6 +22,7 @@ function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 
 	return (
 		<div className="hawk-results">
+			<SearchResultsLabel />
 			<Selections />
 
 			<div className="hawk-results__top-tool-row">
