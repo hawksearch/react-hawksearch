@@ -33,7 +33,7 @@ export { default as ResultListing } from 'components/ui/Results/ResultListing';
 export { default as ResultImage } from 'components/ui/Results/ResultImage';
 export { default as ToolRow } from 'components/ui/Results/ToolRow';
 export { ContentType } from 'models/Search/ContentType';
-
+export * from 'models/Autocomplete/Suggestion';
 // hooks
 export { useHawkSearch } from 'components/StoreProvider';
 export { useFacet } from 'components/ui/Facets/Facet';

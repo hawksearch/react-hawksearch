@@ -5,6 +5,7 @@ import SearchBox from 'components/ui/SearchBox/SearchBox';
 import FacetRail from 'components/ui/Facets/FacetRail';
 import { Results } from 'components/ui/Results';
 import { useHawkConfig } from 'components/ConfigProvider';
+import SearchSuggestionsList from 'components/ui/SearchBox/SearchSuggestionsList';
 
 function App() {
 	const { config } = useHawkConfig();
@@ -21,7 +22,7 @@ function App() {
 		return (
 			<div className="hawk">
 				<div className="hawk__header">
-					<SearchBox />
+					<SearchBox SuggestionsList={SearchSuggestionsList} />
 				</div>
 			</div>
 		);

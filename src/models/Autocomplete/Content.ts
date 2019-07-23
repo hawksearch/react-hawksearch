@@ -1,6 +1,7 @@
 import { Result } from 'models/Search';
+import { SuggestionType, Suggestion } from './Suggestion';
 
-export class Content {
+export class Content extends Suggestion {
 	/** Display label for the content item in Autocomplete. */
 	public Value: string;
 
@@ -11,4 +12,9 @@ export class Content {
 	public Html: string;
 
 	public Results: Result;
+
+	public constructor(init: Content) {
+		super(SuggestionType.Content);
+		Object.assign(this, init);
+	}
 }

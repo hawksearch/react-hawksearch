@@ -4,6 +4,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
 import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
+import SearchSuggestionsList from './SearchSuggestionsList';
 
 /**
  * This component is a simple search input box (with autosuggest) that can be placed globally throughout the site.
@@ -27,7 +28,7 @@ function GlobalSearchBox() {
 
 	return (
 		<div className="hawk">
-			<SearchBoxBase onSubmit={handleSubmit} />
+			<SearchBoxBase onSubmit={handleSubmit} SuggestionsList={SearchSuggestionsList} />
 		</div>
 	);
 }
