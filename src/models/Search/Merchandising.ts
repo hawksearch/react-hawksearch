@@ -6,6 +6,7 @@ export class FeaturedItems {
 
 	public constructor(init: FeaturedItems) {
 		Object.assign(this, init);
+
 		this.Items = init.Items.map(i => new FeaturedItem(i));
 	}
 }
@@ -44,6 +45,7 @@ export abstract class PageContentItem {
 	public MobileForwardUrl: string;
 	public MobileWidth: string;
 	public MobileHeight: string;
+	public Trigger: Trigger;
 }
 
 export class FeaturedItem extends PageContentItem {
@@ -59,6 +61,16 @@ export class FeaturedItem extends PageContentItem {
 export class MerchandisingItem extends PageContentItem {
 	public constructor(init: MerchandisingItem) {
 		super();
+		Object.assign(this, init);
+	}
+}
+
+export class Trigger {
+	public BannerGroupId: number;
+	public Name: string;
+	public SortOrder: number;
+	public RuleXML: string;
+	public constructor(init: Trigger) {
 		Object.assign(this, init);
 	}
 }

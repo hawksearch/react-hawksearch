@@ -68,6 +68,12 @@ const searchMock = jest.fn(
 			Keyword: request.Keyword || '',
 			SearchDuration: 100,
 			Selections: {},
+			Merchandising: {
+				Items: [],
+			},
+			FeaturedItems: {
+				Items: [],
+			},
 		};
 
 		return Promise.resolve<Response>(new Response((response as unknown) as Response));
