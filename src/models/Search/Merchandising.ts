@@ -1,5 +1,6 @@
 import { ContentType } from './ContentType';
 import { Result } from './Result';
+import { BannerTrigger } from './Trigger';
 
 export class FeaturedItems {
 	public Items: FeaturedItem[];
@@ -44,6 +45,7 @@ export abstract class PageContentItem {
 	public MobileForwardUrl: string;
 	public MobileWidth: string;
 	public MobileHeight: string;
+	public Trigger: BannerTrigger;
 }
 
 export class FeaturedItem extends PageContentItem {
@@ -52,6 +54,7 @@ export class FeaturedItem extends PageContentItem {
 	public constructor(init: FeaturedItem) {
 		super();
 		Object.assign(this, init);
+		this.Trigger = new BannerTrigger(init.Trigger);
 		this.Items = init.Items.map(i => new Result(i));
 	}
 }
@@ -60,5 +63,6 @@ export class MerchandisingItem extends PageContentItem {
 	public constructor(init: MerchandisingItem) {
 		super();
 		Object.assign(this, init);
+		this.Trigger = new BannerTrigger(init.Trigger);
 	}
 }
