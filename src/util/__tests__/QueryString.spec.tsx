@@ -1,4 +1,4 @@
-import { parseSearchQueryString, getSearchQueryString, checkIfRequestForLandingPage } from 'util/QueryString';
+import { parseSearchQueryString, getSearchQueryString, checkIfUrlRefsLandingPage } from 'util/QueryString';
 import { Request } from 'models/Search';
 
 describe('parseSearchQueryString', () => {
@@ -147,14 +147,14 @@ describe('getSearchQueryString', () => {
 	});
 });
 
-describe('checkIfRequestForLandingPage', () => {
+describe('checkIfUrlRefsLandingPage', () => {
 	it('matches exactly', () => {
 		// arrange
 		const path = '/search';
 		const searchPage = '/search';
 
 		// act
-		const isLandingPage = checkIfRequestForLandingPage(path, searchPage);
+		const isLandingPage = checkIfUrlRefsLandingPage(path, searchPage);
 
 		// assert
 		expect(isLandingPage).toBe(false);
@@ -166,7 +166,7 @@ describe('checkIfRequestForLandingPage', () => {
 		const searchPage = '/search';
 
 		// act
-		const isLandingPage = checkIfRequestForLandingPage(path, searchPage);
+		const isLandingPage = checkIfUrlRefsLandingPage(path, searchPage);
 
 		// assert
 		expect(isLandingPage).toBe(true);
@@ -178,7 +178,7 @@ describe('checkIfRequestForLandingPage', () => {
 		const searchPage = '/search';
 
 		// act
-		const isLandingPage = checkIfRequestForLandingPage(path, searchPage);
+		const isLandingPage = checkIfUrlRefsLandingPage(path, searchPage);
 
 		// assert
 		expect(isLandingPage).toBe(true);
@@ -186,9 +186,9 @@ describe('checkIfRequestForLandingPage', () => {
 
 	it('matches without regard to slashes', () => {
 		// arrange, act, assert
-		expect(checkIfRequestForLandingPage('/search/', '/search')).toBe(false);
-		expect(checkIfRequestForLandingPage('/search', '/search/')).toBe(false);
-		expect(checkIfRequestForLandingPage('/search/', '/search/')).toBe(false);
-		expect(checkIfRequestForLandingPage('/search', '/search')).toBe(false);
+		expect(checkIfUrlRefsLandingPage('/search/', '/search')).toBe(false);
+		expect(checkIfUrlRefsLandingPage('/search', '/search/')).toBe(false);
+		expect(checkIfUrlRefsLandingPage('/search/', '/search/')).toBe(false);
+		expect(checkIfUrlRefsLandingPage('/search', '/search')).toBe(false);
 	});
 });

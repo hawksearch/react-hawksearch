@@ -15,6 +15,8 @@ function SearchBox() {
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		if (event.key === 'Enter') {
 			actor.setSearch({
+				PageId: undefined,
+				CustomUrl: undefined,
 				Keyword: event.currentTarget.value,
 			});
 		}

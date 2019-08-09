@@ -4,6 +4,7 @@ import { Sorting } from './Sorting';
 import { Selections } from './Selections';
 import { Facet } from 'models/Facets';
 import { Merchandising, FeaturedItems } from './Merchandising';
+import { StringLiteral } from '@babel/types';
 
 export class Response {
 	/** Indicates if request was successful. */
@@ -61,6 +62,27 @@ export class Response {
 
 	public DocExplain?: string;
 
+	/**
+	 * Properties that gets populated when user requests landing page related results
+	 *
+	 */
+
+	public Breadcrumb: string;
+
+	public CustomHtml: string;
+
+	public HeaderTitle: string;
+
+	public MetaDescription: string;
+
+	public MetaKeywords: string;
+	public MetaRobots: string;
+	public Name: string;
+	public Next: string;
+	public Prev: string;
+	public PageHeading: string;
+	public RelCanonical: string;
+	// end of landing page related fields
 	public constructor(init: Response) {
 		Object.assign(this, init);
 

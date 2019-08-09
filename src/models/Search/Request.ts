@@ -101,6 +101,8 @@ export class Request {
 	 * additional score information returned.
 	 */
 	public SmartBar?: SmartBar[];
+
+	public PageId?: number;
 }
 
 export interface FacetSelections {
