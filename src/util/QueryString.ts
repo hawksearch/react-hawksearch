@@ -5,6 +5,9 @@ interface ParsedQueryStringFixed {
 	keyword?: string;
 	sort?: string;
 	pg?: string;
+	lp?: string;
+	PageId?: string;
+	lpurl?: string;
 	mpp?: string;
 	searchWithin?: string;
 }
@@ -21,7 +24,7 @@ type ParsedQueryString = ParsedQueryStringFixed & ParsedQueryStringDynamic;
 
 /**
  * Parses the input query string and returns an object that can be used to build a search request.
- * The object returned will usually have the keys: `keyword`, `sort`, `pg`, `mpp`, and then more keys
+ * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
  * for every selected facet.
  * @param search The input query string.
  */
@@ -31,7 +34,16 @@ function parseQueryStringToObject(search: string) {
 	const parsed: ParsedQueryString = {};
 
 	params.forEach((value, key) => {
-		if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp' || key === 'searchWithin') {
+		if (
+			key === 'keyword' ||
+			key === 'sort' ||
+			key === 'pg' ||
+			key === 'lp' ||
+			key === 'PageId' ||
+			key === 'lpurl' ||
+			key === 'mpp' ||
+			key === 'searchWithin'
+		) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = value;
 		} else {
@@ -64,9 +76,10 @@ function parseQueryStringToObject(search: string) {
 export function parseLocation(location: Location, searchUrl: string = '/search'): Partial<Request> {
 	const searchRequest = parseSearchQueryString(location.search);
 
-	if (checkIfRequestForLandingPage(location.pathname, searchUrl)) {
+	// customUrl have priority over keywords
+	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
 		searchRequest.Keyword = '';
-		searchRequest.CustomUrl = location.pathname;
+		searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
 	}
 	return searchRequest;
 }
@@ -78,22 +91,25 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, searchWithin, ...facetSelections } = queryObj;
+	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, ...facetSelections } = queryObj;
 
+	// ignore landing pages if keyword is passed
+	const pageId = lp || PageId;
 	return {
-		Keyword: keyword,
+		Keyword: lpurl || pageId ? '' : keyword,
 
 		SortBy: sort,
 		PageNo: pg ? Number(pg) : undefined,
 		MaxPerPage: mpp ? Number(mpp) : undefined,
-
+		PageId: pageId ? Number(pageId) : undefined,
+		CustomUrl: lpurl,
 		SearchWithin: searchWithin,
 
 		FacetSelections: facetSelections,
 	};
 }
 
-export function checkIfRequestForLandingPage(path: string, searchUrl: string): boolean {
+export function checkIfUrlRefsLandingPage(path: string, searchUrl: string): boolean {
 	if (!path) {
 		// if there's no path, this request can't be for a landing page
 		return false;
