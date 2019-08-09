@@ -10,9 +10,11 @@ exports[`getSearchQueryString turns arrays with multiple values into query strin
 
 exports[`parseSearchQueryString handles keyword when it has multiple values 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {},
   "Keyword": "this is my keyword,which should be a long string",
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": undefined,
   "SortBy": undefined,
@@ -21,6 +23,7 @@ Object {
 
 exports[`parseSearchQueryString handles keyword when parsing 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {
     "brand": Array [
       "cool",
@@ -32,6 +35,7 @@ Object {
   },
   "Keyword": "this is my keyword",
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": undefined,
   "SortBy": undefined,
@@ -40,9 +44,11 @@ Object {
 
 exports[`parseSearchQueryString handles query params with no values 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {},
   "Keyword": "men",
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": undefined,
   "SortBy": undefined,
@@ -51,6 +57,7 @@ Object {
 
 exports[`parseSearchQueryString parses facets into arrays 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {
     "brand": Array [
       "cool",
@@ -61,6 +68,7 @@ Object {
   },
   "Keyword": undefined,
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": undefined,
   "SortBy": undefined,
@@ -69,6 +77,7 @@ Object {
 
 exports[`parseSearchQueryString parses facets into arrays and handles question mark 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {
     "brand": Array [
       "cool",
@@ -79,6 +88,7 @@ Object {
   },
   "Keyword": undefined,
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": undefined,
   "SortBy": undefined,
@@ -87,6 +97,7 @@ Object {
 
 exports[`parseSearchQueryString parses multiple facet values into arrays 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {
     "brand": Array [
       "cool",
@@ -98,6 +109,7 @@ Object {
   },
   "Keyword": undefined,
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": undefined,
   "SortBy": undefined,
@@ -106,6 +118,7 @@ Object {
 
 exports[`parseSearchQueryString parses search within 1`] = `
 Object {
+  "CustomUrl": undefined,
   "FacetSelections": Object {
     "brand": Array [
       "cool",
@@ -116,6 +129,7 @@ Object {
   },
   "Keyword": undefined,
   "MaxPerPage": undefined,
+  "PageId": undefined,
   "PageNo": undefined,
   "SearchWithin": "blah blah",
   "SortBy": undefined,
