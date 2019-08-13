@@ -12,7 +12,7 @@ export class Rule {
 		if (init.Parent) {
 			this.Parent = new Rule(init.Parent);
 		}
-		this.Rules = init.Rules.map(i => new Rule(i));
+		this.Rules = init.Rules ? init.Rules.map(i => new Rule(i)) : [];
 	}
 }
 
