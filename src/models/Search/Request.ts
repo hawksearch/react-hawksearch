@@ -88,6 +88,12 @@ export class Request {
 	public IsInPreview?: boolean;
 
 	/**
+	 * This is used by the Hawksearch Preview to set 100 % facets coverage mode
+	 *
+	 * You can use this if you won't to hide facet values with 100 % of coverage
+	 */
+	public Is100CoverageTurnedOn?: boolean;
+	/**
 	 * This is used by the Hawksearch Preview to display the advanced explanation.
 	 *
 	 * You can use this if you desire additional score information returned.

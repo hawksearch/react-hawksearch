@@ -10,6 +10,7 @@ interface ParsedQueryStringFixed {
 	lpurl?: string;
 	mpp?: string;
 	searchWithin?: string;
+	is100Coverage?: string;
 }
 
 /**
@@ -42,7 +43,8 @@ function parseQueryStringToObject(search: string) {
 			key === 'PageId' ||
 			key === 'lpurl' ||
 			key === 'mpp' ||
-			key === 'searchWithin'
+			key === 'searchWithin' ||
+			key === 'is100Coverage'
 		) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = value;
@@ -91,7 +93,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, ...facetSelections } = queryObj;
+	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, ...facetSelections } = queryObj;
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
@@ -104,7 +106,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		PageId: pageId ? Number(pageId) : undefined,
 		CustomUrl: lpurl,
 		SearchWithin: searchWithin,
-
+		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
 		FacetSelections: facetSelections,
 	};
 }
@@ -136,7 +138,14 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 
 	for (const key in queryObj) {
 		if (queryObj.hasOwnProperty(key)) {
-			if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'mpp' || key === 'searchWithin') {
+			if (
+				key === 'keyword' ||
+				key === 'sort' ||
+				key === 'pg' ||
+				key === 'mpp' ||
+				key === 'searchWithin' ||
+				key === 'is100Coverage'
+			) {
 				const value = queryObj[key];
 
 				if (value === undefined || value === null) {
@@ -180,7 +189,7 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 		sort: searchRequest.SortBy,
 		pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
 		mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-
+		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
 
 		...searchRequest.FacetSelections,
