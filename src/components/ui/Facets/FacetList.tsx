@@ -23,6 +23,9 @@ function FacetList() {
 			{searchResults
 				? // if there are search results, render the facets
 				  searchResults.Facets.map(facet => {
+						if (!facet.IsVisible) {
+							return null;
+						}
 						const registeredComponent = components.find(
 							component => component.facetType === facet.FacetType
 						);
