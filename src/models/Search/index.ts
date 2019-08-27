@@ -7,6 +7,7 @@ export * from './SmartBar';
 export * from './Sorting';
 export * from './ClientData';
 export * from './Merchandising';
+export * from './PageContent';
 export * from './ContentType';
 export * from './Trigger';
 export * from './Rule';

@@ -5,6 +5,7 @@ import { Selections } from './Selections';
 import { Facet } from 'models/Facets';
 import { Merchandising, FeaturedItems } from './Merchandising';
 import { StringLiteral } from '@babel/types';
+import { PageContent } from './PageContent';
 
 export class Response {
 	/** Indicates if request was successful. */
@@ -81,7 +82,9 @@ export class Response {
 	public Next: string;
 	public Prev: string;
 	public PageHeading: string;
+	public PageContent: PageContent[];
 	public RelCanonical: string;
+	public PageLayoutId: number;
 	// end of landing page related fields
 	public constructor(init: Response) {
 		Object.assign(this, init);
@@ -91,6 +94,7 @@ export class Response {
 		this.FeaturedItems = new FeaturedItems(init.FeaturedItems);
 		this.Results = init.Results.map(r => new Result(r));
 		this.Facets = init.Facets.map(f => new Facet(f));
+		this.PageContent = init.PageContent ? init.PageContent.map(p => new PageContent(p)) : [];
 		this.Selections = new Selections(init.Selections);
 		this.Sorting = new Sorting(init.Sorting);
 	}
