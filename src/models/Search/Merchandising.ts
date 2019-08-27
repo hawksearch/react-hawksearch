@@ -20,7 +20,7 @@ export class Merchandising {
 	}
 }
 
-export abstract class PageContentItem {
+export class PageContentItem {
 	public ContentType: ContentType;
 	public ImageUrl: string;
 	public AltTag: string;
@@ -38,7 +38,8 @@ export abstract class PageContentItem {
 	public MobileWidgetArgs: string;
 	public IsTrackingEnabled: boolean;
 	public MobileIsTrackingEnabled?: boolean;
-	public FeaturedItems: any;
+	public FeaturedItems: Result[];
+	public Items: Result[];
 	public Target: string;
 	public MobileTarget: string;
 	public MobileAltTag: string;
@@ -46,23 +47,31 @@ export abstract class PageContentItem {
 	public MobileWidth: string;
 	public MobileHeight: string;
 	public Trigger: BannerTrigger;
+
+	public constructor(init: PageContentItem) {
+		Object.assign(this, init);
+		if (init.FeaturedItems) {
+			this.FeaturedItems = init.FeaturedItems.map(i => new Result(i));
+		}
+		if (init.Trigger) {
+			this.Trigger = new BannerTrigger(init.Trigger);
+		}
+	}
 }
 
 export class FeaturedItem extends PageContentItem {
 	public Items: Result[];
 
 	public constructor(init: FeaturedItem) {
-		super();
+		super(init);
 		Object.assign(this, init);
-		this.Trigger = new BannerTrigger(init.Trigger);
 		this.Items = init.Items.map(i => new Result(i));
 	}
 }
 
 export class MerchandisingItem extends PageContentItem {
 	public constructor(init: MerchandisingItem) {
-		super();
+		super(init);
 		Object.assign(this, init);
-		this.Trigger = new BannerTrigger(init.Trigger);
 	}
 }
