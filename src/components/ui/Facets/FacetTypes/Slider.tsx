@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PublicState } from 'rheostat';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
+import { Value } from 'models/Facets';
 
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
 function Slider() {
-	const {} = useHawkSearch();
+	const {
+		store: { facetSelections },
+	} = useHawkSearch();
 
 	const {
 		state: { facetValues },
@@ -19,14 +22,32 @@ function Slider() {
 	// the range of the slider is defined by the first facet value. or null if there is no first value
 	const range = facetValues.length > 0 ? facetValues[0] : null;
 
-	const rangeMin = range && parseInt(range.RangeMin || '', 10);
-	const rangeMax = range && parseInt(range.RangeMax || '', 10);
-	const rangeStart = range && parseInt(range.RangeStart || '', 10);
-	const rangeEnd = range && parseInt(range.RangeEnd || '', 10);
+	const [rangeMin, setMinRange] = useState(range && Math.floor(parseFloat(range.RangeMin || '')));
+	const [rangeMax, setMaxRange] = useState(range && Math.ceil(parseFloat(range.RangeMax || '')));
+	const [rangeStart, setStartRange] = useState(range && Math.round(parseFloat(range.RangeStart || '')));
+	const [rangeEnd, setEndRange] = useState(range && Math.round(parseFloat(range.RangeEnd || '')));
 
 	// if there's no range, initialize to zeros
-	const [minValue, setMinValue] = useState(rangeStart || rangeMin || 0);
-	const [maxValue, setMaxValue] = useState(rangeEnd || rangeMax || 0);
+	const [minValue, setMinValue] = useState<number>();
+	const [maxValue, setMaxValue] = useState<number>();
+	const [selectedMinValue, selectMinValue] = useState<number>();
+	const [selectedMaxValue, selectMaxValue] = useState<number>();
+
+	useEffect(() => {
+		// clear min and max value if these were cleared
+		if (facet.ParamName && !(facet.ParamName in facetSelections)) {
+			setMinValue(undefined);
+			setMaxValue(undefined);
+		}
+	}, [facetSelections]);
+
+	useEffect(() => {
+		const newRange = facetValues.length > 0 ? facetValues[0] : null;
+		setMinRange(newRange && Math.floor(parseFloat(newRange.RangeMin || '')));
+		setMaxRange(newRange && Math.ceil(parseFloat(newRange.RangeMax || '')));
+		setStartRange(newRange && Math.round(parseFloat(newRange.RangeStart || '')));
+		setEndRange(newRange && Math.round(parseFloat(newRange.RangeEnd || '')));
+	}, [facetValues]);
 
 	if (
 		rangeMin === null ||
@@ -52,7 +73,10 @@ function Slider() {
 		isMax ? setFacetValues(minValue, parseFloat(value)) : setFacetValues(parseFloat(value), maxValue);
 	}
 
-	function setFacetValues(minVal: number, maxVal: number) {
+	function setFacetValues(minVal: number | undefined, maxVal: number | undefined) {
+		if (!minVal || !maxVal) {
+			return;
+		}
 		setMinValue(minVal);
 		setMaxValue(maxVal);
 
@@ -69,13 +93,19 @@ function Slider() {
 					<SliderNumericInputs
 						min={rangeMin}
 						max={rangeMax}
-						values={[minValue, maxValue]}
+						values={[
+							!minValue ? rangeStart : Math.max(minValue, rangeMin),
+							!maxValue ? rangeEnd : Math.min(maxValue, rangeMax),
+						]}
 						onValueChange={onValueChange}
 					/>
 					<Rheostat
 						min={rangeMin}
 						max={rangeMax}
-						values={[minValue, maxValue]}
+						values={[
+							!minValue ? rangeStart : Math.max(minValue, rangeMin),
+							!maxValue ? rangeEnd : Math.min(maxValue, rangeMax),
+						]}
 						onChange={onSliderValueChange}
 					/>
 				</React.Suspense>
