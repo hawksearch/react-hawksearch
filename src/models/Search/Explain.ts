@@ -14,6 +14,7 @@ export class Rules {
 	public RuleId: number;
 	public Boost: number;
 	public Priority: number;
+	public IsTrigger: boolean;
 
 	public constructor(init: Rules) {
 		Object.assign(this, init);
