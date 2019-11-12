@@ -80,7 +80,7 @@ export function parseLocation(location: Location, searchUrl: string = '/search')
 
 	// customUrl have priority over keywords
 	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
-		searchRequest.Keyword = '';
+		searchRequest.Keyword = undefined;
 		searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
 	}
 	return searchRequest;
