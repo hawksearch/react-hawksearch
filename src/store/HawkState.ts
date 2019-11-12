@@ -68,7 +68,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	const [store, setStore] = useMergableState(
 		new SearchStore({
 			pendingSearch: initialSearch || {
-				Keyword: '',
 				FacetSelections: {},
 			},
 			isLoading: true,
@@ -145,10 +144,15 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setStore(prevState => {
-			return {
+			const newState = {
 				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
 			};
+			if (newState.pendingSearch.Keyword === '') {
+				newState.pendingSearch.Keyword = undefined;
+			}
+
+			return newState;
 		});
 	}
 
