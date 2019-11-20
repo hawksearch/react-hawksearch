@@ -11,6 +11,8 @@ export class Range {
 	public LBound: string;
 	/** Upper value of the range. */
 	public UBound: string;
+	/** Asset Url */
+	public AssetFullUrl: string;
 
 	public constructor(init: Range) {
 		Object.assign(this, init);
