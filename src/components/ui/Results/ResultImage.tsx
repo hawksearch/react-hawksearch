@@ -5,13 +5,25 @@ import PlaceholderImage from './PlaceholderImage';
 
 export interface ResultImageProps {
 	item: Result;
+	websiteUrl?: string;
+	itemTitleFieldName?: string;
+	imageUrlFieldName?: string;
 }
 
-function ResultImage({ item }: ResultImageProps) {
+function ResultImage({ item, websiteUrl, itemTitleFieldName, imageUrlFieldName }: ResultImageProps) {
 	const [imageLoaded, setImageLoaded] = useState(false);
 
-	const imageUrl = item.getDocumentValue('image');
-	const itemName = item.getDocumentValue('itemname');
+	let imageUrl = imageUrlFieldName ? item.getDocumentValue(imageUrlFieldName) : item.getDocumentValue('image');
+	if (!imageUrl) {
+		return null;
+	}
+
+	const itemName = itemTitleFieldName ? item.getDocumentValue(itemTitleFieldName) : item.getDocumentValue('itemname');
+
+	const absoluteUrlTester = new RegExp('^https?://|^//', 'i');
+	if (!absoluteUrlTester.test(imageUrl) && websiteUrl) {
+		imageUrl = websiteUrl + imageUrl;
+	}
 
 	return (
 		<div className="hawk-results__item-image">
