@@ -21,6 +21,7 @@ export class Merchandising {
 }
 
 export class PageContentItem {
+	public Zone: string;
 	public ContentType: ContentType;
 	public ImageUrl: string;
 	public AltTag: string;
