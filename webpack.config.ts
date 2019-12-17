@@ -40,7 +40,7 @@ export default (env, argv): webpack.Configuration => {
 			modules: [
 				// adding ./src as a resolve path to match what's configured in tsconfig.json
 				path.resolve(__dirname, './src'),
-				path.resolve(__dirname, './node_modules'),
+				'node_modules',
 			],
 		},
 
