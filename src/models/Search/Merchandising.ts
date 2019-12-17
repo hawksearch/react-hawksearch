@@ -7,7 +7,9 @@ export class FeaturedItems {
 
 	public constructor(init: FeaturedItems) {
 		Object.assign(this, init);
-		this.Items = init.Items.map(i => new FeaturedItem(i));
+		if (init && init.Items) {
+			this.Items = init.Items.map(i => new FeaturedItem(i));
+		}
 	}
 }
 
@@ -16,7 +18,9 @@ export class Merchandising {
 
 	public constructor(init: Merchandising) {
 		Object.assign(this, init);
-		this.Items = init.Items.map(i => new MerchandisingItem(i));
+		if (init && init.Items) {
+			this.Items = init.Items.map(i => new MerchandisingItem(i));
+		}
 	}
 }
 

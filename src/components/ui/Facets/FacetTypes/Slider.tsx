@@ -4,8 +4,6 @@ import { PublicState } from 'rheostat';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
-import { Value } from 'models/Facets';
-
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
 function Slider() {
@@ -30,14 +28,22 @@ function Slider() {
 	// if there's no range, initialize to zeros
 	const [minValue, setMinValue] = useState<number>();
 	const [maxValue, setMaxValue] = useState<number>();
-	const [selectedMinValue, selectMinValue] = useState<number>();
-	const [selectedMaxValue, selectMaxValue] = useState<number>();
 
 	useEffect(() => {
+		const paramName = facet.ParamName || facet.Field;
+
 		// clear min and max value if these were cleared
-		if (facet.ParamName && !(facet.ParamName in facetSelections)) {
+		if (!paramName || !(paramName in facetSelections)) {
 			setMinValue(undefined);
 			setMaxValue(undefined);
+		} else if (
+			paramName in facetSelections &&
+			facetSelections[paramName].items &&
+			facetSelections[paramName].items.length > 0
+		) {
+			const selectedValues = facetSelections[paramName].items[0].value.split(',');
+			setMinValue(Number(selectedValues[0]));
+			setMaxValue(Number(selectedValues[1]));
 		}
 	}, [facetSelections]);
 
@@ -69,12 +75,37 @@ function Slider() {
 		setFacetValues(newMin, newMax);
 	}
 
-	function onValueChange(isMax: boolean, value: string) {
-		isMax ? setFacetValues(minValue, parseFloat(value)) : setFacetValues(parseFloat(value), maxValue);
+	function onValueChange(newMinValue: number, newMaxValue: number) {
+		let currentMinValue = minValue;
+		let currentMaxValue = maxValue;
+		// if min value wasn't yet selected use range start
+		if (minValue === undefined && rangeStart !== null) {
+			currentMinValue = rangeStart; // setMinValue(rangeStart);
+		}
+
+		// if max value wasn't yet selected use range end
+		if (maxValue === undefined && rangeEnd !== null) {
+			currentMaxValue = rangeEnd;
+		}
+
+		if (currentMinValue === undefined || currentMaxValue === undefined) {
+			return;
+		}
+
+		if (currentMinValue !== newMinValue && newMinValue <= currentMaxValue) {
+			currentMinValue = newMinValue;
+		}
+
+		if (currentMaxValue !== newMaxValue && newMaxValue >= currentMinValue) {
+			currentMaxValue = newMaxValue;
+		}
+		setMinValue(currentMinValue);
+		setMaxValue(currentMaxValue);
+		setFacetValues(currentMinValue, currentMaxValue);
 	}
 
 	function setFacetValues(minVal: number | undefined, maxVal: number | undefined) {
-		if (!minVal || !maxVal) {
+		if (minVal === undefined || maxVal === undefined || isNaN(minVal) || isNaN(maxVal)) {
 			return;
 		}
 		setMinValue(minVal);
@@ -94,8 +125,8 @@ function Slider() {
 						min={rangeMin}
 						max={rangeMax}
 						values={[
-							!minValue ? rangeStart : Math.max(minValue, rangeMin),
-							!maxValue ? rangeEnd : Math.min(maxValue, rangeMax),
+							Math.floor(minValue === undefined ? Math.floor(rangeStart) : Math.max(minValue, rangeMin)),
+							Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)),
 						]}
 						onValueChange={onValueChange}
 					/>
@@ -103,8 +134,8 @@ function Slider() {
 						min={rangeMin}
 						max={rangeMax}
 						values={[
-							!minValue ? rangeStart : Math.max(minValue, rangeMin),
-							!maxValue ? rangeEnd : Math.min(maxValue, rangeMax),
+							Math.floor(minValue === undefined ? rangeStart : Math.max(minValue, rangeMin)),
+							Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)),
 						]}
 						onChange={onSliderValueChange}
 					/>
