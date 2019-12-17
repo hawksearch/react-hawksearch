@@ -1,18 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 export interface SliderNumericInputsProps {
 	min: number;
 	max: number;
 	values: number[];
-	onValueChange(isMax: boolean, value: string): void;
+	onValueChange(minValue: number, maxValue: number): void;
 }
 function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
-	function onMinChange(event: React.FormEvent<HTMLInputElement>) {
-		sliderProps.onValueChange(false, event.currentTarget.value);
+	const [minValue, setMinValue] = useState('' as string);
+	const [maxValue, setMaxValue] = useState('' as string);
+
+	function onMinUpdate(event: React.FormEvent<HTMLInputElement>) {
+		const newMinValue = Number(event.currentTarget.value);
+		if (isNaN(newMinValue) && event.currentTarget.value !== '-') {
+			return;
+		}
+		setMinValue(event.currentTarget.value);
 	}
 
-	function onMaxChange(event: React.FormEvent<HTMLInputElement>) {
-		sliderProps.onValueChange(true, event.currentTarget.value);
+	function onMaxUpdate(event: React.FormEvent<HTMLInputElement>) {
+		const newMaxValue = Number(event.currentTarget.value);
+		if (isNaN(newMaxValue) && event.currentTarget.value !== '-') {
+			return;
+		}
+		setMaxValue(event.currentTarget.value);
 	}
+
+	function onValueChanged(event: React.FormEvent<HTMLInputElement>) {
+		sliderProps.onValueChange(Number(minValue), Number(maxValue));
+	}
+
+	useEffect(() => {
+		setMinValue(sliderProps.values[0].toString());
+		setMaxValue(sliderProps.values[1].toString());
+	}, [sliderProps]);
 
 	return (
 		<div className="hawk-sliderNumeric">
@@ -21,17 +41,19 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				className="hawk-numericInput numeric-from"
 				min={sliderProps.min}
 				max={sliderProps.max}
-				value={sliderProps.values[0]}
+				value={minValue}
 				data-type="currency"
-				onChange={onMinChange}
+				onChange={onMinUpdate}
+				onBlur={onValueChanged}
 			/>
 			<input
 				type="text"
 				className="hawk-numericInput numeric-to"
 				min={sliderProps.min}
 				max={sliderProps.max}
-				value={sliderProps.values[1]}
-				onChange={onMaxChange}
+				value={maxValue}
+				onChange={onMaxUpdate}
+				onBlur={onValueChanged}
 				data-type="currency"
 			/>
 		</div>
