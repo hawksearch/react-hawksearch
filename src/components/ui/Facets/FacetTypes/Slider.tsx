@@ -29,6 +29,14 @@ function Slider() {
 	const [minValue, setMinValue] = useState<number>();
 	const [maxValue, setMaxValue] = useState<number>();
 
+	const [isCurency, setIsCurrency] = useState(facet.IsCurrency);
+	const [currencySymbol, setCurrencySymbol] = useState(facet.CurrencySymbol);
+
+	useEffect(() => {
+		setCurrencySymbol(facet.CurrencySymbol || '$');
+		setIsCurrency(facet.IsCurrency);
+	}, [facet]);
+
 	useEffect(() => {
 		const paramName = facet.ParamName || facet.Field;
 
@@ -124,6 +132,8 @@ function Slider() {
 					<SliderNumericInputs
 						min={rangeMin}
 						max={rangeMax}
+						currencySymbol={currencySymbol}
+						isCurrency={isCurency}
 						values={[
 							Math.floor(minValue === undefined ? Math.floor(rangeStart) : Math.max(minValue, rangeMin)),
 							Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)),

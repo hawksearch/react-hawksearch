@@ -45,7 +45,8 @@ export class Facet {
 	public IsNumeric: boolean;
 	/** Indicates if facet values are currency (and should be displayed appropriately). */
 	public IsCurrency: boolean;
-
+	/** Indicates currency symbol in case of currency type facets */
+	public CurrencySymbol: string;
 	/** Indicates if the facet can be collapsed and expanded by the user. */
 	public IsCollapsible: boolean;
 	/** If @see IsCollapsible is `true`, this indicates if the facet should initially be collapsed or expanded. */
