@@ -1,22 +1,34 @@
 import React from 'react';
 import { DownshiftState, StateChangeOptions, ControllerStateAndHelpers } from 'downshift';
 
-import { Product } from 'models/Autocomplete';
 import SearchSuggestions from 'components/ui/SearchBox/SearchSuggestions';
+import { Suggestion, SuggestionStrategyMatch } from 'models/Autocomplete/Suggestion';
+import { getAutocompleteStrategies } from '../Facets/Overrides';
+import { useHawkConfig } from 'components/ConfigProvider';
+import { Product } from 'models/Autocomplete';
+import { SearchSuggestionsListProps } from '././SearchSuggestionsList';
+import { useHawkSearch } from 'components/StoreProvider';
 
 const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
 
-interface SearchBoxBaseProps {
+export interface SearchBoxBaseProps {
 	initialValue?: string;
-	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) => void;
+	SuggestionsList: React.ComponentType<SearchSuggestionsListProps>;
+	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
+function SearchBoxBase({ SuggestionsList, initialValue, onSubmit }: SearchBoxBaseProps) {
+	const { config } = useHawkConfig();
+	// const { store, actor } = useHawkSearch();
+	// console.log('Actor...', actor);
+	// console.log('Store...', store);
+	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
+
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
-		state: DownshiftState<Product>,
-		changes: StateChangeOptions<Product>
-	): Partial<StateChangeOptions<Product>> {
+		state: DownshiftState<Suggestion>,
+		changes: StateChangeOptions<Suggestion>
+	): Partial<StateChangeOptions<Suggestion>> {
 		if (
 			// NOTE: these strings are hardcoded to support code splitting downshift.
 			// using the constants from the package will prevent code splitting from operating correctly
@@ -39,19 +51,39 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 	}
 
 	/** Called when an item has been selected from the autocomplete results. */
-	function handleItemChange(item: Product, downshift: ControllerStateAndHelpers<Product>) {
-		location.assign(item.Url);
+	function handleItemChange(item: Suggestion, downshift: ControllerStateAndHelpers<Suggestion>) {
+		if (!item) {
+			return;
+		}
+
+		const matchedStrategy = strategies.find(strategy => strategy.SuggestionType === item.SuggestionType);
+		if (!matchedStrategy) {
+			return;
+		}
+
+		(matchedStrategy as SuggestionStrategyMatch).SuggestionStrategy.handleItemChange(item, downshift);
+	}
+
+	function handleToString(item: Suggestion): string {
+		if (!item) {
+			return '';
+		}
+		const matchedStrategy = strategies.find(strategy => strategy.SuggestionType === item.SuggestionType);
+		if (!matchedStrategy) {
+			return '';
+		}
+		return (matchedStrategy as SuggestionStrategyMatch).SuggestionStrategy.toString(item);
 	}
 
 	return (
 		<React.Suspense fallback={<div>Loading...</div>}>
 			<Downshift
 				stateReducer={handleStateChange}
-				itemToString={(item: Product | null) => (item ? item.ProductName : '')}
+				itemToString={(item: Suggestion) => handleToString(item)}
 				onChange={handleItemChange}
 				initialInputValue={initialValue}
 			>
-				{(options: ControllerStateAndHelpers<Product>) => {
+				{(options: ControllerStateAndHelpers<Suggestion>) => {
 					const { isOpen, inputValue, getInputProps, openMenu } = options;
 
 					const showSuggestions = isOpen && inputValue && inputValue.length > 0;
@@ -78,7 +110,11 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 								})}
 							/>
 							{showSuggestions ? (
-								<SearchSuggestions query={inputValue || ''} downshift={options} />
+								<SearchSuggestions
+									query={inputValue || ''}
+									downshift={options}
+									SuggestionsList={SuggestionsList}
+								/>
 							) : null}
 						</div>
 					);

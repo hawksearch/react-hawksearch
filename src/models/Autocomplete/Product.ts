@@ -1,6 +1,9 @@
 import { Result } from 'models/Search';
+import { Suggestion, SuggestionStrategy, SuggestionType } from './Suggestion';
+import { ControllerStateAndHelpers } from 'downshift';
+import { useHawkSearch } from 'components/StoreProvider';
 
-export class Product {
+export class Product extends Suggestion {
 	/** Name of the item (if applicable). */
 	public ProductName: string;
 
@@ -21,4 +24,19 @@ export class Product {
 	 * as `true`.
 	 */
 	public Results: Result;
+
+	public constructor(init: Product) {
+		super(SuggestionType.Product);
+		Object.assign(this, init);
+	}
+}
+
+export class ProductStrategy implements SuggestionStrategy {
+	public handleItemChange(item: Product, downshift: ControllerStateAndHelpers<Product>): void {
+		location.assign(item.Url);
+	}
+
+	public toString(item: Product): string {
+		return this ? item.ProductName : '';
+	}
 }
