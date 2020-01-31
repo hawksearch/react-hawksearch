@@ -28,9 +28,20 @@ function SearchBox({ SuggestionsList = SearchSuggestionsList }: SearchBoxProps) 
 		}
 	}
 
+	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
+		const { inputValue, closeMenu } = downshift;
+		actor.setSearch({
+			PageId: undefined,
+			CustomUrl: undefined,
+			Keyword: inputValue || '',
+		});
+		closeMenu();
+	}
+
 	return (
 		<div className="hawk__searchBox">
 			<SearchBoxBase
+				onViewMatches={handleViewAllMatches}
 				SuggestionsList={SuggestionsList}
 				initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
 				onSubmit={handleSubmit}

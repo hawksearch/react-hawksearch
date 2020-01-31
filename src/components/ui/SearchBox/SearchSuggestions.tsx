@@ -16,9 +16,10 @@ export interface SearchSuggestionsProps {
 	downshift: ControllerStateAndHelpers<Suggestion>;
 
 	SuggestionsList: React.ComponentType<SearchSuggestionsListProps>;
+	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function SearchSuggestions({ SuggestionsList, query, downshift }: SearchSuggestionsProps) {
+function SearchSuggestions({ SuggestionsList, query, downshift, onViewMatches }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
 
 	const client = new HawkClient(config);
@@ -84,7 +85,12 @@ function SearchSuggestions({ SuggestionsList, query, downshift }: SearchSuggesti
 
 	return (
 		<div className="autosuggest-menu">
-			<SuggestionsList downshift={downshift} isLoading={isLoading} searchResults={results} />
+			<SuggestionsList
+				onViewMatches={onViewMatches}
+				downshift={downshift}
+				isLoading={isLoading}
+				searchResults={results}
+			/>
 		</div>
 	);
 }

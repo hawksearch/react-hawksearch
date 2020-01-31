@@ -118,6 +118,12 @@
 				width: 34%;
 				padding-left: 15px;
 			}
+			& > .view-matches {
+				width: 100%;
+				text-align: center;
+				color: #1398bf;
+				cursor: pointer;
+			}
 		}
 	}
 }

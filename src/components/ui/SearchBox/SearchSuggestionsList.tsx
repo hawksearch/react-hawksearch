@@ -1,16 +1,17 @@
 import React from 'react';
 import { ControllerStateAndHelpers } from 'downshift';
 
-import { Response, Product } from 'models/Autocomplete';
+import { Response, Product, Popular, Category, Content } from 'models/Autocomplete';
 import { Suggestion } from '../../../models/Autocomplete/Suggestion';
 
 export interface SearchSuggestionsListProps {
 	isLoading: boolean;
 	searchResults: Response;
 	downshift: ControllerStateAndHelpers<Suggestion>;
+	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function getIsEmpty(popular: any[], categories: any[], products: any[], content: any[]) {
+function hasAllEmpty(popular: Popular[], categories: Category[], products: Product[], content: Content[]) {
 	const hasPopular = popular && popular.length === 0;
 	const hasCategories = categories && categories.length === 0;
 	const hasProducts = products && products.length === 0;
@@ -18,7 +19,15 @@ function getIsEmpty(popular: any[], categories: any[], products: any[], content:
 	return hasPopular && hasCategories && hasProducts && hasContent;
 }
 
-function SearchSuggestionsList({ isLoading, searchResults, downshift }: SearchSuggestionsListProps) {
+function getAtleastOneExist(popular: Popular[], categories: Category[], products: Product[], content: Content[]) {
+	const hasPopular = popular && popular.length > 0;
+	const hasCategories = categories && categories.length > 0;
+	const hasProducts = products && products.length > 0;
+	const hasContent = content && content.length > 0;
+	return hasPopular || hasCategories || hasProducts || hasContent;
+}
+
+function SearchSuggestionsList({ isLoading, searchResults, downshift, onViewMatches }: SearchSuggestionsListProps) {
 	const {
 		Popular: popular,
 		Categories: categories,
@@ -30,7 +39,9 @@ function SearchSuggestionsList({ isLoading, searchResults, downshift }: SearchSu
 		ContentHeading,
 	} = searchResults;
 	const { getItemProps, getMenuProps, highlightedIndex } = downshift;
-	const isRecordEmpty = getIsEmpty(popular, categories, products, content);
+	const isRecordEmpty = hasAllEmpty(popular, categories, products, content);
+	const isAtleastOneExist = getAtleastOneExist(popular, categories, products, content);
+
 	return (
 		<ul className="dropdown-menu autosuggest-menu__list" {...getMenuProps()}>
 			{isLoading && <li className="autosuggest-menu__item loading-label">Loading...</li>}
@@ -121,6 +132,11 @@ function SearchSuggestionsList({ isLoading, searchResults, downshift }: SearchSu
 					</>
 				) : null}
 			</div>
+			{isAtleastOneExist && (
+				<div className="view-matches" onClick={() => onViewMatches(downshift)}>
+					View all matches
+				</div>
+			)}
 			{!isLoading && isRecordEmpty && <li className="autosuggest-menu__item">No results.</li>}
 		</ul>
 	);

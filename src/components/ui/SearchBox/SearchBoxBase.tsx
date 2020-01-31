@@ -15,13 +15,11 @@ export interface SearchBoxBaseProps {
 	initialValue?: string;
 	SuggestionsList: React.ComponentType<SearchSuggestionsListProps>;
 	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Suggestion>) => void;
+	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function SearchBoxBase({ SuggestionsList, initialValue, onSubmit }: SearchBoxBaseProps) {
+function SearchBoxBase({ SuggestionsList, initialValue, onSubmit, onViewMatches }: SearchBoxBaseProps) {
 	const { config } = useHawkConfig();
-	// const { store, actor } = useHawkSearch();
-	// console.log('Actor...', actor);
-	// console.log('Store...', store);
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
@@ -114,6 +112,7 @@ function SearchBoxBase({ SuggestionsList, initialValue, onSubmit }: SearchBoxBas
 									query={inputValue || ''}
 									downshift={options}
 									SuggestionsList={SuggestionsList}
+									onViewMatches={onViewMatches}
 								/>
 							) : null}
 						</div>

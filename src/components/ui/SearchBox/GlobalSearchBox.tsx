@@ -26,9 +26,20 @@ function GlobalSearchBox() {
 		}
 	}
 
+	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
+		const { inputValue, closeMenu } = downshift;
+		const redirect = `${searchUrl}?keyword=${inputValue}`;
+		location.assign(redirect);
+		closeMenu();
+	}
+
 	return (
 		<div className="hawk">
-			<SearchBoxBase onSubmit={handleSubmit} SuggestionsList={SearchSuggestionsList} />
+			<SearchBoxBase
+				onSubmit={handleSubmit}
+				onViewMatches={handleViewAllMatches}
+				SuggestionsList={SearchSuggestionsList}
+			/>
 		</div>
 	);
 }
