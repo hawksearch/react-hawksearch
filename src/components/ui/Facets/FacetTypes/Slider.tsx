@@ -12,7 +12,7 @@ function Slider() {
 	} = useHawkSearch();
 
 	const {
-		state: { facetValues },
+		state: { facetValues, decimalPrecision },
 		facet,
 		actor,
 	} = useFacet();
@@ -135,10 +135,11 @@ function Slider() {
 						currencySymbol={currencySymbol}
 						isCurrency={isCurency}
 						values={[
-							Math.floor(minValue === undefined ? Math.floor(rangeStart) : Math.max(minValue, rangeMin)),
-							Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)),
+							minValue === undefined ? Math.floor(rangeStart) : Math.max(minValue, rangeMin),
+							maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax),
 						]}
 						onValueChange={onValueChange}
+						decimalPrecision={decimalPrecision}
 					/>
 					<Rheostat
 						min={rangeMin}

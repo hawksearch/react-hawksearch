@@ -7,6 +7,7 @@ export interface SliderNumericInputsProps {
 	values: number[];
 	isCurrency: boolean;
 	currencySymbol: string;
+	decimalPrecision: number;
 	onValueChange(minValue: number, maxValue: number): void;
 }
 function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
@@ -52,6 +53,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				min={sliderProps.min}
 				max={sliderProps.max}
 				onValueChange={onMinUpdate}
+				decimalScale={sliderProps.decimalPrecision}
 			/>
 
 			<NumberFormat
@@ -62,6 +64,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				min={sliderProps.min}
 				max={sliderProps.max}
 				onValueChange={onMaxUpdate}
+				decimalScale={sliderProps.decimalPrecision}
 			/>
 		</div>
 	);

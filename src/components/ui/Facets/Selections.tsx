@@ -3,7 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
-import { Facet } from 'models/Facets';
+import { Facet, Range } from 'models/Facets';
 
 function Selections() {
 	const {
@@ -36,7 +36,8 @@ function Selections() {
 		if (!displayValue || displayValue.indexOf(',') === -1) {
 			// range facet selection values should include a comma, so if they don't then this likely isn't a valid
 			// range value that we want to render
-			return displayValue;
+			const selectedRange = facet.Ranges.find((range: Range) => range.Value === value.value);
+			return selectedRange ? selectedRange.Label : displayValue;
 		}
 
 		const splittedValues = displayValue.split(',');
