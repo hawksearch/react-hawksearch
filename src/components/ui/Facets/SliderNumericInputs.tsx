@@ -23,8 +23,6 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 		}
 
 		setMinValue(value);
-
-		sliderProps.onValueChange(newMinValue, Number(maxValue));
 	}
 
 	function onMaxUpdate(values: any) {
@@ -35,7 +33,9 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 			return;
 		}
 		setMaxValue(value);
-		sliderProps.onValueChange(Number(minValue), newMaxValue);
+	}
+	function reloadFacets(event: React.FormEvent<HTMLInputElement>) {
+		sliderProps.onValueChange(Number(minValue), Number(maxValue));
 	}
 
 	useEffect(() => {
@@ -53,6 +53,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				min={sliderProps.min}
 				max={sliderProps.max}
 				onValueChange={onMinUpdate}
+				onBlur={reloadFacets}
 				decimalScale={sliderProps.decimalPrecision}
 			/>
 
@@ -64,6 +65,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				min={sliderProps.min}
 				max={sliderProps.max}
 				onValueChange={onMaxUpdate}
+				onBlur={reloadFacets}
 				decimalScale={sliderProps.decimalPrecision}
 			/>
 		</div>
