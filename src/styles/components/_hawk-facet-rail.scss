@@ -143,7 +143,22 @@
 		cursor: pointer;
 	}
 
-	height: 20px;
+	.link-button {
+		background: transparent;
+		border: none;
+		margin-top: 10px;
+		color: #6f6f6f;
+		font-size: 0.9em;
+		font-weight: bold;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	height: 35px;
+	text-align: right;
 }
 
 .hawk-facet-rail__facet-btn {
