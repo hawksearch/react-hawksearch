@@ -4,6 +4,7 @@ import { Facet as FacetModel, Value } from 'models/Facets';
 import { useHawkSearch } from 'components/StoreProvider';
 import PlusSVG from 'components/svg/PlusSVG';
 import MinusSVG from 'components/svg/MinusSVG';
+import QuestionmarkSVG from 'components/svg/QuestionmarkSVG';
 
 const FacetContext = React.createContext({} as FacetContextValue);
 
@@ -166,7 +167,16 @@ function Facet({ facet, children }: FacetProps) {
 			<div className="hawk-facet-rail__facet">
 				<div className="hawk-facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
 					<h4>{facet.Name}</h4>
-
+					{facet.Tooltip && (
+						<div className="custom-tooltip">
+							<QuestionmarkSVG class="hawk-questionmark" />
+							<div className="right">
+								<p>{facet.Tooltip}</p>
+								<i />
+							</div>
+						</div>
+					)}
+					{console.log(facet)}
 					{isCollapsed ? (
 						<>
 							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
