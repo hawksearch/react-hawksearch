@@ -171,12 +171,11 @@ function Facet({ facet, children }: FacetProps) {
 						<div className="custom-tooltip">
 							<QuestionmarkSVG class="hawk-questionmark" />
 							<div className="right">
-								<p>{facet.Tooltip}</p>
+								<div dangerouslySetInnerHTML={{ __html: facet.Tooltip }} />
 								<i />
 							</div>
 						</div>
 					)}
-					{console.log(facet)}
 					{isCollapsed ? (
 						<>
 							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
