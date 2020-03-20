@@ -79,10 +79,10 @@ export function parseLocation(location: Location, searchUrl: string = '/search')
 	const searchRequest = parseSearchQueryString(location.search);
 
 	// customUrl have priority over keywords
-	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
-		searchRequest.Keyword = undefined;
-		searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
-	}
+	// if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
+	// 	searchRequest.Keyword = undefined;
+	// 	// searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
+	// }
 	return searchRequest;
 }
 /**
