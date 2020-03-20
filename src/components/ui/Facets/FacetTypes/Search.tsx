@@ -44,10 +44,13 @@ function Search() {
 					/>
 				</div>
 			</div>
-
-			<div className="hawk-facet-rail__facet-values__search-clear">
-				<button onClick={clearFacet}>Clear</button>
-			</div>
+			{store.pendingSearch.SearchWithin && (
+				<div className="hawk-facet-rail__facet-values__search-clear">
+					<button className="link-button" onClick={clearFacet}>
+						Clear
+					</button>
+				</div>
+			)}
 		</>
 	);
 }
