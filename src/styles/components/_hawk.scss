@@ -10,6 +10,7 @@
 .hawk__body {
 	display: flex;
 	flex-wrap: wrap;
+	margin-bottom: 70px;
 
 	@include md {
 		flex-wrap: nowrap;
