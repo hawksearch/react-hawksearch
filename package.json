@@ -89,6 +89,7 @@
 		"history": "^4.10.1",
 		"react": "^16.12.0",
 		"react-dom": "^16.12.0",
+		"react-number-format": "^4.3.1",
 		"rheostat": "^4.1.0",
 		"url-search-params-polyfill": "^5.1.0"
 	},

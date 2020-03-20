@@ -44,6 +44,9 @@ export interface FacetState {
 	isCollapsed: boolean;
 	/** If filter is enabled, contains the number of facets that are truncated. */
 	remainingFacets: number;
+
+	// It shows the decimal count in slider
+	decimalPrecision: number;
 }
 
 export interface FacetActor {
@@ -155,6 +158,7 @@ function Facet({ facet, children }: FacetProps) {
 		isTruncated,
 		isCollapsed,
 		remainingFacets,
+		decimalPrecision: 2,
 	};
 
 	const renderer: FacetRenderer = {

@@ -3,6 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
+import { Facet, Range } from 'models/Facets';
 
 function Selections() {
 	const {
@@ -29,13 +30,19 @@ function Selections() {
 		actor.clearAllFacets();
 	}
 
-	function renderRange(value: ClientSelectionValue) {
+	function renderRange(value: ClientSelectionValue, facet: Facet) {
 		const displayValue = value.value;
 
 		if (!displayValue || displayValue.indexOf(',') === -1) {
 			// range facet selection values should include a comma, so if they don't then this likely isn't a valid
 			// range value that we want to render
-			return displayValue;
+			const selectedRange = facet.Ranges.find((range: Range) => range.Value === value.value);
+			return selectedRange ? selectedRange.Label : displayValue;
+		}
+
+		const splittedValues = displayValue.split(',');
+		if (facet.IsCurrency && splittedValues.length > 1) {
+			return `${facet.CurrencySymbol} ${splittedValues[0]} - ${facet.CurrencySymbol} ${splittedValues[1]}`;
 		}
 
 		// return a prettier display value for ranges
@@ -79,7 +86,7 @@ function Selections() {
 												>
 													{selection.facet.FieldType === 'range'
 														? // render ranges in a specific way
-														  renderRange(item)
+														  renderRange(item, selection.facet)
 														: // other facets can have their labels rendered directly
 														  item.label}
 												</span>
