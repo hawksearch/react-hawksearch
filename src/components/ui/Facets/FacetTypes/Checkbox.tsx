@@ -68,7 +68,7 @@ function Checkbox() {
 							)}
 						</button>
 
-						{/* {renderFacetActions(value.Value || '', isNegated)} */}
+						{renderFacetActions(value.Value || '', isNegated)}
 					</li>
 				);
 			});
@@ -97,7 +97,7 @@ function Checkbox() {
 							</span>
 						</button>
 
-						{/* {renderFacetActions(value.Value || '', isNegated)} */}
+						{renderFacetActions(value.Value || '', isNegated)}
 					</li>
 				);
 			});
