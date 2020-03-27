@@ -147,60 +147,62 @@ export class SearchStore {
 			}
 		}
 
-		if (clientSelections) {
-			Object.keys(clientSelections).forEach(fieldName => {
-				const selectionValues = clientSelections[fieldName];
-
-				if (!selectionValues) {
-					// if this selection has no values, it's not really selected
-					return;
-				}
-
-				const facet = facets.find(f => f.selectionField === fieldName);
-
-				if (!facet) {
-					// if there's no matching facet from the server, we can't show this since we'll have no labels
-					return;
-				}
-
-				const items: ClientSelectionValue[] = [];
-
-				if (facet.FieldType === 'range') {
-					// if the facet this selection is for is a range, there won't be a matching value and thus there won't be a label.
-					// so because of this we'll just use the selection value as the label
-
-					selectionValues.forEach(selectionValue => {
-						items.push({
-							label: selectionValue,
-							value: selectionValue,
-						});
-					});
-				} else {
-					// for other types of facets, try to find a matching value
-
-					selectionValues.forEach(selectionValue => {
-						const matchingVal = this.findMatchingValue(selectionValue, facet.Values);
-
-						if (!matchingVal || !matchingVal.Label) {
-							// if there's no matching value from the server, we cannot display because there would
-							// be no label - same if there's no label at all
-							return;
-						}
-
-						items.push({
-							label: matchingVal.Label,
-							value: selectionValue,
-						});
-					});
-				}
-
-				selections[fieldName] = {
-					facet,
-					label: facet.Name,
-					items,
-				};
-			});
+		if (!clientSelections) {
+			return selections;
 		}
+
+		Object.keys(clientSelections).forEach(fieldName => {
+			const selectionValues = clientSelections[fieldName];
+
+			if (!selectionValues) {
+				// if this selection has no values, it's not really selected
+				return;
+			}
+
+			const facet = facets.find(f => f.selectionField === fieldName);
+
+			if (!facet) {
+				// if there's no matching facet from the server, we can't show this since we'll have no labels
+				return;
+			}
+
+			const items: ClientSelectionValue[] = [];
+
+			if (facet.FieldType === 'range') {
+				// if the facet this selection is for is a range, there won't be a matching value and thus there won't be a label.
+				// so because of this we'll just use the selection value as the label
+
+				selectionValues.forEach(selectionValue => {
+					items.push({
+						label: selectionValue,
+						value: selectionValue,
+					});
+				});
+			} else {
+				// for other types of facets, try to find a matching value
+
+				selectionValues.forEach(selectionValue => {
+					const matchingVal = this.findMatchingValue(selectionValue, facet.Values);
+
+					if (!matchingVal || !matchingVal.Label) {
+						// if there's no matching value from the server, we cannot display because there would
+						// be no label - same if there's no label at all
+						return;
+					}
+
+					items.push({
+						label: matchingVal.Label,
+						value: selectionValue,
+					});
+				});
+			}
+
+			selections[fieldName] = {
+				facet,
+				label: facet.Name,
+				items,
+			};
+		});
 
 		return selections;
 	}
