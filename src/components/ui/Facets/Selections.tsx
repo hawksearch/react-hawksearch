@@ -10,7 +10,7 @@ function Selections() {
 		store: { facetSelections, pendingSearch },
 		actor,
 	} = useHawkSearch();
-
+	console.log(facetSelections);
 	const keys = Object.keys(facetSelections);
 
 	if (keys.length === 0) {
