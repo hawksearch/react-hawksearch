@@ -13,6 +13,7 @@
 		"check:all": "npm run check:lint && npm run check:types && npm run check:style",
 		"test": "cross-env BUILD_ENV=test jest",
 		"test:watch": "jest --watch",
+		"fix:style": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
 		"bundle:min:prod": "cross-env BUILD_ENV=min webpack -p",
 		"bundle:min:dev": "cross-env BUILD_ENV=min webpack",
 		"bundle:esm:prod": "cross-env BUILD_ENV=esm NODE_ENV=production rollup -c",
