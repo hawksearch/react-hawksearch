@@ -11,6 +11,8 @@ interface ParsedQueryStringFixed {
 	mpp?: string;
 	searchWithin?: string;
 	is100Coverage?: string;
+	customurl?: string;
+	searchwithin?: string;
 }
 
 /**
@@ -93,7 +95,19 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, ...facetSelections } = queryObj;
+	const {
+		keyword,
+		customurl,
+		sort,
+		pg,
+		mpp,
+		lp,
+		PageId,
+		lpurl,
+		searchWithin,
+		is100Coverage,
+		...facetSelections
+	} = queryObj;
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
@@ -104,7 +118,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		PageNo: pg ? Number(pg) : undefined,
 		MaxPerPage: mpp ? Number(mpp) : undefined,
 		PageId: pageId ? Number(pageId) : undefined,
-		CustomUrl: lpurl,
+		CustomUrl: customurl,
 		SearchWithin: searchWithin,
 		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
 		FacetSelections: facetSelections,

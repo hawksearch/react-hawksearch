@@ -16,8 +16,7 @@ function SearchBox() {
 		if (event.key === 'Enter') {
 			actor.setSearch({
 				PageId: undefined,
-				CustomUrl: undefined,
-				Keyword: event.currentTarget.value,
+				SearchWithin: event.currentTarget.value,
 			});
 		}
 	}
@@ -25,7 +24,7 @@ function SearchBox() {
 	return (
 		<div className="hawk__searchBox">
 			<SearchBoxBase
-				initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
+				initialValue={store && store.pendingSearch ? store.pendingSearch.SearchWithin : ''}
 				onSubmit={handleSubmit}
 			/>
 		</div>
