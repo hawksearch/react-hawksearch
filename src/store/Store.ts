@@ -109,8 +109,6 @@ export class SearchStore {
 			pendingSearch: { FacetSelections: clientSelections, SearchWithin },
 			searchResults,
 		} = this;
-		console.log(clientSelections);
-		console.log(SearchWithin);
 		const selections: ClientSelections = {};
 
 		if (!clientSelections && !SearchWithin) {
