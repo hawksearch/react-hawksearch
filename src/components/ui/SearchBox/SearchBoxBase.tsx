@@ -57,6 +57,9 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 					const showSuggestions = isOpen && inputValue && inputValue.length > 0;
 					return (
 						<div className="hawk__searchBox__searchInput">
+							<div id="downshift-0-label" className="hidden-label">
+								Autocomplete search box
+							</div>
 							<input
 								type="text"
 								style={{ width: '100%' }}
