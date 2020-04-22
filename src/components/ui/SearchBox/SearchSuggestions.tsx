@@ -77,7 +77,10 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 
 	return (
 		<div className="autosuggest-menu">
-			<ul className="dropdown-menu autosuggest-menu__list" {...getMenuProps()}>
+			<ul
+				className="dropdown-menu autosuggest-menu__list"
+				{...getMenuProps({ 'aria-label': 'Auto suggest menu' })}
+			>
 				{isLoading && <li className="autosuggest-menu__item">Loading...</li>}
 
 				{products &&
