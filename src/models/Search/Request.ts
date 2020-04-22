@@ -109,6 +109,10 @@ export class Request {
 	public SmartBar?: SmartBar[];
 
 	public PageId?: number;
+	/**
+	 * IndexName if set will enable a query to a specific index in the search API
+	 */
+	public IndexName?: string;
 }
 
 export interface FacetSelections {
