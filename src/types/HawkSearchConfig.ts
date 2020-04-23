@@ -78,4 +78,8 @@ export interface HawkSearchConfig {
 	 * Additional flag that if set will request extended results data
 	 */
 	isInPreview?: boolean;
+	/**
+	 * IndexName if set will enable a query to a specific index in the search API
+	 */
+	indexName?: string;
 }
