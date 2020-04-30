@@ -35,11 +35,7 @@ function GlobalSearchBox() {
 
 	return (
 		<div className="hawk">
-			<SearchBoxBase
-				onSubmit={handleSubmit}
-				onViewMatches={handleViewAllMatches}
-				SuggestionsList={SearchSuggestionsList}
-			/>
+			<SearchBoxBase onSubmit={handleSubmit} onViewMatches={handleViewAllMatches} />
 		</div>
 	);
 }

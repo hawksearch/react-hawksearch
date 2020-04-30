@@ -22,7 +22,7 @@ function App() {
 		return (
 			<div className="hawk">
 				<div className="hawk__header">
-					<SearchBox SuggestionsList={SearchSuggestionsList} />
+					<SearchBox />
 				</div>
 			</div>
 		);

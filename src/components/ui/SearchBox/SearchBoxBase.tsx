@@ -6,19 +6,17 @@ import { Suggestion, SuggestionStrategyMatch } from 'models/Autocomplete/Suggest
 import { getAutocompleteStrategies } from '../Facets/Overrides';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
-import { SearchSuggestionsListProps } from '././SearchSuggestionsList';
 import { useHawkSearch } from 'components/StoreProvider';
 
 const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
 
 export interface SearchBoxBaseProps {
 	initialValue?: string;
-	SuggestionsList: React.ComponentType<SearchSuggestionsListProps>;
 	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Suggestion>) => void;
 	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function SearchBoxBase({ SuggestionsList, initialValue, onSubmit, onViewMatches }: SearchBoxBaseProps) {
+function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseProps) {
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 
@@ -111,7 +109,6 @@ function SearchBoxBase({ SuggestionsList, initialValue, onSubmit, onViewMatches 
 								<SearchSuggestions
 									query={inputValue || ''}
 									downshift={options}
-									SuggestionsList={SuggestionsList}
 									onViewMatches={onViewMatches}
 								/>
 							) : null}

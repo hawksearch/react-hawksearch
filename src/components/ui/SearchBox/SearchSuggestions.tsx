@@ -5,7 +5,7 @@ import axios, { CancelToken } from 'axios';
 import HawkClient from 'net/HawkClient';
 import { Response, Product, Category } from 'models/Autocomplete';
 import { useHawkConfig } from 'components/ConfigProvider';
-import { SearchSuggestionsListProps } from './SearchSuggestionsList';
+import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
 
 export interface SearchSuggestionsProps {
@@ -15,11 +15,10 @@ export interface SearchSuggestionsProps {
 	/** Downshift's render prop parameter. */
 	downshift: ControllerStateAndHelpers<Suggestion>;
 
-	SuggestionsList: React.ComponentType<SearchSuggestionsListProps>;
 	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function SearchSuggestions({ SuggestionsList, query, downshift, onViewMatches }: SearchSuggestionsProps) {
+function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
 
 	const client = new HawkClient(config);
@@ -85,7 +84,7 @@ function SearchSuggestions({ SuggestionsList, query, downshift, onViewMatches }:
 
 	return (
 		<div className="autosuggest-menu">
-			<SuggestionsList
+			<SearchSuggestionsList
 				onViewMatches={onViewMatches}
 				downshift={downshift}
 				isLoading={isLoading}
