@@ -106,6 +106,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					IsInPreview: config.isInPreview,
 					// and override some of the request fields with config values
 					ClientGuid: config.clientGuid,
+					IndexName: config.indexName,
 				},
 				cancellationToken
 			);
@@ -350,7 +351,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * Clears all selected facets from the current selection.
 	 */
 	function clearAllFacets(): void {
-		setSearchSelections(undefined, store.pendingSearch.SearchWithin);
+		setSearchSelections(undefined, undefined);
 	}
 
 	const actor: SearchActor = {

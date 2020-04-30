@@ -1,31 +1,40 @@
 import React, { useState, useEffect } from 'react';
+import NumberFormat from 'react-number-format';
+
 export interface SliderNumericInputsProps {
 	min: number;
 	max: number;
 	values: number[];
+	isCurrency: boolean;
+	currencySymbol: string;
+	decimalPrecision: number;
 	onValueChange(minValue: number, maxValue: number): void;
 }
 function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 	const [minValue, setMinValue] = useState('' as string);
 	const [maxValue, setMaxValue] = useState('' as string);
 
-	function onMinUpdate(event: React.FormEvent<HTMLInputElement>) {
-		const newMinValue = Number(event.currentTarget.value);
-		if (isNaN(newMinValue) && event.currentTarget.value !== '-') {
+	function onMinUpdate(values: any) {
+		const { formattedValue, value } = values;
+
+		const newMinValue = Number(value);
+		if (isNaN(newMinValue) || minValue === value) {
 			return;
 		}
-		setMinValue(event.currentTarget.value);
+
+		setMinValue(value);
 	}
 
-	function onMaxUpdate(event: React.FormEvent<HTMLInputElement>) {
-		const newMaxValue = Number(event.currentTarget.value);
-		if (isNaN(newMaxValue) && event.currentTarget.value !== '-') {
+	function onMaxUpdate(values: any) {
+		const { formattedValue, value } = values;
+
+		const newMaxValue = Number(value);
+		if (isNaN(newMaxValue) || maxValue === value) {
 			return;
 		}
-		setMaxValue(event.currentTarget.value);
+		setMaxValue(value);
 	}
-
-	function onValueChanged(event: React.FormEvent<HTMLInputElement>) {
+	function reloadFacets(event: React.FormEvent<HTMLInputElement>) {
 		sliderProps.onValueChange(Number(minValue), Number(maxValue));
 	}
 
@@ -36,25 +45,28 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 
 	return (
 		<div className="hawk-sliderNumeric">
-			<input
-				type="text"
+			<NumberFormat
+				thousandSeparator={sliderProps.isCurrency}
+				prefix={sliderProps.isCurrency ? sliderProps.currencySymbol : ''}
+				value={minValue}
 				className="hawk-numericInput numeric-from"
 				min={sliderProps.min}
 				max={sliderProps.max}
-				value={minValue}
-				data-type="currency"
-				onChange={onMinUpdate}
-				onBlur={onValueChanged}
+				onValueChange={onMinUpdate}
+				onBlur={reloadFacets}
+				decimalScale={sliderProps.decimalPrecision}
 			/>
-			<input
-				type="text"
+
+			<NumberFormat
+				thousandSeparator={sliderProps.isCurrency}
+				prefix={sliderProps.isCurrency ? sliderProps.currencySymbol : ''}
+				value={maxValue}
 				className="hawk-numericInput numeric-to"
 				min={sliderProps.min}
 				max={sliderProps.max}
-				value={maxValue}
-				onChange={onMaxUpdate}
-				onBlur={onValueChanged}
-				data-type="currency"
+				onValueChange={onMaxUpdate}
+				onBlur={reloadFacets}
+				decimalScale={sliderProps.decimalPrecision}
 			/>
 		</div>
 	);

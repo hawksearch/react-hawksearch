@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef, MouseEvent } from 'react';
 
 import { Facet as FacetModel, Value } from 'models/Facets';
 import { useHawkSearch } from 'components/StoreProvider';
 import PlusSVG from 'components/svg/PlusSVG';
 import MinusSVG from 'components/svg/MinusSVG';
+import QuestionmarkSVG from 'components/svg/QuestionmarkSVG';
 
 const FacetContext = React.createContext({} as FacetContextValue);
 
@@ -44,6 +45,9 @@ export interface FacetState {
 	isCollapsed: boolean;
 	/** If filter is enabled, contains the number of facets that are truncated. */
 	remainingFacets: number;
+
+	// It shows the decimal count in slider
+	decimalPrecision: number;
 }
 
 export interface FacetActor {
@@ -74,7 +78,7 @@ export interface FacetRenderer {
 
 function Facet({ facet, children }: FacetProps) {
 	const { actor: searchActor } = useHawkSearch();
-
+	const wrapperRef = useRef<HTMLInputElement>(null);
 	const [filter, setFilter] = useState('');
 	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);
 	const [isCollapsed, setCollapsed] = useState(facet.IsCollapsible && facet.IsCollapsedDefault);
@@ -155,18 +159,34 @@ function Facet({ facet, children }: FacetProps) {
 		isTruncated,
 		isCollapsed,
 		remainingFacets,
+		decimalPrecision: 2,
 	};
 
 	const renderer: FacetRenderer = {
 		renderTruncation,
 	};
 
+	function toggleCollapsible(event: MouseEvent) {
+		if (wrapperRef.current && wrapperRef.current.contains(event.target as Node)) {
+			return;
+		}
+		setCollapsed(!isCollapsed);
+	}
+
 	return (
 		<FacetContext.Provider value={{ facet, state, actor, renderer }}>
 			<div className="hawk-facet-rail__facet">
-				<div className="hawk-facet-rail__facet-heading" onClick={() => setCollapsed(!isCollapsed)}>
+				<div className="hawk-facet-rail__facet-heading" onClick={event => toggleCollapsible(event)}>
 					<h4>{facet.Name}</h4>
-
+					{facet.Tooltip && (
+						<div className="custom-tooltip" ref={wrapperRef}>
+							<QuestionmarkSVG class="hawk-questionmark" />
+							<div className="right">
+								<div dangerouslySetInnerHTML={{ __html: facet.Tooltip }} />
+								<i />
+							</div>
+						</div>
+					)}
 					{isCollapsed ? (
 						<>
 							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}

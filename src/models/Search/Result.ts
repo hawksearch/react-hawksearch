@@ -17,6 +17,8 @@ export class Result {
 	public Explain?: Explain;
 
 	public IsPin: boolean;
+
+	public BestFragment: string;
 	/**
 	 * Returns a single document value, by the given field name. If the field does not exist in
 	 * the document, or has no values, then `undefined` is returned instead.

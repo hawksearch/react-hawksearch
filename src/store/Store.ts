@@ -109,10 +109,9 @@ export class SearchStore {
 			pendingSearch: { FacetSelections: clientSelections, SearchWithin },
 			searchResults,
 		} = this;
-
 		const selections: ClientSelections = {};
 
-		if (!clientSelections) {
+		if (!clientSelections && !SearchWithin) {
 			return selections;
 		}
 
@@ -146,6 +145,10 @@ export class SearchStore {
 					],
 				};
 			}
+		}
+
+		if (!clientSelections) {
+			return selections;
 		}
 
 		Object.keys(clientSelections).forEach(fieldName => {

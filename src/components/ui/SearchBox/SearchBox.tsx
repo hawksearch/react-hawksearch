@@ -19,6 +19,7 @@ function SearchBox() {
 				PageId: undefined,
 				CustomUrl: undefined,
 				Keyword: event.currentTarget.value,
+				FacetSelections: undefined,
 			});
 		}
 	}
