@@ -24,6 +24,7 @@ function SearchBox() {
 		}
 	}
 
+	// On Select view all matches from suggestion list
 	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue, closeMenu } = downshift;
 		actor.setSearch({
