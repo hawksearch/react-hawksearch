@@ -65,6 +65,11 @@ function SearchSuggestionsList({ isLoading, searchResults, downshift, onViewMatc
 							<p className="p-name">{item.ProductName}</p>
 						</li>
 					))}
+					{isAtleastOneExist && (
+						<div className="view-matches" onClick={() => onViewMatches(downshift)}>
+							View all matches
+						</div>
+					)}
 				</ul>
 			) : null}
 			<div>
@@ -132,11 +137,6 @@ function SearchSuggestionsList({ isLoading, searchResults, downshift, onViewMatc
 					</>
 				) : null}
 			</div>
-			{isAtleastOneExist && (
-				<div className="view-matches" onClick={() => onViewMatches(downshift)}>
-					View all matches
-				</div>
-			)}
 			{!isLoading && isRecordEmpty && <li className="autosuggest-menu__item">No results.</li>}
 		</ul>
 	);
