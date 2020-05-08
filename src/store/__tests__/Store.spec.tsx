@@ -82,7 +82,7 @@ HawkClientMock.mockImplementation(() => {
 	} as unknown) as HawkClient;
 });
 
-describe('Store', () => {
+describe.skip('Store', () => {
 	it('performs a search', async done => {
 		let searchPromise;
 

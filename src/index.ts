@@ -13,6 +13,9 @@ export { default as StoreProvider } from 'components/StoreProvider';
 export { default as GlobalSearchBox } from 'components/ui/SearchBox/GlobalSearchBox';
 export { default as SearchBox } from 'components/ui/SearchBox/SearchBox';
 
+// Compare Item Bar
+export { default as CompareItems } from 'components/ui/Compare/CompareItems';
+
 // facets
 export { default as FacetRail } from 'components/ui/Facets/FacetRail';
 export { default as FacetList } from 'components/ui/Facets/FacetList';
