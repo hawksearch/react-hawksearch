@@ -8,6 +8,7 @@ import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
+import { CompareDataResponse, CompareItemRequest } from 'models/CompareItems';
 
 export interface SearchActor {
 	/**
@@ -61,9 +62,10 @@ export interface SearchActor {
 
 	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
 
-	setComparedResults(comparedResults: any): void;
+	setComparedResults(comparedResults: Result[]): void;
 
 	clearItemsToCompare(): void;
+	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -139,6 +141,18 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				});
 			}
 		}
+	}
+
+	/**
+	 * Performs a comparision between two or more than two products based on ID
+	 * user can use this method from view application.
+	 * @returns A promise that resolves when the compare request has been completed.
+	 */
+	async function getComparedItems(
+		request: CompareItemRequest,
+		cancellationToken?: CancelToken
+	): Promise<CompareDataResponse> {
+		return await client.getComparedItems(request, cancellationToken);
 	}
 
 	/**
@@ -379,9 +393,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
-	function setComparedResults(results: any): void {
+	function setComparedResults(data: Result[]): void {
 		setStore({
-			comparedResults: results,
+			comparedResults: data,
 		});
 	}
 
@@ -403,6 +417,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setItemsToCompare,
 		setComparedResults,
 		clearItemsToCompare,
+		getComparedItems,
 	};
 
 	return [store, actor];
