@@ -1,5 +1,6 @@
 import axios, { CancelToken, AxiosRequestConfig, AxiosInstance } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
+import { CompareItemRequest, CompareDataResponse } from 'models/CompareItems';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
@@ -67,6 +68,7 @@ class HawkClient {
 				return Promise.reject(error);
 			}
 		);
+		this.compareItemsURL = config.compareItemsURL || '/api/compare';
 	}
 
 	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
@@ -100,6 +102,21 @@ class HawkClient {
 	): Promise<AutocompleteResponse> {
 		const result = await axios.post<AutocompleteResponse>(
 			new URL(this.autocompleteUrl, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
+
+		return result.data;
+	}
+
+	public async getComparedItems(
+		request: CompareItemRequest,
+		cancellationToken?: CancelToken
+	): Promise<CompareDataResponse> {
+		const result = await axios.post<CompareDataResponse>(
+			new URL(this.compareItemsURL, this.baseUrl).href,
 			request,
 			{
 				cancelToken: cancellationToken,

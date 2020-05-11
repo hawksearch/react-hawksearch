@@ -7,11 +7,12 @@ import { Response, Request, FacetSelections, Result } from 'models/Search';
 import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
-import { FacetType } from 'models/Facets/FacetType';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
+import { CompareDataResponse, CompareItemRequest } from 'models/CompareItems';
+
 export interface SearchActor {
 	/**
 	 * Performs a search with the currently configured pending search request. The search request can be
@@ -67,12 +68,13 @@ export interface SearchActor {
 
 	// update sorting order of pinned items
 	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
-	
+
 	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
 
-	setComparedResults(comparedResults: any): void;
+	setComparedResults(comparedResults: Result[]): void;
 
 	clearItemsToCompare(): void;
+	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -191,6 +193,18 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	async function updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
 		return await client.updatePinOrder(request, cancellationToken);
+	}
+
+	/**
+	 * Performs a comparision between two or more than two products based on ID
+	 * user can use this method from view application.
+	 * @returns A promise that resolves when the compare request has been completed.
+	 */
+	async function getComparedItems(
+		request: CompareItemRequest,
+		cancellationToken?: CancelToken
+	): Promise<CompareDataResponse> {
+		return await client.getComparedItems(request, cancellationToken);
 	}
 
 	/**
@@ -444,9 +458,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
-	function setComparedResults(results: any): void {
+	function setComparedResults(data: Result[]): void {
 		setStore({
-			comparedResults: results,
+			comparedResults: data,
 		});
 	}
 
@@ -470,6 +484,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setItemsToCompare,
 		setComparedResults,
 		clearItemsToCompare,
+		getComparedItems,
 	};
 
 	return [store, actor];
