@@ -4,7 +4,7 @@ import { DownshiftState, StateChangeOptions, ControllerStateAndHelpers } from 'd
 import { Product } from 'models/Autocomplete';
 import SearchSuggestions from 'components/ui/SearchBox/SearchSuggestions';
 
-const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
+import Downshift from 'downshift';
 
 interface SearchBoxBaseProps {
 	initialValue?: string;
