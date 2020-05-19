@@ -5,14 +5,14 @@ interface CompareTilesProps {
 	imageURL: string;
 	itemName: string;
 	item?: Result;
-	onSelectTiles: (item: any) => void;
+	onSelectTiles: (item: Result) => void;
 }
 
 interface CompareItemProps {
 	itemsList: Result[];
 	onSelectCompareItems: () => void;
 	clearItems: () => void;
-	onSelectTiles: (item: any) => void;
+	onSelectTiles: (item: Result) => void;
 }
 
 function CompareTiles({ imageURL, itemName, onSelectTiles, item }: CompareTilesProps) {
