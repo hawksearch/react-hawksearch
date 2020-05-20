@@ -29,7 +29,6 @@ function CompareTiles({ imageURL, itemName, onSelectTiles, item }: CompareTilesP
 function CompareItems({ itemsList, onSelectCompareItems, clearItems, onSelectTiles }: CompareItemProps) {
 	return (
 		<div className="hawk__compare-container">
-			<span>Compare up to 5 items</span>
 			<div className="hawk__compare-container__list">
 				{[...Array(5)].map((_, index) => {
 					if (itemsList && itemsList.length && itemsList[index]) {
