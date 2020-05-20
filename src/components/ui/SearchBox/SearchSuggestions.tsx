@@ -3,18 +3,22 @@ import { ControllerStateAndHelpers } from 'downshift';
 import axios, { CancelToken } from 'axios';
 
 import HawkClient from 'net/HawkClient';
-import { Response, Product } from 'models/Autocomplete';
+import { Response, Product, Category } from 'models/Autocomplete';
 import { useHawkConfig } from 'components/ConfigProvider';
+import SearchSuggestionsList from './SearchSuggestionsList';
+import { Suggestion } from 'models/Autocomplete/Suggestion';
 
-interface SearchSuggestionsProps {
+export interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
 	query: string;
 
 	/** Downshift's render prop parameter. */
-	downshift: ControllerStateAndHelpers<Product>;
+	downshift: ControllerStateAndHelpers<Suggestion>;
+
+	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
 }
 
-function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
+function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
 
 	const client = new HawkClient(config);
@@ -46,15 +50,22 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		let response: Response | null = null;
 
 		try {
-			response = await client.autocomplete(
-				{
-					ClientGuid: config.clientGuid,
+			response = await client
+				.autocomplete(
+					{
+						ClientGuid: config.clientGuid,
 
-					Keyword: input,
-					DisplayFullResponse: true,
-				},
-				cancellationToken
-			);
+						Keyword: input,
+						DisplayFullResponse: true,
+					},
+					cancellationToken
+				)
+				.then(o => {
+					// ensure, returned object will return response
+					// since by default, axios uses JSON.parse to parse an object,
+					// it doesn't recognize it as Response type - this line is to prevent it
+					return Object.assign(new Response(o));
+				});
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -71,40 +82,14 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 		}
 	}
 
-	const { Products: products } = results;
-
-	const { getMenuProps, getItemProps, highlightedIndex } = downshift;
-
 	return (
 		<div className="autosuggest-menu">
-			<ul
-				className="dropdown-menu autosuggest-menu__list"
-				{...getMenuProps({ 'aria-label': 'Auto suggest menu' })}
-			>
-				{isLoading && <li className="autosuggest-menu__item">Loading...</li>}
-
-				{products &&
-					products.map((item, index) => (
-						<li
-							className={
-								highlightedIndex === index
-									? 'autosuggest-menu__item autosuggest-menu__item--highlighted'
-									: 'autosuggest-menu__item'
-							}
-							{...getItemProps({
-								item,
-								index,
-								key: item.Results.DocId,
-							})}
-						>
-							{item.ProductName}
-						</li>
-					))}
-
-				{!isLoading && products && products.length === 0 && (
-					<li className="autosuggest-menu__item">No results.</li>
-				)}
-			</ul>
+			<SearchSuggestionsList
+				onViewMatches={onViewMatches}
+				downshift={downshift}
+				isLoading={isLoading}
+				searchResults={results}
+			/>
 		</div>
 	);
 }
