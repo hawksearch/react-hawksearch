@@ -1,4 +1,5 @@
 import { FacetComponent } from 'types/FacetComponent';
+import { SuggestionStrategyMatch } from 'models/Autocomplete/Suggestion';
 
 export interface HawkSearchConfig {
 	/**
@@ -69,6 +70,11 @@ export interface HawkSearchConfig {
 	 * letter presses and autocomplete triggering. If not specified, will default to 200.
 	 */
 	autocompleteDebounce?: number;
+
+	/**
+	 * The definition of custom autocomplete strategies that overrides default ones
+	 */
+	autocompleteStrategies?: SuggestionStrategyMatch[];
 
 	/**
 	 * The definition of custom components that overrides default ones in facets rail panel

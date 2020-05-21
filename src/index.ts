@@ -37,6 +37,7 @@ export { default as ResultImage } from 'components/ui/Results/ResultImage';
 export { default as ToolRow } from 'components/ui/Results/ToolRow';
 export { ContentType } from 'models/Search/ContentType';
 export { RuleType, RuleOperatorType } from 'models/Search/Rule';
+export * from 'models/Autocomplete/Suggestion';
 export { default as PlaceholderItem } from 'components/ui/Results/PlaceholderItem';
 export { default as Spinner } from 'components/ui/Spinner';
 
