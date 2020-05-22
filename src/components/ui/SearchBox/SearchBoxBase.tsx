@@ -6,12 +6,16 @@ import SearchSuggestions from 'components/ui/SearchBox/SearchSuggestions';
 
 const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
 
+import { useTranslation } from 'react-i18next';
+
 interface SearchBoxBaseProps {
 	initialValue?: string;
 	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) => void;
 }
 
 function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
+	const { t, i18n } = useTranslation();
+
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
 		state: DownshiftState<Product>,
@@ -44,7 +48,7 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 	}
 
 	return (
-		<React.Suspense fallback={<div>Loading...</div>}>
+		<React.Suspense fallback={<div>{t('Loading')}...</div>}>
 			<Downshift
 				stateReducer={handleStateChange}
 				itemToString={(item: Product | null) => (item ? item.ProductName : '')}
@@ -77,7 +81,7 @@ function SearchBoxBase({ initialValue, onSubmit }: SearchBoxBaseProps) {
 										}
 									},
 
-									placeholder: 'Enter a search term',
+									placeholder: t('Enter a search term'),
 									'aria-labelledby': 'autocomplete-search-box',
 								})}
 							/>

@@ -6,6 +6,8 @@ import HawkClient from 'net/HawkClient';
 import { Response, Product } from 'models/Autocomplete';
 import { useHawkConfig } from 'components/ConfigProvider';
 
+import { useTranslation } from 'react-i18next';
+
 interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
 	query: string;
@@ -75,6 +77,8 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 
 	const { getMenuProps, getItemProps, highlightedIndex } = downshift;
 
+	const { t, i18n } = useTranslation();
+
 	return (
 		<div className="autosuggest-menu">
 			<ul
@@ -102,7 +106,7 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 					))}
 
 				{!isLoading && products && products.length === 0 && (
-					<li className="autosuggest-menu__item">No results.</li>
+					<li className="autosuggest-menu__item">{t('No results.')}</li>
 				)}
 			</ul>
 		</div>
