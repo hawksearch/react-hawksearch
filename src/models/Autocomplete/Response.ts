@@ -64,4 +64,13 @@ export class Response {
 	 * the text to display for the link to return all results from searching with the term entered.
 	 */
 	public ViewAllButtonLabel?: string;
+
+	public constructor(init: Response) {
+		Object.assign(this, init);
+
+		this.Categories = init.Categories.map(r => new Category(r));
+		this.Products = init.Products.map(r => new Product(r));
+		this.Popular = init.Popular.map(r => new Popular(r));
+		this.Content = init.Content.map(r => new Content(r));
+	}
 }
