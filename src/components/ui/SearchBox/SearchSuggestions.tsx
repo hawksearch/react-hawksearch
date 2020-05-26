@@ -51,7 +51,7 @@ function SearchSuggestions({ query, downshift }: SearchSuggestionsProps) {
 			response = await client.autocomplete(
 				{
 					ClientGuid: config.clientGuid,
-
+					IndexName: config.indexName,
 					Keyword: input,
 					DisplayFullResponse: true,
 				},
