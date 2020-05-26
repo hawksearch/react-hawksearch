@@ -10,8 +10,9 @@ function Selections() {
 		store: { facetSelections, pendingSearch },
 		actor,
 	} = useHawkSearch();
-	const keys = Object.keys(facetSelections);
 
+	// Added filter to hide selection for Tabs
+	const keys = Object.keys(facetSelections).filter(key => key !== 'it');
 	if (keys.length === 0) {
 		// no selections, so render nothing
 		return null;
