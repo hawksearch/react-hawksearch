@@ -12,8 +12,12 @@ export interface ResultsProps {
 
 function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 	const {
-		store: { isLoading, searchResults },
+		store: { isLoading, searchResults, requestError },
 	} = useHawkSearch();
+
+	if (requestError) {
+		return <span>An error occurred while searching for your results. Please contact the site administrator.</span>;
+    }
 
 	// end of overrides
 	if ((!searchResults || searchResults.Results.length === 0) && !isLoading) {
