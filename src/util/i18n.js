@@ -3,7 +3,9 @@ import { initReactI18next } from "react-i18next";
 
 // the translations
 // TODO: move them in a JSON file and import them
-const resources = {};
+const resources = {
+    "response_error_generic": "An error occurred while searching for your results. Please contact the site administrator."
+};
 
 i18n
     .use(initReactI18next) // passes i18n down to react-i18next

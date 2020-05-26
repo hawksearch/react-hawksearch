@@ -13,10 +13,14 @@ export interface ResultsProps {
 
 function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 	const {
-		store: { isLoading, searchResults },
+		store: { isLoading, searchResults, requestError },
 	} = useHawkSearch();
 
 	const { t, i18n } = useTranslation();
+
+	if (requestError) {
+		return <span>{t('response_error_generic')}</span>;
+    }
 
 	// end of overrides
 	if ((!searchResults || searchResults.Results.length === 0) && !isLoading) {
