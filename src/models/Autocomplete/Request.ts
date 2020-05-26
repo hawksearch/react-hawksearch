@@ -39,4 +39,6 @@ export class Request {
 
 	/** Client data. */
 	public ClientData?: ClientData;
+
+	public IndexName?: string;
 }
