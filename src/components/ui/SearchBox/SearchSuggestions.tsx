@@ -82,7 +82,6 @@ function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestion
 		}
 	}
 
-
 	return (
 		<div className="autosuggest-menu">
 			<SearchSuggestionsList
