@@ -103,7 +103,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			// pass parameter for extended response
 			IsInPreview: config.isInPreview,
 			// and override some of the request fields with config values
-			ClientGuid: config.clientGuid
+			ClientGuid: config.clientGuid,
 		};
 
 		// The index name in the configuration takes priority over the one supplied from the URL
@@ -115,7 +115,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		if (config.indexNameRequired && !searchParams.IndexName) {
 			setStore({ isLoading: false });
 			return;
-        }
+		}
 
 		try {
 			searchResults = await client.search(searchParams, cancellationToken);
@@ -138,7 +138,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			} else {
 				setStore({
 					searchResults: new Response(searchResults),
-					requestError: false
+					requestError: false,
 				});
 			}
 		}

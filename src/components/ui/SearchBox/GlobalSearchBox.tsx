@@ -24,7 +24,7 @@ function GlobalSearchBox() {
 			let redirect = `${searchUrl}?keyword=${inputValue}`;
 
 			if (config.indexName) {
-				redirect += ('&indexName=' + config.indexName);
+				redirect += '&indexName=' + config.indexName;
 			}
 
 			location.assign(redirect);
