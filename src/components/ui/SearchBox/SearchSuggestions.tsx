@@ -54,7 +54,7 @@ function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestion
 				.autocomplete(
 					{
 						ClientGuid: config.clientGuid,
-
+						IndexName: config.indexName,
 						Keyword: input,
 						DisplayFullResponse: true,
 					},

@@ -3,6 +3,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 
 import { Response, Product, Popular, Category, Content } from 'models/Autocomplete';
 import { Suggestion } from '../../../models/Autocomplete/Suggestion';
+import { useTranslation } from 'react-i18next';
 
 export interface SearchSuggestionsListProps {
 	isLoading: boolean;
@@ -41,6 +42,7 @@ function SearchSuggestionsList({ isLoading, searchResults, downshift, onViewMatc
 	const { getItemProps, getMenuProps, highlightedIndex } = downshift;
 	const isRecordEmpty = hasAllEmpty(popular, categories, products, content);
 	const isAtleastOneExist = getAtleastOneExist(popular, categories, products, content);
+	const { t, i18n } = useTranslation();
 
 	return (
 		<ul className="dropdown-menu autosuggest-menu__list" {...getMenuProps()}>
@@ -137,7 +139,7 @@ function SearchSuggestionsList({ isLoading, searchResults, downshift, onViewMatc
 					</>
 				) : null}
 			</div>
-			{!isLoading && isRecordEmpty && <li className="autosuggest-menu__item">No results.</li>}
+			{!isLoading && isRecordEmpty && <li className="autosuggest-menu__item">{t('No results.')}</li>}
 		</ul>
 	);
 }
