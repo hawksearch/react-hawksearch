@@ -8,6 +8,8 @@ import QuestionmarkSVG from 'components/svg/QuestionmarkSVG';
 
 const FacetContext = React.createContext({} as FacetContextValue);
 
+import { useTranslation } from 'react-i18next';
+
 export interface FacetProps {
 	facet: FacetModel;
 	children: React.ReactNode;
@@ -82,6 +84,7 @@ function Facet({ facet, children }: FacetProps) {
 	const [filter, setFilter] = useState('');
 	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);
 	const [isCollapsed, setCollapsed] = useState(facet.IsCollapsible && facet.IsCollapsedDefault);
+	const { t, i18n } = useTranslation();
 
 	function selectFacet(facetValue: Value | string): void {
 		setFilter('');
@@ -206,7 +209,7 @@ function Facet({ facet, children }: FacetProps) {
 									value={filter}
 									onChange={e => setFilter(e.currentTarget.value)}
 									type="text"
-									placeholder="Quick Lookup"
+									placeholder={t('Quick Lookup')}
 								/>
 							</div>
 						)}

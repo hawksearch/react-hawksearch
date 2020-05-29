@@ -4,6 +4,8 @@
 
 import 'styles/app.scss';
 
+export { default as tConfig } from 'util/i18n';
+
 // context providers
 export { default as HawkSearch } from 'components/HawkSearch';
 export { default as ConfigProvider } from 'components/ConfigProvider';
