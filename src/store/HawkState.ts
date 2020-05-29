@@ -97,7 +97,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setStore({ isLoading: true });
 
 		let searchResults: Response | null = null;
-		let searchParams = {
+		const searchParams = {
 			// the search request being executed is spread from the pendingSearch
 			...store.pendingSearch,
 			// pass parameter for extended response
