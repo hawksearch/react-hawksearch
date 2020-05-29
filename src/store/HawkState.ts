@@ -96,20 +96,20 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	async function search(cancellationToken?: CancelToken): Promise<void> {
 		setStore({ isLoading: true });
 		let searchResults: Response | null = null;
-
+		const payload = {
+			// the search request being executed is spread from the pendingSearch
+			...store.pendingSearch,
+			// pass parameter for extended response
+			IsInPreview: config.isInPreview,
+			// and override some of the request fields with config values
+			ClientGuid: config.clientGuid,
+			IndexName: config.indexName,
+			Keyword: store.pendingSearch.Keyword
+				? decodeURIComponent(store.pendingSearch.Keyword || '')
+				: store.pendingSearch.Keyword,
+		};
 		try {
-			searchResults = await client.search(
-				{
-					// the search request being executed is spread from the pendingSearch
-					...store.pendingSearch,
-					// pass parameter for extended response
-					IsInPreview: config.isInPreview,
-					// and override some of the request fields with config values
-					ClientGuid: config.clientGuid,
-					IndexName: config.indexName,
-				},
-				cancellationToken
-			);
+			searchResults = await client.search(payload, cancellationToken);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated

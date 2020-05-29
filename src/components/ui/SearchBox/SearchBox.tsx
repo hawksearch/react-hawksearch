@@ -18,7 +18,7 @@ function SearchBox() {
 			actor.setSearch({
 				PageId: undefined,
 				CustomUrl: undefined,
-				Keyword: event.currentTarget.value,
+				Keyword: encodeURIComponent(event.currentTarget.value),
 				FacetSelections: undefined,
 			});
 		}

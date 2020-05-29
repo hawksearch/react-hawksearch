@@ -14,7 +14,7 @@ function SearchResultsLabel() {
 
 	return (
 		<div className="hawk-facet-rail__results-label">
-			<h3>Search Results {pendingSearch.Keyword ? 'for ' + pendingSearch.Keyword : null}</h3>
+			<h3>Search Results {pendingSearch.Keyword ? 'for ' + decodeURIComponent(pendingSearch.Keyword) : null}</h3>
 		</div>
 	);
 }

@@ -55,7 +55,7 @@ function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestion
 					{
 						ClientGuid: config.clientGuid,
 
-						Keyword: input,
+						Keyword: decodeURIComponent(input),
 						DisplayFullResponse: true,
 					},
 					cancellationToken

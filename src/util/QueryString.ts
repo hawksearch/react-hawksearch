@@ -47,7 +47,7 @@ function parseQueryStringToObject(search: string) {
 			key === 'is100Coverage'
 		) {
 			// `keyword` is special and should never be turned into an array
-			parsed[key] = value;
+			parsed[key] = encodeURIComponent(value);
 		} else {
 			// everything else should be turned into an array
 
