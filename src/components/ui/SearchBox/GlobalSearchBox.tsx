@@ -15,13 +15,17 @@ function GlobalSearchBox() {
 	const { config } = useHawkConfig();
 	const { actor } = useHawkSearch();
 
-	const searchUrl = config.searchPageUrl || '/search';
+	const searchUrl = config.searchPageUrl;
 
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue } = downshift;
 
 		if (event.key === 'Enter') {
-			const redirect = `${searchUrl}?keyword=${inputValue}`;
+			let redirect = `${searchUrl}?keyword=${inputValue}`;
+
+			if (config.indexName) {
+				redirect += '&indexName=' + config.indexName;
+			}
 
 			location.assign(redirect);
 		}
