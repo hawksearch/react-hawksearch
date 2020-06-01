@@ -8,6 +8,12 @@ import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 import { useHawkConfig } from 'components/ConfigProvider';
 
+enum FacetRangeDisplayType {
+	Text = 1,
+	Image = 2,
+	Both = 3,
+}
+
 function Checkbox() {
 	const { store } = useHawkSearch();
 	const { config } = useHawkConfig();
@@ -45,8 +51,9 @@ function Checkbox() {
 								<>
 									<span className="hawk-selectionInner">
 										<span className="hawk-range-asset" title={value.Label} />
-
-										<img src={rangeValueAssetUrl} alt={value.Label} />
+										{FacetRangeDisplayType.Text !== facet.FacetRangeDisplayType && (
+											<img src={rangeValueAssetUrl} alt={value.Label} />
+										)}
 									</span>
 
 									<span
