@@ -11,6 +11,7 @@ interface ParsedQueryStringFixed {
 	mpp?: string;
 	searchWithin?: string;
 	is100Coverage?: string;
+	indexName?: string;
 }
 
 /**
@@ -44,7 +45,8 @@ function parseQueryStringToObject(search: string) {
 			key === 'lpurl' ||
 			key === 'mpp' ||
 			key === 'searchWithin' ||
-			key === 'is100Coverage'
+			key === 'is100Coverage' ||
+			key === 'indexName'
 		) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = encodeURIComponent(value);
@@ -93,7 +95,19 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 	const queryObj = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
-	const { keyword, sort, pg, mpp, lp, PageId, lpurl, searchWithin, is100Coverage, ...facetSelections } = queryObj;
+	const {
+		keyword,
+		sort,
+		pg,
+		mpp,
+		lp,
+		PageId,
+		lpurl,
+		searchWithin,
+		is100Coverage,
+		indexName,
+		...facetSelections
+	} = queryObj;
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
@@ -108,6 +122,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		SearchWithin: searchWithin,
 		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
 		FacetSelections: facetSelections,
+		IndexName: indexName,
 	};
 }
 
@@ -144,7 +159,8 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				key === 'pg' ||
 				key === 'mpp' ||
 				key === 'searchWithin' ||
-				key === 'is100Coverage'
+				key === 'is100Coverage' ||
+				key === 'indexName'
 			) {
 				const value = queryObj[key];
 
@@ -191,6 +207,7 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 		mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
 		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
+		indexName: searchRequest.IndexName,
 
 		...searchRequest.FacetSelections,
 	} as ParsedQueryString;

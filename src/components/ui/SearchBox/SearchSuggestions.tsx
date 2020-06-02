@@ -56,6 +56,7 @@ function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestion
 						ClientGuid: config.clientGuid,
 
 						Keyword: decodeURIComponent(input),
+						IndexName: config.indexName,
 						DisplayFullResponse: true,
 					},
 					cancellationToken

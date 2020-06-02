@@ -95,21 +95,33 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 */
 	async function search(cancellationToken?: CancelToken): Promise<void> {
 		setStore({ isLoading: true });
+
 		let searchResults: Response | null = null;
-		const payload = {
+		const searchParams = {
 			// the search request being executed is spread from the pendingSearch
 			...store.pendingSearch,
 			// pass parameter for extended response
 			IsInPreview: config.isInPreview,
 			// and override some of the request fields with config values
 			ClientGuid: config.clientGuid,
-			IndexName: config.indexName,
 			Keyword: store.pendingSearch.Keyword
 				? decodeURIComponent(store.pendingSearch.Keyword || '')
 				: store.pendingSearch.Keyword,
 		};
+
+		// The index name in the configuration takes priority over the one supplied from the URL
+		if (config.indexName) {
+			Object.assign(searchParams, { IndexName: config.indexName });
+		}
+
+		// If the index name is required and no value is provided from the config or the URL, the request is canceled
+		if (config.indexNameRequired && !searchParams.IndexName) {
+			setStore({ isLoading: false });
+			return;
+		}
+
 		try {
-			searchResults = await client.search(payload, cancellationToken);
+			searchResults = await client.search(searchParams, cancellationToken);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -117,6 +129,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			}
 
 			console.error('Search request error:', error);
+			setStore({ requestError: true });
 		}
 
 		setStore({ isLoading: false });
@@ -124,9 +137,11 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		if (searchResults) {
 			if (!searchResults.Success) {
 				console.error('Search result error:', searchResults);
+				setStore({ requestError: true });
 			} else {
 				setStore({
 					searchResults: new Response(searchResults),
+					requestError: false,
 				});
 			}
 		}

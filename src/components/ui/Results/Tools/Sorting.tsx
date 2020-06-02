@@ -1,12 +1,15 @@
 import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
+import { useTranslation } from 'react-i18next';
 
 function Sorting() {
 	const {
 		store: { searchResults, pendingSearch },
 		actor,
 	} = useHawkSearch();
+
+	const { t, i18n } = useTranslation();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		actor.setSearch({
@@ -16,7 +19,7 @@ function Sorting() {
 
 	return (
 		<div className="hawk-sorting">
-			<span className="hawk-sorting__label">Sort By</span>
+			<span className="hawk-sorting__label">{t('Sort By')}</span>
 
 			<select value={pendingSearch.SortBy} onChange={onChange}>
 				{searchResults ? (
