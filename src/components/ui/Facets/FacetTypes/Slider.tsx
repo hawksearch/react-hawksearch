@@ -16,14 +16,13 @@ function Slider() {
 		facet,
 		actor,
 	} = useFacet();
-
 	// the range of the slider is defined by the first facet value. or null if there is no first value
 	const range = facetValues.length > 0 ? facetValues[0] : null;
 
-	const [rangeMin, setMinRange] = useState(range && Math.floor(parseFloat(range.RangeMin || '')));
-	const [rangeMax, setMaxRange] = useState(range && Math.ceil(parseFloat(range.RangeMax || '')));
-	const [rangeStart, setStartRange] = useState(range && Math.round(parseFloat(range.RangeStart || '')));
-	const [rangeEnd, setEndRange] = useState(range && Math.round(parseFloat(range.RangeEnd || '')));
+	const [rangeMin, setMinRange] = useState(range && Number(parseFloat(range.RangeMin || '').toFixed(2)));
+	const [rangeMax, setMaxRange] = useState(range && Number(parseFloat(range.RangeMax || '').toFixed(2)));
+	const [rangeStart, setStartRange] = useState(range && Number(parseFloat(range.RangeStart || '').toFixed(2)));
+	const [rangeEnd, setEndRange] = useState(range && Number(parseFloat(range.RangeEnd || '').toFixed(2)));
 
 	// if there's no range, initialize to zeros
 	const [minValue, setMinValue] = useState<number>();
@@ -57,10 +56,10 @@ function Slider() {
 
 	useEffect(() => {
 		const newRange = facetValues.length > 0 ? facetValues[0] : null;
-		setMinRange(newRange && Math.floor(parseFloat(newRange.RangeMin || '')));
-		setMaxRange(newRange && Math.ceil(parseFloat(newRange.RangeMax || '')));
-		setStartRange(newRange && Math.round(parseFloat(newRange.RangeStart || '')));
-		setEndRange(newRange && Math.round(parseFloat(newRange.RangeEnd || '')));
+		setMinRange(newRange && Number(parseFloat(newRange.RangeMin || '').toFixed(2)));
+		setMaxRange(newRange && Number(parseFloat(newRange.RangeMax || '').toFixed(2)));
+		setStartRange(newRange && Number(parseFloat(newRange.RangeStart || '').toFixed(2)));
+		setEndRange(newRange && Number(parseFloat(newRange.RangeEnd || '').toFixed(2)));
 	}, [facetValues]);
 
 	if (
@@ -101,11 +100,19 @@ function Slider() {
 		}
 
 		if (currentMinValue !== newMinValue && newMinValue <= currentMaxValue) {
-			currentMinValue = newMinValue;
+			if (rangeMin !== null && newMinValue <= rangeMin) {
+				currentMinValue = rangeMin;
+			} else {
+				currentMinValue = newMinValue;
+			}
 		}
 
 		if (currentMaxValue !== newMaxValue && newMaxValue >= currentMinValue) {
-			currentMaxValue = newMaxValue;
+			if (rangeMax !== null && newMaxValue >= rangeMax) {
+				currentMaxValue = rangeMax;
+			} else {
+				currentMaxValue = newMaxValue;
+			}
 		}
 		setMinValue(currentMinValue);
 		setMaxValue(currentMaxValue);
@@ -135,7 +142,7 @@ function Slider() {
 						currencySymbol={currencySymbol}
 						isCurrency={isCurency}
 						values={[
-							minValue === undefined ? Math.floor(rangeStart) : Math.max(minValue, rangeMin),
+							minValue === undefined ? rangeStart : Math.max(minValue, rangeMin),
 							maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax),
 						]}
 						onValueChange={onValueChange}
