@@ -104,6 +104,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			IsInPreview: config.isInPreview,
 			// and override some of the request fields with config values
 			ClientGuid: config.clientGuid,
+			Keyword: store.pendingSearch.Keyword
+				? decodeURIComponent(store.pendingSearch.Keyword || '')
+				: store.pendingSearch.Keyword,
 		};
 
 		// The index name in the configuration takes priority over the one supplied from the URL

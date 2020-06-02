@@ -79,7 +79,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseP
 				stateReducer={handleStateChange}
 				itemToString={(item: Suggestion) => handleToString(item)}
 				onChange={handleItemChange}
-				initialInputValue={initialValue}
+				initialInputValue={decodeURIComponent(initialValue || '')}
 			>
 				{(options: ControllerStateAndHelpers<Suggestion>) => {
 					const { isOpen, inputValue, getInputProps, openMenu } = options;

@@ -14,7 +14,7 @@ Object {
   "FacetSelections": Object {},
   "IndexName": undefined,
   "Is100CoverageTurnedOn": undefined,
-  "Keyword": "this is my keyword,which should be a long string",
+  "Keyword": "this%20is%20my%20keyword%2Cwhich%20should%20be%20a%20long%20string",
   "MaxPerPage": undefined,
   "PageId": undefined,
   "PageNo": undefined,
@@ -37,7 +37,7 @@ Object {
   },
   "IndexName": undefined,
   "Is100CoverageTurnedOn": undefined,
-  "Keyword": "this is my keyword",
+  "Keyword": "this%20is%20my%20keyword",
   "MaxPerPage": undefined,
   "PageId": undefined,
   "PageNo": undefined,
@@ -145,7 +145,7 @@ Object {
   "MaxPerPage": undefined,
   "PageId": undefined,
   "PageNo": undefined,
-  "SearchWithin": "blah blah",
+  "SearchWithin": "blah%20blah",
   "SortBy": undefined,
 }
 `;
