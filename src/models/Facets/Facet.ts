@@ -13,7 +13,7 @@ export class Facet {
 	/** The name of the field that is linked to this facet. */
 	public Field: string;
 
-	public FieldType: 'string' | 'range' | 'numeric' | 'search';
+	public FieldType: 'string' | 'range' | 'numeric' | 'search' | 'tag';
 	public FacetType: FacetType;
 
 	public DisplayType: 'default' | 'scrolling' | 'truncating';
