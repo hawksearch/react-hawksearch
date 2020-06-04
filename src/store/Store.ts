@@ -46,6 +46,8 @@ export class SearchStore {
 	/** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
 	public searchResults?: Response;
 
+	public requestError: boolean;
+
 	public constructor(initial?: Partial<SearchStore>) {
 		Object.assign(this, initial);
 	}

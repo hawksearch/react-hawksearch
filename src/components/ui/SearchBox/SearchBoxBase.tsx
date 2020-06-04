@@ -7,6 +7,7 @@ import { getAutocompleteStrategies } from '../Facets/Overrides';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
 import { useHawkSearch } from 'components/StoreProvider';
+import { useTranslation } from 'react-i18next';
 
 import Downshift from 'downshift';
 
@@ -19,6 +20,7 @@ export interface SearchBoxBaseProps {
 function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseProps) {
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
+	const { t, i18n } = useTranslation();
 
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
@@ -72,12 +74,12 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseP
 	}
 
 	return (
-		<React.Suspense fallback={<div>Loading...</div>}>
+		<React.Suspense fallback={<div>{t('Loading')}...</div>}>
 			<Downshift
 				stateReducer={handleStateChange}
 				itemToString={(item: Suggestion) => handleToString(item)}
 				onChange={handleItemChange}
-				initialInputValue={initialValue}
+				initialInputValue={decodeURIComponent(initialValue || '')}
 			>
 				{(options: ControllerStateAndHelpers<Suggestion>) => {
 					const { isOpen, inputValue, getInputProps, openMenu } = options;
@@ -105,7 +107,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseP
 										}
 									},
 
-									placeholder: 'Enter a search term',
+									placeholder: t('Enter a search term'),
 									'aria-labelledby': 'autocomplete-search-box',
 								})}
 							/>

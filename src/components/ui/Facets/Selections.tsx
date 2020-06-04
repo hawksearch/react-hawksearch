@@ -5,11 +5,15 @@ import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
 import { Facet, Range } from 'models/Facets';
 
+import { useTranslation } from 'react-i18next';
+
 function Selections() {
 	const {
 		store: { facetSelections, pendingSearch },
 		actor,
 	} = useHawkSearch();
+
+	const { t, i18n } = useTranslation();
 
 	// Added filter to hide selection for Tabs
 	const keys = Object.keys(facetSelections).filter(key => key !== 'it');
@@ -51,7 +55,7 @@ function Selections() {
 
 	return (
 		<div className="hawk-facet-rail__selections">
-			<h4>You've Selected</h4>
+			<h4>{t("You've Selected")}</h4>
 			<ul className="hawk-selections">
 				{keys.map(key => {
 					const selection = facetSelections[key];
@@ -106,7 +110,7 @@ function Selections() {
 
 				<li className="hawk-selections__category">
 					<button onClick={clearAll} className="hawk-btn hawk-btn-primary-outline">
-						Clear All
+						{t('Clear All')}
 					</button>
 				</li>
 			</ul>

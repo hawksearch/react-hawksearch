@@ -1,11 +1,14 @@
 import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
+import { useTranslation } from 'react-i18next';
 
 function SearchResultsLabel() {
 	const {
 		store: { pendingSearch },
 	} = useHawkSearch();
+
+	const { t, i18n } = useTranslation();
 
 	if (!pendingSearch.Keyword) {
 		// no selections, so render nothing
@@ -14,7 +17,11 @@ function SearchResultsLabel() {
 
 	return (
 		<div className="hawk-facet-rail__results-label">
-			<h3>Search Results {pendingSearch.Keyword ? 'for ' + pendingSearch.Keyword : null}</h3>
+			<h3>
+				{pendingSearch.Keyword
+					? t('Search Results for') + ' ' + decodeURIComponent(pendingSearch.Keyword)
+					: t('Search Results')}
+			</h3>
 		</div>
 	);
 }

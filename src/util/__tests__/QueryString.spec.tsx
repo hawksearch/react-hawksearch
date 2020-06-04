@@ -37,7 +37,7 @@ describe('parseSearchQueryString', () => {
 
 	it('handles keyword when parsing', () => {
 		// arrange
-		const queryString = 'color=black&brand=cool,kinda-cool&keyword=this is my keyword';
+		const queryString = 'color=black&brand=cool,kinda-cool&keyword=this%20is%20my%20keyword';
 
 		// act
 		const obj = parseSearchQueryString(queryString);
@@ -120,7 +120,7 @@ describe('getSearchQueryString', () => {
 				color: ['black'],
 				brand: ['cool', 'kinda-cool'],
 			},
-			Keyword: 'this is my keyword',
+			Keyword: decodeURIComponent('this is my keyword'),
 		};
 
 		// act
