@@ -178,6 +178,9 @@ export class SearchStore {
 						value: selectionValue,
 					});
 				});
+			} else if (facet.FieldType === 'tab') {
+				// do not return the selection value for tab facet
+				return;
 			} else {
 				// for other types of facets, try to find a matching value
 
