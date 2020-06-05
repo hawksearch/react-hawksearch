@@ -26,6 +26,9 @@ function FacetList() {
 						if (!facet.IsVisible) {
 							return null;
 						}
+						if (facet.FieldType === 'tag') {
+							return null;
+						}
 						const registeredComponent = components.find(
 							component => component.facetType === facet.FacetType
 						);
