@@ -1,4 +1,4 @@
-export class CompareItemRequest {
+export class Request {
 	public ClientGuid: string;
 
 	public IndexName: string;

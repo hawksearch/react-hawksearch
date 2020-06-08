@@ -11,7 +11,7 @@ import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
-import { CompareDataResponse, CompareItemRequest } from 'models/CompareItems';
+import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
 
 export interface SearchActor {
 	/**
@@ -69,11 +69,16 @@ export interface SearchActor {
 	// update sorting order of pinned items
 	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
 
+	// Store items to make comparision via request
 	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
 
+	// To store items after getting the results from compare request
 	setComparedResults(comparedResults: Result[]): void;
 
+	// Clear stored compared items
 	clearItemsToCompare(): void;
+
+	// Get comparision of items from request
 	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
 }
 
