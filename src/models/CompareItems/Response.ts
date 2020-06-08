@@ -1,9 +1,9 @@
 import { Result } from 'models/Search';
 
-export class CompareDataResponse {
+export class Response {
 	public Results: Result[];
 
-	public constructor(init: CompareDataResponse) {
+	public constructor(init: Response) {
 		Object.assign(this, init);
 	}
 }

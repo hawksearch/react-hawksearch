@@ -8,7 +8,7 @@ import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
-import { CompareDataResponse, CompareItemRequest } from 'models/CompareItems';
+import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
 
 export interface SearchActor {
 	/**
@@ -60,11 +60,16 @@ export interface SearchActor {
 	 */
 	clearAllFacets(): void;
 
+	// Store items to make comparision via request
 	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
 
+	// To store items after getting the results from compare request
 	setComparedResults(comparedResults: Result[]): void;
 
+	// Clear stored compared items
 	clearItemsToCompare(): void;
+
+	// Get comparision of items from request
 	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
 }
 

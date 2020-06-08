@@ -1,6 +1,6 @@
 import axios, { CancelToken, AxiosRequestConfig } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
-import { CompareItemRequest, CompareDataResponse } from 'models/CompareItems';
+import { Request as CompareItemRequest, Response as CompareDataResponse } from 'models/CompareItems';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 import { HawkSearchConfig } from 'types/HawkSearchConfig';
 
