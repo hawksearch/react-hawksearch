@@ -52,7 +52,7 @@ function CompareItems({ itemsList, onSelectCompareItems, clearItems, onSelectTil
 					Compare
 				</button>
 				<button onClick={() => clearItems()} className="hawk-btn hawk-btn-primary-outline">
-					clear
+					Clear
 				</button>
 			</div>
 		</div>
