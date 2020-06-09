@@ -89,7 +89,10 @@ export interface HawkSearchConfig {
 	 */
 	indexName?: string;
 	/**
-	 * IndexName if set will enable a query to a specific index in the search API
+	 * It will compare the properties of two or more items
+	 */
+	compareItemsURL?: string;
+	/* * IndexName if set will enable a query to a specific index in the search API
 	 */
 	indexNameRequired?: boolean | false;
 }

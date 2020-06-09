@@ -9,7 +9,7 @@ import { Product } from 'models/Autocomplete';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
 
-const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
+import Downshift from 'downshift';
 
 export interface SearchBoxBaseProps {
 	initialValue?: string;

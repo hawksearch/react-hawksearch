@@ -24,7 +24,7 @@ function Sorting() {
 			<select value={pendingSearch.SortBy} onChange={onChange}>
 				{searchResults ? (
 					searchResults.Sorting.Items.map(sortingItem => (
-						<option key={sortingItem.Value} value={sortingItem.Value} selected={sortingItem.Selected}>
+						<option key={sortingItem.Value} value={sortingItem.Value}>
 							{sortingItem.Label}
 						</option>
 					))
