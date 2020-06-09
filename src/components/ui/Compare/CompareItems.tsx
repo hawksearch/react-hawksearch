@@ -48,7 +48,11 @@ function CompareItems({ itemsList, onSelectCompareItems, clearItems, onSelectTil
 				})}
 			</div>
 			<div>
-				<button onClick={() => onSelectCompareItems()} className="hawk-btn hawk-btn-primary-outline">
+				<button
+					disabled={itemsList.length < 2}
+					onClick={() => onSelectCompareItems()}
+					className="hawk-btn hawk-btn-primary-outline"
+				>
 					Compare
 				</button>
 				<button onClick={() => clearItems()} className="hawk-btn hawk-btn-primary-outline">
