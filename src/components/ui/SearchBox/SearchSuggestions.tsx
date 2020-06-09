@@ -7,6 +7,7 @@ import { Response, Product, Category } from 'models/Autocomplete';
 import { useHawkConfig } from 'components/ConfigProvider';
 import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
+import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
 
 export interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
@@ -16,9 +17,10 @@ export interface SearchSuggestionsProps {
 	downshift: ControllerStateAndHelpers<Suggestion>;
 
 	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
+	SuggestionList?: React.ComponentType<CustomSuggestionListProps>;
 }
 
-function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestionsProps) {
+function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
 
 	const client = new HawkClient(config);
@@ -54,7 +56,6 @@ function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestion
 				.autocomplete(
 					{
 						ClientGuid: config.clientGuid,
-
 						Keyword: decodeURIComponent(input),
 						IndexName: config.indexName,
 						DisplayFullResponse: true,
@@ -90,6 +91,7 @@ function SearchSuggestions({ query, downshift, onViewMatches }: SearchSuggestion
 				downshift={downshift}
 				isLoading={isLoading}
 				searchResults={results}
+				SuggestionList={SuggestionList}
 			/>
 		</div>
 	);
