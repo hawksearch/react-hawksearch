@@ -88,8 +88,10 @@
 		"axios": "^0.18.1",
 		"downshift": "^3.4.8",
 		"history": "^4.10.1",
+		"i18next": "^19.4.4",
 		"react": "^16.12.0",
 		"react-dom": "^16.12.0",
+		"react-i18next": "^11.4.0",
 		"react-number-format": "^4.3.1",
 		"rheostat": "^4.1.0",
 		"url-search-params-polyfill": "^5.1.0"
