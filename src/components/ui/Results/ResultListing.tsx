@@ -2,7 +2,7 @@ import React from 'react';
 import PlaceholderItem from './PlaceholderItem';
 import Spinner from 'components/ui/Spinner';
 import { default as DefaultResultItem, ResultItemProps } from './ResultItem';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 
 export interface ResultsListingProps {
 	ResultItem: React.ComponentType<ResultItemProps>;
@@ -11,7 +11,7 @@ export interface ResultsListingProps {
 function ResultListing({ ResultItem = DefaultResultItem }: ResultsListingProps) {
 	const {
 		store: { isLoading, searchResults },
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const results = searchResults ? searchResults.Results : [];
 

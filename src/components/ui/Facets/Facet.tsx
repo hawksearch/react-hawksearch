@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, MouseEvent } from 'react';
 
 import { Facet as FacetModel, Value } from 'models/Facets';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import PlusSVG from 'components/svg/PlusSVG';
 import MinusSVG from 'components/svg/MinusSVG';
 import QuestionmarkSVG from 'components/svg/QuestionmarkSVG';
@@ -79,7 +79,7 @@ export interface FacetRenderer {
 }
 
 function Facet({ facet, children }: FacetProps) {
-	const { actor: searchActor } = useHawkSearch();
+	const { actor: searchActor } = useHawksearch();
 	const wrapperRef = useRef<HTMLInputElement>(null);
 	const [filter, setFilter] = useState('');
 	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);

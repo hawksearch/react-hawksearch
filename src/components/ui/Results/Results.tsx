@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import ToolRow from 'components/ui/Results/ToolRow';
 import ResultListing from 'components/ui/Results/ResultListing';
 import Selections from 'components/ui/Facets/Selections';
@@ -14,7 +14,7 @@ export interface ResultsProps {
 function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 	const {
 		store: { isLoading, searchResults, requestError },
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const { t, i18n } = useTranslation();
 

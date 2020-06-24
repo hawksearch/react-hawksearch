@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
-import { useHawkSearch } from './StoreProvider';
+import { useHawksearch } from './StoreProvider';
 import { history } from 'util/History';
 import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
 
 let doSearch = true;
 
 function QueryStringListener() {
-	const { store, actor } = useHawkSearch();
+	const { store, actor } = useHawksearch();
 
 	useEffect(() => {
 		// listen to history so that when we navigate backward/forward, trigger a new search based off

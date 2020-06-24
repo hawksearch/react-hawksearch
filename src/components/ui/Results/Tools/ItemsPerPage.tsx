@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 
 function ItemsPerPage() {
 	const {
 		store: { searchResults, pendingSearch },
 		actor,
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		actor.setSearch({
