@@ -7,7 +7,7 @@ import 'styles/app.scss';
 export { default as tConfig } from 'util/i18n';
 
 // context providers
-export { default as HawkSearch } from 'components/HawkSearch';
+export { default as Hawksearch } from 'components/Hawksearch';
 export { default as ConfigProvider } from 'components/ConfigProvider';
 export { default as StoreProvider } from 'components/StoreProvider';
 
@@ -45,7 +45,7 @@ export { default as Spinner } from 'components/ui/Spinner';
 export { default as AdjustedKeyword } from 'components/ui/AdjustedKeyword';
 
 // hooks
-export { useHawkSearch } from 'components/StoreProvider';
+export { useHawksearch } from 'components/StoreProvider';
 export { useFacet } from 'components/ui/Facets/Facet';
 
 // utils

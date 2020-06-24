@@ -6,7 +6,7 @@ import { Suggestion, SuggestionStrategyMatch } from 'models/Autocomplete/Suggest
 import { getAutocompleteStrategies } from '../Facets/Overrides';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
 
@@ -25,7 +25,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	const { t, i18n } = useTranslation();
 	const {
 		store: { pendingSearch, searchResults },
-	} = useHawkSearch();
+	} = useHawksearch();
 	const [initialInput, setInitialInput] = useState('');
 
 	// Will update the suggested selected keyword in the autocomplete input box

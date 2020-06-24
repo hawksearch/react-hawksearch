@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PublicState } from 'rheostat';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
@@ -9,7 +9,7 @@ const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rhe
 function SliderNumeric() {
 	const {
 		store: { facetSelections },
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const {
 		state: { facetValues, decimalPrecision },

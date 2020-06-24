@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
 
 function SearchResultsLabel() {
 	const {
 		store: { pendingSearch, searchResults },
-	} = useHawkSearch();
+	} = useHawksearch();
 	const [keyword, setKeyword] = useState('');
 
 	const { t, i18n } = useTranslation();

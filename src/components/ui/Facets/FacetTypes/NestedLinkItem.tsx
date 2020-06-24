@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { Value } from 'models/Facets';
@@ -12,7 +12,7 @@ export interface NestedLinkItemProps {
 }
 
 function NestedLinkItem(item: NestedLinkItemProps) {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const { facet } = useFacet();
 
 	const [isExpanded, setIsExpanded] = useState(false);

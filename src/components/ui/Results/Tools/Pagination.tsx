@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import Pager from './Pager';
 import ItemsPerPage from './ItemsPerPage';
 
@@ -8,7 +8,7 @@ function Pagination() {
 	const {
 		store: { searchResults, pendingSearch },
 		actor,
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	function onPageChange(pageNo: number) {
 		// when the pager's page changes, trigger a new search
