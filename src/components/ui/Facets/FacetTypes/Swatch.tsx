@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 import SwatchItem from './SwatchItem';
 
 function Swatch() {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const {
 		facet,
 		actor,

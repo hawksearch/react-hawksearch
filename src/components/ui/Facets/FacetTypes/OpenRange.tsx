@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 
 function OpenRange() {
-	const { actor: hawkActor } = useHawkSearch();
+	const { actor: hawkActor } = useHawksearch();
 
 	const {
 		state: { facetValues },

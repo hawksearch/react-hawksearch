@@ -6,7 +6,7 @@ import { Suggestion, SuggestionStrategyMatch } from 'models/Autocomplete/Suggest
 import { getAutocompleteStrategies } from '../Facets/Overrides';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
 

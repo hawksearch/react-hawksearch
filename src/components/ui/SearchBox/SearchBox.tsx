@@ -1,7 +1,7 @@
 import React from 'react';
 import { ControllerStateAndHelpers } from 'downshift';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
 import { Product } from 'models/Autocomplete';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
@@ -16,7 +16,7 @@ interface SearchBoxProps {
 }
 
 function SearchBox({ SuggestionList }: SearchBoxProps) {
-	const { store, actor } = useHawkSearch();
+	const { store, actor } = useHawksearch();
 
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		if (event.key === 'Enter') {

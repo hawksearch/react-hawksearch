@@ -7,7 +7,7 @@ import 'styles/app.scss';
 export { default as tConfig } from 'util/i18n';
 
 // context providers
-export { default as HawkSearch } from 'components/HawkSearch';
+export { default as Hawksearch } from 'components/Hawksearch';
 export { default as ConfigProvider } from 'components/ConfigProvider';
 export { default as StoreProvider } from 'components/StoreProvider';
 
@@ -44,7 +44,7 @@ export { default as PlaceholderItem } from 'components/ui/Results/PlaceholderIte
 export { default as Spinner } from 'components/ui/Spinner';
 
 // hooks
-export { useHawkSearch } from 'components/StoreProvider';
+export { useHawksearch } from 'components/StoreProvider';
 export { useFacet } from 'components/ui/Facets/Facet';
 
 // utils

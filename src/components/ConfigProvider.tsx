@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 
-import { HawkSearchConfig } from 'types/HawkSearchConfig';
+import { HawksearchConfig } from 'types/HawksearchConfig';
 
 const ConfigContext = React.createContext({} as ConfigContextValue);
 
 export interface ConfigContextValue {
 	/** Global configuration. */
-	config: HawkSearchConfig;
+	config: HawksearchConfig;
 }
 
 export interface ConfigProviderProps {
-	config: HawkSearchConfig;
+	config: HawksearchConfig;
 	children: React.ReactNode;
 }
 
@@ -42,7 +42,7 @@ export function useHawkConfig() {
 
 	if (!context.config) {
 		throw new Error(
-			'No HawkSearchConfig is available, did you forget to wrap your components in a ConfigProvider component?'
+			'No HawksearchConfig is available, did you forget to wrap your components in a ConfigProvider component?'
 		);
 	}
 

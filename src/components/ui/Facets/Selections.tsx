@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
 import { Facet, Range } from 'models/Facets';
@@ -11,7 +11,7 @@ function Selections() {
 	const {
 		store: { facetSelections, pendingSearch },
 		actor,
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const { t, i18n } = useTranslation();
 
