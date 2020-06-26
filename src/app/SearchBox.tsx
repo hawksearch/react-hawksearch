@@ -8,23 +8,23 @@ import 'url-search-params-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { HawkSearchConfig } from 'types/HawkSearchConfig';
+import { HawksearchConfig } from 'types/HawksearchConfig';
 import ConfigProvider from 'components/ConfigProvider';
 import GlobalSearchBox from 'components/ui/SearchBox/GlobalSearchBox';
 
 declare global {
 	interface Window {
-		HawkSearch?: HawkSearchConfig;
+		Hawksearch?: HawksearchConfig;
 	}
 }
 
-if (window.HawkSearch) {
-	initializeSearchBox(window.HawkSearch);
+if (window.Hawksearch) {
+	initializeSearchBox(window.Hawksearch);
 }
 
-export function initializeSearchBox(config: HawkSearchConfig) {
+export function initializeSearchBox(config: HawksearchConfig) {
 	if (!config.searchBoxElement) {
-		throw new Error('window.HawkSearch.searchBoxElement has not been configured');
+		throw new Error('window.Hawksearch.searchBoxElement has not been configured');
 	}
 
 	const renderElem =

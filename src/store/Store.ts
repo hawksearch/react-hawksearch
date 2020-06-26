@@ -1,4 +1,4 @@
-import { Response, Request } from 'models/Search';
+import { Response, Request, Result } from 'models/Search';
 import { Value, Facet } from 'models/Facets';
 import { ClientSelections, ClientSelectionValue } from 'store/ClientSelections';
 
@@ -38,6 +38,10 @@ export class SearchStore {
 
 	/** Whether or not a search request is waiting for completion. */
 	public isLoading: boolean;
+
+	public itemsToCompare: Result[];
+	public itemsToCompareIds: string[];
+	public comparedResults: Result[];
 
 	/** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
 	public searchResults?: Response;
@@ -180,6 +184,9 @@ export class SearchStore {
 						value: selectionValue,
 					});
 				});
+			} else if (facet.FieldType === 'tab') {
+				// do not return the selection value for tab facet
+				return;
 			} else {
 				// for other types of facets, try to find a matching value
 

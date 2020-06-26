@@ -1,7 +1,7 @@
 import { FacetComponent } from 'types/FacetComponent';
 import { SuggestionStrategyMatch } from 'models/Autocomplete/Suggestion';
 
-export interface HawkSearchConfig {
+export interface HawksearchConfig {
 	/**
 	 * Optional URL of the Hawksearch API that will be used for all search and autocomplete requests. This can also
 	 * be the URL of a proxy server that can act as a trusted middleware between the React frontend components and the
@@ -89,7 +89,10 @@ export interface HawkSearchConfig {
 	 */
 	indexName?: string;
 	/**
-	 * IndexName if set will enable a query to a specific index in the search API
+	 * It will compare the properties of two or more items
+	 */
+	compareItemsURL?: string;
+	/* * IndexName if set will enable a query to a specific index in the search API
 	 */
 	indexNameRequired?: boolean | false;
 }

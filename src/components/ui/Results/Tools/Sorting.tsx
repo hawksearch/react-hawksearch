@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
 
 function Sorting() {
 	const {
 		store: { searchResults, pendingSearch },
 		actor,
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const { t, i18n } = useTranslation();
 
@@ -24,7 +24,7 @@ function Sorting() {
 			<select value={pendingSearch.SortBy} onChange={onChange}>
 				{searchResults ? (
 					searchResults.Sorting.Items.map(sortingItem => (
-						<option key={sortingItem.Value} value={sortingItem.Value} selected={sortingItem.Selected}>
+						<option key={sortingItem.Value} value={sortingItem.Value}>
 							{sortingItem.Label}
 						</option>
 					))

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useHawkConfig } from 'components/ConfigProvider';
 import Facet from './Facet';
 import PlaceholderFacet from './PlaceholderFacet';
@@ -9,7 +9,7 @@ import { getFacetComponents } from 'components/ui/Facets/Overrides';
 function FacetList() {
 	const {
 		store: { searchResults },
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const { config } = useHawkConfig();
 
@@ -26,7 +26,7 @@ function FacetList() {
 						if (!facet.IsVisible) {
 							return null;
 						}
-						if (facet.FieldType === 'tag') {
+						if (facet.FieldType === 'tab') {
 							return null;
 						}
 						const registeredComponent = components.find(

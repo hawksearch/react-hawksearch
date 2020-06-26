@@ -6,3 +6,4 @@ export { default as Swatch } from './Swatch';
 export { default as SwatchItem } from './SwatchItem';
 export { default as NestedCheckbox } from './Nested';
 export { default as OpenRange } from './OpenRange';
+export { default as Size } from './Size';

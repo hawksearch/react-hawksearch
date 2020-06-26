@@ -2,18 +2,18 @@ import React from 'react';
 
 import ConfigProvider from 'components/ConfigProvider';
 import StoreProvider from 'components/StoreProvider';
-import { HawkSearchConfig } from 'types/HawkSearchConfig';
+import { HawksearchConfig } from 'types/HawksearchConfig';
 import { Request } from 'models/Search';
 
-export interface HawkSearchProps {
+export interface HawksearchProps {
 	/** Global configuration. */
-	config: HawkSearchConfig;
+	config: HawksearchConfig;
 	/** The initial search to perform when initializing the search components. */
 	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
 }
 
-function HawkSearch(props: HawkSearchProps) {
+function Hawksearch(props: HawksearchProps) {
 	return (
 		<ConfigProvider config={props.config}>
 			<StoreProvider initialSearch={props.initialSearch}>{props.children}</StoreProvider>
@@ -21,4 +21,4 @@ function HawkSearch(props: HawkSearchProps) {
 	);
 }
 
-export default HawkSearch;
+export default Hawksearch;

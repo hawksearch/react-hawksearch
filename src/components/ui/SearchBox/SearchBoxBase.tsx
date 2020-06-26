@@ -6,18 +6,20 @@ import { Suggestion, SuggestionStrategyMatch } from 'models/Autocomplete/Suggest
 import { getAutocompleteStrategies } from '../Facets/Overrides';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
+import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
 
-const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
+import Downshift from 'downshift';
 
 export interface SearchBoxBaseProps {
 	initialValue?: string;
 	onSubmit: (event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Suggestion>) => void;
 	onViewMatches: (downshift: ControllerStateAndHelpers<Suggestion>) => void;
+	SuggestionList?: React.ComponentType<CustomSuggestionListProps>;
 }
 
-function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseProps) {
+function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }: SearchBoxBaseProps) {
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 	const { t, i18n } = useTranslation();
@@ -87,7 +89,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseP
 				inputValue={initialInput}
 			>
 				{(options: ControllerStateAndHelpers<Suggestion>) => {
-					const { isOpen, inputValue, getInputProps, openMenu } = options;
+					const { isOpen, inputValue, getInputProps, openMenu, closeMenu } = options;
 
 					const showSuggestions = isOpen && inputValue && inputValue.length > 0;
 					return (
@@ -102,6 +104,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseP
 									onKeyDown: event => {
 										if (onSubmit) {
 											onSubmit(event, options);
+											closeMenu();
 										}
 									},
 
@@ -124,6 +127,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches }: SearchBoxBaseP
 									query={inputValue || ''}
 									downshift={options}
 									onViewMatches={onViewMatches}
+									SuggestionList={SuggestionList}
 								/>
 							) : null}
 						</div>

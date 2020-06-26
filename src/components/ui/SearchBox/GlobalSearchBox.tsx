@@ -4,7 +4,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
 import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 
 /**
  * This component is a simple search input box (with autosuggest) that can be placed globally throughout the site.
@@ -13,7 +13,7 @@ import { useHawkSearch } from 'components/StoreProvider';
  */
 function GlobalSearchBox() {
 	const { config } = useHawkConfig();
-	const { actor } = useHawkSearch();
+	const { actor } = useHawksearch();
 
 	const searchUrl = config.searchPageUrl;
 
