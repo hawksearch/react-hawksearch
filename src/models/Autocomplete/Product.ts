@@ -1,7 +1,7 @@
 import { Result } from 'models/Search';
 import { Suggestion, SuggestionStrategy, SuggestionType } from './Suggestion';
 import { ControllerStateAndHelpers } from 'downshift';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 
 export class Product extends Suggestion {
 	/** Name of the item (if applicable). */

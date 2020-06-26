@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 
 function Link() {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const {
 		facet,
 		state: { facetValues },

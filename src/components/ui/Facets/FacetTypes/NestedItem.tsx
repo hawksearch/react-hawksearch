@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
 import CheckmarkSVG from 'components/svg/CheckmarkSVG';
@@ -16,7 +16,7 @@ export interface NestedItemProps {
 }
 
 function NestedItem(item: NestedItemProps) {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const { facet } = useFacet();
 
 	const [isExpanded, setIsExpanded] = useState(false);

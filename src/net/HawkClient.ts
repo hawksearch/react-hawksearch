@@ -2,7 +2,7 @@ import axios, { CancelToken, AxiosRequestConfig } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as CompareItemRequest, Response as CompareDataResponse } from 'models/CompareItems';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
-import { HawkSearchConfig } from 'types/HawkSearchConfig';
+import { HawksearchConfig } from 'types/HawksearchConfig';
 
 class HawkClient {
 	private baseUrl: string;
@@ -11,7 +11,7 @@ class HawkClient {
 	private autocompleteUrl: string;
 	private compareItemsURL: string;
 
-	constructor(config: HawkSearchConfig) {
+	constructor(config: HawksearchConfig) {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
 		this.dashboardUrl = config.dashboardUrl || 'http://test.hawksearch.net/';
 		this.searchUrl = config.searchUrl || '/api/v2/search';
