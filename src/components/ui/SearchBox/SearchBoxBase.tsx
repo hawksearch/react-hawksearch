@@ -25,9 +25,12 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	const { t, i18n } = useTranslation();
 	const { store } = useHawksearch();
 	const [initialInput, setInitialInput] = useState('');
+
+	// Will update the suggested selected keyword in the autocomplete input box
 	useEffect(() => {
 		setInitialInput(decodeURIComponent(store.pendingSearch.Keyword || ''));
 	}, [store.pendingSearch.Keyword, initialValue]);
+
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
 		state: DownshiftState<Suggestion>,
