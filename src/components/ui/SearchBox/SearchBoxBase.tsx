@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DownshiftState, StateChangeOptions, ControllerStateAndHelpers } from 'downshift';
 
 import SearchSuggestions from 'components/ui/SearchBox/SearchSuggestions';
@@ -23,6 +23,13 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 	const { t, i18n } = useTranslation();
+	const { store } = useHawksearch();
+	const [initialInput, setInitialInput] = useState('');
+
+	// Will update the suggested selected keyword in the autocomplete input box
+	useEffect(() => {
+		setInitialInput(decodeURIComponent(store.pendingSearch.Keyword || ''));
+	}, [store.pendingSearch.Keyword, initialValue]);
 
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
@@ -82,6 +89,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 				itemToString={(item: Suggestion) => handleToString(item)}
 				onChange={handleItemChange}
 				initialInputValue={decodeURIComponent(initialValue || '')}
+				inputValue={initialInput}
 			>
 				{(options: ControllerStateAndHelpers<Suggestion>) => {
 					const { isOpen, inputValue, getInputProps, openMenu, closeMenu } = options;
@@ -108,6 +116,9 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 										if (inputValue && inputValue.length > 0) {
 											openMenu();
 										}
+									},
+									onChange: event => {
+										setInitialInput(event.target.value);
 									},
 
 									placeholder: t('Enter a search term'),
