@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 
 function AutoCorrectSuggestion() {
 	const {
 		store: { searchResults },
 		actor: hawkActor,
-	} = useHawkSearch();
+	} = useHawksearch();
 	function selectKeyword(keyword: string) {
 		hawkActor.setSearch({
 			Keyword: keyword,

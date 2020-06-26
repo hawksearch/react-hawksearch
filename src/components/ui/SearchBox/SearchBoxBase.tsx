@@ -23,7 +23,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 	const { t, i18n } = useTranslation();
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const [initialInput, setInitialInput] = useState('');
 	useEffect(() => {
 		setInitialInput(decodeURIComponent(store.pendingSearch.Keyword || ''));
