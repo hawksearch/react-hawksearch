@@ -1,17 +1,23 @@
 import React from 'react';
 
 interface SizeItemProps {
-	value: string;
-	label: string;
-	isSelected: boolean;
+	size: {
+		Value: string;
+		Label: string;
+		Selected: boolean;
+	};
 	isNegated: boolean;
 	onSwatchSelected: (a: string, b: boolean) => void;
 }
 
-const SizeItem = React.memo(({ value, label, onSwatchSelected, isSelected, isNegated }: SizeItemProps) => {
+const SizeItem = React.memo(({ size, onSwatchSelected, isNegated }: SizeItemProps) => {
 	return (
-		<li key={value} className={isSelected ? 'selected' : ''} onClick={() => onSwatchSelected(value, isNegated)}>
-			<div>{label}</div>
+		<li
+			key={size.Value}
+			className={size.Selected ? 'selected' : ''}
+			onClick={() => onSwatchSelected(size.Value, isNegated)}
+		>
+			<div>{size.Label}</div>
 		</li>
 	);
 });

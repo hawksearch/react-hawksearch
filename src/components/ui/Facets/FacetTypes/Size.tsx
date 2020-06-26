@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 import SizeItem from './SizeItem';
 
 function Size() {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const {
 		facet,
 		actor,
@@ -27,9 +27,7 @@ function Size() {
 							return (
 								<SizeItem
 									key={value.Value}
-									value={value.Value || ''}
-									label={value.Label || ''}
-									isSelected={value.Selected}
+									size={{ ...value, Value: value.Value || '', Label: value.Label || '' }}
 									onSwatchSelected={onSwatchSelected}
 									isNegated={isNegated}
 								/>
