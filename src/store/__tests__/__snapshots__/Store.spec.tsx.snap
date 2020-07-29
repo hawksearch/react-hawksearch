@@ -74,7 +74,8 @@ exports[`Store performs a search 1`] = `
     "FeaturedItems": {},
     "SearchDuration": 100,
     "PageContent": []
-  }
+  },
+  "requestError": false
 }
 </div>
 `;

@@ -42,6 +42,8 @@ export class SearchStore {
 	/** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
 	public searchResults?: Response;
 
+	public requestError: boolean;
+
 	public constructor(initial?: Partial<SearchStore>) {
 		Object.assign(this, initial);
 	}
@@ -178,6 +180,9 @@ export class SearchStore {
 						value: selectionValue,
 					});
 				});
+			} else if (facet.FieldType === 'tab') {
+				// do not return the selection value for tab facet
+				return;
 			} else {
 				// for other types of facets, try to find a matching value
 

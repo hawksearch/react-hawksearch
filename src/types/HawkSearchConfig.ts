@@ -1,4 +1,5 @@
 import { FacetComponent } from 'types/FacetComponent';
+import { SuggestionStrategyMatch } from 'models/Autocomplete/Suggestion';
 
 export interface HawkSearchConfig {
 	/**
@@ -71,6 +72,11 @@ export interface HawkSearchConfig {
 	autocompleteDebounce?: number;
 
 	/**
+	 * The definition of custom autocomplete strategies that overrides default ones
+	 */
+	autocompleteStrategies?: SuggestionStrategyMatch[];
+
+	/**
 	 * The definition of custom components that overrides default ones in facets rail panel
 	 */
 	facetOverrides?: FacetComponent[];
@@ -82,4 +88,8 @@ export interface HawkSearchConfig {
 	 * IndexName if set will enable a query to a specific index in the search API
 	 */
 	indexName?: string;
+	/**
+	 * IndexName if set will enable a query to a specific index in the search API
+	 */
+	indexNameRequired?: boolean | false;
 }

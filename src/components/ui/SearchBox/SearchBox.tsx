@@ -9,6 +9,7 @@ import { Product } from 'models/Autocomplete';
  * This component is the search input box (with autosuggest) that should be utilized on search pages. For a simple
  * search input box that is meant to be used on non-search pages (or globally), see `GlobalSearchBox`.
  */
+
 function SearchBox() {
 	const { store, actor } = useHawkSearch();
 
@@ -17,15 +18,27 @@ function SearchBox() {
 			actor.setSearch({
 				PageId: undefined,
 				CustomUrl: undefined,
-				Keyword: event.currentTarget.value,
+				Keyword: encodeURIComponent(event.currentTarget.value),
 				FacetSelections: undefined,
 			});
 		}
 	}
 
+	// On Select view all matches from suggestion list
+	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
+		const { inputValue, closeMenu } = downshift;
+		actor.setSearch({
+			PageId: undefined,
+			CustomUrl: undefined,
+			Keyword: inputValue || '',
+		});
+		closeMenu();
+	}
+
 	return (
 		<div className="hawk__searchBox">
 			<SearchBoxBase
+				onViewMatches={handleViewAllMatches}
 				initialValue={store && store.pendingSearch ? store.pendingSearch.Keyword : ''}
 				onSubmit={handleSubmit}
 			/>

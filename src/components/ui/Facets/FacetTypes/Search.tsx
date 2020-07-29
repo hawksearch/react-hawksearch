@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
+import { useTranslation } from 'react-i18next';
 
 function Search() {
 	const { store, actor: hawkActor } = useHawkSearch();
 	const { facet, actor } = useFacet();
 
 	const [input, setInput] = useState<string | undefined>(undefined);
+
+	const { t, i18n } = useTranslation();
 
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key === 'Enter') {
@@ -47,7 +50,7 @@ function Search() {
 			{store.pendingSearch.SearchWithin && (
 				<div className="hawk-facet-rail__facet-values__search-clear">
 					<button className="link-button" onClick={clearFacet}>
-						Clear
+						{t('Clear')}
 					</button>
 				</div>
 			)}

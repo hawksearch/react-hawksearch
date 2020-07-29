@@ -4,6 +4,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
 import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
+import { useHawkSearch } from 'components/StoreProvider';
 
 /**
  * This component is a simple search input box (with autosuggest) that can be placed globally throughout the site.
@@ -12,22 +13,38 @@ import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
  */
 function GlobalSearchBox() {
 	const { config } = useHawkConfig();
+	const { actor } = useHawkSearch();
 
-	const searchUrl = config.searchPageUrl || '/search';
+	const searchUrl = config.searchPageUrl;
 
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue } = downshift;
 
 		if (event.key === 'Enter') {
-			const redirect = `${searchUrl}?keyword=${inputValue}`;
+			let redirect = `${searchUrl}?keyword=${inputValue}`;
+
+			if (config.indexName) {
+				redirect += '&indexName=' + config.indexName;
+			}
 
 			location.assign(redirect);
 		}
 	}
 
+	// On select view all matches from suggestions list
+	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
+		const { inputValue, closeMenu } = downshift;
+		actor.setSearch({
+			PageId: undefined,
+			CustomUrl: undefined,
+			Keyword: inputValue || '',
+		});
+		closeMenu();
+	}
+
 	return (
-		<div className="hawk">
-			<SearchBoxBase onSubmit={handleSubmit} />
+		<div className="hawk hawk__searchBox">
+			<SearchBoxBase onSubmit={handleSubmit} onViewMatches={handleViewAllMatches} />
 		</div>
 	);
 }
