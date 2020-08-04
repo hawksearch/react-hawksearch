@@ -3,10 +3,10 @@
 node_modules/
 jspm_packages/
 
-# build outputs
-dist/
-
-.npmrc
+# source
+src/
 
 # rollup
 .rpt2_cache
+
+.npmrc
