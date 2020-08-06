@@ -96,6 +96,7 @@
 		"rheostat": "^4.1.0",
 		"url-search-params-polyfill": "^5.1.0"
 	},
+	"typings": "./typings/index.d.ts",
 	"peerDependencies": {
 		"react": ">=16.8.x",
 		"react-dom": ">=16.8.x",
