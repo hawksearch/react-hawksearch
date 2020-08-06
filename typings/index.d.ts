@@ -56,7 +56,7 @@ declare module '@hawksearch/react-hawksearch' {
 		/**
 		 * API Client Guid. Usually comes from the "Tracking Key" in the "Account Info" section of the hawk dashboard.
 		 */
-		clientGuid: string;
+		clientGuid?: string;
 		/**
 		 * The url of the search page for this website. Users will be redirected to this page when performing a
 		 * keyword search using the standalone search box.
@@ -321,6 +321,8 @@ declare module '@hawksearch/react-hawksearch' {
 	export class Rule {
 		public RuleType: RuleType;
 		public Field: string;
+		public FieldName: string;
+		public FieldValue: string;
 		public Condition: string;
 		public Value: string;
 		public Operator: RuleOperatorType;
@@ -705,6 +707,17 @@ declare module '@hawksearch/react-hawksearch' {
 		}
 	}
 
+	export interface SpinnerProps {
+		isVisible: boolean;
+	}
+
+	interface CompareItemProps {
+		itemsList: Result[];
+		onSelectCompareItems: () => void;
+		clearItems: () => void;
+		onSelectTiles: (item: Result) => void;
+	}
+
 	/******************************************************************************************/
 	/*                                                                                        */
 	/*                                                                                        */
@@ -716,17 +729,41 @@ declare module '@hawksearch/react-hawksearch' {
 	export const Hawksearch: React.SFC<HawksearchProps>;
 	export const SearchBox: React.SFC<>;
 	export const PlaceholderItem: React.SFC;
-	export const parseLocation: (location: any, searchUrl?: string) => Partial<Request>;
-	export const parseQueryStringToObject: (search: string) => {};
-	export const parseSearchQueryString: (search: string) => Partial<Request>;
-	export const checkIfUrlRefsLandingPage: (path: string, searchUrl: string) => boolean;
-	export const getSearchQueryString: (queryObj: ParsedQueryString) => string;
 	export const QueryStringListener: React.SFC;
-	export const useHawksearch: () => React.Context;
 	export const ResultImage: React.SFC<ResultItemProps>;
+	export const FacetRail: React.SFC;
 	export const FacetList: React.SFC;
 	export const ToolRow: React.SFC;
 	export const ResultListing: React.SFC<ResultsListingProps>;
 	export const Selections: React.SFC;
 	export const SearchResultsLabel: React.SFC;
+	export const AutoCorrectSuggestion: React.SFC;
+	export const Sorting: React.SFC;
+	export const Pagination: React.SFC;
+	export const PlaceholderItem: React.SFC;
+	export const Spinner: React.SFC<SpinnerProps>;
+	export const CompareItems:React.SFC<CompareItemProps>;
+
+	/******************************************************************************************/
+	/*                                                                                        */
+	/*                                                                                        */
+	/*                                        Hooks                                           */
+	/*                                                                                        */
+	/*                                                                                        */
+	/******************************************************************************************/
+	export const useHawksearch: () => React.Context;
+	export const useFacet: () => React.Context;
+
+	/******************************************************************************************/
+	/*                                                                                        */
+	/*                                                                                        */
+	/*                                        Utils                                           */
+	/*                                                                                        */
+	/*                                                                                        */
+	/******************************************************************************************/
+	export const parseLocation: (location: any, searchUrl?: string) => Partial<Request>;
+	export const parseQueryStringToObject: (search: string) => {};
+	export const parseSearchQueryString: (search: string) => Partial<Request>;
+	export const checkIfUrlRefsLandingPage: (path: string, searchUrl: string) => boolean;
+	export const getSearchQueryString: (queryObj: ParsedQueryString) => string;
 }
