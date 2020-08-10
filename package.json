@@ -1,10 +1,10 @@
 {
-	"name": "@hawksearch/react-hawksearch",
-	"version": "1.1.1",
+	"name": "react-hawksearch",
+	"version": "1.0.0",
 	"description": "Hawksearch React Library",
 	"author": "Hawksearch",
 	"license": "Proprietary",
-	"private": false,
+	"private": true,
 	"scripts": {
 		"clean": "rimraf ./dist && mkdirp ./dist/min && mkdirp ./dist/esm",
 		"check:lint": "tslint --project .",
@@ -96,7 +96,6 @@
 		"rheostat": "^4.1.0",
 		"url-search-params-polyfill": "^5.1.0"
 	},
-	"typings": "./typings/index.d.ts",
 	"peerDependencies": {
 		"react": ">=16.8.x",
 		"react-dom": ">=16.8.x",

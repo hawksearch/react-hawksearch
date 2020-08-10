@@ -6,7 +6,5 @@ jspm_packages/
 # build outputs
 dist/
 
-.npmrc
-
 # rollup
 .rpt2_cache
