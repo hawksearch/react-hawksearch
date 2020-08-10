@@ -28,7 +28,6 @@ export class PageContentItem {
 	public Zone: string;
 	public ContentType: ContentType;
 	public ImageUrl: string;
-	public ImageTitle: string;
 	public AltTag: string;
 	public ForwardUrl: string;
 	public Output: any;
