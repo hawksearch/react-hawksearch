@@ -116,6 +116,8 @@ export class Facet {
 	public Ranges: Range[];
 	/** The values for this facet. */
 	public Values: Value[];
+	// Data type for datetime facet type
+	public DataType?: string;
 
 	/** Whether or not the facet should be rendered as truncated. */
 	public get shouldTruncate() {

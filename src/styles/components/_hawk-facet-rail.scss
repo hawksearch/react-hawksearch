@@ -318,5 +318,10 @@ button.hawk-collapseState {
 
 .date-value-start,
 .date-value-end {
-	width: 160px !important;
+	width: 126px !important;
+	float: left;
+}
+
+.date-value-end {
+	float: right;
 }

@@ -97,11 +97,11 @@ function OpenRange() {
 		}
 	}
 
-	if (facet.Field === 'createdate') {
+	if (facet.DataType && facet.DataType === 'datetime') {
 		return (
 			<div className="hawk-facet-rail__facet-values">
 				<div className="hawk-facet-rail__facet-values-link">
-					<div className="hawk-open-range">
+					<div className="hawk-open-range hawk-facet-type-date">
 						<input
 							type="date"
 							className="hawk-text-input date-value-start"
