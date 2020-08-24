@@ -224,6 +224,23 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param facetValue The facet value being selected.
 	 * @param negate  Whether or not this selection is considered a negation.
 	 */
+	let childrenValues: any = [];
+	function normalize(parent) {
+		if (parent && parent.Children) {
+			for (let i = 0, l = parent.Children.length; i < l; ++i) {
+				const child = parent.Children[i];
+				childrenValues.push(child.Value);
+				normalize(child);
+			}
+		}
+		return childrenValues;
+	}
+	function diff(A: string[], B: string[]) {
+		return A.filter(a => {
+			const substr = a[0] === '-' ? a.substring(1) : a;
+			return B.indexOf(substr) === -1;
+		});
+	}
 	function toggleFacetValue(facet: Facet | string, facetValue: Value | string, negate?: boolean): void {
 		if (negate === undefined) {
 			negate = false;
@@ -265,7 +282,19 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			// we're selecting this facet, and it's already selected
 
 			// first, remove it from our selections
-			facetSelections[facetField]!.splice(selectionIndex!, 1);
+			if ((facet as any).FacetType === FacetType.NestedCheckbox) {
+				let childValues = normalize(facetValue) || [];
+				const parentValues = ((facetValue as Value).Path || '')
+					.split('/')
+					.filter((item: string) => item !== (facetValue as Value).Value);
+				childValues = childValues.concat(parentValues);
+				const difference = diff(facetSelections[facetField]!, childValues || []);
+				facetSelections[facetField] = difference;
+				facetSelections[facetField]!.splice(selectionIndex!, 1);
+				childrenValues = [];
+			} else {
+				facetSelections[facetField]!.splice(selectionIndex!, 1);
+			}
 
 			if (
 				(selState === FacetSelectionState.Selected && negate) ||
@@ -277,8 +306,21 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
 		} else {
-			// not selected, so we want to select it
-			facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
+			if ((facet as any).FacetType === FacetType.NestedCheckbox) {
+				let childValues = normalize(facetValue) || [];
+				const parentValues = ((facetValue as Value).Path || '')
+					.split('/')
+					.filter((item: string) => item !== (facetValue as Value).Value);
+				childValues = childValues.concat(parentValues);
+				const difference = diff(facetSelections[facetField]!, childValues || []);
+				facetSelections[facetField] = difference;
+				// not selected, so we want to select it
+				facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
+				childrenValues = [];
+			} else {
+				// not selected, so we want to select it
+				facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
+			}
 		}
 
 		if (facetSelections[facetField]!.length === 0) {

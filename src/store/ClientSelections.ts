@@ -20,4 +20,5 @@ export interface ClientSelectionValue {
 
 	/** Value for facet value. */
 	value: string;
+	path?: string;
 }

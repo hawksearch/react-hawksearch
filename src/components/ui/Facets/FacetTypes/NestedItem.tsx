@@ -7,6 +7,8 @@ import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 import { Value } from 'models/Facets';
 import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 import DashCircleSVG from 'components/svg/DashCircleSVG';
+import { ClientSelectionValue } from 'store/ClientSelections';
+import FillCircleSVG from 'components/svg/FillCircleSVG';
 
 export interface NestedItemProps {
 	hierarchyValue: Value;
@@ -38,6 +40,13 @@ function NestedItem(item: NestedItemProps) {
 		remainingValues = valuesBeforeTrunc - facet.TruncateThreshold;
 	}
 
+	function showPartialSelection(facetArray, matchValue) {
+		const matchedValue = facetArray.find((i: ClientSelectionValue) => {
+			return (i.path || '').indexOf(matchValue) !== -1;
+		});
+		return !matchedValue ? false : true;
+	}
+
 	function renderChildTruncation() {
 		return (
 			<>
@@ -52,6 +61,19 @@ function NestedItem(item: NestedItemProps) {
 		);
 	}
 
+	const isPartialSelection = showPartialSelection(
+		store.facetSelections[facet.Field].items,
+		item.hierarchyValue.Value
+	);
+
+	function renderCheckbox() {
+		if (isPartialSelection && !item.isSelected) {
+			return <FillCircleSVG class="hawk-facet-rail__facet-checkbox-icon" />;
+		} else if (item.isSelected) {
+			return <CheckmarkSVG class="hawk-facet-rail__facet-checkbox-icon" />;
+		}
+		return null;
+	}
 	return (
 		<li className="hawk-facet-rail__facet-list-item hawkFacet-group">
 			<div className="hawkFacet-group__inline">
@@ -67,7 +89,7 @@ function NestedItem(item: NestedItemProps) {
 								: 'hawk-facet-rail__facet-checkbox'
 						}
 					>
-						{item.isSelected ? <CheckmarkSVG class="hawk-facet-rail__facet-checkbox-icon" /> : null}
+						{renderCheckbox()}
 					</span>
 
 					<span
