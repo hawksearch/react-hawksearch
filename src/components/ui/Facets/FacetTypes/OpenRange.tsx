@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 
+// Format date with hyphen format so input type date can read the value
 function formatDate(date: Date) {
 	const year = date.getFullYear().toString();
 	const month = (date.getMonth() + 101).toString().substring(1);
@@ -104,7 +105,7 @@ function OpenRange() {
 					<div className="hawk-open-range hawk-facet-type-date">
 						<input
 							type="date"
-							className="hawk-text-input date-value-start"
+							className="hawk-text-input hawk-date-value-start"
 							value={minDateValue}
 							min={rangeStartDate}
 							max={rangeEndDate}
@@ -112,7 +113,7 @@ function OpenRange() {
 						/>
 						<input
 							type="date"
-							className="hawk-text-input date-value-end"
+							className="hawk-text-input hawk-date-value-end"
 							value={maxDateValue}
 							min={rangeStartDate}
 							max={rangeEndDate}
