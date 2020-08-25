@@ -14,6 +14,7 @@
 	input[type='time'],
 	input[type='url'],
 	input[type='week'],
+	input[type='date'],
 	select {
 		@include focusBorder;
 
@@ -36,6 +37,19 @@
 		&:focus {
 			outline: none;
 		}
+	}
+
+	input[type='date']::-webkit-clear-button {
+		display: none;
+	}
+
+	input[type='date']::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		display: none;
+	}
+
+	input[type='date']::-ms-clear {
+		display: none;
 	}
 
 	input[type='number'],
