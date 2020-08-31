@@ -1,50 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { PublicState } from 'rheostat';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
-import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
-import SliderDate from './SliderDate';
+import SliderCalendarInputs from '../SliderCalendarInputs';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
-function Slider() {
-	const { facet } = useFacet();
-	if (facet.DataType && facet.DataType === 'datetime') {
-		return <SliderDate />;
-	}
-	return <SliderNumeric />;
+function formatDate(date: Date) {
+	const year = date.getFullYear().toString();
+	const month = (date.getMonth() + 101).toString().substring(1);
+	const day = (date.getDate() + 100).toString().substring(1);
+	return year + '-' + month + '-' + day;
 }
 
-function SliderNumeric() {
+function replaceHyphen(date: string) {
+	if (!date) {
+		return date;
+	}
+	return date.replace(/-/g, '/');
+}
+
+function getTime(date) {
+	return date && Number(new Date(date || '').getTime());
+}
+
+function SliderDate() {
 	const {
 		store: { facetSelections },
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const {
 		state: { facetValues, decimalPrecision },
 		facet,
 		actor,
 	} = useFacet();
-
 	// the range of the slider is defined by the first facet value. or null if there is no first value
 	const range = facetValues.length > 0 ? facetValues[0] : null;
 
-	const [rangeMin, setMinRange] = useState(range && Math.floor(parseFloat(range.RangeMin || '')));
-	const [rangeMax, setMaxRange] = useState(range && Math.ceil(parseFloat(range.RangeMax || '')));
-	const [rangeStart, setStartRange] = useState(range && Math.round(parseFloat(range.RangeStart || '')));
-	const [rangeEnd, setEndRange] = useState(range && Math.round(parseFloat(range.RangeEnd || '')));
+	const [rangeMin, setMinRange] = useState(range && getTime(range.RangeMin));
+	const [rangeMax, setMaxRange] = useState(range && getTime(range.RangeMax));
+	const [rangeStart, setStartRange] = useState(range && getTime(range.RangeStart));
+	const [rangeEnd, setEndRange] = useState(range && getTime(range.RangeEnd));
 
 	// if there's no range, initialize to zeros
 	const [minValue, setMinValue] = useState<number>();
 	const [maxValue, setMaxValue] = useState<number>();
-
-	const [isCurency, setIsCurrency] = useState(facet.IsCurrency);
-	const [currencySymbol, setCurrencySymbol] = useState(facet.CurrencySymbol);
-
-	useEffect(() => {
-		setCurrencySymbol(facet.CurrencySymbol || '$');
-		setIsCurrency(facet.IsCurrency);
-	}, [facet]);
 
 	useEffect(() => {
 		const paramName = facet.ParamName || facet.Field;
@@ -59,17 +59,17 @@ function SliderNumeric() {
 			facetSelections[paramName].items.length > 0
 		) {
 			const selectedValues = facetSelections[paramName].items[0].value.split(',');
-			setMinValue(Number(selectedValues[0]));
-			setMaxValue(Number(selectedValues[1]));
+			setMinValue(Number(new Date(selectedValues[0]).getTime()));
+			setMaxValue(Number(new Date(selectedValues[1]).getTime()));
 		}
 	}, [facetSelections]);
 
 	useEffect(() => {
 		const newRange = facetValues.length > 0 ? facetValues[0] : null;
-		setMinRange(newRange && Math.floor(parseFloat(newRange.RangeMin || '')));
-		setMaxRange(newRange && Math.ceil(parseFloat(newRange.RangeMax || '')));
-		setStartRange(newRange && Math.round(parseFloat(newRange.RangeStart || '')));
-		setEndRange(newRange && Math.round(parseFloat(newRange.RangeEnd || '')));
+		setMinRange(newRange && getTime(newRange.RangeMin));
+		setMaxRange(newRange && getTime(newRange.RangeMax));
+		setStartRange(newRange && getTime(newRange.RangeStart));
+		setEndRange(newRange && getTime(newRange.RangeEnd));
 	}, [facetValues]);
 
 	if (
@@ -110,11 +110,19 @@ function SliderNumeric() {
 		}
 
 		if (currentMinValue !== newMinValue && newMinValue <= currentMaxValue) {
-			currentMinValue = newMinValue;
+			if (rangeMin !== null && newMinValue <= rangeMin) {
+				currentMinValue = rangeMin;
+			} else {
+				currentMinValue = newMinValue;
+			}
 		}
 
 		if (currentMaxValue !== newMaxValue && newMaxValue >= currentMinValue) {
-			currentMaxValue = newMaxValue;
+			if (rangeMax !== null && newMaxValue >= rangeMax) {
+				currentMaxValue = rangeMax;
+			} else {
+				currentMaxValue = newMaxValue;
+			}
 		}
 		setMinValue(currentMinValue);
 		setMaxValue(currentMaxValue);
@@ -128,9 +136,11 @@ function SliderNumeric() {
 		setMinValue(minVal);
 		setMaxValue(maxVal);
 
-		// this selection is sent to hawk separated by commas, so build the value here
-		const selection = `${minVal},${maxVal}`;
+		const formattedMinVal = replaceHyphen(formatDate(new Date(minVal)));
+		const formattedMaxVal = replaceHyphen(formatDate(new Date(maxVal)));
 
+		// this selection is sent to hawk separated by commas, so build the value here
+		const selection = `${formattedMinVal},${formattedMaxVal}`;
 		actor.setFacets([selection]);
 	}
 
@@ -138,17 +148,14 @@ function SliderNumeric() {
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
 				<React.Suspense fallback={<div>Loading...</div>}>
-					<SliderNumericInputs
+					<SliderCalendarInputs
 						min={rangeMin}
 						max={rangeMax}
-						currencySymbol={currencySymbol}
-						isCurrency={isCurency}
 						values={[
-							minValue === undefined ? Math.floor(rangeStart) : Math.max(minValue, rangeMin),
+							minValue === undefined ? rangeStart : Math.max(minValue, rangeMin),
 							maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax),
 						]}
 						onValueChange={onValueChange}
-						decimalPrecision={decimalPrecision}
 					/>
 					<Rheostat
 						min={rangeMin}
@@ -165,4 +172,4 @@ function SliderNumeric() {
 	);
 }
 
-export default Slider;
+export default SliderDate;

@@ -144,6 +144,10 @@
 
 .hawk-sliderNumeric{
 	min-height: 36px;
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
 	input.hawk-numericInput {
 		width: 80px;
 		&.numeric-from {
