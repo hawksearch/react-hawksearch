@@ -3,28 +3,10 @@ import { PublicState } from 'rheostat';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
-import SliderCalendarInputs from '../SliderCalendarInputs';
+import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
-function formatDate(date: Date) {
-	const year = date.getFullYear().toString();
-	const month = (date.getMonth() + 101).toString().substring(1);
-	const day = (date.getDate() + 100).toString().substring(1);
-	return year + '-' + month + '-' + day;
-}
-
-function replaceHyphen(date: string) {
-	if (!date) {
-		return date;
-	}
-	return date.replace(/-/g, '/');
-}
-
-function getTime(date) {
-	return date && Number(new Date(date || '').getTime());
-}
-
-function SliderDate() {
+function SliderNumeric() {
 	const {
 		store: { facetSelections },
 	} = useHawkSearch();
@@ -37,14 +19,22 @@ function SliderDate() {
 	// the range of the slider is defined by the first facet value. or null if there is no first value
 	const range = facetValues.length > 0 ? facetValues[0] : null;
 
-	const [rangeMin, setMinRange] = useState(range && getTime(range.RangeMin));
-	const [rangeMax, setMaxRange] = useState(range && getTime(range.RangeMax));
-	const [rangeStart, setStartRange] = useState(range && getTime(range.RangeStart));
-	const [rangeEnd, setEndRange] = useState(range && getTime(range.RangeEnd));
+	const [rangeMin, setMinRange] = useState(range && Number(parseFloat(range.RangeMin || '').toFixed(2)));
+	const [rangeMax, setMaxRange] = useState(range && Number(parseFloat(range.RangeMax || '').toFixed(2)));
+	const [rangeStart, setStartRange] = useState(range && Number(parseFloat(range.RangeStart || '').toFixed(2)));
+	const [rangeEnd, setEndRange] = useState(range && Number(parseFloat(range.RangeEnd || '').toFixed(2)));
 
 	// if there's no range, initialize to zeros
 	const [minValue, setMinValue] = useState<number>();
 	const [maxValue, setMaxValue] = useState<number>();
+
+	const [isCurency, setIsCurrency] = useState(facet.IsCurrency);
+	const [currencySymbol, setCurrencySymbol] = useState(facet.CurrencySymbol);
+
+	useEffect(() => {
+		setCurrencySymbol(facet.CurrencySymbol || '$');
+		setIsCurrency(facet.IsCurrency);
+	}, [facet]);
 
 	useEffect(() => {
 		const paramName = facet.ParamName || facet.Field;
@@ -59,17 +49,17 @@ function SliderDate() {
 			facetSelections[paramName].items.length > 0
 		) {
 			const selectedValues = facetSelections[paramName].items[0].value.split(',');
-			setMinValue(Number(new Date(selectedValues[0]).getTime()));
-			setMaxValue(Number(new Date(selectedValues[1]).getTime()));
+			setMinValue(Number(selectedValues[0]));
+			setMaxValue(Number(selectedValues[1]));
 		}
 	}, [facetSelections]);
 
 	useEffect(() => {
 		const newRange = facetValues.length > 0 ? facetValues[0] : null;
-		setMinRange(newRange && getTime(newRange.RangeMin));
-		setMaxRange(newRange && getTime(newRange.RangeMax));
-		setStartRange(newRange && getTime(newRange.RangeStart));
-		setEndRange(newRange && getTime(newRange.RangeEnd));
+		setMinRange(newRange && Number(parseFloat(newRange.RangeMin || '').toFixed(2)));
+		setMaxRange(newRange && Number(parseFloat(newRange.RangeMax || '').toFixed(2)));
+		setStartRange(newRange && Number(parseFloat(newRange.RangeStart || '').toFixed(2)));
+		setEndRange(newRange && Number(parseFloat(newRange.RangeEnd || '').toFixed(2)));
 	}, [facetValues]);
 
 	if (
@@ -136,11 +126,9 @@ function SliderDate() {
 		setMinValue(minVal);
 		setMaxValue(maxVal);
 
-		const formattedMinVal = replaceHyphen(formatDate(new Date(minVal)));
-		const formattedMaxVal = replaceHyphen(formatDate(new Date(maxVal)));
-
 		// this selection is sent to hawk separated by commas, so build the value here
-		const selection = `${formattedMinVal},${formattedMaxVal}`;
+		const selection = `${minVal},${maxVal}`;
+
 		actor.setFacets([selection]);
 	}
 
@@ -148,14 +136,17 @@ function SliderDate() {
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
 				<React.Suspense fallback={<div>Loading...</div>}>
-					<SliderCalendarInputs
+					<SliderNumericInputs
 						min={rangeMin}
 						max={rangeMax}
+						currencySymbol={currencySymbol}
+						isCurrency={isCurency}
 						values={[
 							minValue === undefined ? rangeStart : Math.max(minValue, rangeMin),
 							maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax),
 						]}
 						onValueChange={onValueChange}
+						decimalPrecision={decimalPrecision}
 					/>
 					<Rheostat
 						min={rangeMin}
@@ -172,4 +163,4 @@ function SliderDate() {
 	);
 }
 
-export default SliderDate;
+export default SliderNumeric;
