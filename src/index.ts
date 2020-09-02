@@ -56,4 +56,4 @@ export { default as AuthToken } from 'components/AuthToken';
 export { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from './helpers/utils';
 
 // Tracking Event
-export { default as Singleton } from 'components/Singleton';
+export { default as TrackingEvent } from 'components/TrackingEvent';

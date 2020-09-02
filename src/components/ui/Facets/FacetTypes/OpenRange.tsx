@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 // Format date with hyphen format so input type date can read the value
 function formatDate(date: Date) {
@@ -73,7 +73,7 @@ function OpenRange() {
 			const selection = `${startVal},${endVal}`;
 			actor.setFacets([selection]);
 		}
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: searchResults ? searchResults.TrackingId : '',
 			typeId: 2,
 		});
@@ -104,7 +104,7 @@ function OpenRange() {
 			const selection = `${replaceHyphen(startVal)},${replaceHyphen(endVal)}`;
 			actor.setFacets([selection]);
 		}
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: searchResults ? searchResults.TrackingId : '',
 			typeId: 2,
 		});

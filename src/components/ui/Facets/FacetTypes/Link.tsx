@@ -3,7 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 function Link() {
 	const { store } = useHawkSearch();
@@ -28,7 +28,7 @@ function Link() {
 							<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 								<button
 									onClick={e => {
-										Singleton.track('searchtracking', {
+										TrackingEvent.track('searchtracking', {
 											trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 											typeId: 2,
 										});

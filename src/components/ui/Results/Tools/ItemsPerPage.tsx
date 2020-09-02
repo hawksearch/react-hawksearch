@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 function ItemsPerPage() {
 	const {
@@ -10,7 +10,7 @@ function ItemsPerPage() {
 	} = useHawkSearch();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: searchResults ? searchResults.TrackingId : '',
 			typeId: 2,
 		});
