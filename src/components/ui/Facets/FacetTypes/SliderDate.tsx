@@ -4,6 +4,7 @@ import { PublicState } from 'rheostat';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderCalendarInputs from '../SliderCalendarInputs';
+import TrackingEvent from 'components/TrackingEvent';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
 function formatDate(date: Date) {
@@ -26,7 +27,7 @@ function getTime(date) {
 
 function SliderDate() {
 	const {
-		store: { facetSelections },
+		store: { facetSelections, searchResults },
 	} = useHawkSearch();
 
 	const {
@@ -137,6 +138,10 @@ function SliderDate() {
 
 		// this selection is sent to hawk separated by commas, so build the value here
 		const selection = `${formattedMinVal},${formattedMaxVal}`;
+		TrackingEvent.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 		actor.setFacets([selection]);
 	}
 
