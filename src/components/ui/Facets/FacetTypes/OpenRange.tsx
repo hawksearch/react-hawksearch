@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
+import Singleton from 'components/Singleton';
 
 // Format date with hyphen format so input type date can read the value
 function formatDate(date: Date) {
@@ -18,7 +19,10 @@ function replaceHyphen(date: string) {
 }
 
 function OpenRange() {
-	const { actor: hawkActor } = useHawkSearch();
+	const {
+		actor: hawkActor,
+		store: { searchResults },
+	} = useHawkSearch();
 
 	const {
 		state: { facetValues },
@@ -69,6 +73,10 @@ function OpenRange() {
 			const selection = `${startVal},${endVal}`;
 			actor.setFacets([selection]);
 		}
+		Singleton.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 	}
 
 	if (rangeStart === null || rangeEnd === null) {
@@ -96,6 +104,10 @@ function OpenRange() {
 			const selection = `${replaceHyphen(startVal)},${replaceHyphen(endVal)}`;
 			actor.setFacets([selection]);
 		}
+		Singleton.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 	}
 
 	if (facet.DataType && facet.DataType === 'datetime') {

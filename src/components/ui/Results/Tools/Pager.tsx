@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import { LeftChevronSVG, RightChevronSVG } from 'components/svg';
+import Singleton from 'components/Singleton';
+import { useHawksearch } from 'components/StoreProvider';
 
 interface PagerProps {
 	page: number;
@@ -10,6 +12,9 @@ interface PagerProps {
 }
 
 function Pager({ page, totalPages, onPageChange }: PagerProps) {
+	const {
+		store: { searchResults },
+	} = useHawksearch();
 	const [inputValue, setInputValue] = useState<string | undefined>(undefined);
 	const [hasError, setHasError] = useState(false);
 
@@ -46,6 +51,12 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 
 		// inform the consumer that we've changed pages
 		onPageChange(pageNo);
+
+		// Track Event
+		Singleton.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 	}
 
 	/**

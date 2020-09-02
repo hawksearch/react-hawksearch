@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
+import Singleton from 'components/Singleton';
 
 function Sorting() {
 	const {
@@ -12,6 +13,10 @@ function Sorting() {
 	const { t, i18n } = useTranslation();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
+		Singleton.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 		actor.setSearch({
 			SortBy: event.currentTarget.value,
 		});

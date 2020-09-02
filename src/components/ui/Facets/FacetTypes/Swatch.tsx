@@ -4,6 +4,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 import SwatchItem from './SwatchItem';
+import Singleton from 'components/Singleton';
 
 function Swatch() {
 	const { store } = useHawkSearch();
@@ -15,6 +16,10 @@ function Swatch() {
 	} = useFacet();
 
 	function onSwatchSelected(facetValue: string, isNegated: boolean) {
+		Singleton.track('searchtracking', {
+			trackingId: store.searchResults ? store.searchResults.TrackingId : '',
+			typeId: 2,
+		});
 		isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
 	}
 

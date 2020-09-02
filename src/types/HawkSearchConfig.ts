@@ -24,6 +24,12 @@ export interface HawkSearchConfig {
 	searchUrl?: string;
 
 	/**
+	 * Relative URL of the endpoint call to track events.
+	 */
+
+	trackEventUrl?: string;
+
+	/**
 	 * Relative URL of the endpoint call for autocomplete. It will use `/api/autocomplete` if not provided.
 	 */
 	autocompleteUrl?: string;
