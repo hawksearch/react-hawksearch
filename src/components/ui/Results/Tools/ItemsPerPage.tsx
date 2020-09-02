@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useHawksearch } from 'components/StoreProvider';
+import Singleton from 'components/Singleton';
 
 function ItemsPerPage() {
 	const {
@@ -9,6 +10,10 @@ function ItemsPerPage() {
 	} = useHawksearch();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
+		Singleton.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 		actor.setSearch({
 			MaxPerPage: Number(event.currentTarget.value),
 			PageNo: 1, // if we change our max items per page, reset to page 1

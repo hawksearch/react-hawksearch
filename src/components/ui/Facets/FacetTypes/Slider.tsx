@@ -4,11 +4,12 @@ import { PublicState } from 'rheostat';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
+import Singleton from 'components/Singleton';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
 function Slider() {
 	const {
-		store: { facetSelections },
+		store: { facetSelections, searchResults },
 	} = useHawksearch();
 
 	const {
@@ -129,6 +130,10 @@ function Slider() {
 		// this selection is sent to hawk separated by commas, so build the value here
 		const selection = `${minVal},${maxVal}`;
 
+		Singleton.track('searchtracking', {
+			trackingId: searchResults ? searchResults.TrackingId : '',
+			typeId: 2,
+		});
 		actor.setFacets([selection]);
 	}
 

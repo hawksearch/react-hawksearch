@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
 
 import Downshift from 'downshift';
+import Singleton from 'components/Singleton';
 
 export interface SearchBoxBaseProps {
 	initialValue?: string;
@@ -106,6 +107,14 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 								{...getInputProps({
 									onKeyDown: event => {
 										if (onSubmit) {
+											if (event.key === 'Enter') {
+												Singleton.track('searchtracking', {
+													trackingId: store.searchResults
+														? store.searchResults.TrackingId
+														: '',
+													typeId: 1,
+												});
+											}
 											onSubmit(event, options);
 											closeMenu();
 										}
