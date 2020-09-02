@@ -54,4 +54,4 @@ export * from 'util/QueryString';
 export { default as AutoCorrectSuggestion } from 'components/ui/AutoCorrect/AutoCorrectSuggestion';
 
 // Tracking Event
-export { default as Singleton } from 'components/Singleton';
+export { default as TrackingEvent } from 'components/TrackingEvent';

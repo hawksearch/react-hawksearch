@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { LeftChevronSVG, RightChevronSVG } from 'components/svg';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 import { useHawksearch } from 'components/StoreProvider';
 
 interface PagerProps {
@@ -53,7 +53,7 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 		onPageChange(pageNo);
 
 		// Track Event
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: searchResults ? searchResults.TrackingId : '',
 			typeId: 2,
 		});

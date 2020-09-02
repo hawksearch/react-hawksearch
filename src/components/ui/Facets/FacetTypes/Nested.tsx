@@ -5,7 +5,7 @@ import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
 import NestedItem from './NestedItem';
 import { Value } from 'models/Facets/Value';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 function Nested() {
 	const { store } = useHawksearch();
@@ -17,7 +17,7 @@ function Nested() {
 	} = useFacet();
 
 	function onValueSelected(facetValue: Value, isNegated: boolean) {
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 			typeId: 2,
 		});

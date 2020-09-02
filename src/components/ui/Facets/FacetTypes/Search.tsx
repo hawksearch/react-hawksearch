@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { useTranslation } from 'react-i18next';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 function Search() {
 	const { store, actor: hawkActor } = useHawksearch();
@@ -16,7 +16,7 @@ function Search() {
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key === 'Enter') {
 			setInput(undefined); // clear the user's entered value as we want to be driven by the store again
-			Singleton.track('searchtracking', {
+			TrackingEvent.track('searchtracking', {
 				trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 				typeId: 2,
 			});
@@ -26,7 +26,7 @@ function Search() {
 
 	function clearFacet() {
 		setInput(undefined); // clear the user's entered value as we want to be driven by the store again
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 			typeId: 2,
 		});

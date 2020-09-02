@@ -7,7 +7,7 @@ import DashCircleSVG from 'components/svg/DashCircleSVG';
 import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 import { useHawkConfig } from 'components/ConfigProvider';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 enum FacetRangeDisplayType {
 	Text = 1,
@@ -44,7 +44,7 @@ function Checkbox() {
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
 							onClick={e => {
-								Singleton.track('searchtracking', {
+								TrackingEvent.track('searchtracking', {
 									trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 									typeId: 2,
 								});
@@ -99,7 +99,7 @@ function Checkbox() {
 						<button
 							onClick={e => {
 								actor.selectFacet(value);
-								Singleton.track('searchtracking', {
+								TrackingEvent.track('searchtracking', {
 									trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 									typeId: 2,
 								});
@@ -142,7 +142,7 @@ function Checkbox() {
 			<button
 				onClick={e => {
 					actor.negateFacet(value);
-					Singleton.track('searchtracking', {
+					TrackingEvent.track('searchtracking', {
 						trackingId: store.searchResults ? store.searchResults.TrackingId : '',
 						typeId: 2,
 					});

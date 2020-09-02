@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
-import Singleton from 'components/Singleton';
+import TrackingEvent from 'components/TrackingEvent';
 
 function Sorting() {
 	const {
@@ -13,7 +13,7 @@ function Sorting() {
 	const { t, i18n } = useTranslation();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
-		Singleton.track('searchtracking', {
+		TrackingEvent.track('searchtracking', {
 			trackingId: searchResults ? searchResults.TrackingId : '',
 			typeId: 2,
 		});
