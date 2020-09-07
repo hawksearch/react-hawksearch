@@ -53,14 +53,6 @@ function SliderDate() {
 		if (!paramName || !(paramName in facetSelections)) {
 			setMinValue(undefined);
 			setMaxValue(undefined);
-		} else if (
-			paramName in facetSelections &&
-			facetSelections[paramName].items &&
-			facetSelections[paramName].items.length > 0
-		) {
-			const selectedValues = facetSelections[paramName].items[0].value.split(',');
-			setMinValue(Number(new Date(selectedValues[0]).getTime()));
-			setMaxValue(Number(new Date(selectedValues[1]).getTime()));
 		}
 	}, [facetSelections]);
 
@@ -84,6 +76,12 @@ function SliderDate() {
 	) {
 		// this facet is somehow misconfigured so don't render
 		return null;
+	}
+
+	function onSliderDrag(state: PublicState) {
+		const [newMin, newMax] = state.values;
+		setMinValue(newMin);
+		setMaxValue(newMax);
 	}
 
 	function onSliderValueChange(state: PublicState) {
@@ -124,8 +122,6 @@ function SliderDate() {
 				currentMaxValue = newMaxValue;
 			}
 		}
-		setMinValue(currentMinValue);
-		setMaxValue(currentMaxValue);
 		setFacetValues(currentMinValue, currentMaxValue);
 	}
 
@@ -164,6 +160,7 @@ function SliderDate() {
 							Math.floor(minValue === undefined ? rangeStart : Math.max(minValue, rangeMin)),
 							Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)),
 						]}
+						onValuesUpdated={onSliderDrag}
 						onChange={onSliderValueChange}
 					/>
 				</React.Suspense>
