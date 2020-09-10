@@ -11,7 +11,7 @@ import { FacetType } from 'models/Facets/FacetType';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
-
+import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 export interface SearchActor {
 	/**
 	 * Performs a search with the currently configured pending search request. The search request can be
@@ -197,6 +197,19 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setStore(prevState => {
+			if (prevState.searchResults && prevState.searchResults.TrackingId) {
+				if (prevState.pendingSearch.Keyword !== pendingSearch.Keyword) {
+					TrackingEvent.track('searchtracking', {
+						trackingId: prevState.searchResults.TrackingId,
+						typeId: SearchType.Initial,
+					});
+				} else {
+					TrackingEvent.track('searchtracking', {
+						trackingId: prevState.searchResults.TrackingId,
+						typeId: SearchType.Refinement,
+					});
+				}
+			}
 			const newState = {
 				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,

@@ -20,14 +20,14 @@ enum P_T {
 	custom = 5,
 }
 
-enum SuggestType {
+export enum SuggestType {
 	PopularSearches = 1,
 	TopCategories = 2,
 	TopProductMatches = 3,
 	TopContentMatches = 4,
 }
 
-enum SearchType {
+export enum SearchType {
 	Initial = 1,
 	Refinement = 2,
 }
@@ -339,14 +339,11 @@ class TrackingEvent {
 
 	public track(eventName, args) {
 		if (!this.trackingURL || !this.clientGUID) {
-			// return Error('Tracking URL or client guid is missing');
 			return;
 		}
-		// TODO: Return error if tracking url is not set
 		switch (eventName.toLowerCase()) {
 			case 'pageload':
 				// HawkSearch.Context.add("uniqueid", "123456789");
-				// HawkSearch.Tracking.track('pageload',{pageType: "item"});
 				return this.writePageLoad(args.pageType);
 			case 'searchtracking':
 				// HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
@@ -383,4 +380,5 @@ class TrackingEvent {
 	}
 }
 
+// export TrackingEvent.getInstance();
 export default TrackingEvent.getInstance();

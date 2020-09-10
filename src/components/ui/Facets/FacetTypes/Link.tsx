@@ -3,7 +3,6 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
-import TrackingEvent from 'components/TrackingEvent';
 
 function Link() {
 	const { store } = useHawkSearch();
@@ -27,13 +26,7 @@ function Link() {
 						return (
 							<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 								<button
-									onClick={e => {
-										TrackingEvent.track('searchtracking', {
-											trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-											typeId: 2,
-										});
-										actor.selectFacet(value);
-									}}
+									onClick={e => actor.selectFacet(value)}
 									className="hawk-facet-rail__facet-btn"
 									aria-pressed={isSelected}
 								>

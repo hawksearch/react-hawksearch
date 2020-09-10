@@ -5,7 +5,6 @@ import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
 import NestedItem from './NestedItem';
 import { Value } from 'models/Facets/Value';
-import TrackingEvent from 'components/TrackingEvent';
 
 function Nested() {
 	const { store } = useHawkSearch();
@@ -17,10 +16,6 @@ function Nested() {
 	} = useFacet();
 
 	function onValueSelected(facetValue: Value, isNegated: boolean) {
-		TrackingEvent.track('searchtracking', {
-			trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-			typeId: 2,
-		});
 		isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
 	}
 

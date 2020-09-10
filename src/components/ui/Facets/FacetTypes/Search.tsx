@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { useTranslation } from 'react-i18next';
-import TrackingEvent from 'components/TrackingEvent';
 
 function Search() {
 	const { store, actor: hawkActor } = useHawkSearch();
@@ -16,20 +15,12 @@ function Search() {
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key === 'Enter') {
 			setInput(undefined); // clear the user's entered value as we want to be driven by the store again
-			TrackingEvent.track('searchtracking', {
-				trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-				typeId: 2,
-			});
 			actor.selectFacet(event.currentTarget.value);
 		}
 	}
 
 	function clearFacet() {
 		setInput(undefined); // clear the user's entered value as we want to be driven by the store again
-		TrackingEvent.track('searchtracking', {
-			trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-			typeId: 2,
-		});
 		hawkActor.clearFacet(facet);
 	}
 

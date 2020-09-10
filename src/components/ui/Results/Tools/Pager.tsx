@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import { LeftChevronSVG, RightChevronSVG } from 'components/svg';
-import TrackingEvent from 'components/TrackingEvent';
 import { useHawksearch } from 'components/StoreProvider';
 
 interface PagerProps {
@@ -51,12 +50,6 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 
 		// inform the consumer that we've changed pages
 		onPageChange(pageNo);
-
-		// Track Event
-		TrackingEvent.track('searchtracking', {
-			trackingId: searchResults ? searchResults.TrackingId : '',
-			typeId: 2,
-		});
 	}
 
 	/**

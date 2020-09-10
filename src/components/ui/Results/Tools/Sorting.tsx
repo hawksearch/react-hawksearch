@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useHawkSearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
-import TrackingEvent from 'components/TrackingEvent';
 
 function Sorting() {
 	const {
@@ -13,10 +12,6 @@ function Sorting() {
 	const { t, i18n } = useTranslation();
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
-		TrackingEvent.track('searchtracking', {
-			trackingId: searchResults ? searchResults.TrackingId : '',
-			typeId: 2,
-		});
 		actor.setSearch({
 			SortBy: event.currentTarget.value,
 		});
