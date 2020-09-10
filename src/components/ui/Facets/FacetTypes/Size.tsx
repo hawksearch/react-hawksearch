@@ -4,7 +4,6 @@ import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 import SizeItem from './SizeItem';
-import TrackingEvent from 'components/TrackingEvent';
 
 function Size() {
 	const { store } = useHawksearch();
@@ -15,10 +14,6 @@ function Size() {
 	} = useFacet();
 
 	function onSwatchSelected(facetValue: string, isNegated: boolean) {
-		TrackingEvent.track('searchtracking', {
-			trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-			typeId: 2,
-		});
 		isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
 	}
 	return (

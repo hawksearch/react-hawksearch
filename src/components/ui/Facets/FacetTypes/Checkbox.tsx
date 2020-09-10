@@ -7,7 +7,6 @@ import DashCircleSVG from 'components/svg/DashCircleSVG';
 import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 import { useHawkConfig } from 'components/ConfigProvider';
-import TrackingEvent from 'components/TrackingEvent';
 
 enum FacetRangeDisplayType {
 	Text = 1,
@@ -44,10 +43,6 @@ function Checkbox() {
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
 							onClick={e => {
-								TrackingEvent.track('searchtracking', {
-									trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-									typeId: 2,
-								});
 								actor.selectFacet(value);
 							}}
 							className="hawk-facet-rail__facet-btn"
@@ -97,13 +92,7 @@ function Checkbox() {
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
-							onClick={e => {
-								actor.selectFacet(value);
-								TrackingEvent.track('searchtracking', {
-									trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-									typeId: 2,
-								});
-							}}
+							onClick={e => actor.selectFacet(value)}
 							className="hawk-facet-rail__facet-btn"
 							aria-pressed={isSelected}
 						>
@@ -139,16 +128,7 @@ function Checkbox() {
 	}
 	function renderFacetActions(value: string, isNegated: boolean) {
 		return (
-			<button
-				onClick={e => {
-					actor.negateFacet(value);
-					TrackingEvent.track('searchtracking', {
-						trackingId: store.searchResults ? store.searchResults.TrackingId : '',
-						typeId: 2,
-					});
-				}}
-				className="hawk-facet-rail__facet-btn-exclude"
-			>
+			<button onClick={e => actor.negateFacet(value)} className="hawk-facet-rail__facet-btn-exclude">
 				{isNegated ? (
 					<>
 						<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
