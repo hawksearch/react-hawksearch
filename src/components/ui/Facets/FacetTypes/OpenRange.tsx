@@ -18,10 +18,7 @@ function replaceHyphen(date: string) {
 }
 
 function OpenRange() {
-	const {
-		actor: hawkActor,
-		store: { searchResults },
-	} = useHawkSearch();
+	const { actor: hawkActor } = useHawkSearch();
 
 	const {
 		state: { facetValues },

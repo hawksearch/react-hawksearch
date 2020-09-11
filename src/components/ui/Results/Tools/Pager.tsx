@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import { LeftChevronSVG, RightChevronSVG } from 'components/svg';
-import { useHawksearch } from 'components/StoreProvider';
 
 interface PagerProps {
 	page: number;
@@ -11,9 +10,6 @@ interface PagerProps {
 }
 
 function Pager({ page, totalPages, onPageChange }: PagerProps) {
-	const {
-		store: { searchResults },
-	} = useHawksearch();
 	const [inputValue, setInputValue] = useState<string | undefined>(undefined);
 	const [hasError, setHasError] = useState(false);
 
