@@ -42,9 +42,7 @@ function Checkbox() {
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
-							onClick={e => {
-								actor.selectFacet(value);
-							}}
+							onClick={e => actor.selectFacet(value)}
 							className="hawk-facet-rail__facet-btn"
 							aria-pressed={isSelected}
 						>

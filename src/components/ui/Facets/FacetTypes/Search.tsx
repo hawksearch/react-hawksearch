@@ -15,12 +15,14 @@ function Search() {
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		if (event.key === 'Enter') {
 			setInput(undefined); // clear the user's entered value as we want to be driven by the store again
+
 			actor.selectFacet(event.currentTarget.value);
 		}
 	}
 
 	function clearFacet() {
 		setInput(undefined); // clear the user's entered value as we want to be driven by the store again
+
 		hawkActor.clearFacet(facet);
 	}
 

@@ -26,7 +26,7 @@ function getTime(date) {
 
 function SliderDate() {
 	const {
-		store: { facetSelections, searchResults },
+		store: { facetSelections },
 	} = useHawksearch();
 
 	const {

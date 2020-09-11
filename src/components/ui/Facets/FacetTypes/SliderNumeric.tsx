@@ -8,7 +8,7 @@ const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rhe
 
 function SliderNumeric() {
 	const {
-		store: { facetSelections, searchResults },
+		store: { facetSelections },
 	} = useHawksearch();
 
 	const {
@@ -128,6 +128,7 @@ function SliderNumeric() {
 
 		// this selection is sent to hawk separated by commas, so build the value here
 		const selection = `${minVal},${maxVal}`;
+
 		actor.setFacets([selection]);
 	}
 
