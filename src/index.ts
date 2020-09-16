@@ -52,3 +52,6 @@ export { default as QueryStringListener } from 'components/QueryStringListener';
 export * from 'util/QueryString';
 
 export { default as AutoCorrectSuggestion } from 'components/ui/AutoCorrect/AutoCorrectSuggestion';
+
+// Tracking Event
+export { default as TrackingEvent } from 'components/TrackingEvent';

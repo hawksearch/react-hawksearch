@@ -9,6 +9,7 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 
 export interface SearchActor {
 	/**
@@ -188,6 +189,19 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setStore(prevState => {
+			if (prevState.searchResults && prevState.searchResults.TrackingId) {
+				if (prevState.pendingSearch.Keyword !== pendingSearch.Keyword) {
+					TrackingEvent.track('searchtracking', {
+						trackingId: prevState.searchResults.TrackingId,
+						typeId: SearchType.Initial,
+					});
+				} else {
+					TrackingEvent.track('searchtracking', {
+						trackingId: prevState.searchResults.TrackingId,
+						typeId: SearchType.Refinement,
+					});
+				}
+			}
 			const newState = {
 				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
