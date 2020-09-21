@@ -74,3 +74,19 @@ export class Response {
 		this.Content = init.Content.map(r => new Content(r));
 	}
 }
+
+export interface ResponseProps {
+	Count: number;
+	ContentCount: number;
+	Categories: Category[];
+	Products: Product[];
+	Content: Content[];
+	Popular: Popular[];
+	SearchWebsiteUrl: string;
+	KeywordField: string;
+	CategoryHeading?: string;
+	ContentHeading?: string;
+	ProductHeading?: string;
+	PopularHeading?: string;
+	ViewAllButtonLabel?: string;
+}
