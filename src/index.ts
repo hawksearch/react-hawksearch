@@ -55,3 +55,6 @@ export { default as AutoCorrectSuggestion } from 'components/ui/AutoCorrect/Auto
 
 // Tracking Event
 export { default as TrackingEvent } from 'components/TrackingEvent';
+
+// Auth
+export { default as Auth } from 'components/Auth';
