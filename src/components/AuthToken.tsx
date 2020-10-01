@@ -1,5 +1,5 @@
-class Auth {
-	private static instance: Auth;
+class AuthToken {
+	private static instance: AuthToken;
 	private refreshToken: string;
 	private accessToken: string;
 
@@ -15,12 +15,12 @@ class Auth {
 	 * This implementation let you subclass the Singleton class while keeping
 	 * just one instance of each subclass around.
 	 */
-	public static getInstance(url?: string): Auth {
-		if (!Auth.instance) {
-			Auth.instance = new Auth();
+	public static getInstance(url?: string): AuthToken {
+		if (!AuthToken.instance) {
+			AuthToken.instance = new AuthToken();
 		}
 
-		return Auth.instance;
+		return AuthToken.instance;
 	}
 
 	public setTokens(accessToken: string, refreshToken: string) {
@@ -36,5 +36,4 @@ class Auth {
 	}
 }
 
-// export Auth.getInstance();
-export default Auth.getInstance();
+export default AuthToken.getInstance();
