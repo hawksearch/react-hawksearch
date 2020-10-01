@@ -48,4 +48,5 @@ export { useFacet } from 'components/ui/Facets/Facet';
 export { default as QueryStringListener } from 'components/QueryStringListener';
 export * from 'util/QueryString';
 
-export { default as Auth } from 'components/Auth';
+// Auth
+export { default as AuthToken } from 'components/AuthToken';

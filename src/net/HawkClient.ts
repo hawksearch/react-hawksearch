@@ -2,7 +2,7 @@ import axios, { CancelToken, AxiosRequestConfig, AxiosInstance } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 import { HawkSearchConfig } from 'types/HawkSearchConfig';
-import Auth from 'components/Auth';
+import AuthToken from 'components/AuthToken';
 
 class HawkClient {
 	private baseUrl: string;
@@ -23,9 +23,15 @@ class HawkClient {
 		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
 		this.axiosInstance.interceptors.request.use(
 			conf => {
-				const accessToken = Auth.getTokens().accessToken;
-				conf.headers.Authorization = `Bearer ${accessToken}`;
-				conf.headers.ClientGuid = config.clientGuid;
+				if ((conf.url || '').indexOf('refresh-token') !== -1) {
+					delete conf.headers.common.Authorization;
+					delete conf.headers.common.ClientGuid;
+				} else {
+					const accessToken = AuthToken.getTokens().accessToken;
+					conf.headers.Authorization = `Bearer ${accessToken}`;
+					conf.headers.ClientGuid = config.clientGuid;
+				}
+
 				console.log('intercepted___request____');
 				console.log(conf);
 				return conf;
@@ -54,10 +60,17 @@ class HawkClient {
 
 				if (error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
-					const token = Auth.getTokens();
+					const token = AuthToken.getTokens();
+					console.log(token);
 					// return this.axiosInstance.get('https://jsonplaceholder.typicode.com/posts').then(res => {
 					// 	return this.axiosInstance(originalRequest);
 					// });
+					// console.log('Before....');
+					// console.log(this.axiosInstance.defaults);
+					// delete this.axiosInstance.defaults.headers.common.Authorization;
+					// delete this.axiosInstance.defaults.headers.common.ClientGuid;
+					// console.log('After....');
+					// console.log(this.axiosInstance.defaults);
 					return this.axiosInstance
 						.post(new URL(this.refreshTokenURL, this.baseUrl).href, {
 							ClientGuid: config.clientGuid,
@@ -68,8 +81,10 @@ class HawkClient {
 							console.log('Auth Success=====', res);
 							if (res.status === 201) {
 								// localStorageService.setToken(res.data);
-								// this.axiosInstance.defaults.headers.common.Authorization =
-								// 'Bearer ' + localStorageService.getAccessToken();
+								AuthToken.setTokens(res.data.Token, res.data.RefreshToken);
+								this.axiosInstance.defaults.headers.common.Authorization = 'Bearer ' + res.data.Token;
+								console.log('******');
+								console.log(this.axiosInstance);
 								return this.axiosInstance(originalRequest);
 							}
 							return;

@@ -104,7 +104,7 @@ describe('Store', () => {
 
 		function TestedComponent() {
 			return (
-				<ConfigProvider config={{ clientGuid: '123' }}>
+				<ConfigProvider config={{ clientGuid: '123', UpdatePinOrderURL: '' }}>
 					<StoreComponent />
 				</ConfigProvider>
 			);
