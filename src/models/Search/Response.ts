@@ -86,6 +86,7 @@ export class Response {
 	public RelCanonical: string;
 	public PageLayoutId: number;
 	public TrackingId: string;
+	public VisitorTargets: Array<{ Id: number; Name: string }>;
 	// end of landing page related fields
 	public constructor(init: Response) {
 		Object.assign(this, init);
