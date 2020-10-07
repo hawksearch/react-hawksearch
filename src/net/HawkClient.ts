@@ -12,7 +12,7 @@ class HawkClient {
 	private compareItemsURL: string;
 	private refreshTokenURL: string;
 	private pinItemURL: string;
-	private UpdatePinOrderURL: string;
+	private updatePinOrderURL: string;
 	private axiosInstance: AxiosInstance = axios.create();
 
 	constructor(config: HawkSearchConfig) {

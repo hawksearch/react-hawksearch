@@ -105,5 +105,5 @@ export interface HawkSearchConfig {
 	/**
 	 * URL to update the sorting of pinned items. If not provided default will be /api/pinning/update-pin-order/
 	 */
-	UpdatePinOrderURL: string;
+	updatePinOrderURL?: string;
 }
