@@ -15,7 +15,7 @@ class HawkClient {
 	private compareItemsURL: string;
 	private refreshTokenURL: string;
 	private pinItemURL: string;
-	private UpdatePinOrderURL: string;
+	private updatePinOrderURL: string;
 	private axiosInstance: AxiosInstance = axios.create();
 
 	constructor(config: HawksearchConfig) {
@@ -26,7 +26,7 @@ class HawkClient {
 		this.compareItemsURL = config.compareItemsURL || '/api/compare';
 		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
 		this.pinItemURL = config.pinItemURL || '/api/pinning/set-pinning/';
-		this.UpdatePinOrderURL = config.UpdatePinOrderURL || '/api/pinning/update-pin-order/';
+		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
 		this.axiosInstance.interceptors.request.use(
 			conf => {
 				if ((conf.url || '').indexOf('refresh-token') !== -1) {
@@ -71,17 +71,25 @@ class HawkClient {
 		);
 	}
 
-	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
-		const result = await this.axiosInstance.post<any>(new URL(this.pinItemURL, this.baseUrl).href, request, {
-			cancelToken: cancellationToken,
-		});
+	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.pinItemURL, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
 		return result.data;
 	}
 
-	public async updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
-		const result = await this.axiosInstance.post<any>(new URL(this.UpdatePinOrderURL, this.baseUrl).href, request, {
-			cancelToken: cancellationToken,
-		});
+	public async updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.updatePinOrderURL, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
 		return result.data;
 	}
 

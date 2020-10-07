@@ -76,10 +76,10 @@ export interface SearchActor {
 	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
 
 	// Pin items
-	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<any>;
+	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null>;
 
 	// update sorting order of pinned items
-	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
+	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -184,11 +184,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return await client.getComparedItems(request, cancellationToken);
 	}
 
-	async function pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
+	async function pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
 		return await client.pinItem(request, cancellationToken);
 	}
 
-	async function updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
+	async function updatePinOrder(
+		request: SortingOrderRequest,
+		cancellationToken?: CancelToken
+	): Promise<string | null> {
 		return await client.updatePinOrder(request, cancellationToken);
 	}
 
