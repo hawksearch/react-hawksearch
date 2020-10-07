@@ -1,8 +1,11 @@
-import axios, { CancelToken, AxiosRequestConfig } from 'axios';
+import axios, { CancelToken, AxiosInstance } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as CompareItemRequest, Response as CompareDataResponse } from 'models/CompareItems';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
+import { Request as PinItemRequest } from 'models/PinItems';
+import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { HawksearchConfig } from 'types/HawksearchConfig';
+import AuthToken from 'components/AuthToken';
 
 class HawkClient {
 	private baseUrl: string;
@@ -10,6 +13,10 @@ class HawkClient {
 	private dashboardUrl: string;
 	private autocompleteUrl: string;
 	private compareItemsURL: string;
+	private refreshTokenURL: string;
+	private pinItemURL: string;
+	private updatePinOrderURL: string;
+	private axiosInstance: AxiosInstance = axios.create();
 
 	constructor(config: HawksearchConfig) {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
@@ -17,6 +24,73 @@ class HawkClient {
 		this.searchUrl = config.searchUrl || '/api/v2/search';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
 		this.compareItemsURL = config.compareItemsURL || '/api/compare';
+		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
+		this.pinItemURL = config.pinItemURL || '/api/pinning/set-pinning/';
+		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
+		this.axiosInstance.interceptors.request.use(
+			conf => {
+				if ((conf.url || '').indexOf('refresh-token') !== -1) {
+					delete conf.headers.common.Authorization;
+					delete conf.headers.common.ClientGuid;
+				} else {
+					const accessToken = AuthToken.getTokens().accessToken;
+					conf.headers.Authorization = `Bearer ${accessToken}`;
+					conf.headers.ClientGuid = config.clientGuid;
+				}
+				return conf;
+			},
+			error => {
+				Promise.reject(error);
+			}
+		);
+		this.axiosInstance.interceptors.response.use(
+			response => response,
+			error => {
+				const originalRequest = error.config;
+
+				if (error.response.status === 401 && !originalRequest._retry) {
+					originalRequest._retry = true;
+					const token = AuthToken.getTokens();
+					return this.axiosInstance
+						.post(new URL(this.refreshTokenURL, this.baseUrl).href, {
+							ClientGuid: config.clientGuid,
+							Token: token.accessToken,
+							RefreshToken: token.refreshToken,
+						})
+						.then(res => {
+							if (res.status === 200) {
+								AuthToken.setTokens(res.data.Token, res.data.RefreshToken);
+								this.axiosInstance.defaults.headers.common.Authorization = 'Bearer ' + res.data.Token;
+								return this.axiosInstance(originalRequest);
+							}
+							return;
+						});
+				}
+				return Promise.reject(error);
+			}
+		);
+	}
+
+	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.pinItemURL, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
+		return result.data;
+	}
+
+	public async updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.updatePinOrderURL, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
+		return result.data;
 	}
 
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {

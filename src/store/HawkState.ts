@@ -9,6 +9,8 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import { Request as PinItemRequest } from 'models/PinItems';
+import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 
@@ -73,6 +75,12 @@ export interface SearchActor {
 
 	// Get comparision of items from request
 	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
+
+	// Pin items
+	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null>;
+
+	// update sorting order of pinned items
+	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -195,6 +203,17 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		cancellationToken?: CancelToken
 	): Promise<CompareDataResponse> {
 		return await client.getComparedItems(request, cancellationToken);
+	}
+
+	async function pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		return await client.pinItem(request, cancellationToken);
+	}
+
+	async function updatePinOrder(
+		request: SortingOrderRequest,
+		cancellationToken?: CancelToken
+	): Promise<string | null> {
+		return await client.updatePinOrder(request, cancellationToken);
 	}
 
 	/**
@@ -473,6 +492,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setComparedResults,
 		clearItemsToCompare,
 		getComparedItems,
+		pinItem,
+		updatePinOrder,
 	};
 
 	return [store, actor];
