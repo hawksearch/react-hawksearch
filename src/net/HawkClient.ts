@@ -29,11 +29,11 @@ class HawkClient {
 		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
 		this.axiosInstance.interceptors.request.use(
 			conf => {
-				if ((conf.url || '').indexOf('refresh-token') !== -1) {
+				const accessToken = AuthToken.getTokens().accessToken;
+				if ((conf.url || '').indexOf('refresh-token') !== -1 || !accessToken) {
 					delete conf.headers.common.Authorization;
 					delete conf.headers.common.ClientGuid;
 				} else {
-					const accessToken = AuthToken.getTokens().accessToken;
 					conf.headers.Authorization = `Bearer ${accessToken}`;
 					conf.headers.ClientGuid = config.clientGuid;
 				}
@@ -94,9 +94,13 @@ class HawkClient {
 	}
 
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
-		const result = await axios.post<SearchResponse>(new URL(this.searchUrl, this.baseUrl).href, request, {
-			cancelToken: cancellationToken,
-		});
+		const result = await this.axiosInstance.post<SearchResponse>(
+			new URL(this.searchUrl, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
 		return result.data;
 	}
 
