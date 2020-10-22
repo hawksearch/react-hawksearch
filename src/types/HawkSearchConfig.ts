@@ -92,4 +92,18 @@ export interface HawkSearchConfig {
 	 * IndexName if set will enable a query to a specific index in the search API
 	 */
 	indexNameRequired?: boolean | false;
+
+	/* *It will generate new token for expired token
+	 */
+	refreshTokenURL?: string;
+
+	/**
+	 * URL to update pin item. If not provided default will be /api/pinning/set-pinning/
+	 */
+	pinItemURL?: string;
+
+	/**
+	 * URL to update the sorting of pinned items. If not provided default will be /api/pinning/update-pin-order/
+	 */
+	updatePinOrderURL?: string;
 }
