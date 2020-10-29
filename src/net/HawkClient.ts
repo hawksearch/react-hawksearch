@@ -1,6 +1,8 @@
-import axios, { CancelToken, AxiosInstance } from 'axios';
+import axios, { CancelToken, AxiosRequestConfig, AxiosInstance } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse } from 'models/Search';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
+import { Request as PinItemRequest } from 'models/PinItems';
+import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { HawkSearchConfig } from 'types/HawkSearchConfig';
 import AuthToken from 'components/AuthToken';
 
@@ -21,6 +23,8 @@ class HawkClient {
 		this.searchUrl = config.searchUrl || '/api/v2/search';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
 		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
+		this.pinItemURL = config.pinItemURL || '/api/pinning/set-pinning/';
+		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
 		this.axiosInstance.interceptors.request.use(
 			conf => {
 				const accessToken = AuthToken.getTokens().accessToken;
@@ -63,6 +67,20 @@ class HawkClient {
 				return Promise.reject(error);
 			}
 		);
+	}
+
+	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
+		const result = await this.axiosInstance.post<any>(new URL(this.pinItemURL, this.baseUrl).href, request, {
+			cancelToken: cancellationToken,
+		});
+		return result.data;
+	}
+
+	public async updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
+		const result = await this.axiosInstance.post<any>(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
+			cancelToken: cancellationToken,
+		});
+		return result.data;
 	}
 
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
