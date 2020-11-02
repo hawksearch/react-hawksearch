@@ -3,6 +3,8 @@ export class ClientData {
 	/** Unique identifier used for tracking visitors. */
 	public VisitorId: string;
 
+	public VisitId: string;
+
 	/** Custom information used for evaluating Visitor Targets. */
 	public Custom?: string;
 	/** Client IP used for evaluating Visitor Targets. */
