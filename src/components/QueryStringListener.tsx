@@ -53,7 +53,7 @@ function QueryStringListener() {
 	// Extract access token and refresh token from query string on load
 	useEffect(() => {
 		const params = new URLSearchParams(location.search);
-		AuthToken.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(' ', '+') || '');
+		AuthToken.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(/ /g, '+') || '');
 	}, []);
 
 	return null;
