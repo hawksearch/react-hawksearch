@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
-import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 import { Value } from 'models/Facets';
-import PlusCircleSVG from 'components/svg/PlusCircleSVG';
-import DashCircleSVG from 'components/svg/DashCircleSVG';
-
 export interface NestedLinkItemProps {
 	hierarchyValue: Value;
 	isNegated: boolean;
@@ -61,42 +57,21 @@ function NestedLinkItem(item: NestedLinkItemProps) {
 					aria-pressed={item.isSelected}
 				>
 					<span
-						className={
-							item.isSelected
-								? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked'
-								: 'hawk-facet-rail__facet-checkbox'
-						}
-					>
-						{item.isSelected ? <CheckmarkSVG class="hawk-facet-rail__facet-checkbox-icon" /> : null}
-					</span>
-
-					<span
 						style={item.isNegated ? { textDecoration: 'line-through' } : undefined}
-						className="hawk-facet-rail__facet-name"
+						className={
+							item.isSelected ? 'hawk-facet-rail__facet-name checked' : 'hawk-facet-rail__facet-name'
+						}
 					>
 						{item.hierarchyValue.Label} ({item.hierarchyValue.Count})
 					</span>
 				</button>
-
-				<button
-					onClick={e => item.onValueSelected(hierarchyValue, true)}
-					className="hawk-facet-rail__facet-btn-exclude"
-				>
-					{item.isNegated ? (
-						<>
-							<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
-							<span className="visually-hidden">Include facet</span>
-						</>
-					) : (
-						<>
-							<DashCircleSVG />
-							<span className="visually-hidden">Exclude facet</span>
-						</>
-					)}
-				</button>
 				{hierarchyChildren.length > 0 ? (
 					<button
-						className={isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed'}
+						className={
+							isExpanded
+								? 'hawk-collapseState hawk-linklist'
+								: 'hawk-collapseState hawk-linklist collapsed'
+						}
 						aria-expanded="false"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
