@@ -21,7 +21,7 @@ function NestedLink() {
 
 	return (
 		<div className="hawk-facet-rail__facet-values">
-			<div className="hawk-facet-rail__facet-values-checkbox">
+			<div className="hawk-facet-rail__facet-values-linklist">
 				<ul className="hawk-facet-rail__facet-list">
 					{facetValues.map(value => {
 						// facets can be selected or negated, so explicitly check that the facet is not selected
