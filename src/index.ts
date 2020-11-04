@@ -46,6 +46,7 @@ export { useFacet } from 'components/ui/Facets/Facet';
 
 // utils
 export { default as QueryStringListener } from 'components/QueryStringListener';
+export { default as RedirectURLListener } from 'components/RedirectURLListener';
 export * from 'util/QueryString';
 
 // Auth
