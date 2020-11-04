@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
-import { useHawksearch } from './StoreProvider';
+import { useHawkSearch } from './StoreProvider';
 
 function RedirectURLListener() {
-	const { store } = useHawksearch();
+	const { store } = useHawkSearch();
 	useEffect(() => {
 		if (store.searchResults && store.searchResults.Redirect.Location) {
 			// NOTE: This will redirect the parent window to the given URL
