@@ -2,7 +2,7 @@ export enum FacetType {
 	Checkbox = 'checkbox',
 	NestedCheckbox = 'nestedcheckbox',
 	Link = 'link',
-	Nestedlink = 'nestedlink',
+	Nestedlink = 'nestedlinklist',
 	Slider = 'slider',
 	Swatch = 'swatch',
 	Rating = 'rating',
