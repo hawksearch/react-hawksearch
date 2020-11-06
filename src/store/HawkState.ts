@@ -8,6 +8,8 @@ import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
+import { Request as PinItemRequest } from 'models/PinItems';
+import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 
 export interface SearchActor {
@@ -59,6 +61,12 @@ export interface SearchActor {
 	 * Clears all selected facets from the current selection.
 	 */
 	clearAllFacets(): void;
+
+	// Pin items
+	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<any>;
+
+	// update sorting order of pinned items
+	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -166,6 +174,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				});
 			}
 		}
+	}
+
+	async function pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
+		return await client.pinItem(request, cancellationToken);
+	}
+
+	async function updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
+		return await client.updatePinOrder(request, cancellationToken);
 	}
 
 	/**
@@ -398,6 +414,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		clearFacet,
 		clearFacetValue,
 		clearAllFacets,
+		pinItem,
+		updatePinOrder,
 	};
 
 	return [store, actor];
