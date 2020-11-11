@@ -150,7 +150,7 @@ class TrackingEvent {
 		this.mr(pl);
 	}
 
-	private writeSearchTracking(trackingId, typeId) {
+	private writeSearchTracking(trackingId: string, typeId: number, keyword: string) {
 		if (typeId === SearchType.Initial) {
 			this.setCookie('hawk_query_id', this.createGuid());
 		}
@@ -165,6 +165,7 @@ class TrackingEvent {
 					TypeId: typeId,
 					ViewportHeight: c.clientHeight,
 					ViewportWidth: c.clientWidth,
+					keyword,
 				})
 			),
 		};
@@ -348,7 +349,7 @@ class TrackingEvent {
 			case 'searchtracking':
 				// HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
 				// HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Refinement});
-				return this.writeSearchTracking(args.trackingId, args.typeId); // CHANGED
+				return this.writeSearchTracking(args.trackingId, args.typeId, args.keyword); // CHANGED
 			case 'click':
 				// HawkSearch.Tracking.track('click',{event: e, uniqueId: "33333", trackingId: "75a0801a-a93c-4bcb-81f1-f4b011f616e3"});
 				return this.writeClick(args.event, args.uniqueId, args.trackingId, ''); // CHANGED
