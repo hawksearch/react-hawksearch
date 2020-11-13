@@ -4,6 +4,7 @@ import { Request as CompareItemRequest, Response as CompareDataResponse } from '
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
+import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import { HawksearchConfig } from 'types/HawksearchConfig';
 import AuthToken from 'components/AuthToken';
 
@@ -16,6 +17,7 @@ class HawkClient {
 	private refreshTokenURL: string;
 	private pinItemURL: string;
 	private updatePinOrderURL: string;
+	private rebuildIndexURL: string;
 	private axiosInstance: AxiosInstance = axios.create();
 
 	constructor(config: HawksearchConfig) {
@@ -27,6 +29,8 @@ class HawkClient {
 		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
 		this.pinItemURL = config.pinItemURL || '/api/pinning/set-pinning/';
 		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
+		this.rebuildIndexURL = config.rebuildIndexURL || '/api/internal-preview/rebuild-percolator';
+
 		this.axiosInstance.interceptors.request.use(
 			conf => {
 				const accessToken = AuthToken.getTokens().accessToken;
@@ -96,6 +100,17 @@ class HawkClient {
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
 		const result = await this.axiosInstance.post<SearchResponse>(
 			new URL(this.searchUrl, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
+		return result.data;
+	}
+
+	public async rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.rebuildIndexURL, this.baseUrl).href,
 			request,
 			{
 				cancelToken: cancellationToken,
