@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useHawkSearch } from './StoreProvider';
 import { history } from 'util/History';
 import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
+import AuthToken from './AuthToken';
 
 let doSearch = true;
 
@@ -48,6 +49,12 @@ function QueryStringListener() {
 			});
 		}
 	}, [store.pendingSearch]);
+
+	// Extract access token and refresh token from query string on load
+	useEffect(() => {
+		const params = new URLSearchParams(location.search);
+		AuthToken.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(/ /g, '+') || '');
+	}, []);
 
 	return null;
 }
