@@ -121,4 +121,9 @@ export interface HawksearchConfig {
 	 * Get product details. If not provided default will be api/internal-preview/item-detail
 	 */
 	productDetailsURL?: string;
+
+	/**
+	 * Rebuild the index. If not provided default will be /api/internal-preview/rebuild-percolator
+	 */
+	rebuildIndexURL?: string;
 }

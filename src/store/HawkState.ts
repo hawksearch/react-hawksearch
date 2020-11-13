@@ -12,6 +12,7 @@ import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } 
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
@@ -99,6 +100,9 @@ export interface SearchActor {
 
 	// Get product details
 	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
+
+	// rebuild Index
+	rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -264,6 +268,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		cancellationToken?: CancelToken
 	): Promise<ProductDetailsResponse> {
 		return await client.getProductDetails(request, cancellationToken);
+	}
+
+	async function rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		return await client.rebuildIndex(request);
 	}
 
 	/**
@@ -552,6 +560,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		getComparedItems,
 		getProductDetails,
 		setProductDetailsResults,
+		rebuildIndex,
 	};
 
 	return [store, actor];
