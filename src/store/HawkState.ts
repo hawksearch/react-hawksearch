@@ -11,6 +11,7 @@ import { FacetType } from 'models/Facets/FacetType';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
+import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 
@@ -81,6 +82,9 @@ export interface SearchActor {
 
 	// update sorting order of pinned items
 	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null>;
+
+	// rebuild Index
+	rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -214,6 +218,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		cancellationToken?: CancelToken
 	): Promise<string | null> {
 		return await client.updatePinOrder(request, cancellationToken);
+	}
+
+	async function rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		return await client.rebuildIndex(request);
 	}
 
 	/**
@@ -496,6 +504,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		getComparedItems,
 		pinItem,
 		updatePinOrder,
+		rebuildIndex,
 	};
 
 	return [store, actor];
