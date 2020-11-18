@@ -35,7 +35,7 @@ function Search() {
 
 	return (
 		<>
-			<div className="hawk-facet-rail__facet-values">
+			<div className="hawk-facet-rail__facet-values hawk-facet-search-within">
 				<div className="hawk-facet-rail__facet-values__search">
 					<input
 						value={getInputValue()}
