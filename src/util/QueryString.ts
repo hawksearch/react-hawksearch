@@ -139,7 +139,7 @@ export function checkIfUrlRefsLandingPage(path: string, searchUrl: string): bool
 		searchUrl = searchUrl + '/';
 	}
 
-	return path !== searchUrl;
+	return path !== searchUrl && path !== '/';
 }
 
 /**
