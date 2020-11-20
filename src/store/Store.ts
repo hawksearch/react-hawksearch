@@ -202,6 +202,7 @@ export class SearchStore {
 					items.push({
 						label: matchingVal.Label,
 						value: selectionValue,
+						path: matchingVal.Path,
 					});
 				});
 			}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useHawksearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
@@ -7,6 +7,7 @@ import CheckmarkSVG from 'components/svg/CheckmarkSVG';
 import { Value } from 'models/Facets';
 import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 import DashCircleSVG from 'components/svg/DashCircleSVG';
+import { ClientSelectionValue } from 'store/ClientSelections';
 
 export interface NestedItemProps {
 	hierarchyValue: Value;
@@ -15,10 +16,22 @@ export interface NestedItemProps {
 	onValueSelected(facetValue: Value, isNegated: boolean): void;
 }
 
+function checkChildSelections(facetArray, matchValue) {
+	const matchedValue = facetArray.find((i: ClientSelectionValue) => {
+		console.log('****************');
+		console.log('Path = ', i.path);
+		console.log('Match Value = ', matchValue);
+		console.log('****************');
+		// return (i.path || '').indexOf(matchValue) !== -1;
+		return (i.path || '').split('/').indexOf(matchValue) !== -1;
+	});
+	return !matchedValue ? false : true;
+}
+
 function NestedItem(item: NestedItemProps) {
 	const { store } = useHawksearch();
 	const { facet } = useFacet();
-
+	// console.log(store.facetSelections);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isTruncated, setIsTruncated] = useState(facet.shouldTruncate);
 
@@ -52,11 +65,33 @@ function NestedItem(item: NestedItemProps) {
 		);
 	}
 
+	useEffect(() => {
+		const isPartialSelection = checkChildSelections(
+			store.facetSelections[facet.Field].items,
+			item.hierarchyValue.Value
+		);
+		console.log('isPartialSelection = ', isPartialSelection);
+		if (isPartialSelection) {
+			console.log('///////////////////');
+			console.log(isPartialSelection);
+			console.log(item);
+			console.log('...........');
+			setIsExpanded(true);
+		}
+	}, [item]);
+
+	function setSelection() {
+		item.onValueSelected(hierarchyValue, false);
+		if (!isExpanded) {
+			setIsExpanded(true);
+		}
+	}
+
 	return (
 		<li className="hawk-facet-rail__facet-list-item hawkFacet-group">
 			<div className="hawkFacet-group__inline">
 				<button
-					onClick={() => item.onValueSelected(hierarchyValue, false)}
+					onClick={() => setSelection()}
 					className="hawk-facet-rail__facet-btn"
 					aria-pressed={item.isSelected}
 				>
