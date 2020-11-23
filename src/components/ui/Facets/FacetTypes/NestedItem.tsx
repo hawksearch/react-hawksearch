@@ -18,11 +18,6 @@ export interface NestedItemProps {
 
 function checkChildSelections(facetArray, matchValue) {
 	const matchedValue = facetArray.find((i: ClientSelectionValue) => {
-		console.log('****************');
-		console.log('Path = ', i.path);
-		console.log('Match Value = ', matchValue);
-		console.log('****************');
-		// return (i.path || '').indexOf(matchValue) !== -1;
 		return (i.path || '').split('/').indexOf(matchValue) !== -1;
 	});
 	return !matchedValue ? false : true;
@@ -31,7 +26,6 @@ function checkChildSelections(facetArray, matchValue) {
 function NestedItem(item: NestedItemProps) {
 	const { store } = useHawksearch();
 	const { facet } = useFacet();
-	// console.log(store.facetSelections);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isTruncated, setIsTruncated] = useState(facet.shouldTruncate);
 
@@ -67,15 +61,10 @@ function NestedItem(item: NestedItemProps) {
 
 	useEffect(() => {
 		const isPartialSelection = checkChildSelections(
-			store.facetSelections[facet.Field].items,
+			(store.facetSelections[facet.Field] || {}).items || [],
 			item.hierarchyValue.Value
 		);
-		console.log('isPartialSelection = ', isPartialSelection);
 		if (isPartialSelection) {
-			console.log('///////////////////');
-			console.log(isPartialSelection);
-			console.log(item);
-			console.log('...........');
 			setIsExpanded(true);
 		}
 	}, [item]);

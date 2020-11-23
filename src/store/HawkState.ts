@@ -331,7 +331,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		const { state: selState, selectionIndex } = store.isFacetSelected(facet, facetValue);
-		const paths = ((store.facetSelections[facetField] || {}).items || []).map(i => i.path);
 		const valuesToRemoved = [] as string[];
 		const items = (store.facetSelections[facetField] || {}).items || [];
 		items.forEach((item: ClientSelectionValue) => {
@@ -339,11 +338,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				valuesToRemoved.push(item.value);
 			}
 		});
-		console.log('Before....');
-		console.log(facetSelections[facetField]);
-		console.log(valuesToRemoved);
 		const difference = diff(facetSelections[facetField] || [], valuesToRemoved || []);
-		console.log('difference', difference);
 		if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
 			// we're selecting this facet, and it's already selected
 
@@ -357,7 +352,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				// if we're toggling from negation to non-negation or vice versa, then push the new selection
 				facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
 			} else {
-				if ((facet as any).FacetType === FacetType.NestedCheckbox) {
+				if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
 					facetSelections[facetField] = difference;
 				}
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
@@ -368,10 +363,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		if (facetSelections[facetField]!.length === 0) {
-			if ((facet as any).FacetType === FacetType.NestedCheckbox) {
-				facetSelections[facetField] = difference;
-			}
-
 			// clean up any facets that no longer have any selected facet values
 			delete facetSelections[facetField];
 		}
