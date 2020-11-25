@@ -14,6 +14,7 @@ import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
+import { ClientSelectionValue } from './ClientSelections';
 
 export interface SearchActor {
 	/**
@@ -281,6 +282,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
+	// NOTE: It will return the difference from 1st array
+	// i.e ['a', 'b', 'c'] - ['c', 'd', 'f'] => ['a', 'b']
+	function differenceOfArrays(array1: string[], array2: string[]) {
+		return array1.filter(i => {
+			return array2.indexOf(i) < 0;
+		});
+	}
+
 	/**
 	 * Toggles a facet value for the next search request that will be executed. Internally, this will call
 	 * `setSearch` to configure the next search with this selected facet.
@@ -324,7 +333,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		const { state: selState, selectionIndex } = store.isFacetSelected(facet, facetValue);
-
+		const valuesToRemoved = [] as string[];
+		const items = (store.facetSelections[facetField] || {}).items || [];
+		items.forEach((item: ClientSelectionValue) => {
+			if (((item || {}).path || '').indexOf(valueValue) !== -1) {
+				valuesToRemoved.push(item.value);
+			}
+		});
+		const difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
 		if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
 			// we're selecting this facet, and it's already selected
 
@@ -338,6 +354,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				// if we're toggling from negation to non-negation or vice versa, then push the new selection
 				facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
 			} else {
+				if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
+					facetSelections[facetField] = difference;
+				}
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
 		} else {
