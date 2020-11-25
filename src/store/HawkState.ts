@@ -282,9 +282,11 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
-	function diff(a: string[], b: string[]) {
-		return a.filter(i => {
-			return b.indexOf(i) < 0;
+	// NOTE: It will return the difference from 1st array
+	// i.e ['a', 'b', 'c'] - ['c', 'd', 'f'] => ['a', 'b']
+	function differenceOfArrays(array1: string[], array2: string[]) {
+		return array1.filter(i => {
+			return array2.indexOf(i) < 0;
 		});
 	}
 
@@ -338,7 +340,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				valuesToRemoved.push(item.value);
 			}
 		});
-		const difference = diff(facetSelections[facetField] || [], valuesToRemoved || []);
+		const difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
 		if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
 			// we're selecting this facet, and it's already selected
 
