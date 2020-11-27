@@ -11,9 +11,11 @@ function QueryStringListener() {
 	const { store, actor } = useHawkSearch();
 
 	useEffect(() => {
+		console.log('calling first time');
 		// listen to history so that when we navigate backward/forward, trigger a new search based off
 		// the new query string
 		const unlisten = history.listen(location => {
+			console.log('do search');
 			if (!doSearch) {
 				// if the previous history change specified that we shouldn't do a search, clear the flag and bail
 				doSearch = true;
@@ -48,6 +50,7 @@ function QueryStringListener() {
 				search: getSearchQueryString(store.pendingSearch),
 			});
 		}
+		// console.log('*********', location.search);
 	}, [store.pendingSearch]);
 
 	// Extract access token and refresh token from query string on load
