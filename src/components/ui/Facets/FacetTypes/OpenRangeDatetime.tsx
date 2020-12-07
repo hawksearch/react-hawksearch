@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 
@@ -11,16 +12,18 @@ function replaceHyphen(date: string) {
 
 function OpenRangeDatetime() {
 	const { actor: hawkActor } = useHawksearch();
-
+	const {
+		store: { facetSelections },
+	} = useHawksearch();
 	const {
 		state: { facetValues },
 		facet,
 		actor,
 	} = useFacet();
-
 	const daterange = facetValues.length > 0 ? facetValues[0] : null;
-	const rangeStartDate = daterange && daterange.RangeStart ? daterange.RangeStart.slice(0, 16) : '';
-	const rangeEndDate = daterange && daterange.RangeEnd ? daterange.RangeEnd.slice(0, 16) : '';
+	const rangeStartDate =
+		daterange && daterange.RangeStart ? moment(daterange.RangeStart).format('YYYY-MM-DDTHH:mm') : '';
+	const rangeEndDate = daterange && daterange.RangeEnd ? moment(daterange.RangeEnd).format('YYYY-MM-DDTHH:mm') : '';
 
 	// if there's no range, initialize to empty strings
 	const [minDateValue, setdateStartValue] = useState(rangeStartDate || '');
@@ -31,6 +34,24 @@ function OpenRangeDatetime() {
 
 	const rangeStart = (range && range.RangeStart) || '';
 	const rangeEnd = (range && range.RangeEnd) || '';
+
+	useEffect(() => {
+		const paramName = facet.ParamName || facet.Field;
+
+		// Set min and max value if these were cleared
+		if (!paramName || !(paramName in facetSelections)) {
+			setdateStartValue(rangeStartDate);
+			setdateEndValue(rangeEndDate);
+		} else if (
+			paramName in facetSelections &&
+			facetSelections[paramName].items &&
+			facetSelections[paramName].items.length > 0
+		) {
+			const selectedValues = facetSelections[paramName].items[0].value.split(',');
+			setdateStartValue(selectedValues[0].replace(/\//g, '-'));
+			setdateEndValue(selectedValues[1].replace(/\//g, '-'));
+		}
+	}, [facetSelections]);
 
 	if (rangeStart === null || rangeEnd === null) {
 		// this facet is somehow misconfigured so don't render
