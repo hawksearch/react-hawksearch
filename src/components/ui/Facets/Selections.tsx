@@ -55,7 +55,7 @@ function Selections() {
 
 	function renderLabel(selection, item) {
 		if (selection.facet.FacetType === 'openRange' && selection.facet.DataType === 'datetime') {
-			let [startDate, endDate] = item.label.split(',');
+			let [startDate, endDate] = (item.label || ',').split(',');
 			startDate = moment(startDate.replace(/\//g, '-')).format('LLLL');
 			endDate = moment(endDate.replace(/\//g, '-')).format('LLLL');
 			return `${startDate} - ${endDate}`;
