@@ -10,7 +10,7 @@ import { useHawkSearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
 
-const Downshift = React.lazy(() => import(/* webpackChunkName: "downshift" */ 'downshift'));
+import Downshift from 'downshift';
 
 export interface SearchBoxBaseProps {
 	initialValue?: string;
@@ -23,6 +23,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 	const { t, i18n } = useTranslation();
+	const { store } = useHawkSearch();
 
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
