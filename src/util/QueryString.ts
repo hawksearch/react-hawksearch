@@ -12,6 +12,7 @@ interface ParsedQueryStringFixed {
 	searchWithin?: string;
 	is100Coverage?: string;
 	indexName?: string;
+	itempinid?: string;
 }
 
 /**
@@ -46,7 +47,8 @@ function parseQueryStringToObject(search: string) {
 			key === 'mpp' ||
 			key === 'searchWithin' ||
 			key === 'is100Coverage' ||
-			key === 'indexName'
+			key === 'indexName' ||
+			key === 'itempinid'
 		) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = encodeURIComponent(value);
@@ -106,6 +108,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		searchWithin,
 		is100Coverage,
 		indexName,
+		itempinid,
 		...facetSelections
 	} = queryObj;
 
@@ -123,6 +126,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
 		FacetSelections: facetSelections,
 		IndexName: indexName,
+		ItemPinId: itempinid,
 	};
 }
 

@@ -113,6 +113,8 @@ export class Request {
 	 * IndexName if set will enable a query to a specific index in the search API
 	 */
 	public IndexName?: string;
+
+	public ItemPinId?: string;
 }
 
 export interface FacetSelections {

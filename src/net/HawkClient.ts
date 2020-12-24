@@ -12,6 +12,7 @@ import AuthToken from 'components/AuthToken';
 class HawkClient {
 	private baseUrl: string;
 	private searchUrl: string;
+	private searchWithPinUrl: string;
 	private dashboardUrl: string;
 	private autocompleteUrl: string;
 	private compareItemsURL: string;
@@ -26,6 +27,7 @@ class HawkClient {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
 		this.dashboardUrl = config.dashboardUrl || 'http://test.hawksearch.net/';
 		this.searchUrl = config.searchUrl || '/api/v2/search';
+		this.searchWithPinUrl = config.searchWithPinUrl || '/api/pinning/filter-items';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
 		this.compareItemsURL = config.compareItemsURL || '/api/compare';
 		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
@@ -103,6 +105,17 @@ class HawkClient {
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
 		const result = await this.axiosInstance.post<SearchResponse>(
 			new URL(this.searchUrl, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
+		return result.data;
+	}
+
+	public async searchWithPinId(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
+		const result = await this.axiosInstance.post<SearchResponse>(
+			new URL(this.searchWithPinUrl, this.baseUrl).href,
 			request,
 			{
 				cancelToken: cancellationToken,

@@ -180,7 +180,11 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		};
 
 		try {
-			searchResults = await client.search(updatedRequest, cancellationToken);
+			if (searchParams.ItemPinId) {
+				searchResults = await client.searchWithPinId(updatedRequest, cancellationToken);
+			} else {
+				searchResults = await client.search(updatedRequest, cancellationToken);
+			}
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
