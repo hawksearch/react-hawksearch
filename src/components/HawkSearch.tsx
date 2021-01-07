@@ -4,6 +4,7 @@ import ConfigProvider from 'components/ConfigProvider';
 import StoreProvider from 'components/StoreProvider';
 import { HawkSearchConfig } from 'types/HawkSearchConfig';
 import { Request } from 'models/Search';
+import TrackingEvent from './TrackingEvent';
 
 export interface HawkSearchProps {
 	/** Global configuration. */
@@ -14,6 +15,11 @@ export interface HawkSearchProps {
 }
 
 function HawkSearch(props: HawkSearchProps) {
+	if (props.config.trackEventUrl) {
+		// Set URL to track event
+		TrackingEvent.setTrackingURL(props.config.trackEventUrl);
+		TrackingEvent.setClientGUID(props.config.clientGuid);
+	}
 	return (
 		<ConfigProvider config={props.config}>
 			<StoreProvider initialSearch={props.initialSearch}>{props.children}</StoreProvider>

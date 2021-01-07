@@ -8,9 +8,10 @@ export interface ResultImageProps {
 	websiteUrl?: string;
 	itemTitleFieldName?: string;
 	imageUrlFieldName?: string;
+	onLoadCallBack?: () => void;
 }
 
-function ResultImage({ item, websiteUrl, itemTitleFieldName, imageUrlFieldName }: ResultImageProps) {
+function ResultImage({ item, websiteUrl, itemTitleFieldName, imageUrlFieldName, onLoadCallBack }: ResultImageProps) {
 	const [imageLoaded, setImageLoaded] = useState(false);
 
 	let imageUrl = imageUrlFieldName ? item.getDocumentValue(imageUrlFieldName) : item.getDocumentValue('image');
@@ -28,7 +29,16 @@ function ResultImage({ item, websiteUrl, itemTitleFieldName, imageUrlFieldName }
 	return (
 		<div className="hawk-results__item-image">
 			<div style={imageLoaded ? {} : { overflow: 'hidden', width: '0px', height: '0px' }}>
-				<img onLoad={() => setImageLoaded(true)} src={imageUrl} alt={`Image for ${itemName}`} />
+				<img
+					onLoad={() => {
+						if (onLoadCallBack) {
+							onLoadCallBack();
+						}
+						setImageLoaded(true);
+					}}
+					src={imageUrl}
+					alt={`Image for ${itemName}`}
+				/>
 			</div>
 
 			{!imageLoaded ? (
