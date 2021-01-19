@@ -3,7 +3,7 @@ import axios, { CancelToken } from 'axios';
 
 import { SearchStore, FacetSelectionState } from './Store';
 import HawkClient from 'net/HawkClient';
-import { Response, Request, FacetSelections } from 'models/Search';
+import { Response, Request, FacetSelections, Result } from 'models/Search';
 import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
@@ -67,6 +67,12 @@ export interface SearchActor {
 
 	// update sorting order of pinned items
 	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
+	
+	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
+
+	setComparedResults(comparedResults: any): void;
+
+	clearItemsToCompare(): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -80,6 +86,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				FacetSelections: {},
 			},
 			isLoading: true,
+			itemsToCompare: [],
+			comparedResults: [],
+			itemsToCompareIds: [],
 		}),
 		SearchStore
 	);
@@ -419,6 +428,35 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setSearchSelections(undefined, undefined);
 	}
 
+	function setItemsToCompare(resultItem: Result, isCheck: boolean): void {
+		let itemsArray = [...store.itemsToCompare];
+		if (isCheck) {
+			// append
+			itemsArray = [...itemsArray, ...[resultItem]];
+		} else {
+			// filter out
+			itemsArray = itemsArray.filter(item => item.DocId !== resultItem.DocId);
+		}
+		// setStore({ itemsToCompare: itemsArray });
+		setStore({
+			itemsToCompare: itemsArray,
+			itemsToCompareIds: itemsArray.map(item => item.DocId),
+		});
+	}
+
+	function setComparedResults(results: any): void {
+		setStore({
+			comparedResults: results,
+		});
+	}
+
+	function clearItemsToCompare() {
+		setStore({
+			itemsToCompare: [],
+			itemsToCompareIds: [],
+		});
+	}
+
 	const actor: SearchActor = {
 		search,
 		setSearch,
@@ -429,6 +467,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		clearAllFacets,
 		pinItem,
 		updatePinOrder,
+		setItemsToCompare,
+		setComparedResults,
+		clearItemsToCompare,
 	};
 
 	return [store, actor];
