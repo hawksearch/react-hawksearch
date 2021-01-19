@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DownshiftState, StateChangeOptions, ControllerStateAndHelpers } from 'downshift';
 
 import SearchSuggestions from 'components/ui/SearchBox/SearchSuggestions';
@@ -23,7 +23,22 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	const { config } = useHawkConfig();
 	const strategies = getAutocompleteStrategies(config.autocompleteStrategies || []);
 	const { t, i18n } = useTranslation();
-	const { store } = useHawkSearch();
+	const {
+		store: { pendingSearch, searchResults },
+	} = useHawkSearch();
+	const [initialInput, setInitialInput] = useState('');
+
+	// Will update the suggested selected keyword in the autocomplete input box
+	useEffect(() => {
+		setInitialInput(decodeURIComponent(pendingSearch.Keyword || ''));
+	}, [pendingSearch.Keyword, initialValue]);
+
+	// Will update the Adjusted keyword in the autocomplete input box
+	useEffect(() => {
+		if (searchResults && searchResults.AdjustedKeyword) {
+			setInitialInput(decodeURIComponent(searchResults.AdjustedKeyword));
+		}
+	}, [searchResults]);
 
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
