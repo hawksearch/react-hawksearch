@@ -42,6 +42,7 @@ export { RuleType, RuleOperatorType } from 'models/Search/Rule';
 export * from 'models/Autocomplete/Suggestion';
 export { default as PlaceholderItem } from 'components/ui/Results/PlaceholderItem';
 export { default as Spinner } from 'components/ui/Spinner';
+export { default as AdjustedKeyword } from 'components/ui/AdjustedKeyword';
 
 // hooks
 export { useHawksearch } from 'components/StoreProvider';
