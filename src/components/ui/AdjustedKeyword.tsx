@@ -5,7 +5,6 @@ function AdjustedKeyword() {
 	const {
 		store: { searchResults },
 	} = useHawksearch();
-	console.log(searchResults);
 	if (searchResults && searchResults.AdjustedKeyword) {
 		return (
 			<div>
