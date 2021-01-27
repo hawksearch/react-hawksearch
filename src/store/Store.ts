@@ -42,6 +42,7 @@ export class SearchStore {
 	public itemsToCompare: Result[];
 	public itemsToCompareIds: string[];
 	public comparedResults: Result[];
+	public productDetails: Partial<Result>;
 
 	/** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
 	public searchResults?: Response;

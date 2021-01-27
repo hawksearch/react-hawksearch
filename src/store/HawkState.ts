@@ -9,6 +9,7 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
@@ -72,6 +73,9 @@ export interface SearchActor {
 	// To store items after getting the results from compare request
 	setComparedResults(comparedResults: Result[]): void;
 
+	// To store items after getting the results from compare request
+	setProductDetailsResults(detailsResult: Result): void;
+
 	// Clear stored compared items
 	clearItemsToCompare(): void;
 
@@ -86,6 +90,9 @@ export interface SearchActor {
 
 	// rebuild Index
 	rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null>;
+
+	// Get product details
+	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -102,6 +109,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			itemsToCompare: [],
 			comparedResults: [],
 			itemsToCompareIds: [],
+			productDetails: {},
 		}),
 		SearchStore
 	);
@@ -223,6 +231,17 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	async function rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
 		return await client.rebuildIndex(request);
+	}
+
+	/**
+	 * Get product details by ID
+	 * @returns A promise that resolves when the product details request has been completed.
+	 */
+	async function getProductDetails(
+		request: ProductDetailsRequest,
+		cancellationToken?: CancelToken
+	): Promise<ProductDetailsResponse> {
+		return await client.getProductDetails(request, cancellationToken);
 	}
 
 	/**
@@ -502,6 +521,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
+	function setProductDetailsResults(data: Result): void {
+		setStore({
+			productDetails: data,
+		});
+	}
+
 	function clearItemsToCompare() {
 		setStore({
 			itemsToCompare: [],
@@ -524,6 +549,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		pinItem,
 		updatePinOrder,
 		rebuildIndex,
+		getProductDetails,
+		setProductDetailsResults,
 	};
 
 	return [store, actor];
