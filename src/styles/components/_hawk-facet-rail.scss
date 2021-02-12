@@ -172,6 +172,13 @@
 	background-color: $white;
 	border: 1px solid $grey;
 	padding: 10px;
+	.hawk-facet-rail__facet-values-link {
+		.hawk-facet-rail__facet-list-item {
+			.selected {
+				color: #f47b20;
+			}
+		}
+	}
 }
 
 .hawk-facet-rail__facet-values__checkbox {
