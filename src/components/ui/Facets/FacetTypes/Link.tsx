@@ -26,8 +26,12 @@ function Link() {
 						return (
 							<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 								<button
-									onClick={e => actor.selectFacet(value)}
-									className="hawk-facet-rail__facet-btn"
+									onClick={e => actor.setFacets([value])}
+									className={
+										isSelected
+											? 'hawk-facet-rail__facet-btn selected'
+											: 'hawk-facet-rail__facet-btn'
+									}
 									aria-pressed={isSelected}
 								>
 									<span className="hawk-facet-rail__facet-name">
