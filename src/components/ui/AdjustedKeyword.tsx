@@ -4,12 +4,22 @@ import { useHawksearch } from 'components/StoreProvider';
 function AdjustedKeyword() {
 	const {
 		store: { searchResults },
+		actor,
 	} = useHawksearch();
 	if (searchResults && searchResults.AdjustedKeyword) {
 		return (
-			<div>
+			<div className="hawk__adjusted-keyword">
 				Showing results for <b>{searchResults.AdjustedKeyword}</b>. Search instead for{' '}
-				<b>{searchResults.Keyword}</b>.
+				<b
+					onClick={() =>
+						actor.setSearch({
+							Keyword: searchResults.Keyword,
+						})
+					}
+				>
+					{searchResults.Keyword}
+				</b>
+				.
 			</div>
 		);
 	}
