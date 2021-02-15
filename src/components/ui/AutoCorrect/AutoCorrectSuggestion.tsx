@@ -14,14 +14,14 @@ function AutoCorrectSuggestion() {
 	return (
 		<div className="hawk-autocorrect-suggestion-container">
 			{searchResults && searchResults.DidYouMean ? (
-				<ul className="hawk-autocorrect-suggestion">
+				<div className="hawk-autocorrect-suggestion">
 					<h3>Did you mean?</h3>
 					{searchResults.DidYouMean.map((keyword: string, index: number) => (
-						<li onClick={() => selectKeyword(keyword)} key={index}>
+						<span onClick={() => selectKeyword(keyword)} key={index}>
 							{keyword}
-						</li>
+						</span>
 					))}
-				</ul>
+				</div>
 			) : null}
 		</div>
 	);
