@@ -1,0 +1,10 @@
+.hawk__adjusted-keyword {
+	color: rgb(204, 0, 0);
+	b:nth-child(2) {
+		color: #000;
+		&:hover {
+			text-decoration: underline;
+			cursor: pointer;
+		}
+	}
+}
