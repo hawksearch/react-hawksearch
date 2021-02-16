@@ -1,13 +1,11 @@
 .hawk-autocorrect-suggestion {
 	h3 {
-		color: #f37624;
+		color: rgb(204, 0, 0);
+		font-size: 16px;
 	}
-	li {
+	span {
 		cursor: pointer;
-		margin-left: 25px;
-		&:hover {
-			color: #f37624;
-			text-decoration: underline;
-		}
+		margin-left: 5px;
+		text-decoration: underline;
 	}
 }
