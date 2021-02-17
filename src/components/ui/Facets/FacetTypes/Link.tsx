@@ -3,6 +3,7 @@ import React from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
+import { Value } from 'models/Facets';
 
 function Link() {
 	const { store } = useHawksearch();
@@ -12,6 +13,16 @@ function Link() {
 		actor,
 		renderer,
 	} = useFacet();
+
+	function setLinkFacet(value: Value, selectionState: number) {
+		if (selectionState) {
+			// Deselect the facet
+			actor.selectFacet(value);
+		} else {
+			// Select the facet
+			actor.setFacets([value]);
+		}
+	}
 
 	return (
 		<div className="hawk-facet-rail__facet-values">
@@ -26,7 +37,7 @@ function Link() {
 						return (
 							<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 								<button
-									onClick={e => actor.setFacets([value])}
+									onClick={e => setLinkFacet(value, selectionState)}
 									className={
 										isSelected
 											? 'hawk-facet-rail__facet-btn selected'
