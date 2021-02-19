@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, MouseEvent } from 'react';
-
+import { useCookies } from 'react-cookie';
 import { Facet as FacetModel, Value } from 'models/Facets';
 import { useHawksearch } from 'components/StoreProvider';
 import PlusSVG from 'components/svg/PlusSVG';
@@ -78,12 +78,21 @@ export interface FacetRenderer {
 	renderTruncation();
 }
 
+function getInitialCollapsibleState(facet: FacetModel, cookies: { [key: string]: string }) {
+	const cookieValue = cookies[facet.Field];
+	if (cookieValue !== undefined) {
+		return cookieValue === 'true'; // Convert string to boolean
+	}
+	return facet.IsCollapsible && facet.IsCollapsedDefault;
+}
+
 function Facet({ facet, children }: FacetProps) {
 	const { actor: searchActor } = useHawksearch();
 	const wrapperRef = useRef<HTMLInputElement>(null);
 	const [filter, setFilter] = useState('');
 	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);
-	const [isCollapsed, setCollapsed] = useState(facet.IsCollapsible && facet.IsCollapsedDefault);
+	const [cookies, setCookie] = useCookies([facet.Field]);
+	const [isCollapsed, setCollapsed] = useState(getInitialCollapsibleState(facet, cookies));
 	const { t, i18n } = useTranslation();
 
 	function selectFacet(facetValue: Value | string): void {
@@ -173,6 +182,7 @@ function Facet({ facet, children }: FacetProps) {
 		if (wrapperRef.current && wrapperRef.current.contains(event.target as Node)) {
 			return;
 		}
+		setCookie(facet.Field, !isCollapsed);
 		setCollapsed(!isCollapsed);
 	}
 
