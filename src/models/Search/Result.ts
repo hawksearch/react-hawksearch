@@ -1,4 +1,5 @@
 import { Explain } from './Explain';
+import { ChildResult } from './ChildResult';
 
 export class Result {
 	/** Unique identifier for this search result item. */
@@ -18,6 +19,8 @@ export class Result {
 
 	public IsPin: boolean;
 
+	public ChildResults?: ChildResult;
+
 	public BestFragment: string;
 	/**
 	 * Returns a single document value, by the given field name. If the field does not exist in
@@ -36,25 +39,10 @@ export class Result {
 		return undefined;
 	}
 
-	public getHittedChildAttributeValue(field: string): string | undefined {
-		if (!this.Document) {
-			return undefined;
-		}
-		const childAttributesFieldName = 'hawk_child_attributes_hit';
-		const attributes = this.Document[childAttributesFieldName];
-
-		if (!attributes || attributes.length === 0) {
-			return undefined;
-		}
-		const values = attributes[0];
-		if (values && values[field] && values[field].length > 0) {
-			return values[field][0];
-		}
-
-		return undefined;
-	}
-
 	public constructor(init: Result) {
 		Object.assign(this, init);
+		if (init.ChildResults) {
+			this.ChildResults = new ChildResult(init.ChildResults);
+		}
 	}
 }

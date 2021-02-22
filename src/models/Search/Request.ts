@@ -1,5 +1,6 @@
 import { ClientData } from './ClientData';
 import { SmartBar } from './SmartBar';
+import { VariantOptions } from './VariantOptions';
 
 export class Request {
 	/**
@@ -79,6 +80,8 @@ export class Request {
 
 	/** Client data. */
 	public ClientData?: ClientData;
+
+	public Variant?: VariantOptions;
 
 	/**
 	 * This is used by the Hawksearch Preview to set to true will display elements in a preview mode.
