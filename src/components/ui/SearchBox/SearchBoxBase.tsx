@@ -31,7 +31,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 	// Will update the suggested selected keyword in the autocomplete input box
 	useEffect(() => {
 		setInitialInput(decodeURIComponent(pendingSearch.Keyword || ''));
-	}, [pendingSearch.Keyword, initialValue]);
+	}, [pendingSearch.Keyword, initialValue, pendingSearch.IgnoreSpellcheck]);
 
 	// Will update the Adjusted keyword in the autocomplete input box
 	useEffect(() => {

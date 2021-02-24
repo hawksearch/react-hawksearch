@@ -14,6 +14,7 @@ function AdjustedKeyword() {
 					onClick={() =>
 						actor.setSearch({
 							Keyword: searchResults.Keyword,
+							IgnoreSpellcheck: true,
 						})
 					}
 				>

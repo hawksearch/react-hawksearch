@@ -25,6 +25,7 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 				CustomUrl: undefined,
 				Keyword: encodeURIComponent(event.currentTarget.value),
 				FacetSelections: undefined,
+				IgnoreSpellcheck: false,
 			});
 		}
 	}
