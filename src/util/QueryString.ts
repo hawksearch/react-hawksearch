@@ -12,6 +12,7 @@ interface ParsedQueryStringFixed {
 	searchWithin?: string;
 	is100Coverage?: string;
 	indexName?: string;
+	ignoreSpellcheck?: string;
 }
 
 /**
@@ -46,7 +47,8 @@ function parseQueryStringToObject(search: string) {
 			key === 'mpp' ||
 			key === 'searchWithin' ||
 			key === 'is100Coverage' ||
-			key === 'indexName'
+			key === 'indexName' ||
+			key === 'ignoreSpellcheck'
 		) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = encodeURIComponent(value);
@@ -106,6 +108,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		searchWithin,
 		is100Coverage,
 		indexName,
+		ignoreSpellcheck,
 		...facetSelections
 	} = queryObj;
 
@@ -123,6 +126,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
 		FacetSelections: facetSelections,
 		IndexName: indexName,
+		IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined,
 	};
 }
 
@@ -160,7 +164,8 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				key === 'mpp' ||
 				key === 'searchWithin' ||
 				key === 'is100Coverage' ||
-				key === 'indexName'
+				key === 'indexName' ||
+				key === 'ignoreSpellcheck'
 			) {
 				const value = queryObj[key];
 
@@ -208,7 +213,10 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
 		indexName: searchRequest.IndexName,
-
+		ignoreSpellcheck:
+			!searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck
+				? undefined
+				: String(searchRequest.IgnoreSpellcheck),
 		...searchRequest.FacetSelections,
 	} as ParsedQueryString;
 
