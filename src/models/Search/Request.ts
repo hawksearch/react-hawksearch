@@ -113,6 +113,10 @@ export class Request {
 	 * IndexName if set will enable a query to a specific index in the search API
 	 */
 	public IndexName?: string;
+	/**
+	 * IgnoreSpellcheck will disable the autocorrect suggestion for the request
+	 */
+	public IgnoreSpellcheck?: boolean;
 }
 
 export interface FacetSelections {

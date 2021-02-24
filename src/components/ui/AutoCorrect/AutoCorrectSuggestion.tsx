@@ -13,7 +13,7 @@ function AutoCorrectSuggestion() {
 	}
 	return (
 		<div className="hawk-autocorrect-suggestion-container">
-			{searchResults && searchResults.DidYouMean ? (
+			{searchResults && searchResults.DidYouMean && searchResults.DidYouMean.length ? (
 				<div className="hawk-autocorrect-suggestion">
 					<h3>Did you mean?</h3>
 					{searchResults.DidYouMean.map((keyword: string, index: number) => (
