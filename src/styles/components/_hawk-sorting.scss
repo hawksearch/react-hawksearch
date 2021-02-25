@@ -1,9 +1,11 @@
-.hawk-sorting {
+.hawk-sorting,
+.hawk-language {
 	display: flex;
 	align-items: center;
 }
 
-.hawk-sorting__label {
+.hawk-sorting__label,
+.hawk-language__label {
 	white-space: nowrap;
 	margin-right: 10px;
 }
