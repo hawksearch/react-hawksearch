@@ -1,6 +1,6 @@
 import axios, { CancelToken, AxiosInstance } from 'axios';
 import { Request as SearchRequest, Response as SearchResponse, Result } from 'models/Search';
-import { Request as CompareItemRequest, Response as CompareDataResponse } from 'models/CompareItems';
+import { CompareDataResult, Request as CompareItemRequest, Response as CompareDataResponse } from 'models/CompareItems';
 import { Request as AutocompleteRequest, Response as AutocompleteResponse } from 'models/Autocomplete';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
@@ -140,7 +140,7 @@ class HawkClient {
 	public async getComparedItems(
 		request: CompareItemRequest,
 		cancellationToken?: CancelToken
-	): Promise<CompareDataResponse> {
+	): Promise<CompareDataResult[]> {
 		const result = await axios.post<CompareDataResponse>(
 			new URL(this.compareItemsURL, this.baseUrl).href,
 			request,
@@ -148,8 +148,7 @@ class HawkClient {
 				cancelToken: cancellationToken,
 			}
 		);
-
-		return result.data;
+		return result.data.Results.map(r => new CompareDataResult(r));
 	}
 
 	public async getProductDetails(

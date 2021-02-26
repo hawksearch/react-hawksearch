@@ -8,7 +8,7 @@ import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
-import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import { Response as CompareDataResponse, Request as CompareItemRequest, CompareDataResult } from 'models/CompareItems';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
@@ -80,7 +80,7 @@ export interface SearchActor {
 	clearItemsToCompare(): void;
 
 	// Get comparision of items from request
-	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
+	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResult[]>;
 
 	// Pin items
 	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null>;
@@ -214,7 +214,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	async function getComparedItems(
 		request: CompareItemRequest,
 		cancellationToken?: CancelToken
-	): Promise<CompareDataResponse> {
+	): Promise<CompareDataResult[]> {
 		return await client.getComparedItems(request, cancellationToken);
 	}
 

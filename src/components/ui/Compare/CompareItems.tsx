@@ -13,6 +13,7 @@ interface CompareItemProps {
 	onSelectCompareItems: () => void;
 	clearItems: () => void;
 	onSelectTiles: (item: Result) => void;
+	keysToMap: { title: string; imageUrl: string };
 }
 
 function CompareTiles({ imageURL, itemName, onSelectTiles, item }: CompareTilesProps) {
@@ -26,14 +27,14 @@ function CompareTiles({ imageURL, itemName, onSelectTiles, item }: CompareTilesP
 	return <div className="hawk__compare-tiles">{imageURL && <img src={imageURL} alt={itemName} />}</div>;
 }
 
-function CompareItems({ itemsList, onSelectCompareItems, clearItems, onSelectTiles }: CompareItemProps) {
+function CompareItems({ itemsList, onSelectCompareItems, clearItems, onSelectTiles, keysToMap }: CompareItemProps) {
 	return (
 		<div className="hawk__compare-container">
 			<div className="hawk__compare-container__list">
 				{[...Array(5)].map((_, index) => {
 					if (itemsList && itemsList.length && itemsList[index]) {
-						const imageURL = itemsList[index].getDocumentValue('image');
-						const itemName = itemsList[index].getDocumentValue('itemname');
+						const imageURL = itemsList[index].getDocumentValue(keysToMap.imageUrl);
+						const itemName = itemsList[index].getDocumentValue(keysToMap.title);
 						return (
 							<CompareTiles
 								onSelectTiles={onSelectTiles}
