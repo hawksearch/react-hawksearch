@@ -116,4 +116,9 @@ export interface HawkSearchConfig {
 	 * It will compare the properties of two or more items
 	 */
 	compareItemsURL?: string;
+
+	/**
+	 * Get product details. If not provided default will be api/internal-preview/item-detail
+	 */
+	productDetailsURL?: string;
 }
