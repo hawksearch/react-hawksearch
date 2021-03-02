@@ -1,13 +1,23 @@
-.hawk-sorting,
-.hawk-language {
+.hawk-sorting {
 	display: flex;
 	align-items: center;
 }
 
-.hawk-sorting__label,
-.hawk-language__label {
+.hawk-sorting__label {
 	white-space: nowrap;
 	margin-right: 10px;
+}
+
+.hawk-language {
+	display: flex;
+	align-items: center;
+	&__label {
+		white-space: nowrap;
+		margin-right: 10px;
+	}
+	select {
+		min-width: 156px;
+	}
 }
 
 .hawk-tool-row__item {
