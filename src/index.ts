@@ -42,6 +42,7 @@ export { RuleType, RuleOperatorType } from 'models/Search/Rule';
 export * from 'models/Autocomplete/Suggestion';
 export { default as PlaceholderItem } from 'components/ui/Results/PlaceholderItem';
 export { default as Spinner } from 'components/ui/Spinner';
+export { default as AdjustedKeyword } from 'components/ui/AdjustedKeyword';
 
 // hooks
 export { useHawkSearch } from 'components/StoreProvider';
@@ -51,6 +52,8 @@ export { useFacet } from 'components/ui/Facets/Facet';
 export { default as QueryStringListener } from 'components/QueryStringListener';
 export { default as RedirectURLListener } from 'components/RedirectURLListener';
 export * from 'util/QueryString';
+
+export { default as AutoCorrectSuggestion } from 'components/ui/AutoCorrect/AutoCorrectSuggestion';
 
 // Auth
 export { default as AuthToken } from 'components/AuthToken';
