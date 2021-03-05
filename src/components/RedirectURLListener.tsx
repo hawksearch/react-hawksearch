@@ -35,13 +35,14 @@ function RedirectURLListener({ RedirectAlertMessage }: RedirectURLListenerProps)
 		};
 	}, [shouldRedirect]);
 
-	if (showAlert) {
-		if (!RedirectAlertMessage) {
-			return <div>Alert message component is missing.</div>;
-		}
+	if (!showAlert) {
+		return null;
+	}
+	if (RedirectAlertMessage) {
 		return <RedirectAlertMessage message={redirectURL} setRedirect={setRedirect} />;
 	}
-	return null;
+
+	return <div>Alert message component is missing.</div>;
 }
 
 export default RedirectURLListener;
