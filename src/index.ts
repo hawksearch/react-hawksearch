@@ -43,6 +43,7 @@ export * from 'models/Autocomplete/Suggestion';
 export { default as PlaceholderItem } from 'components/ui/Results/PlaceholderItem';
 export { default as Spinner } from 'components/ui/Spinner';
 export { default as AdjustedKeyword } from 'components/ui/AdjustedKeyword';
+export { default as LanguageSelector } from 'components/ui/LanguageSelector';
 
 // hooks
 export { useHawksearch } from 'components/StoreProvider';
