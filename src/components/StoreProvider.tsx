@@ -35,7 +35,7 @@ function StoreProvider({ initialSearch, children }: HawkStoreProviderProps) {
 /**
  * Retrieves the global hawk store for use within a component.
  */
-export function useHawkSearch() {
+export function useHawksearch() {
 	return useContext(HawkContext);
 }
 

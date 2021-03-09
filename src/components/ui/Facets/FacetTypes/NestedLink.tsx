@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
 import NestedLinkItem from './NestedLinkItem';
 import { Value } from 'models/Facets/Value';
 
 function NestedLink() {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const {
 		facet,
 		state: { facetValues },

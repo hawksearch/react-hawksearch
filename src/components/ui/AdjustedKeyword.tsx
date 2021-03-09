@@ -1,11 +1,11 @@
 import React from 'react';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 
 function AdjustedKeyword() {
 	const {
 		store: { searchResults },
 		actor,
-	} = useHawkSearch();
+	} = useHawksearch();
 	if (searchResults && searchResults.AdjustedKeyword) {
 		return (
 			<div className="hawk__adjusted-keyword">

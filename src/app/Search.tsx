@@ -12,23 +12,23 @@ import 'rheostat/initialize';
 
 import QueryStringListener from 'components/QueryStringListener';
 import App from 'app/App';
-import HawkSearch from 'components/HawkSearch';
+import Hawksearch from 'components/Hawksearch';
 import { parseLocation } from 'util/QueryString';
-import { HawkSearchConfig } from 'types/HawkSearchConfig';
+import { HawksearchConfig } from 'types/HawksearchConfig';
 
 declare global {
 	interface Window {
-		HawkSearch?: HawkSearchConfig;
+		Hawksearch?: HawksearchConfig;
 	}
 }
 
-if (window.HawkSearch) {
-	initializeSearch(window.HawkSearch);
+if (window.Hawksearch) {
+	initializeSearch(window.Hawksearch);
 }
 
-export function initializeSearch(config: HawkSearchConfig) {
+export function initializeSearch(config: HawksearchConfig) {
 	if (!config.searchElement) {
-		throw new Error('window.HawkSearch.searchElement has not been configured');
+		throw new Error('window.Hawksearch.searchElement has not been configured');
 	}
 
 	const renderElem =
@@ -38,10 +38,10 @@ export function initializeSearch(config: HawkSearchConfig) {
 	const searchRequest = parseLocation(location);
 
 	ReactDOM.render(
-		<HawkSearch config={config} initialSearch={searchRequest}>
+		<Hawksearch config={config} initialSearch={searchRequest}>
 			<QueryStringListener />
 			<App />
-		</HawkSearch>,
+		</Hawksearch>,
 		renderElem
 	);
 }

@@ -5,7 +5,7 @@ import { Request as AutocompleteRequest, Response as AutocompleteResponse } from
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
-import { HawkSearchConfig } from 'types/HawkSearchConfig';
+import { HawksearchConfig } from 'types/HawksearchConfig';
 import AuthToken from 'components/AuthToken';
 
 class HawkClient {
@@ -21,7 +21,7 @@ class HawkClient {
 	private productDetailsURL: string;
 	private axiosInstance: AxiosInstance = axios.create();
 
-	constructor(config: HawkSearchConfig) {
+	constructor(config: HawksearchConfig) {
 		this.baseUrl = config.apiUrl || 'https://searchapi-dev.hawksearch.net';
 		this.dashboardUrl = config.dashboardUrl || 'http://test.hawksearch.net/';
 		this.searchUrl = config.searchUrl || '/api/v2/search';

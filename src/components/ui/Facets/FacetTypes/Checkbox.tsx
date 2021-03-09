@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 import DashCircleSVG from 'components/svg/DashCircleSVG';
@@ -9,7 +9,7 @@ import PlusCircleSVG from 'components/svg/PlusCircleSVG';
 import { useHawkConfig } from 'components/ConfigProvider';
 
 function Checkbox() {
-	const { store } = useHawkSearch();
+	const { store } = useHawksearch();
 	const { config } = useHawkConfig();
 
 	const {

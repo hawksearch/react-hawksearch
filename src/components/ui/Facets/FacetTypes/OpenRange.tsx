@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 
 // Format date with hyphen format so input type date can read the value
@@ -18,7 +18,7 @@ function replaceHyphen(date: string) {
 }
 
 function OpenRange() {
-	const { actor: hawkActor } = useHawkSearch();
+	const { actor: hawkActor } = useHawksearch();
 
 	const {
 		state: { facetValues },
