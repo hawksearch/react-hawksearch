@@ -125,4 +125,9 @@ export interface HawksearchConfig {
 	 * Get product details. If not provided default will be api/internal-preview/item-detail
 	 */
 	productDetailsURL?: string;
+
+	/**
+	 * Enable/Disable the trackevent
+	 */
+	enableTrackEvent?: boolean;
 }

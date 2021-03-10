@@ -15,7 +15,7 @@ export interface HawksearchProps {
 }
 
 function Hawksearch(props: HawksearchProps) {
-	if (props.config.trackEventUrl) {
+	if (props.config.enableTrackEvent && props.config.trackEventUrl) {
 		// Set URL to track event
 		TrackingEvent.setTrackingURL(props.config.trackEventUrl);
 		TrackingEvent.setClientGUID(props.config.clientGuid);
