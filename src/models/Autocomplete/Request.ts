@@ -41,4 +41,6 @@ export class Request {
 	public ClientData?: ClientData;
 
 	public IndexName?: string;
+
+	public FacetSelections?: { [key: string]: string[] | undefined };
 }
