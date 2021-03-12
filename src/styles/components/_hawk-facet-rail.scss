@@ -45,6 +45,26 @@
 	font-size: 1.2em;
 	padding: 10px;
 	font-weight: bold;
+	position: relative;
+}
+
+@media only screen and (max-width: 767px) {
+	.hawk-facet-rail__heading {
+		cursor: pointer;
+	}
+	.hawk-facet-rail__heading:after {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		display: block;
+		content: '';
+		border: 15px solid #35200c;
+		border-bottom: 15px solid #f37624;
+		border-right: 0;
+		border-top: 0;
+		height: 0;
+		width: 0;
+	}
 }
 
 .hawk-facet-rail__selections {
