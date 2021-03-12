@@ -15,6 +15,7 @@ function Pagination() {
 		actor.setSearch({
 			PageNo: pageNo,
 		});
+		window.scrollTo(0, 0);
 	}
 
 	return (
