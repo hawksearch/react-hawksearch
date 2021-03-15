@@ -32,10 +32,39 @@ export enum SearchType {
 	Refinement = 2,
 }
 
+const TrackEventNameMapping = {
+	'Click': 'click',
+	'Cart': '',
+	'CopyRequestTracking': '',
+	'RequestTracking': '',
+	'Search': 'searchtracking',
+	'Sale': 'sale',
+	'RecommendationImpression': '',
+	'RecommendationClick': 'recommendationclick',
+	'Rate': 'rate',
+	'PageLoad': 'pageload',
+	'Identify': '',
+	'BannerImpression': 'bannerimpression',
+	'BannerClick': 'bannerclick',
+	'AutocompleteClick': 'autocompleteclick',
+	'Add2CartMultiple': 'add2cartmultiple',
+	'Add2Cart': 'add2cart'
+}
+
+const AvailableEvents = [
+	'click',
+	'pageload',
+	'searchtracking',
+	'autocompleteclick',
+	'bannerclick',
+	'bannerimpression'
+]
+
 class TrackingEvent {
 	private static instance: TrackingEvent;
 	private trackingURL: string;
 	private clientGUID: string;
+	private trackConfig: any;
 
 	/**
 	 * The Singleton's constructor should always be private to prevent direct
@@ -78,7 +107,7 @@ class TrackingEvent {
 		return this.getClientGUID;
 	}
 
-	private getVisitorExpiry() {
+	public getVisitorExpiry() {
 		const d = new Date();
 		// 1 year
 		d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
@@ -92,7 +121,7 @@ class TrackingEvent {
 		return d.toUTCString();
 	}
 
-	private createGuid() {
+	public createGuid() {
 		const s: any[] = [];
 		const hexDigits = '0123456789abcdef';
 		for (let i = 0; i < 36; i++) {
@@ -107,7 +136,11 @@ class TrackingEvent {
 		return uuid;
 	}
 
-	private getCookie(name) {
+	public setTrackConfig(value: any) {
+		this.trackConfig = value;
+	}
+
+	public getCookie(name) {
 		const nameEQ = name + '=';
 		const ca = document.cookie.split(';');
 		// tslint:disable-next-line: prefer-for-of
@@ -123,7 +156,7 @@ class TrackingEvent {
 		return null;
 	}
 
-	private setCookie(name, value, expiry?) {
+	public setCookie(name, value, expiry?) {
 		let expires;
 		if (expiry) {
 			expires = '; expires=' + expiry;
@@ -150,11 +183,15 @@ class TrackingEvent {
 		this.mr(pl);
 	}
 
-	private writeSearchTracking(trackingId: string, typeId: number, keyword: string) {
+	private writeSearchTracking(trackingId, typeId, keyword) {
+		const guid = this.createGuid();
+
 		if (typeId === SearchType.Initial) {
-			this.setCookie('hawk_query_id', this.createGuid());
+			this.setCookie('hawk_query_id', guid);
 		}
-		const queryId = this.getCookie('hawk_query_id');
+
+		const queryId = this.getCookie('hawk_query_id') || guid;
+
 		const c = document.documentElement;
 		const pl = {
 			EventType: E_T.search,
@@ -330,16 +367,13 @@ class TrackingEvent {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(pl),
 		})
-			.then(resp => {
-				console.log('Success:', resp.status);
-			})
 			.catch(error => {
 				console.error('Error:', error);
 			});
 	}
 
 	public track(eventName, args) {
-		if (!this.trackingURL || !this.clientGUID) {
+		if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
 			return;
 		}
 		switch (eventName.toLowerCase()) {
@@ -378,6 +412,10 @@ class TrackingEvent {
 				// HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
 				return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url); // CHANGED
 		}
+	}
+
+	public isEnabled(eventName) {
+		return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(e => TrackEventNameMapping[e] == eventName)));
 	}
 }
 

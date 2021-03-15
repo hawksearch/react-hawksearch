@@ -143,6 +143,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			IsInPreview: config.isInPreview,
 			// and override some of the request fields with config values
 			ClientGuid: config.clientGuid,
+			ClientData: getClientData(),
 			Keyword: store.pendingSearch.Keyword
 				? decodeURIComponent(store.pendingSearch.Keyword || '')
 				: store.pendingSearch.Keyword,
@@ -158,29 +159,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			setStore({ isLoading: false });
 			return;
 		}
-		// Fill clientdata
-		let visitId = getCookie('hawk_visit_id');
-		let visitorId = getCookie('hawk_visitor_id');
-		if (!visitId) {
-			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
-			visitId = getCookie('hawk_visit_id');
-		}
-		if (!visitorId) {
-			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
-			visitorId = getCookie('hawk_visitor_id');
-		}
-		const updatedRequest = {
-			ClientData: {
-				VisitorId: visitorId || '',
-				VisitId: visitId || '',
-				UserAgent: navigator.userAgent,
-				PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
-			},
-			...searchParams,
-		};
 
 		try {
-			searchResults = await client.search(updatedRequest, cancellationToken);
+			searchResults = await client.search(searchParams, cancellationToken);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -533,6 +514,36 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			itemsToCompareIds: [],
 		});
 	}
+
+	function getClientData() {
+		let visitId = getCookie('hawk_visit_id');
+		let visitorId = getCookie('hawk_visitor_id');
+
+		if (!visitId) {
+			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+			visitId = getCookie('hawk_visit_id');
+		}
+
+		if (!visitorId) {
+			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
+			visitorId = getCookie('hawk_visitor_id');
+		}
+
+        let clientData = {
+			VisitorId: visitorId || '',
+			VisitId: visitId || '',
+			UserAgent: navigator.userAgent,
+			PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : []
+        };
+
+        if (config['language']) {
+            clientData["Custom"] = {
+                "language": config['language']
+            };
+		}
+
+        return clientData;
+    }
 
 	const actor: SearchActor = {
 		search,

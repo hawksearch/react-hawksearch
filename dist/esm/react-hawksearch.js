@@ -3,6 +3,8 @@ import { useCookies } from 'react-cookie';
 import Downshift from 'downshift';
 
 function _typeof(obj) {
+  "@babel/helpers - typeof";
+
   if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
     _typeof = function _typeof(obj) {
       return typeof obj;
@@ -33,8 +35,8 @@ function _defineProperty(obj, key, value) {
 
 function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-    var ownKeys = Object.keys(Object(source));
+    var source = arguments[i] != null ? Object(arguments[i]) : {};
+    var ownKeys = Object.keys(source);
 
     if (typeof Object.getOwnPropertySymbols === 'function') {
       ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
@@ -72,6 +74,47 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function commonjsRequire () {
+	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
+}
+
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var _typeof_1 = createCommonjsModule(function (module) {
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+
+    module.exports["default"] = module.exports, module.exports.__esModule = true;
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+
+    module.exports["default"] = module.exports, module.exports.__esModule = true;
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+var _typeof$1 = unwrapExports(_typeof_1);
+
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -81,7 +124,7 @@ function _assertThisInitialized(self) {
 }
 
 function _possibleConstructorReturn(self, call) {
-  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+  if (call && (_typeof$1(call) === "object" || typeof call === "function")) {
     return call;
   }
 
@@ -119,74 +162,6 @@ function _inherits(subClass, superClass) {
   if (superClass) _setPrototypeOf(subClass, superClass);
 }
 
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  }
-}
-
-function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
-}
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-}
-
-function _arrayWithHoles(arr) {
-  if (Array.isArray(arr)) return arr;
-}
-
-function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
-}
-
-function _toArray(arr) {
-  return _arrayWithHoles(arr) || _iterableToArray(arr) || _nonIterableRest();
-}
-
-function _iterableToArrayLimit(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
-
-  var _arr = [];
-  var _n = true;
-  var _d = false;
-  var _e = undefined;
-
-  try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-      _arr.push(_s.value);
-
-      if (i && _arr.length === i) break;
-    }
-  } catch (err) {
-    _d = true;
-    _e = err;
-  } finally {
-    try {
-      if (!_n && _i["return"] != null) _i["return"]();
-    } finally {
-      if (_d) throw _e;
-    }
-  }
-
-  return _arr;
-}
-
-function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
-}
-
 var consoleLogger = {
   type: 'logger',
   log: function log(args) {
@@ -199,16 +174,11 @@ var consoleLogger = {
     this.output('error', args);
   },
   output: function output(type, args) {
-    var _console;
-
-    /* eslint no-console: 0 */
-    if (console && console[type]) (_console = console)[type].apply(_console, _toConsumableArray(args));
+    if (console && console[type]) console[type].apply(console, args);
   }
 };
 
-var Logger =
-/*#__PURE__*/
-function () {
+var Logger = function () {
   function Logger(concreteLogger) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -288,9 +258,7 @@ function () {
 
 var baseLogger = new Logger();
 
-var EventEmitter =
-/*#__PURE__*/
-function () {
+var EventEmitter = function () {
   function EventEmitter() {
     _classCallCheck(this, EventEmitter);
 
@@ -350,7 +318,6 @@ function () {
   return EventEmitter;
 }();
 
-// http://lea.verou.me/2016/12/resolve-promises-externally-with-this-one-weird-trick/
 function defer() {
   var res;
   var rej;
@@ -364,8 +331,6 @@ function defer() {
 }
 function makeString(object) {
   if (object == null) return '';
-  /* eslint prefer-template: 0 */
-
   return '' + object;
 }
 function copy(a, s, t) {
@@ -389,7 +354,12 @@ function getLastOfPath(object, path, Empty) {
     if (canNotTraverseDeeper()) return {};
     var key = cleanKey(stack.shift());
     if (!object[key] && Empty) object[key] = new Empty();
-    object = object[key];
+
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      object = object[key];
+    } else {
+      object = {};
+    }
   }
 
   if (canNotTraverseDeeper()) return {};
@@ -428,34 +398,30 @@ function getPathWithDefaults(data, defaultData, key) {
 
   if (value !== undefined) {
     return value;
-  } // Fallback to default values
-
+  }
 
   return getPath(defaultData, key);
 }
 function deepExtend(target, source, overwrite) {
-  /* eslint no-restricted-syntax: 0 */
   for (var prop in source) {
-    if (prop in target) {
-      // If we reached a leaf string in target or source then replace with source or skip depending on the 'overwrite' switch
-      if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
-        if (overwrite) target[prop] = source[prop];
+    if (prop !== '__proto__' && prop !== 'constructor') {
+      if (prop in target) {
+        if (typeof target[prop] === 'string' || target[prop] instanceof String || typeof source[prop] === 'string' || source[prop] instanceof String) {
+          if (overwrite) target[prop] = source[prop];
+        } else {
+          deepExtend(target[prop], source[prop], overwrite);
+        }
       } else {
-        deepExtend(target[prop], source[prop], overwrite);
+        target[prop] = source[prop];
       }
-    } else {
-      target[prop] = source[prop];
     }
   }
 
   return target;
 }
 function regexEscape(str) {
-  /* eslint no-useless-escape: 0 */
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 }
-/* eslint-disable */
-
 var _entityMap = {
   '&': '&amp;',
   '<': '&lt;',
@@ -464,8 +430,6 @@ var _entityMap = {
   "'": '&#39;',
   '/': '&#x2F;'
 };
-/* eslint-enable */
-
 function escape(data) {
   if (typeof data === 'string') {
     return data.replace(/[&<>"'\/]/g, function (s) {
@@ -477,9 +441,7 @@ function escape(data) {
 }
 var isIE10 = typeof window !== 'undefined' && window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf('MSIE') > -1;
 
-var ResourceStore =
-/*#__PURE__*/
-function (_EventEmitter) {
+var ResourceStore = function (_EventEmitter) {
   _inherits(ResourceStore, _EventEmitter);
 
   function ResourceStore(data) {
@@ -495,7 +457,7 @@ function (_EventEmitter) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ResourceStore).call(this));
 
     if (isIE10) {
-      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+      EventEmitter.call(_assertThisInitialized(_this));
     }
 
     _this.data = data || {};
@@ -567,7 +529,6 @@ function (_EventEmitter) {
         silent: false
       };
 
-      /* eslint no-restricted-syntax: 0 */
       for (var m in resources) {
         if (typeof resources[m] === 'string' || Object.prototype.toString.apply(resources[m]) === '[object Array]') this.addResource(lng, ns, m, resources[m], {
           silent: true
@@ -621,8 +582,7 @@ function (_EventEmitter) {
   }, {
     key: "getResourceBundle",
     value: function getResourceBundle(lng, ns) {
-      if (!ns) ns = this.options.defaultNS; // COMPATIBILITY: remove extend in v2.1.0
-
+      if (!ns) ns = this.options.defaultNS;
       if (this.options.compatibilityAPI === 'v1') return _objectSpread({}, {}, this.getResource(lng, ns));
       return this.getResource(lng, ns);
     }
@@ -658,9 +618,7 @@ var postProcessor = {
 
 var checkedLoadedFor = {};
 
-var Translator =
-/*#__PURE__*/
-function (_EventEmitter) {
+var Translator = function (_EventEmitter) {
   _inherits(Translator, _EventEmitter);
 
   function Translator(services) {
@@ -673,7 +631,7 @@ function (_EventEmitter) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Translator).call(this));
 
     if (isIE10) {
-      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+      EventEmitter.call(_assertThisInitialized(_this));
     }
 
     copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat', 'utils'], services, _assertThisInitialized(_this));
@@ -704,12 +662,21 @@ function (_EventEmitter) {
   }, {
     key: "extractFromKey",
     value: function extractFromKey(key, options) {
-      var nsSeparator = options.nsSeparator || this.options.nsSeparator;
+      var nsSeparator = options.nsSeparator !== undefined ? options.nsSeparator : this.options.nsSeparator;
       if (nsSeparator === undefined) nsSeparator = ':';
       var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
       var namespaces = options.ns || this.options.defaultNS;
 
       if (nsSeparator && key.indexOf(nsSeparator) > -1) {
+        var m = key.match(this.interpolator.nestingRegexp);
+
+        if (m && m.length > 0) {
+          return {
+            key: key,
+            namespaces: namespaces
+          };
+        }
+
         var parts = key.split(nsSeparator);
         if (nsSeparator !== keySeparator || nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]) > -1) namespaces = parts.shift();
         key = parts.join(keySeparator);
@@ -723,29 +690,23 @@ function (_EventEmitter) {
     }
   }, {
     key: "translate",
-    value: function translate(keys, options) {
+    value: function translate(keys, options, lastKey) {
       var _this2 = this;
 
       if (_typeof(options) !== 'object' && this.options.overloadTranslationOptionHandler) {
-        /* eslint prefer-rest-params: 0 */
         options = this.options.overloadTranslationOptionHandler(arguments);
       }
 
-      if (!options) options = {}; // non valid keys handling
-
-      if (keys === undefined || keys === null
-      /* || keys === ''*/
-      ) return '';
-      if (!Array.isArray(keys)) keys = [String(keys)]; // separators
-
-      var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator; // get namespace(s)
+      if (!options) options = {};
+      if (keys === undefined || keys === null) return '';
+      if (!Array.isArray(keys)) keys = [String(keys)];
+      var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
       var _this$extractFromKey = this.extractFromKey(keys[keys.length - 1], options),
           key = _this$extractFromKey.key,
           namespaces = _this$extractFromKey.namespaces;
 
-      var namespace = namespaces[namespaces.length - 1]; // return key on CIMode
-
+      var namespace = namespaces[namespaces.length - 1];
       var lng = options.lng || this.language;
       var appendNamespaceToCIMode = options.appendNamespaceToCIMode || this.options.appendNamespaceToCIMode;
 
@@ -756,8 +717,7 @@ function (_EventEmitter) {
         }
 
         return key;
-      } // resolve from store
-
+      }
 
       var resolved = this.resolve(keys, options);
       var res = resolved && resolved.res;
@@ -765,8 +725,7 @@ function (_EventEmitter) {
       var resExactUsedKey = resolved && resolved.exactUsedKey || key;
       var resType = Object.prototype.toString.apply(res);
       var noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
-      var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays; // object
-
+      var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
       var handleAsObjectInI18nFormat = !this.i18nFormat || this.i18nFormat.handleAsObject;
       var handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
 
@@ -774,61 +733,59 @@ function (_EventEmitter) {
         if (!options.returnObjects && !this.options.returnObjects) {
           this.logger.warn('accessing an object - but returnObjects options is not enabled!');
           return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : "key '".concat(key, " (").concat(this.language, ")' returned an object instead of string.");
-        } // if we got a separator we loop over children - else we just return object as is
-        // as having it set to false means no hierarchy so no lookup for nested values
-
+        }
 
         if (keySeparator) {
           var resTypeIsArray = resType === '[object Array]';
-          var copy$$1 = resTypeIsArray ? [] : {}; // apply child translation on a copy
-
-          /* eslint no-restricted-syntax: 0 */
-
+          var copy = resTypeIsArray ? [] : {};
           var newKeyToUse = resTypeIsArray ? resExactUsedKey : resUsedKey;
 
           for (var m in res) {
             if (Object.prototype.hasOwnProperty.call(res, m)) {
               var deepKey = "".concat(newKeyToUse).concat(keySeparator).concat(m);
-              copy$$1[m] = this.translate(deepKey, _objectSpread({}, options, {
+              copy[m] = this.translate(deepKey, _objectSpread({}, options, {
                 joinArrays: false,
                 ns: namespaces
               }));
-              if (copy$$1[m] === deepKey) copy$$1[m] = res[m]; // if nothing found use orginal value as fallback
+              if (copy[m] === deepKey) copy[m] = res[m];
             }
           }
 
-          res = copy$$1;
+          res = copy;
         }
       } else if (handleAsObjectInI18nFormat && typeof joinArrays === 'string' && resType === '[object Array]') {
-        // array special treatment
         res = res.join(joinArrays);
-        if (res) res = this.extendTranslation(res, keys, options);
+        if (res) res = this.extendTranslation(res, keys, options, lastKey);
       } else {
-        // string, empty or null
         var usedDefault = false;
-        var usedKey = false; // fallback value
+        var usedKey = false;
+        var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
+        var hasDefaultValue = Translator.hasDefaultValue(options);
+        var defaultValueSuffix = needsPluralHandling ? this.pluralResolver.getSuffix(lng, options.count) : '';
+        var defaultValue = options["defaultValue".concat(defaultValueSuffix)] || options.defaultValue;
 
-        if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
+        if (!this.isValidLookup(res) && hasDefaultValue) {
           usedDefault = true;
-
-          if (options.count !== undefined) {
-            var suffix = this.pluralResolver.getSuffix(lng, options.count);
-            res = options["defaultValue".concat(suffix)];
-          }
-
-          if (!res) res = options.defaultValue;
+          res = defaultValue;
         }
 
         if (!this.isValidLookup(res)) {
           usedKey = true;
           res = key;
-        } // save missing
+        }
 
-
-        var updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
+        var updateMissing = hasDefaultValue && defaultValue !== res && this.options.updateMissing;
 
         if (usedKey || usedDefault || updateMissing) {
-          this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
+          this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? defaultValue : res);
+
+          if (keySeparator) {
+            var fk = this.resolve(key, _objectSpread({}, options, {
+              keySeparator: false
+            }));
+            if (fk && fk.res) this.logger.warn('Seems the loaded translations were in flat JSON format instead of nested. Either set keySeparator: false on init or make sure your translations are published in nested format.');
+          }
+
           var lngs = [];
           var fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
 
@@ -842,47 +799,39 @@ function (_EventEmitter) {
             lngs.push(options.lng || this.language);
           }
 
-          var send = function send(l, k) {
+          var send = function send(l, k, fallbackValue) {
             if (_this2.options.missingKeyHandler) {
-              _this2.options.missingKeyHandler(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing, options);
+              _this2.options.missingKeyHandler(l, namespace, k, updateMissing ? fallbackValue : res, updateMissing, options);
             } else if (_this2.backendConnector && _this2.backendConnector.saveMissing) {
-              _this2.backendConnector.saveMissing(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing, options);
+              _this2.backendConnector.saveMissing(l, namespace, k, updateMissing ? fallbackValue : res, updateMissing, options);
             }
 
             _this2.emit('missingKey', l, namespace, k, res);
           };
 
           if (this.options.saveMissing) {
-            var needsPluralHandling = options.count !== undefined && typeof options.count !== 'string';
-
             if (this.options.saveMissingPlurals && needsPluralHandling) {
-              lngs.forEach(function (l) {
-                var plurals = _this2.pluralResolver.getPluralFormsOfKey(l, key);
-
-                plurals.forEach(function (p) {
-                  return send([l], p);
+              lngs.forEach(function (language) {
+                _this2.pluralResolver.getSuffixes(language).forEach(function (suffix) {
+                  send([language], key + suffix, options["defaultValue".concat(suffix)] || defaultValue);
                 });
               });
             } else {
-              send(lngs, key);
+              send(lngs, key, defaultValue);
             }
           }
-        } // extend
+        }
 
-
-        res = this.extendTranslation(res, keys, options, resolved); // append namespace if still key
-
-        if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = "".concat(namespace, ":").concat(key); // parseMissingKeyHandler
-
+        res = this.extendTranslation(res, keys, options, resolved, lastKey);
+        if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = "".concat(namespace, ":").concat(key);
         if (usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
-      } // return
-
+      }
 
       return res;
     }
   }, {
     key: "extendTranslation",
-    value: function extendTranslation(res, key, options, resolved) {
+    value: function extendTranslation(res, key, options, resolved, lastKey) {
       var _this3 = this;
 
       if (this.i18nFormat && this.i18nFormat.parse) {
@@ -890,21 +839,42 @@ function (_EventEmitter) {
           resolved: resolved
         });
       } else if (!options.skipInterpolation) {
-        // i18next.parsing
         if (options.interpolation) this.interpolator.init(_objectSpread({}, options, {
           interpolation: _objectSpread({}, this.options.interpolation, options.interpolation)
-        })); // interpolate
+        }));
+        var skipOnVariables = options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+        var nestBef;
+
+        if (skipOnVariables) {
+          var nb = res.match(this.interpolator.nestingRegexp);
+          nestBef = nb && nb.length;
+        }
 
         var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
         if (this.options.interpolation.defaultVariables) data = _objectSpread({}, this.options.interpolation.defaultVariables, data);
-        res = this.interpolator.interpolate(res, data, options.lng || this.language, options); // nesting
+        res = this.interpolator.interpolate(res, data, options.lng || this.language, options);
+
+        if (skipOnVariables) {
+          var na = res.match(this.interpolator.nestingRegexp);
+          var nestAft = na && na.length;
+          if (nestBef < nestAft) options.nest = false;
+        }
 
         if (options.nest !== false) res = this.interpolator.nest(res, function () {
-          return _this3.translate.apply(_this3, arguments);
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+
+          if (lastKey && lastKey[0] === args[0] && !options.context) {
+            _this3.logger.warn("It seems you are nesting recursively key: ".concat(args[0], " in key: ").concat(key[0]));
+
+            return null;
+          }
+
+          return _this3.translate.apply(_this3, args.concat([key]));
         }, options);
         if (options.interpolation) this.interpolator.reset();
-      } // post process
-
+      }
 
       var postProcess = options.postProcess || this.options.postProcess;
       var postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
@@ -924,14 +894,11 @@ function (_EventEmitter) {
 
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var found;
-      var usedKey; // plain key
-
-      var exactUsedKey; // key with context / plural
-
+      var usedKey;
+      var exactUsedKey;
       var usedLng;
       var usedNS;
-      if (typeof keys === 'string') keys = [keys]; // forEach possible key
-
+      if (typeof keys === 'string') keys = [keys];
       keys.forEach(function (k) {
         if (_this4.isValidLookup(found)) return;
 
@@ -951,7 +918,7 @@ function (_EventEmitter) {
           if (!checkedLoadedFor["".concat(codes[0], "-").concat(ns)] && _this4.utils && _this4.utils.hasLoadedNamespace && !_this4.utils.hasLoadedNamespace(usedNS)) {
             checkedLoadedFor["".concat(codes[0], "-").concat(ns)] = true;
 
-            _this4.logger.warn("key \"".concat(usedKey, "\" for namespace \"").concat(usedNS, "\" for languages \"").concat(codes.join(', '), "\" won't get resolved as namespace was not yet loaded"), 'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
+            _this4.logger.warn("key \"".concat(usedKey, "\" for languages \"").concat(codes.join(', '), "\" won't get resolved as namespace \"").concat(usedNS, "\" was not yet loaded"), 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
           }
 
           codes.forEach(function (code) {
@@ -964,18 +931,13 @@ function (_EventEmitter) {
               _this4.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
             } else {
               var pluralSuffix;
-              if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count); // fallback for plural if context not found
-
-              if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix); // get key for context if needed
-
-              if (needsContextHandling) finalKeys.push(finalKey += "".concat(_this4.options.contextSeparator).concat(options.context)); // get key for plural if needed
-
+              if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count);
+              if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
+              if (needsContextHandling) finalKeys.push(finalKey += "".concat(_this4.options.contextSeparator).concat(options.context));
               if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
-            } // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
-
+            }
 
             var possibleKey;
-            /* eslint no-cond-assign: 0 */
 
             while (possibleKey = finalKeys.pop()) {
               if (!_this4.isValidLookup(found)) {
@@ -1006,6 +968,19 @@ function (_EventEmitter) {
       if (this.i18nFormat && this.i18nFormat.getResource) return this.i18nFormat.getResource(code, ns, key, options);
       return this.resourceStore.getResource(code, ns, key, options);
     }
+  }], [{
+    key: "hasDefaultValue",
+    value: function hasDefaultValue(options) {
+      var prefix = 'defaultValue';
+
+      for (var option in options) {
+        if (Object.prototype.hasOwnProperty.call(options, option) && prefix === option.substring(0, prefix.length) && undefined !== options[option]) {
+          return true;
+        }
+      }
+
+      return false;
+    }
   }]);
 
   return Translator;
@@ -1015,14 +990,13 @@ function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-var LanguageUtil =
-/*#__PURE__*/
-function () {
+var LanguageUtil = function () {
   function LanguageUtil(options) {
     _classCallCheck(this, LanguageUtil);
 
     this.options = options;
-    this.whitelist = this.options.whitelist || false;
+    this.whitelist = this.options.supportedLngs || false;
+    this.supportedLngs = this.options.supportedLngs || false;
     this.logger = baseLogger.create('languageUtils');
   }
 
@@ -1033,6 +1007,7 @@ function () {
       var p = code.split('-');
       if (p.length === 2) return null;
       p.pop();
+      if (p[p.length - 1].toLowerCase() === 'x') return null;
       return this.formatLanguageCode(p.join('-'));
     }
   }, {
@@ -1045,7 +1020,6 @@ function () {
   }, {
     key: "formatLanguageCode",
     value: function formatLanguageCode(code) {
-      // http://www.iana.org/assignments/language-tags/language-tags.xhtml
       if (typeof code === 'string' && code.indexOf('-') > -1) {
         var specialCases = ['hans', 'hant', 'latn', 'cyrl', 'cans', 'mong', 'arab'];
         var p = code.split('-');
@@ -1059,8 +1033,7 @@ function () {
           p[1] = p[1].toUpperCase();
           if (specialCases.indexOf(p[1].toLowerCase()) > -1) p[1] = capitalize(p[1].toLowerCase());
         } else if (p.length === 3) {
-          p[0] = p[0].toLowerCase(); // if lenght 2 guess it's a country
-
+          p[0] = p[0].toLowerCase();
           if (p[1].length === 2) p[1] = p[1].toUpperCase();
           if (p[0] !== 'sgn' && p[2].length === 2) p[2] = p[2].toUpperCase();
           if (specialCases.indexOf(p[1].toLowerCase()) > -1) p[1] = capitalize(p[1].toLowerCase());
@@ -1075,20 +1048,57 @@ function () {
   }, {
     key: "isWhitelisted",
     value: function isWhitelisted(code) {
-      if (this.options.load === 'languageOnly' || this.options.nonExplicitWhitelist) {
+      this.logger.deprecate('languageUtils.isWhitelisted', 'function "isWhitelisted" will be renamed to "isSupportedCode" in the next major - please make sure to rename it\'s usage asap.');
+      return this.isSupportedCode(code);
+    }
+  }, {
+    key: "isSupportedCode",
+    value: function isSupportedCode(code) {
+      if (this.options.load === 'languageOnly' || this.options.nonExplicitSupportedLngs) {
         code = this.getLanguagePartFromCode(code);
       }
 
-      return !this.whitelist || !this.whitelist.length || this.whitelist.indexOf(code) > -1;
+      return !this.supportedLngs || !this.supportedLngs.length || this.supportedLngs.indexOf(code) > -1;
+    }
+  }, {
+    key: "getBestMatchFromCodes",
+    value: function getBestMatchFromCodes(codes) {
+      var _this = this;
+
+      if (!codes) return null;
+      var found;
+      codes.forEach(function (code) {
+        if (found) return;
+
+        var cleanedLng = _this.formatLanguageCode(code);
+
+        if (!_this.options.supportedLngs || _this.isSupportedCode(cleanedLng)) found = cleanedLng;
+      });
+
+      if (!found && this.options.supportedLngs) {
+        codes.forEach(function (code) {
+          if (found) return;
+
+          var lngOnly = _this.getLanguagePartFromCode(code);
+
+          if (_this.isSupportedCode(lngOnly)) return found = lngOnly;
+          found = _this.options.supportedLngs.find(function (supportedLng) {
+            if (supportedLng.indexOf(lngOnly) === 0) return supportedLng;
+          });
+        });
+      }
+
+      if (!found) found = this.getFallbackCodes(this.options.fallbackLng)[0];
+      return found;
     }
   }, {
     key: "getFallbackCodes",
     value: function getFallbackCodes(fallbacks, code) {
       if (!fallbacks) return [];
+      if (typeof fallbacks === 'function') fallbacks = fallbacks(code);
       if (typeof fallbacks === 'string') fallbacks = [fallbacks];
       if (Object.prototype.toString.apply(fallbacks) === '[object Array]') return fallbacks;
-      if (!code) return fallbacks["default"] || []; // asume we have an object defining fallbacks
-
+      if (!code) return fallbacks["default"] || [];
       var found = fallbacks[code];
       if (!found) found = fallbacks[this.getScriptPartFromCode(code)];
       if (!found) found = fallbacks[this.formatLanguageCode(code)];
@@ -1099,7 +1109,7 @@ function () {
   }, {
     key: "toResolveHierarchy",
     value: function toResolveHierarchy(code, fallbackCode) {
-      var _this = this;
+      var _this2 = this;
 
       var fallbackCodes = this.getFallbackCodes(fallbackCode || this.options.fallbackLng || [], code);
       var codes = [];
@@ -1107,10 +1117,10 @@ function () {
       var addCode = function addCode(c) {
         if (!c) return;
 
-        if (_this.isWhitelisted(c)) {
+        if (_this2.isSupportedCode(c)) {
           codes.push(c);
         } else {
-          _this.logger.warn("rejecting non-whitelisted language code: ".concat(c));
+          _this2.logger.warn("rejecting language code not found in supportedLngs: ".concat(c));
         }
       };
 
@@ -1123,7 +1133,7 @@ function () {
       }
 
       fallbackCodes.forEach(function (fc) {
-        if (codes.indexOf(fc) < 0) addCode(_this.formatLanguageCode(fc));
+        if (codes.indexOf(fc) < 0) addCode(_this2.formatLanguageCode(fc));
       });
       return codes;
     }
@@ -1132,10 +1142,8 @@ function () {
   return LanguageUtil;
 }();
 
-/* eslint-disable */
-
 var sets = [{
-  lngs: ['ach', 'ak', 'am', 'arn', 'br', 'fil', 'gun', 'ln', 'mfe', 'mg', 'mi', 'oc', 'pt', 'pt-BR', 'tg', 'ti', 'tr', 'uz', 'wa'],
+  lngs: ['ach', 'ak', 'am', 'arn', 'br', 'fil', 'gun', 'ln', 'mfe', 'mg', 'mi', 'oc', 'pt', 'pt-BR', 'tg', 'tl', 'ti', 'tr', 'uz', 'wa'],
   nr: [1, 2],
   fc: 1
 }, {
@@ -1143,7 +1151,7 @@ var sets = [{
   nr: [1, 2],
   fc: 2
 }, {
-  lngs: ['ay', 'bo', 'cgg', 'fa', 'id', 'ja', 'jbo', 'ka', 'kk', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'],
+  lngs: ['ay', 'bo', 'cgg', 'fa', 'ht', 'id', 'ja', 'jbo', 'ka', 'kk', 'km', 'ko', 'ky', 'lo', 'ms', 'sah', 'su', 'th', 'tt', 'ug', 'vi', 'wo', 'zh'],
   nr: [1],
   fc: 3
 }, {
@@ -1223,7 +1231,7 @@ var sets = [{
   nr: [5, 1, 2, 3],
   fc: 21
 }, {
-  lngs: ['he'],
+  lngs: ['he', 'iw'],
   nr: [1, 2, 20, 21],
   fc: 22
 }];
@@ -1241,7 +1249,7 @@ var _rulesPluralsTypes = {
     return Number(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);
   },
   5: function _(n) {
-    return Number(n === 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5);
+    return Number(n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5);
   },
   6: function _(n) {
     return Number(n == 1 ? 0 : n >= 2 && n <= 4 ? 1 : 2);
@@ -1277,25 +1285,24 @@ var _rulesPluralsTypes = {
     return Number(n % 10 == 1 && n % 100 != 11 ? 0 : n !== 0 ? 1 : 2);
   },
   17: function _(n) {
-    return Number(n == 1 || n % 10 == 1 ? 0 : 1);
+    return Number(n == 1 || n % 10 == 1 && n % 100 != 11 ? 0 : 1);
   },
   18: function _(n) {
     return Number(n == 0 ? 0 : n == 1 ? 1 : 2);
   },
   19: function _(n) {
-    return Number(n == 1 ? 0 : n === 0 || n % 100 > 1 && n % 100 < 11 ? 1 : n % 100 > 10 && n % 100 < 20 ? 2 : 3);
+    return Number(n == 1 ? 0 : n == 0 || n % 100 > 1 && n % 100 < 11 ? 1 : n % 100 > 10 && n % 100 < 20 ? 2 : 3);
   },
   20: function _(n) {
-    return Number(n == 1 ? 0 : n === 0 || n % 100 > 0 && n % 100 < 20 ? 1 : 2);
+    return Number(n == 1 ? 0 : n == 0 || n % 100 > 0 && n % 100 < 20 ? 1 : 2);
   },
   21: function _(n) {
     return Number(n % 100 == 1 ? 1 : n % 100 == 2 ? 2 : n % 100 == 3 || n % 100 == 4 ? 3 : 0);
   },
   22: function _(n) {
-    return Number(n === 1 ? 0 : n === 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3);
+    return Number(n == 1 ? 0 : n == 2 ? 1 : (n < 0 || n > 10) && n % 10 == 0 ? 2 : 3);
   }
 };
-/* eslint-enable */
 
 function createRules() {
   var rules = {};
@@ -1310,9 +1317,7 @@ function createRules() {
   return rules;
 }
 
-var PluralResolver =
-/*#__PURE__*/
-function () {
+var PluralResolver = function () {
   function PluralResolver(languageUtils) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -1343,17 +1348,24 @@ function () {
   }, {
     key: "getPluralFormsOfKey",
     value: function getPluralFormsOfKey(code, key) {
+      return this.getSuffixes(code).map(function (suffix) {
+        return key + suffix;
+      });
+    }
+  }, {
+    key: "getSuffixes",
+    value: function getSuffixes(code) {
       var _this = this;
 
-      var ret = [];
       var rule = this.getRule(code);
-      if (!rule) return ret;
-      rule.numbers.forEach(function (n) {
-        var suffix = _this.getSuffix(code, n);
 
-        ret.push("".concat(key).concat(suffix));
+      if (!rule) {
+        return [];
+      }
+
+      return rule.numbers.map(function (number) {
+        return _this.getSuffix(code, number);
       });
-      return ret;
     }
   }, {
     key: "getSuffix",
@@ -1363,9 +1375,8 @@ function () {
       var rule = this.getRule(code);
 
       if (rule) {
-        // if (rule.numbers.length === 1) return ''; // only singular
         var idx = rule.noAbs ? rule.plurals(count) : rule.plurals(Math.abs(count));
-        var suffix = rule.numbers[idx]; // special treatment for lngs only having singular and plural
+        var suffix = rule.numbers[idx];
 
         if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
           if (suffix === 2) {
@@ -1377,21 +1388,15 @@ function () {
 
         var returnSuffix = function returnSuffix() {
           return _this2.options.prepend && suffix.toString() ? _this2.options.prepend + suffix.toString() : suffix.toString();
-        }; // COMPATIBILITY JSON
-        // v1
-
+        };
 
         if (this.options.compatibilityJSON === 'v1') {
           if (suffix === 1) return '';
           if (typeof suffix === 'number') return "_plural_".concat(suffix.toString());
           return returnSuffix();
-        } else if (
-        /* v2 */
-        this.options.compatibilityJSON === 'v2') {
+        } else if (this.options.compatibilityJSON === 'v2') {
           return returnSuffix();
-        } else if (
-        /* v3 - gettext index */
-        this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
+        } else if (this.options.simplifyPluralSuffix && rule.numbers.length === 2 && rule.numbers[0] === 1) {
           return returnSuffix();
         }
 
@@ -1406,9 +1411,7 @@ function () {
   return PluralResolver;
 }();
 
-var Interpolator =
-/*#__PURE__*/
-function () {
+var Interpolator = function () {
   function Interpolator() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -1423,8 +1426,6 @@ function () {
 
     this.init(options);
   }
-  /* eslint no-param-reassign: 0 */
-
 
   _createClass(Interpolator, [{
     key: "init",
@@ -1446,8 +1447,7 @@ function () {
       this.nestingSuffix = iOpts.nestingSuffix ? regexEscape(iOpts.nestingSuffix) : iOpts.nestingSuffixEscaped || regexEscape(')');
       this.nestingOptionsSeparator = iOpts.nestingOptionsSeparator ? iOpts.nestingOptionsSeparator : iOpts.nestingOptionsSeparator || ',';
       this.maxReplaces = iOpts.maxReplaces ? iOpts.maxReplaces : 1000;
-      this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false; // the regexp
-
+      this.alwaysFormat = iOpts.alwaysFormat !== undefined ? iOpts.alwaysFormat : false;
       this.resetRegExp();
     }
   }, {
@@ -1458,7 +1458,6 @@ function () {
   }, {
     key: "resetRegExp",
     value: function resetRegExp() {
-      // the regexp
       var regexpStr = "".concat(this.prefix, "(.+?)").concat(this.suffix);
       this.regexp = new RegExp(regexpStr, 'g');
       var regexpUnescapeStr = "".concat(this.prefix).concat(this.unescapePrefix, "(.+?)").concat(this.unescapeSuffix).concat(this.suffix);
@@ -1494,62 +1493,49 @@ function () {
 
       this.resetRegExp();
       var missingInterpolationHandler = options && options.missingInterpolationHandler || this.options.missingInterpolationHandler;
-      replaces = 0; // unescape if has unescapePrefix/Suffix
+      var skipOnVariables = options && options.interpolation && options.interpolation.skipOnVariables || this.options.interpolation.skipOnVariables;
+      var todos = [{
+        regex: this.regexpUnescape,
+        safeValue: function safeValue(val) {
+          return regexSafe(val);
+        }
+      }, {
+        regex: this.regexp,
+        safeValue: function safeValue(val) {
+          return _this.escapeValue ? regexSafe(_this.escape(val)) : regexSafe(val);
+        }
+      }];
+      todos.forEach(function (todo) {
+        replaces = 0;
 
-      /* eslint no-cond-assign: 0 */
+        while (match = todo.regex.exec(str)) {
+          value = handleFormat(match[1].trim());
 
-      while (match = this.regexpUnescape.exec(str)) {
-        value = handleFormat(match[1].trim());
+          if (value === undefined) {
+            if (typeof missingInterpolationHandler === 'function') {
+              var temp = missingInterpolationHandler(str, match, options);
+              value = typeof temp === 'string' ? temp : '';
+            } else if (skipOnVariables) {
+              value = match[0];
+              continue;
+            } else {
+              _this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
 
-        if (value === undefined) {
-          if (typeof missingInterpolationHandler === 'function') {
-            var temp = missingInterpolationHandler(str, match, options);
-            value = typeof temp === 'string' ? temp : '';
-          } else {
-            this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
-            value = '';
+              value = '';
+            }
+          } else if (typeof value !== 'string' && !_this.useRawValueToEscape) {
+            value = makeString(value);
           }
-        } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-          value = makeString(value);
-        }
 
-        str = str.replace(match[0], regexSafe(value));
-        this.regexpUnescape.lastIndex = 0;
-        replaces++;
+          str = str.replace(match[0], todo.safeValue(value));
+          todo.regex.lastIndex = 0;
+          replaces++;
 
-        if (replaces >= this.maxReplaces) {
-          break;
-        }
-      }
-
-      replaces = 0; // regular escape on demand
-
-      while (match = this.regexp.exec(str)) {
-        value = handleFormat(match[1].trim());
-
-        if (value === undefined) {
-          if (typeof missingInterpolationHandler === 'function') {
-            var _temp = missingInterpolationHandler(str, match, options);
-
-            value = typeof _temp === 'string' ? _temp : '';
-          } else {
-            this.logger.warn("missed to pass in variable ".concat(match[1], " for interpolating ").concat(str));
-            value = '';
+          if (replaces >= _this.maxReplaces) {
+            break;
           }
-        } else if (typeof value !== 'string' && !this.useRawValueToEscape) {
-          value = makeString(value);
         }
-
-        value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
-        str = str.replace(match[0], value);
-        this.regexp.lastIndex = 0;
-        replaces++;
-
-        if (replaces >= this.maxReplaces) {
-          break;
-        }
-      }
-
+      });
       return str;
     }
   }, {
@@ -1563,10 +1549,8 @@ function () {
 
       var clonedOptions = _objectSpread({}, options);
 
-      clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
-
-      delete clonedOptions.defaultValue; // assert we do not get a endless loop on interpolating defaultValue again and again
-      // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
+      clonedOptions.applyPostProcessor = false;
+      delete clonedOptions.defaultValue;
 
       function handleHasOptions(key, inheritedOptions) {
         var sep = this.nestingOptionsSeparator;
@@ -1583,44 +1567,27 @@ function () {
         } catch (e) {
           this.logger.warn("failed parsing options string in nesting for key ".concat(key), e);
           return "".concat(key).concat(sep).concat(optionsString);
-        } // assert we do not get a endless loop on interpolating defaultValue again and again
-
+        }
 
         delete clonedOptions.defaultValue;
         return key;
-      } // regular escape on demand
-
+      }
 
       while (match = this.nestingRegexp.exec(str)) {
         var formatters = [];
-        /**
-         * If there is more than one parameter (contains the format separator). E.g.:
-         *   - t(a, b)
-         *   - t(a, b, c)
-         *
-         * And those parameters are not dynamic values (parameters do not include curly braces). E.g.:
-         *   - Not t(a, { "key": "{{variable}}" })
-         *   - Not t(a, b, {"keyA": "valueA", "keyB": "valueB"})
-         */
-
         var doReduce = false;
 
         if (match[0].includes(this.formatSeparator) && !/{.*}/.test(match[1])) {
-          var _match$1$split$map = match[1].split(this.formatSeparator).map(function (elem) {
+          var r = match[1].split(this.formatSeparator).map(function (elem) {
             return elem.trim();
           });
-
-          var _match$1$split$map2 = _toArray(_match$1$split$map);
-
-          match[1] = _match$1$split$map2[0];
-          formatters = _match$1$split$map2.slice(1);
+          match[1] = r.shift();
+          formatters = r;
           doReduce = true;
         }
 
-        value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions); // is only the nesting key (key1 = '$(key2)') return the value without stringify
-
-        if (value && match[0] === str && typeof value !== 'string') return value; // no string to include or empty
-
+        value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
+        if (value && match[0] === str && typeof value !== 'string') return value;
         if (typeof value !== 'string') value = makeString(value);
 
         if (!value) {
@@ -1632,9 +1599,7 @@ function () {
           value = formatters.reduce(function (v, f) {
             return _this2.format(v, f, options.lng, options);
           }, value.trim());
-        } // Nested keys should not be escaped by default #854
-        // value = this.escapeValue ? regexSafe(utils.escape(value)) : regexSafe(value);
-
+        }
 
         str = str.replace(match[0], value);
         this.regexp.lastIndex = 0;
@@ -1656,9 +1621,7 @@ function remove(arr, what) {
   }
 }
 
-var Connector =
-/*#__PURE__*/
-function (_EventEmitter) {
+var Connector = function (_EventEmitter) {
   _inherits(Connector, _EventEmitter);
 
   function Connector(backend, store, services) {
@@ -1671,7 +1634,7 @@ function (_EventEmitter) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Connector).call(this));
 
     if (isIE10) {
-      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+      EventEmitter.call(_assertThisInitialized(_this));
     }
 
     _this.backend = backend;
@@ -1695,7 +1658,6 @@ function (_EventEmitter) {
     value: function queueLoad(languages, namespaces, options, callback) {
       var _this2 = this;
 
-      // find what needs to be loaded
       var toLoad = [];
       var pending = [];
       var toLoadLanguages = [];
@@ -1706,12 +1668,11 @@ function (_EventEmitter) {
           var name = "".concat(lng, "|").concat(ns);
 
           if (!options.reload && _this2.store.hasResourceBundle(lng, ns)) {
-            _this2.state[name] = 2; // loaded
+            _this2.state[name] = 2;
           } else if (_this2.state[name] < 0) ; else if (_this2.state[name] === 1) {
             if (pending.indexOf(name) < 0) pending.push(name);
           } else {
-            _this2.state[name] = 1; // pending
-
+            _this2.state[name] = 1;
             hasAllNamespaces = false;
             if (pending.indexOf(name) < 0) pending.push(name);
             if (toLoad.indexOf(name) < 0) toLoad.push(name);
@@ -1740,29 +1701,23 @@ function (_EventEmitter) {
   }, {
     key: "loaded",
     value: function loaded(name, err, data) {
-      var _name$split = name.split('|'),
-          _name$split2 = _slicedToArray(_name$split, 2),
-          lng = _name$split2[0],
-          ns = _name$split2[1];
-
+      var s = name.split('|');
+      var lng = s[0];
+      var ns = s[1];
       if (err) this.emit('failedLoading', lng, ns, err);
 
       if (data) {
         this.store.addResourceBundle(lng, ns, data);
-      } // set loaded
+      }
 
-
-      this.state[name] = err ? -1 : 2; // consolidated loading done in this run - only emit once for a loaded namespace
-
-      var loaded = {}; // callback if ready
-
+      this.state[name] = err ? -1 : 2;
+      var loaded = {};
       this.queue.forEach(function (q) {
         pushPath(q.loaded, [lng], ns);
         remove(q.pending, name);
         if (err) q.errors.push(err);
 
         if (q.pending.length === 0 && !q.done) {
-          // only do once per loaded -> this.emit('loaded', q.loaded);
           Object.keys(q.loaded).forEach(function (l) {
             if (!loaded[l]) loaded[l] = [];
 
@@ -1772,8 +1727,6 @@ function (_EventEmitter) {
               });
             }
           });
-          /* eslint no-param-reassign: 0 */
-
           q.done = true;
 
           if (q.errors.length) {
@@ -1782,10 +1735,8 @@ function (_EventEmitter) {
             q.callback();
           }
         }
-      }); // emit consolidated loaded event
-
-      this.emit('loaded', loaded); // remove done load requests
-
+      });
+      this.emit('loaded', loaded);
       this.queue = this.queue.filter(function (q) {
         return !q.done;
       });
@@ -1798,12 +1749,9 @@ function (_EventEmitter) {
       var tried = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
       var wait = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 350;
       var callback = arguments.length > 5 ? arguments[5] : undefined;
-      if (!lng.length) return callback(null, {}); // noting to load
-
+      if (!lng.length) return callback(null, {});
       return this.backend[fcName](lng, ns, function (err, data) {
-        if (err && data
-        /* = retryFlag */
-        && tried < 5) {
+        if (err && data && tried < 5) {
           setTimeout(function () {
             _this3.read.call(_this3, lng, ns, fcName, tried + 1, wait * 2, callback);
           }, wait);
@@ -1813,8 +1761,6 @@ function (_EventEmitter) {
         callback(err, data);
       });
     }
-    /* eslint consistent-return: 0 */
-
   }, {
     key: "prepareLoading",
     value: function prepareLoading(languages, namespaces) {
@@ -1833,9 +1779,8 @@ function (_EventEmitter) {
       var toLoad = this.queueLoad(languages, namespaces, options, callback);
 
       if (!toLoad.toLoad.length) {
-        if (!toLoad.pending.length) callback(); // nothing to load and no pendings...callback now
-
-        return null; // pendings will trigger callback
+        if (!toLoad.pending.length) callback();
+        return null;
       }
 
       toLoad.toLoad.forEach(function (name) {
@@ -1860,12 +1805,9 @@ function (_EventEmitter) {
       var _this5 = this;
 
       var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-
-      var _name$split3 = name.split('|'),
-          _name$split4 = _slicedToArray(_name$split3, 2),
-          lng = _name$split4[0],
-          ns = _name$split4[1];
-
+      var s = name.split('|');
+      var lng = s[0];
+      var ns = s[1];
       this.read(lng, ns, 'read', undefined, undefined, function (err, data) {
         if (err) _this5.logger.warn("".concat(prefix, "loading namespace ").concat(ns, " for language ").concat(lng, " failed"), err);
         if (!err && data) _this5.logger.log("".concat(prefix, "loaded namespace ").concat(ns, " for language ").concat(lng), data);
@@ -1879,21 +1821,17 @@ function (_EventEmitter) {
       var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
 
       if (this.services.utils && this.services.utils.hasLoadedNamespace && !this.services.utils.hasLoadedNamespace(namespace)) {
-        this.logger.warn("did not save key \"".concat(key, "\" for namespace \"").concat(namespace, "\" as the namespace was not yet loaded"), 'This means something IS WRONG in your application setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
+        this.logger.warn("did not save key \"".concat(key, "\" as the namespace \"").concat(namespace, "\" was not yet loaded"), 'This means something IS WRONG in your setup. You access the t function before i18next.init / i18next.loadNamespace / i18next.changeLanguage was done. Wait for the callback or Promise to resolve before accessing it!!!');
         return;
-      } // ignore non valid keys
-
+      }
 
       if (key === undefined || key === null || key === '') return;
 
       if (this.backend && this.backend.create) {
-        this.backend.create(languages, namespace, key, fallbackValue, null
-        /* unused callback */
-        , _objectSpread({}, options, {
+        this.backend.create(languages, namespace, key, fallbackValue, null, _objectSpread({}, options, {
           isUpdate: isUpdate
         }));
-      } // write to store to avoid resending
-
+      }
 
       if (!languages || !languages[0]) return;
       this.store.addResource(languages[0], namespace, key, fallbackValue);
@@ -1911,48 +1849,32 @@ function get() {
     defaultNS: ['translation'],
     fallbackLng: ['dev'],
     fallbackNS: false,
-    // string or array of namespaces
     whitelist: false,
-    // array with whitelisted languages
     nonExplicitWhitelist: false,
+    supportedLngs: false,
+    nonExplicitSupportedLngs: false,
     load: 'all',
-    // | currentOnly | languageOnly
     preload: false,
-    // array with preload languages
     simplifyPluralSuffix: true,
     keySeparator: '.',
     nsSeparator: ':',
     pluralSeparator: '_',
     contextSeparator: '_',
     partialBundledLanguages: false,
-    // allow bundling certain languages that are not remotely fetched
     saveMissing: false,
-    // enable to send missing values
     updateMissing: false,
-    // enable to update default values if different from translated value (only useful on initial development, or when keeping code as source of truth)
     saveMissingTo: 'fallback',
-    // 'current' || 'all'
     saveMissingPlurals: true,
-    // will save all forms not only singular key
     missingKeyHandler: false,
-    // function(lng, ns, key, fallbackValue) -> override if prefer on handling
     missingInterpolationHandler: false,
-    // function(str, match)
     postProcess: false,
-    // string or array of postProcessor names
     postProcessPassResolved: false,
-    // pass resolved object into 'options.i18nResolved' for postprocessor
     returnNull: true,
-    // allows null value as valid translation
     returnEmptyString: true,
-    // allows empty string value as valid translation
     returnObjects: false,
     joinArrays: false,
-    // or string to join array
     returnedObjectHandler: false,
-    // function(key, value, options) triggered if key returns object but returnObjects is set to false
     parseMissingKeyHandler: false,
-    // function(key) parsed a key that was not found in t() before returning
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
     overloadTranslationOptionHandler: function handle(args) {
@@ -1978,31 +1900,34 @@ function get() {
       prefix: '{{',
       suffix: '}}',
       formatSeparator: ',',
-      // prefixEscaped: '{{',
-      // suffixEscaped: '}}',
-      // unescapeSuffix: '',
       unescapePrefix: '-',
       nestingPrefix: '$t(',
       nestingSuffix: ')',
       nestingOptionsSeparator: ',',
-      // nestingPrefixEscaped: '$t(',
-      // nestingSuffixEscaped: ')',
-      // defaultVariables: undefined // object that can have values to interpolate on - extends passed in interpolation data
-      maxReplaces: 1000 // max replaces to prevent endless loop
-
+      maxReplaces: 1000,
+      skipOnVariables: false
     }
   };
 }
-/* eslint no-param-reassign: 0 */
-
 function transformOptions(options) {
-  // create namespace object if namespace is passed in as string
   if (typeof options.ns === 'string') options.ns = [options.ns];
   if (typeof options.fallbackLng === 'string') options.fallbackLng = [options.fallbackLng];
-  if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS]; // extend whitelist with cimode
+  if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
 
-  if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
-    options.whitelist = options.whitelist.concat(['cimode']);
+  if (options.whitelist) {
+    if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
+      options.whitelist = options.whitelist.concat(['cimode']);
+    }
+
+    options.supportedLngs = options.whitelist;
+  }
+
+  if (options.nonExplicitWhitelist) {
+    options.nonExplicitSupportedLngs = options.nonExplicitWhitelist;
+  }
+
+  if (options.supportedLngs && options.supportedLngs.indexOf('cimode') < 0) {
+    options.supportedLngs = options.supportedLngs.concat(['cimode']);
   }
 
   return options;
@@ -2010,9 +1935,7 @@ function transformOptions(options) {
 
 function noop() {}
 
-var I18n =
-/*#__PURE__*/
-function (_EventEmitter) {
+var I18n = function (_EventEmitter) {
   _inherits(I18n, _EventEmitter);
 
   function I18n() {
@@ -2026,7 +1949,7 @@ function (_EventEmitter) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(I18n).call(this));
 
     if (isIE10) {
-      EventEmitter.call(_assertThisInitialized(_this)); // <=IE10 fix (unable to call parent constructor)
+      EventEmitter.call(_assertThisInitialized(_this));
     }
 
     _this.options = transformOptions(options);
@@ -2037,7 +1960,6 @@ function (_EventEmitter) {
     };
 
     if (callback && !_this.isInitialized && !options.isClone) {
-      // https://github.com/i18next/i18next/issues/879
       if (!_this.options.initImmediate) {
         _this.init(options, callback);
 
@@ -2065,6 +1987,14 @@ function (_EventEmitter) {
         options = {};
       }
 
+      if (options.whitelist && !options.supportedLngs) {
+        this.logger.deprecate('whitelist', 'option "whitelist" will be renamed to "supportedLngs" in the next major - please make sure to rename this option asap.');
+      }
+
+      if (options.nonExplicitWhitelist && !options.nonExplicitSupportedLngs) {
+        this.logger.deprecate('whitelist', 'options "nonExplicitWhitelist" will be renamed to "nonExplicitSupportedLngs" in the next major - please make sure to rename this option asap.');
+      }
+
       this.options = _objectSpread({}, get(), this.options, transformOptions(options));
       this.format = this.options.interpolation.format;
       if (!callback) callback = noop;
@@ -2073,8 +2003,7 @@ function (_EventEmitter) {
         if (!ClassOrObject) return null;
         if (typeof ClassOrObject === 'function') return new ClassOrObject();
         return ClassOrObject;
-      } // init services
-
+      }
 
       if (!this.options.isClone) {
         if (this.modules.logger) {
@@ -2098,8 +2027,7 @@ function (_EventEmitter) {
         s.utils = {
           hasLoadedNamespace: this.hasLoadedNamespace.bind(this)
         };
-        s.backendConnector = new Connector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options); // pipe events from backendConnector
-
+        s.backendConnector = new Connector(createClassOnDemand(this.modules.backend), s.resourceStore, s, this.options);
         s.backendConnector.on('*', function (event) {
           for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
             args[_key - 1] = arguments[_key];
@@ -2118,8 +2046,7 @@ function (_EventEmitter) {
           if (s.i18nFormat.init) s.i18nFormat.init(this);
         }
 
-        this.translator = new Translator(this.services, this.options); // pipe events from translator
-
+        this.translator = new Translator(this.services, this.options);
         this.translator.on('*', function (event) {
           for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
             args[_key2 - 1] = arguments[_key2];
@@ -2132,12 +2059,16 @@ function (_EventEmitter) {
         });
       }
 
-      if (!this.modules.languageDetector && !this.options.lng) {
+      if (this.options.fallbackLng && !this.services.languageDetector && !this.options.lng) {
+        var codes = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
+        if (codes.length > 0 && codes[0] !== 'dev') this.options.lng = codes[0];
+      }
+
+      if (!this.services.languageDetector && !this.options.lng) {
         this.logger.warn('init: no languageDetector is used and no lng is defined');
-      } // append api
+      }
 
-
-      var storeApi = ['getResource', 'addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle', 'hasResourceBundle', 'getResourceBundle', 'getDataByLanguage'];
+      var storeApi = ['getResource', 'hasResourceBundle', 'getResourceBundle', 'getDataByLanguage'];
       storeApi.forEach(function (fcName) {
         _this2[fcName] = function () {
           var _this2$store;
@@ -2145,20 +2076,33 @@ function (_EventEmitter) {
           return (_this2$store = _this2.store)[fcName].apply(_this2$store, arguments);
         };
       });
+      var storeApiChained = ['addResource', 'addResources', 'addResourceBundle', 'removeResourceBundle'];
+      storeApiChained.forEach(function (fcName) {
+        _this2[fcName] = function () {
+          var _this2$store2;
+
+          (_this2$store2 = _this2.store)[fcName].apply(_this2$store2, arguments);
+
+          return _this2;
+        };
+      });
       var deferred = defer();
 
       var load = function load() {
-        _this2.changeLanguage(_this2.options.lng, function (err, t) {
+        var finish = function finish(err, t) {
+          if (_this2.isInitialized) _this2.logger.warn('init: i18next is already initialized. You should call init just once!');
           _this2.isInitialized = true;
-
-          _this2.logger.log('initialized', _this2.options);
+          if (!_this2.options.isClone) _this2.logger.log('initialized', _this2.options);
 
           _this2.emit('initialized', _this2.options);
 
-          deferred.resolve(t); // not rejecting on err (as err is only a loading translation failed warning)
-
+          deferred.resolve(t);
           callback(err, t);
-        });
+        };
+
+        if (_this2.languages && _this2.options.compatibilityAPI !== 'v1' && !_this2.isInitialized) return finish(null, _this2.t.bind(_this2));
+
+        _this2.changeLanguage(_this2.options.lng, finish);
       };
 
       if (this.options.resources || !this.options.initImmediate) {
@@ -2169,8 +2113,6 @@ function (_EventEmitter) {
 
       return deferred;
     }
-    /* eslint consistent-return: 0 */
-
   }, {
     key: "loadResources",
     value: function loadResources(language) {
@@ -2182,8 +2124,7 @@ function (_EventEmitter) {
       if (typeof language === 'function') usedCallback = language;
 
       if (!this.options.resources || this.options.partialBundledLanguages) {
-        if (usedLng && usedLng.toLowerCase() === 'cimode') return usedCallback(); // avoid loading resources for cimode
-
+        if (usedLng && usedLng.toLowerCase() === 'cimode') return usedCallback();
         var toLoad = [];
 
         var append = function append(lng) {
@@ -2197,7 +2138,6 @@ function (_EventEmitter) {
         };
 
         if (!usedLng) {
-          // at least load fallbacks in this case
           var fallbacks = this.services.languageUtils.getFallbackCodes(this.options.fallbackLng);
           fallbacks.forEach(function (l) {
             return append(l);
@@ -2225,8 +2165,7 @@ function (_EventEmitter) {
       if (!ns) ns = this.options.ns;
       if (!callback) callback = noop;
       this.services.backendConnector.reload(lngs, ns, function (err) {
-        deferred.resolve(); // not rejecting on err (as err is only a loading translation failed warning)
-
+        deferred.resolve();
         callback(err);
       });
       return deferred;
@@ -2296,7 +2235,9 @@ function (_EventEmitter) {
         });
       };
 
-      var setLng = function setLng(l) {
+      var setLng = function setLng(lngs) {
+        var l = typeof lngs === 'string' ? lngs : _this4.services.languageUtils.getBestMatchFromCodes(lngs);
+
         if (l) {
           if (!_this4.language) {
             _this4.language = l;
@@ -2379,6 +2320,8 @@ function (_EventEmitter) {
     value: function hasLoadedNamespace(ns) {
       var _this6 = this;
 
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
       if (!this.isInitialized) {
         this.logger.warn('hasLoadedNamespace: i18next was not initialized', this.languages);
         return false;
@@ -2391,21 +2334,22 @@ function (_EventEmitter) {
 
       var lng = this.languages[0];
       var fallbackLng = this.options ? this.options.fallbackLng : false;
-      var lastLng = this.languages[this.languages.length - 1]; // we're in cimode so this shall pass
-
+      var lastLng = this.languages[this.languages.length - 1];
       if (lng.toLowerCase() === 'cimode') return true;
 
       var loadNotPending = function loadNotPending(l, n) {
         var loadState = _this6.services.backendConnector.state["".concat(l, "|").concat(n)];
 
         return loadState === -1 || loadState === 2;
-      }; // loaded -> SUCCESS
+      };
 
+      if (options.precheck) {
+        var preResult = options.precheck(this, loadNotPending);
+        if (preResult !== undefined) return preResult;
+      }
 
-      if (this.hasResourceBundle(lng, ns)) return true; // were not loading at all -> SEMI SUCCESS
-
-      if (!this.services.backendConnector.backend) return true; // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
-
+      if (this.hasResourceBundle(lng, ns)) return true;
+      if (!this.services.backendConnector.backend) return true;
       if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
       return false;
     }
@@ -2439,7 +2383,7 @@ function (_EventEmitter) {
       var preloaded = this.options.preload || [];
       var newLngs = lngs.filter(function (lng) {
         return preloaded.indexOf(lng) < 0;
-      }); // Exit early if all given languages are already preloaded
+      });
 
       if (!newLngs.length) {
         if (callback) callback();
@@ -2458,11 +2402,9 @@ function (_EventEmitter) {
     value: function dir(lng) {
       if (!lng) lng = this.languages && this.languages.length > 0 ? this.languages[0] : this.language;
       if (!lng) return 'rtl';
-      var rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam'];
+      var rtlLngs = ['ar', 'shu', 'sqr', 'ssh', 'xaa', 'yhd', 'yud', 'aao', 'abh', 'abv', 'acm', 'acq', 'acw', 'acx', 'acy', 'adf', 'ads', 'aeb', 'aec', 'afb', 'ajp', 'apc', 'apd', 'arb', 'arq', 'ars', 'ary', 'arz', 'auz', 'avl', 'ayh', 'ayl', 'ayn', 'ayp', 'bbz', 'pga', 'he', 'iw', 'ps', 'pbt', 'pbu', 'pst', 'prp', 'prd', 'ug', 'ur', 'ydd', 'yds', 'yih', 'ji', 'yi', 'hbo', 'men', 'xmn', 'fa', 'jpr', 'peo', 'pes', 'prs', 'dv', 'sam'];
       return rtlLngs.indexOf(this.services.languageUtils.getLanguagePartFromCode(lng)) >= 0 ? 'rtl' : 'ltr';
     }
-    /* eslint class-methods-use-this: 0 */
-
   }, {
     key: "createInstance",
     value: function createInstance() {
@@ -2500,8 +2442,7 @@ function (_EventEmitter) {
         clone.emit.apply(clone, [event].concat(args));
       });
       clone.init(mergedOptions, callback);
-      clone.translator.options = clone.options; // sync options
-
+      clone.translator.options = clone.options;
       clone.translator.backendConnector.services.utils = {
         hasLoadedNamespace: clone.hasLoadedNamespace.bind(clone)
       };
@@ -2514,7 +2455,56 @@ function (_EventEmitter) {
 
 var i18next = new I18n();
 
-function _defineProperty$1(obj, key, value) {
+var objectWithoutPropertiesLoose = createCommonjsModule(function (module) {
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+module.exports = _objectWithoutPropertiesLoose;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+unwrapExports(objectWithoutPropertiesLoose);
+
+var objectWithoutProperties = createCommonjsModule(function (module) {
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = objectWithoutPropertiesLoose(source, excluded);
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+module.exports = _objectWithoutProperties;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+unwrapExports(objectWithoutProperties);
+
+var defineProperty = createCommonjsModule(function (module) {
+function _defineProperty(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
       value: value,
@@ -2529,45 +2519,27 @@ function _defineProperty$1(obj, key, value) {
   return obj;
 }
 
-var defineProperty = _defineProperty$1;
-
-var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-function commonjsRequire () {
-	throw new Error('Dynamic requires are not currently supported by rollup-plugin-commonjs');
-}
-
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var _typeof_1 = createCommonjsModule(function (module) {
-function _typeof(obj) {
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
+module.exports = _defineProperty;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
 });
 
-function _classCallCheck$1(instance, Constructor) {
+var _defineProperty$1 = unwrapExports(defineProperty);
+
+var classCallCheck = createCommonjsModule(function (module) {
+function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
 }
 
-var classCallCheck = _classCallCheck$1;
+module.exports = _classCallCheck;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
 
-function _defineProperties$1(target, props) {
+var _classCallCheck$1 = unwrapExports(classCallCheck);
+
+var createClass = createCommonjsModule(function (module) {
+function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
     descriptor.enumerable = descriptor.enumerable || false;
@@ -2577,50 +2549,46 @@ function _defineProperties$1(target, props) {
   }
 }
 
-function _createClass$1(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties$1(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties$1(Constructor, staticProps);
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
   return Constructor;
 }
 
-var createClass = _createClass$1;
+module.exports = _createClass;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+var _createClass$1 = unwrapExports(createClass);
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var defaultOptions = {
   bindI18n: 'languageChanged',
   bindI18nStore: '',
-  // nsMode: 'fallback' // loop through all namespaces given to hook, HOC, render prop for key lookup
   transEmptyNodeValue: '',
   transSupportBasicHtmlNodes: true,
   transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'],
-  // hashTransKey: key => key // calculate a key for Trans component based on defaultValue
   useSuspense: true
 };
 var i18nInstance;
-var hasUsedI18nextProvider;
 var I18nContext = React__default.createContext();
-function getHasUsedI18nextProvider() {
-  return hasUsedI18nextProvider;
-}
 function setDefaults() {
   var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  defaultOptions = _objectSpread$1({}, defaultOptions, {}, options);
+  defaultOptions = _objectSpread$1(_objectSpread$1({}, defaultOptions), options);
 }
 function getDefaults() {
   return defaultOptions;
 }
-var ReportNamespaces =
-/*#__PURE__*/
-function () {
+var ReportNamespaces = function () {
   function ReportNamespaces() {
-    classCallCheck(this, ReportNamespaces);
+    _classCallCheck$1(this, ReportNamespaces);
 
     this.usedNamespaces = {};
   }
 
-  createClass(ReportNamespaces, [{
+  _createClass$1(ReportNamespaces, [{
     key: "addUsedNamespaces",
     value: function addUsedNamespaces(namespaces) {
       var _this = this;
@@ -2674,23 +2642,13 @@ function warnOnce() {
   if (typeof args[0] === 'string' && alreadyWarned[args[0]]) return;
   if (typeof args[0] === 'string') alreadyWarned[args[0]] = new Date();
   warn.apply(void 0, args);
-} // not needed right now
-//
-// export function deprecated(...args) {
-//   if (process && process.env && (!process.env.NODE_ENV || process.env.NODE_ENV === 'development')) {
-//     if (typeof args[0] === 'string') args[0] = `deprecation warning -> ${args[0]}`;
-//     warnOnce(...args);
-//   }
-// }
-
+}
 function loadNamespaces(i18n, ns, cb) {
   i18n.loadNamespaces(ns, function () {
-    // delay ready if not yet initialized i18n instance
     if (i18n.isInitialized) {
       cb();
     } else {
       var initialized = function initialized() {
-        // due to emitter removing issue in i18next we need to delay remove
         setTimeout(function () {
           i18n.off('initialized', initialized);
         }, 0);
@@ -2711,39 +2669,35 @@ function hasLoadedNamespace(ns, i18n) {
 
   var lng = i18n.languages[0];
   var fallbackLng = i18n.options ? i18n.options.fallbackLng : false;
-  var lastLng = i18n.languages[i18n.languages.length - 1]; // we're in cimode so this shall pass
-
+  var lastLng = i18n.languages[i18n.languages.length - 1];
   if (lng.toLowerCase() === 'cimode') return true;
 
   var loadNotPending = function loadNotPending(l, n) {
     var loadState = i18n.services.backendConnector.state["".concat(l, "|").concat(n)];
     return loadState === -1 || loadState === 2;
-  }; // bound to trigger on event languageChanging
-  // so set ready to false while we are changing the language
-  // and namespace pending (depends on having a backend)
+  };
 
-
-  if (options.bindI18n && options.bindI18n.indexOf('languageChanging') > -1 && i18n.services.backendConnector.backend && i18n.isLanguageChangingTo && !loadNotPending(i18n.isLanguageChangingTo, ns)) return false; // loaded -> SUCCESS
-
-  if (i18n.hasResourceBundle(lng, ns)) return true; // were not loading at all -> SEMI SUCCESS
-
-  if (!i18n.services.backendConnector.backend) return true; // failed loading ns - but at least fallback is not pending -> SEMI SUCCESS
-
+  if (options.bindI18n && options.bindI18n.indexOf('languageChanging') > -1 && i18n.services.backendConnector.backend && i18n.isLanguageChangingTo && !loadNotPending(i18n.isLanguageChangingTo, ns)) return false;
+  if (i18n.hasResourceBundle(lng, ns)) return true;
+  if (!i18n.services.backendConnector.backend) return true;
   if (loadNotPending(lng, ns) && (!fallbackLng || loadNotPending(lastLng, ns))) return true;
   return false;
 }
 
-function _arrayWithHoles$1(arr) {
+var arrayWithHoles = createCommonjsModule(function (module) {
+function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
 }
 
-var arrayWithHoles = _arrayWithHoles$1;
+module.exports = _arrayWithHoles;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
 
-function _iterableToArrayLimit$1(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
+unwrapExports(arrayWithHoles);
 
+var iterableToArrayLimit = createCommonjsModule(function (module) {
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
   var _arr = [];
   var _n = true;
   var _d = false;
@@ -2769,30 +2723,75 @@ function _iterableToArrayLimit$1(arr, i) {
   return _arr;
 }
 
-var iterableToArrayLimit = _iterableToArrayLimit$1;
+module.exports = _iterableToArrayLimit;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
 
-function _nonIterableRest$1() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+unwrapExports(iterableToArrayLimit);
+
+var arrayLikeToArray = createCommonjsModule(function (module) {
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
 }
 
-var nonIterableRest = _nonIterableRest$1;
+module.exports = _arrayLikeToArray;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
 
-function _slicedToArray$1(arr, i) {
-  return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || nonIterableRest();
+unwrapExports(arrayLikeToArray);
+
+var unsupportedIterableToArray = createCommonjsModule(function (module) {
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
 }
 
-var slicedToArray = _slicedToArray$1;
+module.exports = _unsupportedIterableToArray;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+unwrapExports(unsupportedIterableToArray);
+
+var nonIterableRest = createCommonjsModule(function (module) {
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+module.exports = _nonIterableRest;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+unwrapExports(nonIterableRest);
+
+var slicedToArray = createCommonjsModule(function (module) {
+function _slicedToArray(arr, i) {
+  return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
+}
+
+module.exports = _slicedToArray;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+});
+
+var _slicedToArray = unwrapExports(slicedToArray);
 
 function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(source, true).forEach(function (key) { defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useTranslation(ns) {
   var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  // assert we have the needed i18nInstance
   var i18nFromProps = props.i18n;
-  var ReactI18nContext = useContext(I18nContext);
 
-  var _ref = getHasUsedI18nextProvider() ? ReactI18nContext || {} : {},
+  var _ref = useContext(I18nContext) || {},
       i18nFromContext = _ref.i18n,
       defaultNSFromContext = _ref.defaultNS;
 
@@ -2800,7 +2799,7 @@ function useTranslation(ns) {
   if (i18n && !i18n.reportNamespaces) i18n.reportNamespaces = new ReportNamespaces();
 
   if (!i18n) {
-    warnOnce('You will need pass in an i18next instance by using initReactI18next');
+    warnOnce('You will need to pass in an i18next instance by using initReactI18next');
 
     var notReadyT = function notReadyT(k) {
       return Array.isArray(k) ? k[k.length - 1] : k;
@@ -2813,18 +2812,17 @@ function useTranslation(ns) {
     return retNotReady;
   }
 
-  var i18nOptions = _objectSpread$2({}, getDefaults(), {}, i18n.options.react, {}, props);
+  if (i18n.options.react && i18n.options.react.wait !== undefined) warnOnce('It seems you are still using the old wait option, you may migrate to the new useSuspense behaviour.');
 
-  var useSuspense = i18nOptions.useSuspense; // prepare having a namespace
+  var i18nOptions = _objectSpread$2(_objectSpread$2(_objectSpread$2({}, getDefaults()), i18n.options.react), props);
 
+  var useSuspense = i18nOptions.useSuspense;
   var namespaces = ns || defaultNSFromContext || i18n.options && i18n.options.defaultNS;
-  namespaces = typeof namespaces === 'string' ? [namespaces] : namespaces || ['translation']; // report namespaces as used
-
-  if (i18n.reportNamespaces.addUsedNamespaces) i18n.reportNamespaces.addUsedNamespaces(namespaces); // are we ready? yes if all namespaces in first language are loaded already (either with data or empty object on failed load)
-
+  namespaces = typeof namespaces === 'string' ? [namespaces] : namespaces || ['translation'];
+  if (i18n.reportNamespaces.addUsedNamespaces) i18n.reportNamespaces.addUsedNamespaces(namespaces);
   var ready = (i18n.isInitialized || i18n.initializedStoreOnce) && namespaces.every(function (n) {
     return hasLoadedNamespace(n, i18n, i18nOptions);
-  }); // binding t function to namespace (acts also as rerender trigger)
+  });
 
   function getT() {
     return {
@@ -2833,17 +2831,15 @@ function useTranslation(ns) {
   }
 
   var _useState = useState(getT()),
-      _useState2 = slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray(_useState, 2),
       t = _useState2[0],
-      setT = _useState2[1]; // seems we can't have functions as value -> wrap it in obj
-
+      setT = _useState2[1];
 
   var isMounted = useRef(true);
   useEffect(function () {
     var bindI18n = i18nOptions.bindI18n,
         bindI18nStore = i18nOptions.bindI18nStore;
-    isMounted.current = true; // if not ready and not using suspense load the namespaces
-    // in side effect and do not call resetT if unmounted
+    isMounted.current = true;
 
     if (!ready && !useSuspense) {
       loadNamespaces(i18n, namespaces, function () {
@@ -2853,12 +2849,10 @@ function useTranslation(ns) {
 
     function boundReset() {
       if (isMounted.current) setT(getT());
-    } // bind events to trigger change, like languageChanged
-
+    }
 
     if (bindI18n && i18n) i18n.on(bindI18n, boundReset);
-    if (bindI18nStore && i18n) i18n.store.on(bindI18nStore, boundReset); // unbinding on unmount
-
+    if (bindI18nStore && i18n) i18n.store.on(bindI18nStore, boundReset);
     return function () {
       isMounted.current = false;
       if (bindI18n && i18n) bindI18n.split(' ').forEach(function (e) {
@@ -2868,20 +2862,23 @@ function useTranslation(ns) {
         return i18n.store.off(e, boundReset);
       });
     };
-  }, [namespaces.join()]); // re-run effect whenever list of namespaces changes
+  }, [i18n, namespaces.join()]);
+  var isInitial = useRef(true);
+  useEffect(function () {
+    if (isMounted.current && !isInitial.current) {
+      setT(getT());
+    }
 
+    isInitial.current = false;
+  }, [i18n]);
   var ret = [t.t, i18n, ready];
   ret.t = t.t;
   ret.i18n = i18n;
-  ret.ready = ready; // return hook stuff if ready
-
-  if (ready) return ret; // not yet loaded namespaces -> load them -> and return if useSuspense option set false
-
-  if (!ready && !useSuspense) return ret; // not yet loaded namespaces -> load them -> and trigger suspense
-
+  ret.ready = ready;
+  if (ready) return ret;
+  if (!ready && !useSuspense) return ret;
   throw new Promise(function (resolve) {
     loadNamespaces(i18n, namespaces, function () {
-      if (isMounted.current) setT(getT());
       resolve();
     });
   });
@@ -2902,7 +2899,7 @@ i18next.use(initReactI18next) // passes i18n down to react-i18next
   resources: resources
 });
 
-var ConfigContext = React__default.createContext({});
+var ConfigContext = /*#__PURE__*/React__default.createContext({});
 
 function ConfigProvider(_ref) {
   var config = _ref.config,
@@ -2924,7 +2921,7 @@ function ConfigProvider(_ref) {
     __webpack_public_path__ = path;
   }
 
-  return React__default.createElement(ConfigContext.Provider, {
+  return /*#__PURE__*/React__default.createElement(ConfigContext.Provider, {
     value: {
       config: config
     }
@@ -2939,6 +2936,116 @@ function useHawkConfig() {
   }
 
   return context;
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _slicedToArray$1(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
 }
 
 var runtime_1 = createCommonjsModule(function (module) {
@@ -2958,6 +3065,24 @@ var runtime = (function (exports) {
   var iteratorSymbol = $Symbol.iterator || "@@iterator";
   var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
   var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
 
   function wrap(innerFn, outerFn, self, tryLocsList) {
     // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
@@ -3029,16 +3154,19 @@ var runtime = (function (exports) {
     Generator.prototype = Object.create(IteratorPrototype);
   GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
   GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction"
+  );
 
   // Helper for defining the .next, .throw, and .return methods of the
   // Iterator interface in terms of a single ._invoke method.
   function defineIteratorMethods(prototype) {
     ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
+      define(prototype, method, function(arg) {
         return this._invoke(method, arg);
-      };
+      });
     });
   }
 
@@ -3057,9 +3185,7 @@ var runtime = (function (exports) {
       Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
     } else {
       genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
     }
     genFun.prototype = Object.create(Gp);
     return genFun;
@@ -3073,7 +3199,7 @@ var runtime = (function (exports) {
     return { __await: arg };
   };
 
-  function AsyncIterator(generator) {
+  function AsyncIterator(generator, PromiseImpl) {
     function invoke(method, arg, resolve, reject) {
       var record = tryCatch(generator[method], generator, arg);
       if (record.type === "throw") {
@@ -3084,14 +3210,14 @@ var runtime = (function (exports) {
         if (value &&
             typeof value === "object" &&
             hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
+          return PromiseImpl.resolve(value.__await).then(function(value) {
             invoke("next", value, resolve, reject);
           }, function(err) {
             invoke("throw", err, resolve, reject);
           });
         }
 
-        return Promise.resolve(value).then(function(unwrapped) {
+        return PromiseImpl.resolve(value).then(function(unwrapped) {
           // When a yielded Promise is resolved, its final value becomes
           // the .value of the Promise<{value,done}> result for the
           // current iteration.
@@ -3109,7 +3235,7 @@ var runtime = (function (exports) {
 
     function enqueue(method, arg) {
       function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
+        return new PromiseImpl(function(resolve, reject) {
           invoke(method, arg, resolve, reject);
         });
       }
@@ -3149,9 +3275,12 @@ var runtime = (function (exports) {
   // Note that simple async functions are implemented on top of
   // AsyncIterator objects; they just return a Promise for the value of
   // the final result produced by the iterator.
-  exports.async = function(innerFn, outerFn, self, tryLocsList) {
+  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+    if (PromiseImpl === void 0) PromiseImpl = Promise;
+
     var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl
     );
 
     return exports.isGeneratorFunction(outerFn)
@@ -3326,7 +3455,7 @@ var runtime = (function (exports) {
   // unified ._invoke helper method.
   defineIteratorMethods(Gp);
 
-  Gp[toStringTagSymbol] = "Generator";
+  define(Gp, toStringTagSymbol, "Generator");
 
   // A Generator should always return itself as the iterator object when the
   // @@iterator function is called on it. Some browsers' implementations of the
@@ -4927,6 +5056,12 @@ axios_1.default = default_1;
 
 var axios$1 = axios_1;
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$1(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$1(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen); }
+
+function _arrayLikeToArray$1(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var FacetSelectionState;
 
 (function (FacetSelectionState) {
@@ -4935,9 +5070,7 @@ var FacetSelectionState;
   FacetSelectionState[FacetSelectionState["Negated"] = 2] = "Negated";
 })(FacetSelectionState || (FacetSelectionState = {}));
 
-var SearchStore =
-/*#__PURE__*/
-function () {
+var SearchStore = /*#__PURE__*/function () {
   /** This represents the next search request that will be executed. */
 
   /**
@@ -4977,13 +5110,18 @@ function () {
 
 
   _createClass(SearchStore, [{
-    key: "isFacetSelected",
-
+    key: "isInitialLoad",
+    get: function get() {
+      return this.isLoading && !this.searchResults;
+    }
     /**
      * Determines whether or not the given facet and facet value is selected, and returns info regarding the selection.
      * @param facet The facet for which the facet value will be checked for selection.
      * @param facetValue The facet value that will be checked for selection.
      */
+
+  }, {
+    key: "isFacetSelected",
     value: function isFacetSelected(facet, facetValue) {
       var facetName = typeof facet === 'string' ? facet : facet.Name;
       var facetField = typeof facet === 'string' ? facet : facet.selectionField;
@@ -5035,56 +5173,6 @@ function () {
      * view of all facet selections.
      */
 
-  }, {
-    key: "findMatchingValue",
-    value: function findMatchingValue(selectionValue, facetValues) {
-      var matchingValue = null;
-
-      if (!facetValues || facetValues.length === 0) {
-        return null;
-      }
-
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = facetValues[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var facetValue = _step.value;
-          var isMatchingVal = facetValue.Value === selectionValue || "-".concat(facetValue.Value) === selectionValue; // loop through children
-
-          if (!isMatchingVal) {
-            matchingValue = this.findMatchingValue(selectionValue, facetValue.Children);
-          } else {
-            matchingValue = facetValue;
-          }
-
-          if (matchingValue) {
-            return matchingValue;
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-            _iterator["return"]();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return matchingValue;
-    }
-  }, {
-    key: "isInitialLoad",
-    get: function get() {
-      return this.isLoading && !this.searchResults;
-    }
   }, {
     key: "facetSelections",
     get: function get() {
@@ -5193,6 +5281,41 @@ function () {
       });
       return selections;
     }
+  }, {
+    key: "findMatchingValue",
+    value: function findMatchingValue(selectionValue, facetValues) {
+      var matchingValue = null;
+
+      if (!facetValues || facetValues.length === 0) {
+        return null;
+      }
+
+      var _iterator = _createForOfIteratorHelper(facetValues),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var facetValue = _step.value;
+          var isMatchingVal = facetValue.Value === selectionValue || "-".concat(facetValue.Value) === selectionValue; // loop through children
+
+          if (!isMatchingVal) {
+            matchingValue = this.findMatchingValue(selectionValue, facetValue.Children);
+          } else {
+            matchingValue = facetValue;
+          }
+
+          if (matchingValue) {
+            return matchingValue;
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return matchingValue;
+    }
   }]);
 
   return SearchStore;
@@ -5249,9 +5372,7 @@ function PaginationItem(init) {
 };
 
 /** An object that contains the data related to the client making search or autosuggest requests. */
-var ChildResult =
-/*#__PURE__*/
-function () {
+var ChildResult = /*#__PURE__*/function () {
   /** Number of total items in the result set. */
 
   /** The page number returned. */
@@ -5299,40 +5420,7 @@ function () {
   return ChildResult;
 }();
 
-var Result =
-/*#__PURE__*/
-function () {
-  _createClass(Result, [{
-    key: "getDocumentValue",
-
-    /** Unique identifier for this search result item. */
-
-    /** Calculated relevancy score. */
-
-    /**
-     * Contains the fields for the search result item, as an object of string keys to an array
-     * of string values. The keys correspond to the name of the field within the hawk dashboard,
-     * and the value of the map is an array of strings for each of the values for that field.
-     */
-
-    /**
-     * Returns a single document value, by the given field name. If the field does not exist in
-     * the document, or has no values, then `undefined` is returned instead.
-     * @param field The field within the result document to retrieve the value of.
-     */
-    value: function getDocumentValue(field) {
-      if (this.Document) {
-        var values = this.Document[field];
-
-        if (values && values.length > 0) {
-          return values[0];
-        }
-      }
-
-      return undefined;
-    }
-  }]);
-
+var Result = /*#__PURE__*/function () {
   function Result(init) {
     _classCallCheck(this, Result);
 
@@ -5356,6 +5444,37 @@ function () {
       this.ChildResults = new ChildResult(init.ChildResults);
     }
   }
+
+  _createClass(Result, [{
+    key: "getDocumentValue",
+    value:
+    /** Unique identifier for this search result item. */
+
+    /** Calculated relevancy score. */
+
+    /**
+     * Contains the fields for the search result item, as an object of string keys to an array
+     * of string values. The keys correspond to the name of the field within the hawk dashboard,
+     * and the value of the map is an array of strings for each of the values for that field.
+     */
+
+    /**
+     * Returns a single document value, by the given field name. If the field does not exist in
+     * the document, or has no values, then `undefined` is returned instead.
+     * @param field The field within the result document to retrieve the value of.
+     */
+    function getDocumentValue(field) {
+      if (this.Document) {
+        var values = this.Document[field];
+
+        if (values && values.length > 0) {
+          return values[0];
+        }
+      }
+
+      return undefined;
+    }
+  }]);
 
   return Result;
 }();
@@ -5556,12 +5675,91 @@ function Range(init) {
   Object.assign(this, init);
 };
 
-var Facet =
-/*#__PURE__*/
-function () {
+var Facet = /*#__PURE__*/function () {
+  function Facet(init) {
+    _classCallCheck(this, Facet);
+
+    _defineProperty(this, "FacetId", void 0);
+
+    _defineProperty(this, "Name", void 0);
+
+    _defineProperty(this, "Field", void 0);
+
+    _defineProperty(this, "FieldType", void 0);
+
+    _defineProperty(this, "FacetType", void 0);
+
+    _defineProperty(this, "DisplayType", void 0);
+
+    _defineProperty(this, "MaxCount", void 0);
+
+    _defineProperty(this, "MinHitCount", void 0);
+
+    _defineProperty(this, "ParamName", void 0);
+
+    _defineProperty(this, "SortBy", void 0);
+
+    _defineProperty(this, "ExpandSelection", void 0);
+
+    _defineProperty(this, "IsNumeric", void 0);
+
+    _defineProperty(this, "IsCurrency", void 0);
+
+    _defineProperty(this, "CurrencySymbol", void 0);
+
+    _defineProperty(this, "IsCollapsible", void 0);
+
+    _defineProperty(this, "IsCollapsedDefault", void 0);
+
+    _defineProperty(this, "IsVisible", void 0);
+
+    _defineProperty(this, "IsSearch", void 0);
+
+    _defineProperty(this, "ScrollHeight", void 0);
+
+    _defineProperty(this, "ScrollThreshold", void 0);
+
+    _defineProperty(this, "TruncateThreshold", void 0);
+
+    _defineProperty(this, "SearchThreshold", void 0);
+
+    _defineProperty(this, "Tooltip", void 0);
+
+    _defineProperty(this, "AlwaysVisible", void 0);
+
+    _defineProperty(this, "SortOrder", void 0);
+
+    _defineProperty(this, "NofVisible", void 0);
+
+    _defineProperty(this, "SwatchData", void 0);
+
+    _defineProperty(this, "FacetRangeDisplayType", void 0);
+
+    _defineProperty(this, "PreloadChildren", void 0);
+
+    _defineProperty(this, "ShowSliderInputs", void 0);
+
+    _defineProperty(this, "Ranges", void 0);
+
+    _defineProperty(this, "Values", void 0);
+
+    _defineProperty(this, "DataType", void 0);
+
+    Object.assign(this, init);
+    this.SwatchData = init.SwatchData.map(function (s) {
+      return new Swatch(s);
+    });
+    this.Ranges = init.Ranges.map(function (r) {
+      return new Range(r);
+    });
+    this.Values = init.Values.map(function (v) {
+      return new Value(v);
+    });
+  }
+
   _createClass(Facet, [{
     key: "shouldTruncate",
-
+    get:
     /** Unique identifier of the facet. */
 
     /** Display name of the facet. */
@@ -5653,7 +5851,7 @@ function () {
     // Data type for datetime facet type
 
     /** Whether or not the facet should be rendered as truncated. */
-    get: function get() {
+    function get() {
       // the facet does truncated listing of values if configured for truncating and we have too many facets
       return this.DisplayType === 'truncating' && this.Values.length > this.TruncateThreshold;
     }
@@ -5677,87 +5875,6 @@ function () {
       return this.ParamName ? this.ParamName : this.Field;
     }
   }]);
-
-  function Facet(init) {
-    _classCallCheck(this, Facet);
-
-    _defineProperty(this, "FacetId", void 0);
-
-    _defineProperty(this, "Name", void 0);
-
-    _defineProperty(this, "Field", void 0);
-
-    _defineProperty(this, "FieldType", void 0);
-
-    _defineProperty(this, "FacetType", void 0);
-
-    _defineProperty(this, "DisplayType", void 0);
-
-    _defineProperty(this, "MaxCount", void 0);
-
-    _defineProperty(this, "MinHitCount", void 0);
-
-    _defineProperty(this, "ParamName", void 0);
-
-    _defineProperty(this, "SortBy", void 0);
-
-    _defineProperty(this, "ExpandSelection", void 0);
-
-    _defineProperty(this, "IsNumeric", void 0);
-
-    _defineProperty(this, "IsCurrency", void 0);
-
-    _defineProperty(this, "CurrencySymbol", void 0);
-
-    _defineProperty(this, "IsCollapsible", void 0);
-
-    _defineProperty(this, "IsCollapsedDefault", void 0);
-
-    _defineProperty(this, "IsVisible", void 0);
-
-    _defineProperty(this, "IsSearch", void 0);
-
-    _defineProperty(this, "ScrollHeight", void 0);
-
-    _defineProperty(this, "ScrollThreshold", void 0);
-
-    _defineProperty(this, "TruncateThreshold", void 0);
-
-    _defineProperty(this, "SearchThreshold", void 0);
-
-    _defineProperty(this, "Tooltip", void 0);
-
-    _defineProperty(this, "AlwaysVisible", void 0);
-
-    _defineProperty(this, "SortOrder", void 0);
-
-    _defineProperty(this, "NofVisible", void 0);
-
-    _defineProperty(this, "SwatchData", void 0);
-
-    _defineProperty(this, "FacetRangeDisplayType", void 0);
-
-    _defineProperty(this, "PreloadChildren", void 0);
-
-    _defineProperty(this, "ShowSliderInputs", void 0);
-
-    _defineProperty(this, "Ranges", void 0);
-
-    _defineProperty(this, "Values", void 0);
-
-    _defineProperty(this, "DataType", void 0);
-
-    Object.assign(this, init);
-    this.SwatchData = init.SwatchData.map(function (s) {
-      return new Swatch(s);
-    });
-    this.Ranges = init.Ranges.map(function (r) {
-      return new Range(r);
-    });
-    this.Values = init.Values.map(function (v) {
-      return new Value(v);
-    });
-  }
 
   return Facet;
 }();
@@ -5819,6 +5936,9 @@ var BannerTrigger = function BannerTrigger(init) {
   this.Rule = new Rule(this.Rule);
 };
 
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 var FeaturedItems = function FeaturedItems(init) {
   _classCallCheck(this, FeaturedItems);
 
@@ -5827,9 +5947,9 @@ var FeaturedItems = function FeaturedItems(init) {
   Object.assign(this, init);
 
   if (init && init.Items) {
-    this.Items = init.Items.map(function (i) {
+    this.Items = init.Items ? init.Items.map(function (i) {
       return new FeaturedItem(i);
-    });
+    }) : [];
   }
 };
 var Merchandising = function Merchandising(init) {
@@ -5840,9 +5960,9 @@ var Merchandising = function Merchandising(init) {
   Object.assign(this, init);
 
   if (init && init.Items) {
-    this.Items = init.Items.map(function (i) {
+    this.Items = init.Items ? init.Items.map(function (i) {
       return new MerchandisingItem(i);
-    });
+    }) : [];
   }
 };
 var PageContentItem = function PageContentItem(init) {
@@ -5914,17 +6034,17 @@ var PageContentItem = function PageContentItem(init) {
     this.Trigger = new BannerTrigger(init.Trigger);
   }
 };
-var FeaturedItem =
-/*#__PURE__*/
-function (_PageContentItem) {
+var FeaturedItem = /*#__PURE__*/function (_PageContentItem) {
   _inherits(FeaturedItem, _PageContentItem);
+
+  var _super = _createSuper(FeaturedItem);
 
   function FeaturedItem(init) {
     var _this;
 
     _classCallCheck(this, FeaturedItem);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(FeaturedItem).call(this, init));
+    _this = _super.call(this, init);
 
     _defineProperty(_assertThisInitialized(_this), "Items", void 0);
 
@@ -5937,17 +6057,17 @@ function (_PageContentItem) {
 
   return FeaturedItem;
 }(PageContentItem);
-var MerchandisingItem =
-/*#__PURE__*/
-function (_PageContentItem2) {
+var MerchandisingItem = /*#__PURE__*/function (_PageContentItem2) {
   _inherits(MerchandisingItem, _PageContentItem2);
+
+  var _super2 = _createSuper(MerchandisingItem);
 
   function MerchandisingItem(init) {
     var _this2;
 
     _classCallCheck(this, MerchandisingItem);
 
-    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(MerchandisingItem).call(this, init));
+    _this2 = _super2.call(this, init);
     Object.assign(_assertThisInitialized(_this2), init);
     return _this2;
   }
@@ -6102,9 +6222,7 @@ var ContentType;
   ContentType["LandingPage"] = "landingPage";
 })(ContentType || (ContentType = {}));
 
-var AuthToken =
-/*#__PURE__*/
-function () {
+var AuthToken = /*#__PURE__*/function () {
   /**
    * The Singleton's constructor should always be private to prevent direct
    * construction calls with the `new` operator.
@@ -6156,9 +6274,7 @@ _defineProperty(AuthToken, "instance", void 0);
 
 var AuthToken$1 = AuthToken.getInstance();
 
-var HawkClient =
-/*#__PURE__*/
-function () {
+var HawkClient = /*#__PURE__*/function () {
   function HawkClient(config) {
     var _this = this;
 
@@ -6240,172 +6356,228 @@ function () {
 
   _createClass(HawkClient, [{
     key: "pinItem",
-    value: function pinItem(request, cancellationToken) {
-      var result;
-      return regenerator.async(function pinItem$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return regenerator.awrap(this.axiosInstance.post(new URL(this.pinItemURL, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _pinItem = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return this.axiosInstance.post(new URL(this.pinItemURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context.sent;
-              return _context.abrupt("return", result.data);
+              case 2:
+                result = _context.sent;
+                return _context.abrupt("return", result.data);
 
-            case 4:
-            case "end":
-              return _context.stop();
+              case 4:
+              case "end":
+                return _context.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee, this);
+      }));
+
+      function pinItem(_x, _x2) {
+        return _pinItem.apply(this, arguments);
+      }
+
+      return pinItem;
+    }()
   }, {
     key: "updatePinOrder",
-    value: function updatePinOrder(request, cancellationToken) {
-      var result;
-      return regenerator.async(function updatePinOrder$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return regenerator.awrap(this.axiosInstance.post(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _updatePinOrder = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return this.axiosInstance.post(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context2.sent;
-              return _context2.abrupt("return", result.data);
+              case 2:
+                result = _context2.sent;
+                return _context2.abrupt("return", result.data);
 
-            case 4:
-            case "end":
-              return _context2.stop();
+              case 4:
+              case "end":
+                return _context2.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee2, this);
+      }));
+
+      function updatePinOrder(_x3, _x4) {
+        return _updatePinOrder.apply(this, arguments);
+      }
+
+      return updatePinOrder;
+    }()
   }, {
     key: "search",
-    value: function search(request, cancellationToken) {
-      var result;
-      return regenerator.async(function search$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _context3.next = 2;
-              return regenerator.awrap(this.axiosInstance.post(new URL(this.searchUrl, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return this.axiosInstance.post(new URL(this.searchUrl, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context3.sent;
-              return _context3.abrupt("return", result.data);
+              case 2:
+                result = _context3.sent;
+                return _context3.abrupt("return", result.data);
 
-            case 4:
-            case "end":
-              return _context3.stop();
+              case 4:
+              case "end":
+                return _context3.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee3, this);
+      }));
+
+      function search(_x5, _x6) {
+        return _search.apply(this, arguments);
+      }
+
+      return search;
+    }()
   }, {
     key: "rebuildIndex",
-    value: function rebuildIndex(request, cancellationToken) {
-      var result;
-      return regenerator.async(function rebuildIndex$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _context4.next = 2;
-              return regenerator.awrap(this.axiosInstance.post(new URL(this.rebuildIndexURL, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _rebuildIndex = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return this.axiosInstance.post(new URL(this.rebuildIndexURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context4.sent;
-              return _context4.abrupt("return", result.data);
+              case 2:
+                result = _context4.sent;
+                return _context4.abrupt("return", result.data);
 
-            case 4:
-            case "end":
-              return _context4.stop();
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee4, this);
+      }));
+
+      function rebuildIndex(_x7, _x8) {
+        return _rebuildIndex.apply(this, arguments);
+      }
+
+      return rebuildIndex;
+    }()
   }, {
     key: "autocomplete",
-    value: function autocomplete(request, cancellationToken) {
-      var result;
-      return regenerator.async(function autocomplete$(_context5) {
-        while (1) {
-          switch (_context5.prev = _context5.next) {
-            case 0:
-              _context5.next = 2;
-              return regenerator.awrap(axios$1.post(new URL(this.autocompleteUrl, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _autocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return axios$1.post(new URL(this.autocompleteUrl, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context5.sent;
-              return _context5.abrupt("return", result.data);
+              case 2:
+                result = _context5.sent;
+                return _context5.abrupt("return", result.data);
 
-            case 4:
-            case "end":
-              return _context5.stop();
+              case 4:
+              case "end":
+                return _context5.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee5, this);
+      }));
+
+      function autocomplete(_x9, _x10) {
+        return _autocomplete.apply(this, arguments);
+      }
+
+      return autocomplete;
+    }()
   }, {
     key: "getComparedItems",
-    value: function getComparedItems(request, cancellationToken) {
-      var result;
-      return regenerator.async(function getComparedItems$(_context6) {
-        while (1) {
-          switch (_context6.prev = _context6.next) {
-            case 0:
-              _context6.next = 2;
-              return regenerator.awrap(axios$1.post(new URL(this.compareItemsURL, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _getComparedItems = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return axios$1.post(new URL(this.compareItemsURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context6.sent;
-              return _context6.abrupt("return", result.data);
+              case 2:
+                result = _context6.sent;
+                return _context6.abrupt("return", result.data);
 
-            case 4:
-            case "end":
-              return _context6.stop();
+              case 4:
+              case "end":
+                return _context6.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee6, this);
+      }));
+
+      function getComparedItems(_x11, _x12) {
+        return _getComparedItems.apply(this, arguments);
+      }
+
+      return getComparedItems;
+    }()
   }, {
     key: "getProductDetails",
-    value: function getProductDetails(request, cancellationToken) {
-      var result;
-      return regenerator.async(function getProductDetails$(_context7) {
-        while (1) {
-          switch (_context7.prev = _context7.next) {
-            case 0:
-              _context7.next = 2;
-              return regenerator.awrap(axios$1.post(new URL(this.productDetailsURL, this.baseUrl).href, request, {
-                cancelToken: cancellationToken
-              }));
+    value: function () {
+      var _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                _context7.next = 2;
+                return axios$1.post(new URL(this.productDetailsURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
 
-            case 2:
-              result = _context7.sent;
-              return _context7.abrupt("return", new Result(result.data));
+              case 2:
+                result = _context7.sent;
+                return _context7.abrupt("return", new Result(result.data));
 
-            case 4:
-            case "end":
-              return _context7.stop();
+              case 4:
+              case "end":
+                return _context7.stop();
+            }
           }
-        }
-      }, null, this);
-    }
+        }, _callee7, this);
+      }));
+
+      function getProductDetails(_x13, _x14) {
+        return _getProductDetails.apply(this, arguments);
+      }
+
+      return getProductDetails;
+    }()
   }]);
 
   return HawkClient;
@@ -6416,7 +6588,7 @@ function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if 
 function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useMergableState(initialValue, typeConstructor) {
   var _useState = useState(new typeConstructor(initialValue)),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       state = _useState2[0],
       setState = _useState2[1];
 
@@ -6427,7 +6599,7 @@ function useMergableState(initialValue, typeConstructor) {
         // so we derive the new state from the previous state
         var newState = value(prevState); // and then set the new merged state
 
-        return new typeConstructor(_objectSpread$3({}, prevState, {}, newState));
+        return new typeConstructor(_objectSpread$3(_objectSpread$3({}, prevState), newState));
       });
       return;
     } // otherwise, the new state was simply passed in
@@ -6435,7 +6607,7 @@ function useMergableState(initialValue, typeConstructor) {
 
     setState(function (prevState) {
       // merge state together and set it
-      return new typeConstructor(_objectSpread$3({}, prevState, {}, value));
+      return new typeConstructor(_objectSpread$3(_objectSpread$3({}, prevState), value));
     });
   }
 
@@ -6501,9 +6673,27 @@ var SearchType;
   SearchType[SearchType["Refinement"] = 2] = "Refinement";
 })(SearchType || (SearchType = {}));
 
-var TrackingEvent =
-/*#__PURE__*/
-function () {
+var TrackEventNameMapping = {
+  'Click': 'click',
+  'Cart': '',
+  'CopyRequestTracking': '',
+  'RequestTracking': '',
+  'Search': 'searchtracking',
+  'Sale': 'sale',
+  'RecommendationImpression': '',
+  'RecommendationClick': 'recommendationclick',
+  'Rate': 'rate',
+  'PageLoad': 'pageload',
+  'Identify': '',
+  'BannerImpression': 'bannerimpression',
+  'BannerClick': 'bannerclick',
+  'AutocompleteClick': 'autocompleteclick',
+  'Add2CartMultiple': 'add2cartmultiple',
+  'Add2Cart': 'add2cart'
+};
+var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression'];
+
+var TrackingEvent = /*#__PURE__*/function () {
   /**
    * The Singleton's constructor should always be private to prevent direct
    * construction calls with the `new` operator.
@@ -6514,6 +6704,8 @@ function () {
     _defineProperty(this, "trackingURL", void 0);
 
     _defineProperty(this, "clientGUID", void 0);
+
+    _defineProperty(this, "trackConfig", void 0);
   }
   /**
    * The static method that controls the access to the singleton instance.
@@ -6525,12 +6717,12 @@ function () {
 
   _createClass(TrackingEvent, [{
     key: "setTrackingURL",
-
+    value:
     /**
      * Finally, any singleton should define some business logic, which can be
      * executed on its instance.
      */
-    value: function setTrackingURL(url) {
+    function setTrackingURL(url) {
       this.trackingURL = url;
     }
   }, {
@@ -6584,6 +6776,11 @@ function () {
       return uuid;
     }
   }, {
+    key: "setTrackConfig",
+    value: function setTrackConfig(value) {
+      this.trackConfig = value;
+    }
+  }, {
     key: "getCookie",
     value: function getCookie(name) {
       var nameEQ = name + '=';
@@ -6635,11 +6832,13 @@ function () {
   }, {
     key: "writeSearchTracking",
     value: function writeSearchTracking(trackingId, typeId, keyword) {
+      var guid = this.createGuid();
+
       if (typeId === SearchType.Initial) {
-        this.setCookie('hawk_query_id', this.createGuid());
+        this.setCookie('hawk_query_id', guid);
       }
 
-      var queryId = this.getCookie('hawk_query_id');
+      var queryId = this.getCookie('hawk_query_id') || guid;
       var c = document.documentElement;
       var pl = {
         EventType: E_T.search,
@@ -6808,8 +7007,6 @@ function () {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(pl)
-      }).then(function (resp) {
-        console.log('Success:', resp.status);
       })["catch"](function (error) {
         console.error('Error:', error);
       });
@@ -6817,7 +7014,7 @@ function () {
   }, {
     key: "track",
     value: function track(eventName, args) {
-      if (!this.trackingURL || !this.clientGUID) {
+      if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
         return;
       }
 
@@ -6872,6 +7069,13 @@ function () {
           return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
         // CHANGED
       }
+    }
+  }, {
+    key: "isEnabled",
+    value: function isEnabled(eventName) {
+      return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(function (e) {
+        return TrackEventNameMapping[e] == eventName;
+      })));
     }
   }], [{
     key: "getInstance",
@@ -6951,6 +7155,12 @@ var setCookie = function setCookie(name, value, expiry) {
   document.cookie = name + '=' + value + expires + '; path=/';
 };
 
+function _createForOfIteratorHelper$1(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
+
+function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -6970,7 +7180,7 @@ function useHawkState(initialSearch) {
     itemsToCompareIds: [],
     productDetails: {}
   }), SearchStore),
-      _useMergableState2 = _slicedToArray(_useMergableState, 2),
+      _useMergableState2 = _slicedToArray$1(_useMergableState, 2),
       store = _useMergableState2[0],
       setStore = _useMergableState2[1];
 
@@ -6990,117 +7200,8 @@ function useHawkState(initialSearch) {
    * @returns A promise that resolves when the search request has been completed.
    */
 
-  function search(cancellationToken) {
-    var searchResults, searchParams, visitId, visitorId, updatedRequest;
-    return regenerator.async(function search$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            setStore({
-              isLoading: true
-            });
-            searchResults = null;
-            searchParams = _objectSpread$4({}, store.pendingSearch, {
-              // pass parameter for extended response
-              IsInPreview: config.isInPreview,
-              // and override some of the request fields with config values
-              ClientGuid: config.clientGuid,
-              Keyword: store.pendingSearch.Keyword ? decodeURIComponent(store.pendingSearch.Keyword || '') : store.pendingSearch.Keyword
-            }); // The index name in the configuration takes priority over the one supplied from the URL
-
-            if (config.indexName) {
-              Object.assign(searchParams, {
-                IndexName: config.indexName
-              });
-            } // If the index name is required and no value is provided from the config or the URL, the request is canceled
-
-
-            if (!(config.indexNameRequired && !searchParams.IndexName)) {
-              _context.next = 7;
-              break;
-            }
-
-            setStore({
-              isLoading: false
-            });
-            return _context.abrupt("return");
-
-          case 7:
-            // Fill clientdata
-            visitId = getCookie('hawk_visit_id');
-            visitorId = getCookie('hawk_visitor_id');
-
-            if (!visitId) {
-              setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
-              visitId = getCookie('hawk_visit_id');
-            }
-
-            if (!visitorId) {
-              setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
-              visitorId = getCookie('hawk_visitor_id');
-            }
-
-            updatedRequest = _objectSpread$4({
-              ClientData: {
-                VisitorId: visitorId || '',
-                VisitId: visitId || '',
-                UserAgent: navigator.userAgent,
-                PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(function (v) {
-                  return v.Id;
-                }) : []
-              }
-            }, searchParams);
-            _context.prev = 12;
-            _context.next = 15;
-            return regenerator.awrap(client.search(updatedRequest, cancellationToken));
-
-          case 15:
-            searchResults = _context.sent;
-            _context.next = 24;
-            break;
-
-          case 18:
-            _context.prev = 18;
-            _context.t0 = _context["catch"](12);
-
-            if (!axios$1.isCancel(_context.t0)) {
-              _context.next = 22;
-              break;
-            }
-
-            return _context.abrupt("return");
-
-          case 22:
-            console.error('Search request error:', _context.t0);
-            setStore({
-              requestError: true
-            });
-
-          case 24:
-            setStore({
-              isLoading: false
-            });
-
-            if (searchResults) {
-              if (!searchResults.Success) {
-                console.error('Search result error:', searchResults);
-                setStore({
-                  requestError: true
-                });
-              } else {
-                setStore({
-                  searchResults: new Response(searchResults),
-                  requestError: false
-                });
-              }
-            }
-
-          case 26:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, null, null, [[12, 18]]);
+  function search(_x) {
+    return _search.apply(this, arguments);
   }
   /**
    * Performs a comparision between two or more than two products based on ID
@@ -7109,80 +7210,179 @@ function useHawkState(initialSearch) {
    */
 
 
-  function getComparedItems(request, cancellationToken) {
-    return regenerator.async(function getComparedItems$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            _context2.next = 2;
-            return regenerator.awrap(client.getComparedItems(request, cancellationToken));
+  function _search() {
+    _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(cancellationToken) {
+      var searchResults, searchParams;
+      return regenerator.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              setStore({
+                isLoading: true
+              });
+              searchResults = null;
+              searchParams = _objectSpread$4(_objectSpread$4({}, store.pendingSearch), {}, {
+                // pass parameter for extended response
+                IsInPreview: config.isInPreview,
+                // and override some of the request fields with config values
+                ClientGuid: config.clientGuid,
+                ClientData: getClientData(),
+                Keyword: store.pendingSearch.Keyword ? decodeURIComponent(store.pendingSearch.Keyword || '') : store.pendingSearch.Keyword
+              }); // The index name in the configuration takes priority over the one supplied from the URL
 
-          case 2:
-            return _context2.abrupt("return", _context2.sent);
+              if (config.indexName) {
+                Object.assign(searchParams, {
+                  IndexName: config.indexName
+                });
+              } // If the index name is required and no value is provided from the config or the URL, the request is canceled
 
-          case 3:
-          case "end":
-            return _context2.stop();
+
+              if (!(config.indexNameRequired && !searchParams.IndexName)) {
+                _context.next = 7;
+                break;
+              }
+
+              setStore({
+                isLoading: false
+              });
+              return _context.abrupt("return");
+
+            case 7:
+              _context.prev = 7;
+              _context.next = 10;
+              return client.search(searchParams, cancellationToken);
+
+            case 10:
+              searchResults = _context.sent;
+              _context.next = 19;
+              break;
+
+            case 13:
+              _context.prev = 13;
+              _context.t0 = _context["catch"](7);
+
+              if (!axios$1.isCancel(_context.t0)) {
+                _context.next = 17;
+                break;
+              }
+
+              return _context.abrupt("return");
+
+            case 17:
+              console.error('Search request error:', _context.t0);
+              setStore({
+                requestError: true
+              });
+
+            case 19:
+              setStore({
+                isLoading: false
+              });
+
+              if (searchResults) {
+                if (!searchResults.Success) {
+                  console.error('Search result error:', searchResults);
+                  setStore({
+                    requestError: true
+                  });
+                } else {
+                  setStore({
+                    searchResults: new Response(searchResults),
+                    requestError: false
+                  });
+                }
+              }
+
+            case 21:
+            case "end":
+              return _context.stop();
+          }
         }
-      }
-    });
+      }, _callee, null, [[7, 13]]);
+    }));
+    return _search.apply(this, arguments);
   }
 
-  function pinItem(request, cancellationToken) {
-    return regenerator.async(function pinItem$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return regenerator.awrap(client.pinItem(request, cancellationToken));
-
-          case 2:
-            return _context3.abrupt("return", _context3.sent);
-
-          case 3:
-          case "end":
-            return _context3.stop();
-        }
-      }
-    });
+  function getComparedItems(_x2, _x3) {
+    return _getComparedItems.apply(this, arguments);
   }
 
-  function updatePinOrder(request, cancellationToken) {
-    return regenerator.async(function updatePinOrder$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.next = 2;
-            return regenerator.awrap(client.updatePinOrder(request, cancellationToken));
+  function _getComparedItems() {
+    _getComparedItems = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(request, cancellationToken) {
+      return regenerator.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return client.getComparedItems(request, cancellationToken);
 
-          case 2:
-            return _context4.abrupt("return", _context4.sent);
+            case 2:
+              return _context2.abrupt("return", _context2.sent);
 
-          case 3:
-          case "end":
-            return _context4.stop();
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
         }
-      }
-    });
+      }, _callee2);
+    }));
+    return _getComparedItems.apply(this, arguments);
   }
 
-  function rebuildIndex(request, cancellationToken) {
-    return regenerator.async(function rebuildIndex$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.next = 2;
-            return regenerator.awrap(client.rebuildIndex(request));
+  function pinItem(_x4, _x5) {
+    return _pinItem.apply(this, arguments);
+  }
 
-          case 2:
-            return _context5.abrupt("return", _context5.sent);
+  function _pinItem() {
+    _pinItem = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(request, cancellationToken) {
+      return regenerator.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return client.pinItem(request, cancellationToken);
 
-          case 3:
-          case "end":
-            return _context5.stop();
+            case 2:
+              return _context3.abrupt("return", _context3.sent);
+
+            case 3:
+            case "end":
+              return _context3.stop();
+          }
         }
-      }
-    });
+      }, _callee3);
+    }));
+    return _pinItem.apply(this, arguments);
+  }
+
+  function updatePinOrder(_x6, _x7) {
+    return _updatePinOrder.apply(this, arguments);
+  }
+
+  function _updatePinOrder() {
+    _updatePinOrder = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(request, cancellationToken) {
+      return regenerator.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return client.updatePinOrder(request, cancellationToken);
+
+            case 2:
+              return _context4.abrupt("return", _context4.sent);
+
+            case 3:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+    return _updatePinOrder.apply(this, arguments);
+  }
+
+  function rebuildIndex(_x8, _x9) {
+    return _rebuildIndex.apply(this, arguments);
   }
   /**
    * Get product details by ID
@@ -7190,23 +7390,30 @@ function useHawkState(initialSearch) {
    */
 
 
-  function getProductDetails(request, cancellationToken) {
-    return regenerator.async(function getProductDetails$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.next = 2;
-            return regenerator.awrap(client.getProductDetails(request, cancellationToken));
+  function _rebuildIndex() {
+    _rebuildIndex = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5(request, cancellationToken) {
+      return regenerator.wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return client.rebuildIndex(request);
 
-          case 2:
-            return _context6.abrupt("return", _context6.sent);
+            case 2:
+              return _context5.abrupt("return", _context5.sent);
 
-          case 3:
-          case "end":
-            return _context6.stop();
+            case 3:
+            case "end":
+              return _context5.stop();
+          }
         }
-      }
-    });
+      }, _callee5);
+    }));
+    return _rebuildIndex.apply(this, arguments);
+  }
+
+  function getProductDetails(_x10, _x11) {
+    return _getProductDetails.apply(this, arguments);
   }
   /**
    * Configures the next search request that will be executed. This will also execute a search in response to
@@ -7216,6 +7423,28 @@ function useHawkState(initialSearch) {
    * 					not specified, the default is `true`.
    */
 
+
+  function _getProductDetails() {
+    _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
+      return regenerator.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return client.getProductDetails(request, cancellationToken);
+
+            case 2:
+              return _context6.abrupt("return", _context6.sent);
+
+            case 3:
+            case "end":
+              return _context6.stop();
+          }
+        }
+      }, _callee6);
+    }));
+    return _getProductDetails.apply(this, arguments);
+  }
 
   function setSearch(pendingSearch, doHistory) {
     if (doHistory === undefined) {
@@ -7240,7 +7469,7 @@ function useHawkState(initialSearch) {
       }
 
       var newState = {
-        pendingSearch: _objectSpread$4({}, prevState.pendingSearch, {}, pendingSearch),
+        pendingSearch: _objectSpread$4(_objectSpread$4({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
       };
 
@@ -7369,12 +7598,12 @@ function useHawkState(initialSearch) {
     }
 
     facetSelections[facetField] = [];
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+
+    var _iterator = _createForOfIteratorHelper$1(facetValues),
+        _step;
 
     try {
-      for (var _iterator = facetValues[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var _facetValue = _step.value;
         var valueValue = typeof _facetValue === 'string' ? _facetValue : _facetValue.Value;
         var valueLabel = typeof _facetValue === 'string' ? _facetValue : _facetValue.Label;
@@ -7387,18 +7616,9 @@ function useHawkState(initialSearch) {
         facetSelections[facetField].push(valueValue);
       }
     } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
+      _iterator.e(err);
     } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
+      _iterator.f();
     }
 
     setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
@@ -7528,6 +7748,38 @@ function useHawkState(initialSearch) {
     });
   }
 
+  function getClientData() {
+    var visitId = getCookie('hawk_visit_id');
+    var visitorId = getCookie('hawk_visitor_id');
+
+    if (!visitId) {
+      setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+      visitId = getCookie('hawk_visit_id');
+    }
+
+    if (!visitorId) {
+      setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
+      visitorId = getCookie('hawk_visitor_id');
+    }
+
+    var clientData = {
+      VisitorId: visitorId || '',
+      VisitId: visitId || '',
+      UserAgent: navigator.userAgent,
+      PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(function (v) {
+        return v.Id;
+      }) : []
+    };
+
+    if (config['language']) {
+      clientData["Custom"] = {
+        "language": config['language']
+      };
+    }
+
+    return clientData;
+  }
+
   var actor = {
     search: search,
     setSearch: setSearch,
@@ -7549,7 +7801,7 @@ function useHawkState(initialSearch) {
   return [store, actor];
 }
 
-var HawkContext = React__default.createContext({});
+var HawkContext = /*#__PURE__*/React__default.createContext({});
 
 /**
  * This component acts as the global store for the hawksearch application state. Only one instance of this component
@@ -7560,11 +7812,11 @@ function StoreProvider(_ref) {
       children = _ref.children;
 
   var _useHawkState = useHawkState(initialSearch),
-      _useHawkState2 = _slicedToArray(_useHawkState, 2),
+      _useHawkState2 = _slicedToArray$1(_useHawkState, 2),
       store = _useHawkState2[0],
       actor = _useHawkState2[1];
 
-  return React__default.createElement(HawkContext.Provider, {
+  return /*#__PURE__*/React__default.createElement(HawkContext.Provider, {
     value: {
       store: store,
       actor: actor
@@ -7584,12 +7836,13 @@ function Hawksearch(props) {
   if (props.config.enableTrackEvent && props.config.trackEventUrl) {
     // Set URL to track event
     TrackingEvent$1.setTrackingURL(props.config.trackEventUrl);
+    TrackingEvent$1.setTrackConfig(props.config.trackConfig);
     TrackingEvent$1.setClientGUID(props.config.clientGuid);
   }
 
-  return React__default.createElement(ConfigProvider, {
+  return /*#__PURE__*/React__default.createElement(ConfigProvider, {
     config: props.config
-  }, React__default.createElement(StoreProvider, {
+  }, /*#__PURE__*/React__default.createElement(StoreProvider, {
     initialSearch: props.initialSearch
   }, props.children));
 }
@@ -7629,10 +7882,13 @@ var Suggestion = function Suggestion(suggestionType) {
   this.SuggestionType = suggestionType;
 };
 
-var Category =
-/*#__PURE__*/
-function (_Suggestion) {
+function _createSuper$1(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$1(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _isNativeReflectConstruct$1() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+var Category = /*#__PURE__*/function (_Suggestion) {
   _inherits(Category, _Suggestion);
+
+  var _super = _createSuper$1(Category);
 
   /** Display name of category (example: Men &raquo; Jackets). */
 
@@ -7645,7 +7901,7 @@ function (_Suggestion) {
 
     _classCallCheck(this, Category);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Category).call(this, SuggestionType.Category));
+    _this = _super.call(this, SuggestionType.Category);
 
     _defineProperty(_assertThisInitialized(_this), "Value", void 0);
 
@@ -7657,9 +7913,7 @@ function (_Suggestion) {
 
   return Category;
 }(Suggestion);
-var CategoryStrategy =
-/*#__PURE__*/
-function () {
+var CategoryStrategy = /*#__PURE__*/function () {
   function CategoryStrategy() {
     _classCallCheck(this, CategoryStrategy);
   }
@@ -7679,10 +7933,13 @@ function () {
   return CategoryStrategy;
 }();
 
-var Product =
-/*#__PURE__*/
-function (_Suggestion) {
+function _createSuper$2(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$2(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _isNativeReflectConstruct$2() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+var Product = /*#__PURE__*/function (_Suggestion) {
   _inherits(Product, _Suggestion);
+
+  var _super = _createSuper$2(Product);
 
   /** Name of the item (if applicable). */
 
@@ -7703,7 +7960,7 @@ function (_Suggestion) {
 
     _classCallCheck(this, Product);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Product).call(this, SuggestionType.Product));
+    _this = _super.call(this, SuggestionType.Product);
 
     _defineProperty(_assertThisInitialized(_this), "ProductName", void 0);
 
@@ -7723,9 +7980,7 @@ function (_Suggestion) {
 
   return Product;
 }(Suggestion);
-var ProductStrategy =
-/*#__PURE__*/
-function () {
+var ProductStrategy = /*#__PURE__*/function () {
   function ProductStrategy() {
     _classCallCheck(this, ProductStrategy);
   }
@@ -7745,10 +8000,13 @@ function () {
   return ProductStrategy;
 }();
 
-var Content =
-/*#__PURE__*/
-function (_Suggestion) {
+function _createSuper$3(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$3(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _isNativeReflectConstruct$3() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+var Content = /*#__PURE__*/function (_Suggestion) {
   _inherits(Content, _Suggestion);
+
+  var _super = _createSuper$3(Content);
 
   /** Display label for the content item in Autocomplete. */
 
@@ -7760,7 +8018,7 @@ function (_Suggestion) {
 
     _classCallCheck(this, Content);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Content).call(this, SuggestionType.Content));
+    _this = _super.call(this, SuggestionType.Content);
 
     _defineProperty(_assertThisInitialized(_this), "Value", void 0);
 
@@ -7776,9 +8034,7 @@ function (_Suggestion) {
 
   return Content;
 }(Suggestion);
-var ContentStrategy =
-/*#__PURE__*/
-function () {
+var ContentStrategy = /*#__PURE__*/function () {
   function ContentStrategy() {
     _classCallCheck(this, ContentStrategy);
   }
@@ -7798,10 +8054,13 @@ function () {
   return ContentStrategy;
 }();
 
-var Popular =
-/*#__PURE__*/
-function (_Suggestion) {
+function _createSuper$4(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct$4(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _isNativeReflectConstruct$4() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+var Popular = /*#__PURE__*/function (_Suggestion) {
   _inherits(Popular, _Suggestion);
+
+  var _super = _createSuper$4(Popular);
 
   /** Display label for the popular search term. */
 
@@ -7811,7 +8070,7 @@ function (_Suggestion) {
 
     _classCallCheck(this, Popular);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Popular).call(this, SuggestionType.Popular));
+    _this = _super.call(this, SuggestionType.Popular);
 
     _defineProperty(_assertThisInitialized(_this), "Value", void 0);
 
@@ -7823,9 +8082,7 @@ function (_Suggestion) {
 
   return Popular;
 }(Suggestion);
-var PopularStrategy =
-/*#__PURE__*/
-function () {
+var PopularStrategy = /*#__PURE__*/function () {
   function PopularStrategy() {
     _classCallCheck(this, PopularStrategy);
   }
@@ -7961,7 +8218,7 @@ function SearchSuggestionsList(_ref) {
     return null;
   }
 
-  return SuggestionList ? React__default.createElement(SuggestionList, {
+  return SuggestionList ? /*#__PURE__*/React__default.createElement(SuggestionList, {
     isLoading: isLoading,
     downshift: downshift,
     searchResults: searchResults,
@@ -7981,12 +8238,12 @@ function SearchSuggestions(_ref) {
   var client = new HawkClient(config);
 
   var _useState = useState({}),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       results = _useState2[0],
       setResults = _useState2[1];
 
   var _useState3 = useState(false),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       isLoading = _useState4[0],
       setIsLoading = _useState4[1]; // debounce the input search string so that we only do an autocomplete query every so often
 
@@ -8008,65 +8265,102 @@ function SearchSuggestions(_ref) {
    * @param input The user entered search string that results will be autocompleted for.
    */
 
-  function doAutocomplete(input, cancellationToken) {
-    var response;
-    return regenerator.async(function doAutocomplete$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            setIsLoading(true);
-            response = null;
-            _context.prev = 2;
-            _context.next = 5;
-            return regenerator.awrap(client.autocomplete({
-              ClientGuid: config.clientGuid,
-              Keyword: decodeURIComponent(input),
-              IndexName: config.indexName,
-              DisplayFullResponse: true
-            }, cancellationToken).then(function (o) {
-              // ensure, returned object will return response
-              // since by default, axios uses JSON.parse to parse an object,
-              // it doesn't recognize it as Response type - this line is to prevent it
-              return Object.assign(new Response$1(o));
-            }));
-
-          case 5:
-            response = _context.sent;
-            _context.next = 13;
-            break;
-
-          case 8:
-            _context.prev = 8;
-            _context.t0 = _context["catch"](2);
-
-            if (!axios$1.isCancel(_context.t0)) {
-              _context.next = 12;
-              break;
-            }
-
-            return _context.abrupt("return");
-
-          case 12:
-            console.error('Autocomplete request error:', _context.t0);
-
-          case 13:
-            setIsLoading(false);
-
-            if (response) {
-              setResults(response);
-            }
-
-          case 15:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, null, null, [[2, 8]]);
+  function doAutocomplete(_x, _x2) {
+    return _doAutocomplete.apply(this, arguments);
   }
 
-  return React__default.createElement("div", {
+  function _doAutocomplete() {
+    _doAutocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(input, cancellationToken) {
+      var response;
+      return regenerator.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              setIsLoading(true);
+              response = null;
+              _context.prev = 2;
+              _context.next = 5;
+              return client.autocomplete({
+                ClientGuid: config.clientGuid,
+                Keyword: decodeURIComponent(input),
+                IndexName: config.indexName,
+                DisplayFullResponse: true,
+                ClientData: getClientData()
+              }, cancellationToken).then(function (o) {
+                // ensure, returned object will return response
+                // since by default, axios uses JSON.parse to parse an object,
+                // it doesn't recognize it as Response type - this line is to prevent it
+                return Object.assign(new Response$1(o));
+              });
+
+            case 5:
+              response = _context.sent;
+              _context.next = 13;
+              break;
+
+            case 8:
+              _context.prev = 8;
+              _context.t0 = _context["catch"](2);
+
+              if (!axios$1.isCancel(_context.t0)) {
+                _context.next = 12;
+                break;
+              }
+
+              return _context.abrupt("return");
+
+            case 12:
+              console.error('Autocomplete request error:', _context.t0);
+
+            case 13:
+              setIsLoading(false);
+
+              if (response) {
+                setResults(response);
+              }
+
+            case 15:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[2, 8]]);
+    }));
+    return _doAutocomplete.apply(this, arguments);
+  }
+
+  function getClientData() {
+    var visitId = getCookie('hawk_visit_id');
+    var visitorId = getCookie('hawk_visitor_id');
+
+    if (!visitId) {
+      setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+      visitId = getCookie('hawk_visit_id');
+    }
+
+    if (!visitorId) {
+      setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
+      visitorId = getCookie('hawk_visitor_id');
+    }
+
+    var clientData = {
+      VisitorId: visitorId || '',
+      VisitId: visitId || '',
+      UserAgent: navigator.userAgent
+    };
+
+    if (config['language']) {
+      clientData["Custom"] = {
+        "language": config['language']
+      };
+    }
+
+    return clientData;
+  }
+
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "autosuggest-menu"
-  }, React__default.createElement(SearchSuggestionsList, {
+  }, /*#__PURE__*/React__default.createElement(SearchSuggestionsList, {
     onViewMatches: onViewMatches,
     downshift: downshift,
     isLoading: isLoading,
@@ -8081,12 +8375,12 @@ function SearchSuggestions(_ref) {
  * @returns
  */
 function PlusSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 32 32",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M31 12h-11v-11c0-0.552-0.448-1-1-1h-6c-0.552 0-1 0.448-1 1v11h-11c-0.552 0-1 0.448-1 1v6c0 0.552 0.448 1 1 1h11v11c0 0.552 0.448 1 1 1h6c0.552 0 1-0.448 1-1v-11h11c0.552 0 1-0.448 1-1v-6c0-0.552-0.448-1-1-1z"
   }));
 }
@@ -8097,12 +8391,12 @@ function PlusSVG(props) {
  * @returns
  */
 function MinusSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 32 32",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M0 13v6c0 0.552 0.448 1 1 1h30c0.552 0 1-0.448 1-1v-6c0-0.552-0.448-1-1-1h-30c-0.552 0-1 0.448-1 1z"
   }));
 }
@@ -8113,21 +8407,21 @@ function MinusSVG(props) {
  * @returns
  */
 function QuestionmarkSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 32 32",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M 10.976562 14.785156 C 10.976562 15.324219 10.539062 15.761719 10 15.761719 C 9.460938 15.761719 9.023438 15.324219 9.023438 14.785156 C 9.023438 14.246094 9.460938 13.808594 10 13.808594 C 10.539062 13.808594 10.976562 14.246094 10.976562 14.785156 Z M 10.976562 14.785156 "
-  }), createElement("path", {
+  }), /*#__PURE__*/createElement("path", {
     d: "M 10 0 C 4.472656 0 0 4.472656 0 10 C 0 15.527344 4.472656 20 10 20 C 15.527344 20 20 15.527344 20 10 C 20 4.472656 15.527344 0 10 0 Z M 10 18.4375 C 5.335938 18.4375 1.5625 14.664062 1.5625 10 C 1.5625 5.335938 5.335938 1.5625 10 1.5625 C 14.664062 1.5625 18.4375 5.335938 18.4375 10 C 18.4375 14.664062 14.664062 18.4375 10 18.4375 Z M 10 18.4375 "
-  }), createElement("path", {
+  }), /*#__PURE__*/createElement("path", {
     d: "M 10 5.019531 C 8.277344 5.019531 6.875 6.421875 6.875 8.144531 C 6.875 8.574219 7.226562 8.925781 7.65625 8.925781 C 8.085938 8.925781 8.4375 8.574219 8.4375 8.144531 C 8.4375 7.28125 9.136719 6.582031 10 6.582031 C 10.863281 6.582031 11.5625 7.28125 11.5625 8.144531 C 11.5625 9.007812 10.863281 9.707031 10 9.707031 C 9.570312 9.707031 9.21875 10.058594 9.21875 10.488281 L 9.21875 12.441406 C 9.21875 12.871094 9.570312 13.222656 10 13.222656 C 10.429688 13.222656 10.78125 12.871094 10.78125 12.441406 L 10.78125 11.171875 C 12.128906 10.824219 13.125 9.597656 13.125 8.144531 C 13.125 6.421875 11.722656 5.019531 10 5.019531 Z M 10 5.019531 "
   }));
 }
 
-var FacetContext = React__default.createContext({});
+var FacetContext = /*#__PURE__*/React__default.createContext({});
 
 function getInitialCollapsibleState(facet, cookies) {
   var cookieValue = cookies[facet.Field];
@@ -8149,22 +8443,22 @@ function Facet$1(_ref) {
   var wrapperRef = useRef(null);
 
   var _useState = useState(''),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       filter = _useState2[0],
       setFilter = _useState2[1];
 
   var _useState3 = useState(facet.shouldTruncate),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       isTruncated = _useState4[0],
       setTruncated = _useState4[1];
 
   var _useCookies = useCookies([facet.Field]),
-      _useCookies2 = _slicedToArray(_useCookies, 2),
+      _useCookies2 = _slicedToArray$1(_useCookies, 2),
       cookies = _useCookies2[0],
       setCookie = _useCookies2[1];
 
   var _useState5 = useState(getInitialCollapsibleState(facet, cookies)),
-      _useState6 = _slicedToArray(_useState5, 2),
+      _useState6 = _slicedToArray$1(_useState5, 2),
       isCollapsed = _useState6[0],
       setCollapsed = _useState6[1];
 
@@ -8191,7 +8485,7 @@ function Facet$1(_ref) {
 
   function renderTruncation() {
     // only show the toggle button if the facet is configured for truncation and we're not filtering
-    return React__default.createElement(React__default.Fragment, null, facet.shouldTruncate && !filter && React__default.createElement("button", {
+    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, facet.shouldTruncate && !filter && /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick() {
         return actor.setTruncated(!isTruncated);
       },
@@ -8252,40 +8546,40 @@ function Facet$1(_ref) {
     setCollapsed(!isCollapsed);
   }
 
-  return React__default.createElement(FacetContext.Provider, {
+  return /*#__PURE__*/React__default.createElement(FacetContext.Provider, {
     value: {
       facet: facet,
       state: state,
       actor: actor,
       renderer: renderer
     }
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-heading",
     onClick: function onClick(event) {
       return toggleCollapsible(event);
     }
-  }, React__default.createElement("h4", null, facet.Name), facet.Tooltip && React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("h4", null, facet.Name), facet.Tooltip && /*#__PURE__*/React__default.createElement("div", {
     className: "custom-tooltip",
     ref: wrapperRef
-  }, React__default.createElement(QuestionmarkSVG, {
+  }, /*#__PURE__*/React__default.createElement(QuestionmarkSVG, {
     "class": "hawk-questionmark"
-  }), React__default.createElement("div", {
+  }), /*#__PURE__*/React__default.createElement("div", {
     className: "right"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     dangerouslySetInnerHTML: {
       __html: facet.Tooltip
     }
-  }), React__default.createElement("i", null))), isCollapsed ? React__default.createElement(React__default.Fragment, null, React__default.createElement(PlusSVG, null), " ", React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("i", null))), isCollapsed ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Expand facet category"), ' ') : React__default.createElement(React__default.Fragment, null, React__default.createElement(MinusSVG, null), " ", React__default.createElement("span", {
+  }, "Expand facet category"), ' ') : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(MinusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Collapse facet category"))), !isCollapsed && React__default.createElement("div", {
+  }, "Collapse facet category"))), !isCollapsed && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-body"
-  }, facet.shouldSearch && React__default.createElement("div", {
+  }, facet.shouldSearch && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet__quick-lookup"
-  }, React__default.createElement("input", {
+  }, /*#__PURE__*/React__default.createElement("input", {
     value: filter,
     onChange: function onChange(e) {
       return setFilter(e.currentTarget.value);
@@ -8305,15 +8599,15 @@ function useFacet() {
  * @returns
  */
 function DashCircleSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 32 32",
     className: 'icon icon-help-header ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     fill: "#5c5c5c",
     d: "M16 0c8.837 0 16 7.163 16 16s-7.163 16-16 16c-8.837 0-16-7.163-16-16v0c0-8.837 7.163-16 16-16v0z"
-  }), createElement("path", {
+  }), /*#__PURE__*/createElement("path", {
     fill: "#fff",
     d: "M21.51 17.594h-11.733c-0.884 0-1.6-0.716-1.6-1.6s0.716-1.6 1.6-1.6h11.733c0.884 0 1.6 0.716 1.6 1.6s-0.716 1.6-1.6 1.6z"
   }));
@@ -8325,12 +8619,12 @@ function DashCircleSVG(props) {
  * @returns
  */
 function CheckmarkSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 32 32",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M27 4l-15 15-7-7-5 5 12 12 20-20z"
   }));
 }
@@ -8341,12 +8635,12 @@ function CheckmarkSVG(props) {
  * @returns
  */
 function PlusCircleSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 20 20",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M11 9v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM10 20c-5.523 0-10-4.477-10-10s4.477-10 10-10v0c5.523 0 10 4.477 10 10s-4.477 10-10 10v0z"
   }));
 }
@@ -8383,29 +8677,29 @@ function Checkbox() {
         var selectionState = store.isFacetSelected(facet, value).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
-        return React__default.createElement("li", {
+        return /*#__PURE__*/React__default.createElement("li", {
           key: value.Value,
           className: "hawk-facet-rail__facet-list-item"
-        }, React__default.createElement("button", {
+        }, /*#__PURE__*/React__default.createElement("button", {
           onClick: function onClick(e) {
             return actor.selectFacet(value);
           },
           className: "hawk-facet-rail__facet-btn",
           "aria-pressed": isSelected
-        }, renderCheckMark(isSelected), rangeValueAssetUrl !== '' ? React__default.createElement(React__default.Fragment, null, React__default.createElement("span", {
+        }, renderCheckMark(isSelected), rangeValueAssetUrl !== '' ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
           className: "hawk-selectionInner"
-        }, React__default.createElement("span", {
+        }, /*#__PURE__*/React__default.createElement("span", {
           className: "hawk-range-asset",
           title: value.Label
-        }), FacetRangeDisplayType.Text !== facet.FacetRangeDisplayType && React__default.createElement("img", {
+        }), FacetRangeDisplayType.Text !== facet.FacetRangeDisplayType && /*#__PURE__*/React__default.createElement("img", {
           src: rangeValueAssetUrl,
           alt: value.Label
-        })), React__default.createElement("span", {
+        })), /*#__PURE__*/React__default.createElement("span", {
           style: isNegated ? {
             textDecoration: 'line-through'
           } : undefined,
           className: "hawk-facet-rail__facet-name"
-        }, value.Label, " (", value.Count, ")")) : React__default.createElement(React__default.Fragment, null, React__default.createElement("span", {
+        }, value.Label, " (", value.Count, ")")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
           style: isNegated ? {
             textDecoration: 'line-through'
           } : undefined,
@@ -8418,16 +8712,16 @@ function Checkbox() {
         var selectionState = store.isFacetSelected(facet, value).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
-        return React__default.createElement("li", {
+        return /*#__PURE__*/React__default.createElement("li", {
           key: value.Value,
           className: "hawk-facet-rail__facet-list-item"
-        }, React__default.createElement("button", {
+        }, /*#__PURE__*/React__default.createElement("button", {
           onClick: function onClick(e) {
             return actor.selectFacet(value);
           },
           className: "hawk-facet-rail__facet-btn",
           "aria-pressed": isSelected
-        }, renderCheckMark(isSelected), React__default.createElement("span", {
+        }, renderCheckMark(isSelected), /*#__PURE__*/React__default.createElement("span", {
           style: isNegated ? {
             textDecoration: 'line-through'
           } : undefined,
@@ -8438,33 +8732,33 @@ function Checkbox() {
   }
 
   function renderCheckMark(isSelected) {
-    return React__default.createElement("span", {
+    return /*#__PURE__*/React__default.createElement("span", {
       className: isSelected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'
-    }, isSelected ? React__default.createElement(CheckmarkSVG, {
+    }, isSelected ? /*#__PURE__*/React__default.createElement(CheckmarkSVG, {
       "class": "hawk-facet-rail__facet-checkbox-icon"
     }) : null);
   }
 
   function renderFacetActions(value, isNegated) {
-    return React__default.createElement("button", {
+    return /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick(e) {
         return actor.negateFacet(value);
       },
       className: "hawk-facet-rail__facet-btn-exclude"
-    }, isNegated ? React__default.createElement(React__default.Fragment, null, React__default.createElement(PlusCircleSVG, {
+    }, isNegated ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusCircleSVG, {
       "class": "hawk-facet-rail__facet-btn-include"
-    }), React__default.createElement("span", {
+    }), /*#__PURE__*/React__default.createElement("span", {
       className: "visually-hidden"
-    }, "Include facet")) : React__default.createElement(React__default.Fragment, null, React__default.createElement(DashCircleSVG, null), React__default.createElement("span", {
+    }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
       className: "visually-hidden"
     }, "Exclude facet")));
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-checkbox"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, renderOptions())), renderer.renderTruncation());
 }
@@ -8479,7 +8773,7 @@ function Search() {
       actor = _useFacet.actor;
 
   var _useState = useState(undefined),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       input = _useState2[0],
       setInput = _useState2[1];
 
@@ -8511,19 +8805,19 @@ function Search() {
     return store.pendingSearch.SearchWithin || '';
   }
 
-  return React__default.createElement(React__default.Fragment, null, React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values__search"
-  }, React__default.createElement("input", {
+  }, /*#__PURE__*/React__default.createElement("input", {
     value: getInputValue(),
     onChange: function onChange(e) {
       return setInput(e.currentTarget.value);
     },
     onKeyDown: onKeyDown
-  }))), store.pendingSearch.SearchWithin && React__default.createElement("div", {
+  }))), store.pendingSearch.SearchWithin && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values__search-clear"
-  }, React__default.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     className: "link-button",
     onClick: clearFacet
   }, t('Clear'))));
@@ -8549,26 +8843,26 @@ function Link() {
     }
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-link"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, facetValues.map(function (value) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
     var selectionState = store.isFacetSelected(facet, value).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
-    return React__default.createElement("li", {
+    return /*#__PURE__*/React__default.createElement("li", {
       key: value.Value,
       className: "hawk-facet-rail__facet-list-item"
-    }, React__default.createElement("button", {
+    }, /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick(e) {
         return setLinkFacet(value, selectionState);
       },
       className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
       "aria-pressed": isSelected
-    }, React__default.createElement("span", {
+    }, /*#__PURE__*/React__default.createElement("span", {
       className: "hawk-facet-rail__facet-name"
     }, value.Label, " (", value.Count, ")")));
   }))), renderer.renderTruncation());
@@ -8584,12 +8878,12 @@ function formatDate(unixFormat) {
 
 function SliderCalendarInputs(sliderProps) {
   var _useState = useState(0),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       minValue = _useState2[0],
       setMinValue = _useState2[1];
 
   var _useState3 = useState(0),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       maxValue = _useState4[0],
       setMaxValue = _useState4[1];
 
@@ -8621,16 +8915,16 @@ function SliderCalendarInputs(sliderProps) {
     setMinValue(sliderProps.values[0]);
     setMaxValue(sliderProps.values[1]);
   }, [sliderProps]);
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-sliderNumeric"
-  }, React__default.createElement("input", {
+  }, /*#__PURE__*/React__default.createElement("input", {
     type: "date",
     value: formatDate(Number(minValue)),
     className: "hawk-text-input hawk-date-value-start",
     min: formatDate(sliderProps.min),
     max: formatDate(sliderProps.max),
     onChange: onMinUpdate
-  }), React__default.createElement("input", {
+  }), /*#__PURE__*/React__default.createElement("input", {
     type: "date",
     value: formatDate(Number(maxValue)),
     className: "hawk-text-input hawk-date-value-end",
@@ -8640,7 +8934,7 @@ function SliderCalendarInputs(sliderProps) {
   }));
 }
 
-var Rheostat = React__default.lazy(function () {
+var Rheostat = /*#__PURE__*/React__default.lazy(function () {
   return import(
   /* webpackChunkName: "rheostat" */
   'rheostat');
@@ -8680,33 +8974,33 @@ function SliderDate() {
   var range = facetValues.length > 0 ? facetValues[0] : null;
 
   var _useState = useState(range && getTime(range.RangeMin)),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       rangeMin = _useState2[0],
       setMinRange = _useState2[1];
 
   var _useState3 = useState(range && getTime(range.RangeMax)),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       rangeMax = _useState4[0],
       setMaxRange = _useState4[1];
 
   var _useState5 = useState(range && getTime(range.RangeStart)),
-      _useState6 = _slicedToArray(_useState5, 2),
+      _useState6 = _slicedToArray$1(_useState5, 2),
       rangeStart = _useState6[0],
       setStartRange = _useState6[1];
 
   var _useState7 = useState(range && getTime(range.RangeEnd)),
-      _useState8 = _slicedToArray(_useState7, 2),
+      _useState8 = _slicedToArray$1(_useState7, 2),
       rangeEnd = _useState8[0],
       setEndRange = _useState8[1]; // if there's no range, initialize to zeros
 
 
   var _useState9 = useState(),
-      _useState10 = _slicedToArray(_useState9, 2),
+      _useState10 = _slicedToArray$1(_useState9, 2),
       minValue = _useState10[0],
       setMinValue = _useState10[1];
 
   var _useState11 = useState(),
-      _useState12 = _slicedToArray(_useState11, 2),
+      _useState12 = _slicedToArray$1(_useState11, 2),
       maxValue = _useState12[0],
       setMaxValue = _useState12[1];
 
@@ -8732,7 +9026,7 @@ function SliderDate() {
   }
 
   function onSliderDrag(state) {
-    var _state$values = _slicedToArray(state.values, 2),
+    var _state$values = _slicedToArray$1(state.values, 2),
         newMin = _state$values[0],
         newMax = _state$values[1];
 
@@ -8741,7 +9035,7 @@ function SliderDate() {
   }
 
   function onSliderValueChange(state) {
-    var _state$values2 = _slicedToArray(state.values, 2),
+    var _state$values2 = _slicedToArray$1(state.values, 2),
         newMin = _state$values2[0],
         newMax = _state$values2[1];
 
@@ -8798,18 +9092,18 @@ function SliderDate() {
     actor.setFacets([selection]);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-link"
-  }, React__default.createElement(React__default.Suspense, {
-    fallback: React__default.createElement("div", null, "Loading...")
-  }, React__default.createElement(SliderCalendarInputs, {
+  }, /*#__PURE__*/React__default.createElement(React__default.Suspense, {
+    fallback: /*#__PURE__*/React__default.createElement("div", null, "Loading...")
+  }, /*#__PURE__*/React__default.createElement(SliderCalendarInputs, {
     min: rangeMin,
     max: rangeMax,
     values: [minValue === undefined ? rangeStart : Math.max(minValue, rangeMin), maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)],
     onValueChange: onValueChange
-  }), React__default.createElement(Rheostat, {
+  }), /*#__PURE__*/React__default.createElement(Rheostat, {
     min: rangeMin,
     max: rangeMax,
     values: [Math.floor(minValue === undefined ? rangeStart : Math.max(minValue, rangeMin)), Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax))],
@@ -8819,9 +9113,9 @@ function SliderDate() {
 }
 
 /**
- * react-number-format - 4.3.1
+ * react-number-format - 4.4.4
  * Author : Sudhanshu Yadav
- * Copyright (c) 2016, 2019 to Sudhanshu Yadav, released under the MIT license.
+ * Copyright (c) 2016, 2021 to Sudhanshu Yadav, released under the MIT license.
  * https://github.com/s-yadav/react-number-format
  */
 
@@ -8831,7 +9125,7 @@ function _classCallCheck$2(instance, Constructor) {
   }
 }
 
-function _defineProperties$2(target, props) {
+function _defineProperties$1(target, props) {
   for (var i = 0; i < props.length; i++) {
     var descriptor = props[i];
     descriptor.enumerable = descriptor.enumerable || false;
@@ -8842,8 +9136,8 @@ function _defineProperties$2(target, props) {
 }
 
 function _createClass$2(Constructor, protoProps, staticProps) {
-  if (protoProps) _defineProperties$2(Constructor.prototype, protoProps);
-  if (staticProps) _defineProperties$2(Constructor, staticProps);
+  if (protoProps) _defineProperties$1(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties$1(Constructor, staticProps);
   return Constructor;
 }
 
@@ -8999,8 +9293,11 @@ function noop$1() {}
 function returnTrue() {
   return true;
 }
-function charIsNumber(char) {
-  return !!(char || '').match(/\d/);
+function charIsNumber(_char) {
+  return !!(_char || '').match(/\d/);
+}
+function isNil(val) {
+  return val === null || val === undefined;
 }
 function escapeRegExp(str) {
   return str.replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&");
@@ -9164,6 +9461,9 @@ function getCurrentCaretPosition(el) {
   /*Max of selectionStart and selectionEnd is taken for the patch of pixel and other mobile device caret bug*/
   return Math.max(el.selectionStart, el.selectionEnd);
 }
+function addInputMode(format) {
+  return format || !(navigator.platform && /iPhone|iPod/.test(navigator.platform));
+}
 
 var propTypes$1 = {
   thousandSeparator: propTypes.oneOfType([propTypes.string, propTypes.oneOf([true])]),
@@ -9194,7 +9494,10 @@ var propTypes$1 = {
   type: propTypes.oneOf(['text', 'tel', 'password']),
   isAllowed: propTypes.func,
   renderText: propTypes.func,
-  getInputRef: propTypes.func
+  getInputRef: propTypes.oneOfType([propTypes.func, // for legacy refs
+  propTypes.shape({
+    current: propTypes.any
+  })])
 };
 var defaultProps = {
   displayType: 'input',
@@ -9236,24 +9539,39 @@ function (_React$Component) {
 
     _this.state = {
       value: formattedValue,
-      numAsString: _this.removeFormatting(formattedValue)
+      numAsString: _this.removeFormatting(formattedValue),
+      mounted: false
     };
     _this.selectionBeforeInput = {
       selectionStart: 0,
       selectionEnd: 0
     };
-    _this.onChange = _this.onChange.bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
-    _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
-    _this.onMouseUp = _this.onMouseUp.bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
-    _this.onFocus = _this.onFocus.bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
-    _this.onBlur = _this.onBlur.bind(_assertThisInitialized$1(_assertThisInitialized$1(_this)));
+    _this.onChange = _this.onChange.bind(_assertThisInitialized$1(_this));
+    _this.onKeyDown = _this.onKeyDown.bind(_assertThisInitialized$1(_this));
+    _this.onMouseUp = _this.onMouseUp.bind(_assertThisInitialized$1(_this));
+    _this.onFocus = _this.onFocus.bind(_assertThisInitialized$1(_this));
+    _this.onBlur = _this.onBlur.bind(_assertThisInitialized$1(_this));
     return _this;
   }
 
   _createClass$2(NumberFormat, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      // set mounted state
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({
+        mounted: true
+      });
+    }
+  }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps) {
       this.updateValueIfRequired(prevProps);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      clearTimeout(this.focusTimeout);
     }
   }, {
     key: "updateValueIfRequired",
@@ -9263,13 +9581,13 @@ function (_React$Component) {
           focusedElm = this.focusedElm;
       var stateValue = state.value,
           _state$numAsString = state.numAsString,
-          lastNumStr = _state$numAsString === void 0 ? '' : _state$numAsString;
+          lastNumStr = _state$numAsString === void 0 ? '' : _state$numAsString; // If only state changed no need to do any thing
 
       if (prevProps !== props) {
         //validate props
         this.validateProps();
         var lastValueWithNewFormat = this.formatNumString(lastNumStr);
-        var formattedValue = props.value === undefined ? lastValueWithNewFormat : this.formatValueProp();
+        var formattedValue = isNil(props.value) ? lastValueWithNewFormat : this.formatValueProp();
         var numAsString = this.removeFormatting(formattedValue);
         var floatValue = parseFloat(numAsString);
         var lastFloatValue = parseFloat(lastNumStr);
@@ -9679,9 +9997,10 @@ function (_React$Component) {
           fixedDecimalScale = _this$props8.fixedDecimalScale,
           allowEmptyFormatting = _this$props8.allowEmptyFormatting;
       var _this$props9 = this.props,
-          _this$props9$value = _this$props9.value,
-          value = _this$props9$value === void 0 ? defaultValue : _this$props9$value,
-          isNumericString = _this$props9.isNumericString;
+          value = _this$props9.value,
+          isNumericString = _this$props9.isNumericString; // if value is undefined or null, use defaultValue instead
+
+      value = isNil(value) ? defaultValue : value;
       var isNonNumericFalsy = !value && value !== 0;
 
       if (isNonNumericFalsy && allowEmptyFormatting) {
@@ -9790,7 +10109,8 @@ function (_React$Component) {
           format = _this$props11.format,
           allowNegative = _this$props11.allowNegative,
           prefix = _this$props11.prefix,
-          suffix = _this$props11.suffix;
+          suffix = _this$props11.suffix,
+          decimalScale = _this$props11.decimalScale;
 
       var _this$getSeparators6 = this.getSeparators(),
           allowedDecimalSeparators = _this$getSeparators6.allowedDecimalSeparators,
@@ -9808,7 +10128,8 @@ function (_React$Component) {
 
 
       if (!format && start === end && allowedDecimalSeparators.indexOf(value[selectionStart]) !== -1) {
-        return value.substr(0, selectionStart) + decimalSeparator + value.substr(selectionStart + 1, value.length);
+        var separator = decimalScale === 0 ? '' : decimalSeparator;
+        return value.substr(0, selectionStart) + separator + value.substr(selectionStart + 1, value.length);
       }
       /* don't do anyhting if something got added,
        or if value is empty string (when whole input is cleared)
@@ -9854,29 +10175,42 @@ function (_React$Component) {
   }, {
     key: "updateValue",
     value: function updateValue(params) {
-      var _this2 = this;
-
-      var onUpdate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop$1;
       var formattedValue = params.formattedValue,
-          input = params.input;
+          input = params.input,
+          _params$setCaretPosit = params.setCaretPosition,
+          setCaretPosition = _params$setCaretPosit === void 0 ? true : _params$setCaretPosit;
       var numAsString = params.numAsString,
           caretPos = params.caretPos;
       var onValueChange = this.props.onValueChange;
-      var lastValue = this.state.value; //set caret position, and value imperatively when element is provided
+      var lastValue = this.state.value;
 
       if (input) {
-        //calculate caret position if not defined
-        if (!caretPos) {
-          var inputValue = params.inputValue || input.value;
-          var currentCaretPosition = getCurrentCaretPosition(input); //get the caret position
+        //set caret position, and value imperatively when element is provided
+        if (setCaretPosition) {
+          //calculate caret position if not defined
+          if (!caretPos) {
+            var inputValue = params.inputValue || input.value;
+            var currentCaretPosition = getCurrentCaretPosition(input);
+            /**
+             * set the value imperatively, this is required for IE fix
+             * This is also required as if new caret position is beyond the previous value.
+             * Caret position will not be set correctly
+             */
 
-          caretPos = this.getCaretPosition(inputValue, formattedValue, currentCaretPosition);
-        } //set the value imperatively, this is required for IE fix
+            input.value = formattedValue; //get the caret position
+
+            caretPos = this.getCaretPosition(inputValue, formattedValue, currentCaretPosition);
+          } //set caret position
 
 
-        input.value = formattedValue; //set caret position
-
-        this.setPatchedCaretPosition(input, caretPos, formattedValue);
+          this.setPatchedCaretPosition(input, caretPos, formattedValue);
+        } else {
+          /**
+           * if we are not setting caret position set the value imperatively.
+           * This is required on onBlur method
+           */
+          input.value = formattedValue;
+        }
       } //calculate numeric string if not passed
 
 
@@ -9889,18 +10223,14 @@ function (_React$Component) {
         this.setState({
           value: formattedValue,
           numAsString: numAsString
-        }, function () {
-          onValueChange(_this2.getValueObject(formattedValue, numAsString));
-          onUpdate();
-        });
-      } else {
-        onUpdate();
+        }); // trigger onValueChange synchronously, so parent is updated along with the number format. Fix for #277, #287
+
+        onValueChange(this.getValueObject(formattedValue, numAsString));
       }
     }
   }, {
     key: "onChange",
     value: function onChange(e) {
-      e.persist();
       var el = e.target;
       var inputValue = el.value;
       var state = this.state,
@@ -9922,9 +10252,8 @@ function (_React$Component) {
         numAsString: numAsString,
         inputValue: inputValue,
         input: el
-      }, function () {
-        props.onChange(e);
       });
+      props.onChange(e);
     }
   }, {
     key: "onBlur",
@@ -9937,12 +10266,14 @@ function (_React$Component) {
       var numAsString = state.numAsString;
       var lastValue = state.value;
       this.focusedElm = null;
-
-      if (this.focusTimeout) {
-        clearTimeout(this.focusTimeout);
-      }
+      clearTimeout(this.focusTimeout);
 
       if (!format) {
+        // if the numAsString is not a valid number reset it to empty
+        if (isNaN(parseFloat(numAsString))) {
+          numAsString = '';
+        }
+
         if (!allowLeadingZeros) {
           numAsString = fixLeadingZero(numAsString);
         }
@@ -9951,13 +10282,13 @@ function (_React$Component) {
 
         if (formattedValue !== lastValue) {
           // the event needs to be persisted because its properties can be accessed in an asynchronous way
-          e.persist();
           this.updateValue({
             formattedValue: formattedValue,
-            numAsString: numAsString
-          }, function () {
-            onBlur(e);
+            numAsString: numAsString,
+            input: e.target,
+            setCaretPosition: false
           });
+          onBlur(e);
           return;
         }
       }
@@ -9980,17 +10311,15 @@ function (_React$Component) {
           prefix = _this$props12.prefix,
           suffix = _this$props12.suffix,
           format = _this$props12.format,
-          onKeyDown = _this$props12.onKeyDown,
-          onValueChange = _this$props12.onValueChange;
+          onKeyDown = _this$props12.onKeyDown;
       var ignoreDecimalSeparator = decimalScale !== undefined && fixedDecimalScale;
       var numRegex = this.getNumberRegex(false, ignoreDecimalSeparator);
       var negativeRegex = new RegExp('-');
       var isPatternFormat = typeof format === 'string';
       this.selectionBeforeInput = {
         selectionStart: selectionStart,
-        selectionEnd: selectionEnd //Handle backspace and delete against non numerical/decimal characters or arrow keys
-
-      };
+        selectionEnd: selectionEnd
+      }; //Handle backspace and delete against non numerical/decimal characters or arrow keys
 
       if (key === 'ArrowLeft' || key === 'Backspace') {
         expectedCaretPosition = selectionStart - 1;
@@ -10024,9 +10353,7 @@ function (_React$Component) {
         we will not have any information of keyPress
         */
         if (selectionStart <= leftBound + 1 && value[0] === '-' && typeof format === 'undefined') {
-          var newValue = value.substring(1); //persist event before performing async task
-
-          e.persist();
+          var newValue = value.substring(1);
           this.updateValue({
             formattedValue: newValue,
             caretPos: newCaretPosition,
@@ -10053,7 +10380,7 @@ function (_React$Component) {
         this.setPatchedCaretPosition(el, newCaretPosition, value);
       }
 
-      this.props.onKeyDown(e);
+      onKeyDown(e);
     }
     /** required to handle the caret position when click anywhere within the input **/
 
@@ -10084,7 +10411,7 @@ function (_React$Component) {
   }, {
     key: "onFocus",
     value: function onFocus(e) {
-      var _this3 = this;
+      var _this2 = this;
 
       // Workaround Chrome and Safari bug https://bugs.chromium.org/p/chromium/issues/detail?id=779328
       // (onFocus event target selectionStart is always 0 before setTimeout)
@@ -10097,14 +10424,14 @@ function (_React$Component) {
             _el$value3 = el.value,
             value = _el$value3 === void 0 ? '' : _el$value3;
 
-        var caretPosition = _this3.correctCaretPosition(value, selectionStart); //setPatchedCaretPosition only when everything is not selected on focus (while tabbing into the field)
+        var caretPosition = _this2.correctCaretPosition(value, selectionStart); //setPatchedCaretPosition only when everything is not selected on focus (while tabbing into the field)
 
 
         if (caretPosition !== selectionStart && !(selectionStart === 0 && selectionEnd === value.length)) {
-          _this3.setPatchedCaretPosition(el, caretPosition, value);
+          _this2.setPatchedCaretPosition(el, caretPosition, value);
         }
 
-        _this3.props.onFocus(e);
+        _this2.props.onFocus(e);
       }, 0);
     }
   }, {
@@ -10115,11 +10442,18 @@ function (_React$Component) {
           displayType = _this$props13.displayType,
           customInput = _this$props13.customInput,
           renderText = _this$props13.renderText,
-          getInputRef = _this$props13.getInputRef;
-      var value = this.state.value;
-      var otherProps = omit(this.props, propTypes$1);
+          getInputRef = _this$props13.getInputRef,
+          format = _this$props13.format;
+      var _this$state = this.state,
+          value = _this$state.value,
+          mounted = _this$state.mounted;
+      var otherProps = omit(this.props, propTypes$1); // add input mode on element based on format prop and device once the component is mounted 
 
-      var inputProps = _extends$1({}, otherProps, {
+      var inputMode = mounted && addInputMode(format) ? 'numeric' : undefined;
+
+      var inputProps = _extends$1({
+        inputMode: inputMode
+      }, otherProps, {
         type: type,
         value: value,
         onChange: this.onChange,
@@ -10154,12 +10488,12 @@ NumberFormat.defaultProps = defaultProps;
 
 function SliderNumericInputs(sliderProps) {
   var _useState = useState(''),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       minValue = _useState2[0],
       setMinValue = _useState2[1];
 
   var _useState3 = useState(''),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       maxValue = _useState4[0],
       setMaxValue = _useState4[1];
 
@@ -10195,9 +10529,9 @@ function SliderNumericInputs(sliderProps) {
     setMinValue(sliderProps.values[0].toString());
     setMaxValue(sliderProps.values[1].toString());
   }, [sliderProps]);
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-sliderNumeric"
-  }, React__default.createElement(NumberFormat, {
+  }, /*#__PURE__*/React__default.createElement(NumberFormat, {
     thousandSeparator: sliderProps.isCurrency,
     prefix: sliderProps.isCurrency ? sliderProps.currencySymbol : '',
     value: minValue,
@@ -10207,7 +10541,7 @@ function SliderNumericInputs(sliderProps) {
     onValueChange: onMinUpdate,
     onBlur: reloadFacets,
     decimalScale: sliderProps.decimalPrecision
-  }), React__default.createElement(NumberFormat, {
+  }), /*#__PURE__*/React__default.createElement(NumberFormat, {
     thousandSeparator: sliderProps.isCurrency,
     prefix: sliderProps.isCurrency ? sliderProps.currencySymbol : '',
     value: maxValue,
@@ -10220,7 +10554,7 @@ function SliderNumericInputs(sliderProps) {
   }));
 }
 
-var Rheostat$1 = React__default.lazy(function () {
+var Rheostat$1 = /*#__PURE__*/React__default.lazy(function () {
   return import(
   /* webpackChunkName: "rheostat" */
   'rheostat');
@@ -10241,43 +10575,43 @@ function SliderNumeric() {
   var range = facetValues.length > 0 ? facetValues[0] : null;
 
   var _useState = useState(range && Number(parseFloat(range.RangeMin || '').toFixed(2))),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       rangeMin = _useState2[0],
       setMinRange = _useState2[1];
 
   var _useState3 = useState(range && Number(parseFloat(range.RangeMax || '').toFixed(2))),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       rangeMax = _useState4[0],
       setMaxRange = _useState4[1];
 
   var _useState5 = useState(range && Number(parseFloat(range.RangeStart || '').toFixed(2))),
-      _useState6 = _slicedToArray(_useState5, 2),
+      _useState6 = _slicedToArray$1(_useState5, 2),
       rangeStart = _useState6[0],
       setStartRange = _useState6[1];
 
   var _useState7 = useState(range && Number(parseFloat(range.RangeEnd || '').toFixed(2))),
-      _useState8 = _slicedToArray(_useState7, 2),
+      _useState8 = _slicedToArray$1(_useState7, 2),
       rangeEnd = _useState8[0],
       setEndRange = _useState8[1]; // if there's no range, initialize to zeros
 
 
   var _useState9 = useState(),
-      _useState10 = _slicedToArray(_useState9, 2),
+      _useState10 = _slicedToArray$1(_useState9, 2),
       minValue = _useState10[0],
       setMinValue = _useState10[1];
 
   var _useState11 = useState(),
-      _useState12 = _slicedToArray(_useState11, 2),
+      _useState12 = _slicedToArray$1(_useState11, 2),
       maxValue = _useState12[0],
       setMaxValue = _useState12[1];
 
   var _useState13 = useState(facet.IsCurrency),
-      _useState14 = _slicedToArray(_useState13, 2),
+      _useState14 = _slicedToArray$1(_useState13, 2),
       isCurency = _useState14[0],
       setIsCurrency = _useState14[1];
 
   var _useState15 = useState(facet.CurrencySymbol),
-      _useState16 = _slicedToArray(_useState15, 2),
+      _useState16 = _slicedToArray$1(_useState15, 2),
       currencySymbol = _useState16[0],
       setCurrencySymbol = _useState16[1];
 
@@ -10311,7 +10645,7 @@ function SliderNumeric() {
   }
 
   function onSliderValueChange(state) {
-    var _state$values = _slicedToArray(state.values, 2),
+    var _state$values = _slicedToArray$1(state.values, 2),
         newMin = _state$values[0],
         newMax = _state$values[1];
 
@@ -10368,13 +10702,13 @@ function SliderNumeric() {
     actor.setFacets([selection]);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-link"
-  }, React__default.createElement(React__default.Suspense, {
-    fallback: React__default.createElement("div", null, "Loading...")
-  }, React__default.createElement(SliderNumericInputs, {
+  }, /*#__PURE__*/React__default.createElement(React__default.Suspense, {
+    fallback: /*#__PURE__*/React__default.createElement("div", null, "Loading...")
+  }, /*#__PURE__*/React__default.createElement(SliderNumericInputs, {
     min: rangeMin,
     max: rangeMax,
     currencySymbol: currencySymbol,
@@ -10382,7 +10716,7 @@ function SliderNumeric() {
     values: [minValue === undefined ? rangeStart : Math.max(minValue, rangeMin), maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax)],
     onValueChange: onValueChange,
     decimalPrecision: decimalPrecision
-  }), React__default.createElement(Rheostat$1, {
+  }), /*#__PURE__*/React__default.createElement(Rheostat$1, {
     min: rangeMin,
     max: rangeMax,
     values: [Math.floor(minValue === undefined ? rangeStart : Math.max(minValue, rangeMin)), Math.ceil(maxValue === undefined ? rangeEnd : Math.min(maxValue, rangeMax))],
@@ -10395,10 +10729,10 @@ function Slider() {
       facet = _useFacet.facet;
 
   if (facet.DataType && facet.DataType === 'datetime') {
-    return React__default.createElement(SliderDate, null);
+    return /*#__PURE__*/React__default.createElement(SliderDate, null);
   }
 
-  return React__default.createElement(SliderNumeric, null);
+  return /*#__PURE__*/React__default.createElement(SliderNumeric, null);
 }
 
 function SwatchItem(item) {
@@ -10412,27 +10746,27 @@ function SwatchItem(item) {
     backgroundColor: item.facetSwatch.Color
   };
   var listItemClassNames = 'hawk-facet-rail__facet-list-item' + (item.isSelected ? ' hawkFacet-active' : '') + (item.isNegated ? ' hawkFacet-negative' : '');
-  return React__default.createElement("li", {
+  return /*#__PURE__*/React__default.createElement("li", {
     key: item.facetSwatch.Value,
     className: listItemClassNames
-  }, React__default.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick(e) {
       return item.onSwatchSelected(facetValue, false);
     },
     className: "hawk-facet-rail__facet-btn hawk-styleSwatch",
     "aria-pressed": item.isSelected
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-selectionInner"
-  }, item.isColor ? React__default.createElement("span", {
+  }, item.isColor ? /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-swatchColor",
     style: colorSwatchStyle,
     title: item.facetSwatch.Value
-  }) : React__default.createElement("img", {
+  }) : /*#__PURE__*/React__default.createElement("img", {
     src: swatchUrl,
     alt: item.facetSwatch.Value
-  }))), React__default.createElement("button", {
+  }))), /*#__PURE__*/React__default.createElement("button", {
     className: "hawk-negativeIcon"
-  }, React__default.createElement("i", {
+  }, /*#__PURE__*/React__default.createElement("i", {
     className: "hawkIcon-blocked",
     onClick: function onClick(e) {
       return item.onSwatchSelected(facetValue, true);
@@ -10454,11 +10788,11 @@ function Swatch$1() {
     isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-swatch"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, facet.SwatchData && facetValues.map(function (value) {
     var facetValue = value.Value || ''; // find swatch that is corresponding with value
@@ -10475,7 +10809,7 @@ function Swatch$1() {
     var isNegated = selectionState === FacetSelectionState.Negated;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
     var isColor = !!facetSwatch.Color;
-    return React__default.createElement(SwatchItem, {
+    return /*#__PURE__*/React__default.createElement(SwatchItem, {
       key: facetValue,
       swatchValue: value,
       facetSwatch: facetSwatch,
@@ -10502,12 +10836,12 @@ function NestedItem(item) {
       facet = _useFacet.facet;
 
   var _useState = useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       isExpanded = _useState2[0],
       setIsExpanded = _useState2[1];
 
   var _useState3 = useState(facet.shouldTruncate),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       isTruncated = _useState4[0],
       setIsTruncated = _useState4[1];
 
@@ -10523,9 +10857,9 @@ function NestedItem(item) {
   }
 
   function renderChildTruncation() {
-    return React__default.createElement(React__default.Fragment, null, shouldTruncateChildren && React__default.createElement("li", {
+    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, shouldTruncateChildren && /*#__PURE__*/React__default.createElement("li", {
       className: "hawk-facet-rail__facet-list-item hawk-show-more"
-    }, React__default.createElement("button", {
+    }, /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick() {
         return setIsTruncated(!isTruncated);
       },
@@ -10549,58 +10883,58 @@ function NestedItem(item) {
     }
   }
 
-  return React__default.createElement("li", {
+  return /*#__PURE__*/React__default.createElement("li", {
     className: "hawk-facet-rail__facet-list-item hawkFacet-group"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawkFacet-group__inline"
-  }, React__default.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick() {
       return setSelection();
     },
     className: "hawk-facet-rail__facet-btn",
     "aria-pressed": item.isSelected
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     className: item.isSelected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'
-  }, item.isSelected ? React__default.createElement(CheckmarkSVG, {
+  }, item.isSelected ? /*#__PURE__*/React__default.createElement(CheckmarkSVG, {
     "class": "hawk-facet-rail__facet-checkbox-icon"
-  }) : null), React__default.createElement("span", {
+  }) : null), /*#__PURE__*/React__default.createElement("span", {
     style: item.isNegated ? {
       textDecoration: 'line-through'
     } : undefined,
     className: "hawk-facet-rail__facet-name"
-  }, item.hierarchyValue.Label, " (", item.hierarchyValue.Count, ")")), React__default.createElement("button", {
+  }, item.hierarchyValue.Label, " (", item.hierarchyValue.Count, ")")), /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick(e) {
       return item.onValueSelected(hierarchyValue, true);
     },
     className: "hawk-facet-rail__facet-btn-exclude"
-  }, item.isNegated ? React__default.createElement(React__default.Fragment, null, React__default.createElement(PlusCircleSVG, {
+  }, item.isNegated ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusCircleSVG, {
     "class": "hawk-facet-rail__facet-btn-include"
-  }), React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Include facet")) : React__default.createElement(React__default.Fragment, null, React__default.createElement(DashCircleSVG, null), React__default.createElement("span", {
+  }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Exclude facet"))), hierarchyChildren.length > 0 ? React__default.createElement("button", {
+  }, "Exclude facet"))), hierarchyChildren.length > 0 ? /*#__PURE__*/React__default.createElement("button", {
     className: isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed',
     "aria-expanded": "false",
     onClick: function onClick() {
       return setIsExpanded(!isExpanded);
     }
-  }, "\xA0") : null), isExpanded && hierarchyChildren ? React__default.createElement("div", {
+  }, "\xA0") : null), isExpanded && hierarchyChildren ? /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__w-100"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawkFacet-group-inside"
   }, hierarchyChildren.map(function (value) {
     var selectionState = store.isFacetSelected(facet, value).state;
     var isNegated = selectionState === FacetSelectionState.Negated;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
-    return React__default.createElement(NestedItem, {
+    return /*#__PURE__*/React__default.createElement(NestedItem, {
       key: value.Path,
       hierarchyValue: value,
       isSelected: isSelected,
       isNegated: isNegated,
       onValueSelected: item.onValueSelected
     });
-  }), renderChildTruncation())) : React__default.createElement(React__default.Fragment, null));
+  }), renderChildTruncation())) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null));
 }
 
 function Nested() {
@@ -10617,18 +10951,18 @@ function Nested() {
     isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-checkbox"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, facetValues.map(function (value) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
     var selectionState = store.isFacetSelected(facet, value).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
     var isNegated = selectionState === FacetSelectionState.Negated;
-    return React__default.createElement(NestedItem, {
+    return /*#__PURE__*/React__default.createElement(NestedItem, {
       key: value.Value,
       hierarchyValue: value,
       isSelected: isSelected,
@@ -16327,12 +16661,12 @@ function OpenRangeDatetime() {
   var rangeEndDate = daterange && daterange.RangeEnd ? moment(daterange.RangeEnd).format('YYYY-MM-DDTHH:mm') : ''; // if there's no range, initialize to empty strings
 
   var _useState = useState(rangeStartDate || ''),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       minDateValue = _useState2[0],
       setdateStartValue = _useState2[1];
 
   var _useState3 = useState(rangeEndDate || ''),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       maxDateValue = _useState4[0],
       setdateEndValue = _useState4[1]; // the open range boundary values are defined by the first facet value. or null if there is no first value
 
@@ -16378,20 +16712,20 @@ function OpenRangeDatetime() {
     }
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-link"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-open-range hawk-facet-type-date"
-  }, React__default.createElement("input", {
+  }, /*#__PURE__*/React__default.createElement("input", {
     type: "datetime-local",
     className: "hawk-text-input hawk-date-value-start",
     value: minDateValue,
     min: rangeStartDate,
     max: rangeEndDate,
     onChange: ondateRangeStartChange
-  }), React__default.createElement("input", {
+  }), /*#__PURE__*/React__default.createElement("input", {
     type: "datetime-local",
     className: "hawk-text-input hawk-date-value-end",
     value: maxDateValue,
@@ -16416,12 +16750,12 @@ function OpenRangeNumber() {
   var rangeEnd = range && range.RangeEnd || ''; // if there's no range, initialize to empty strings
 
   var _useState = useState(rangeStart || ''),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       minValue = _useState2[0],
       setStartValue = _useState2[1];
 
   var _useState3 = useState(rangeEnd || ''),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       maxValue = _useState4[0],
       setEndValue = _useState4[1];
 
@@ -16450,19 +16784,19 @@ function OpenRangeNumber() {
     return null;
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-link"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-open-range"
-  }, React__default.createElement("input", {
+  }, /*#__PURE__*/React__default.createElement("input", {
     type: "text",
     className: "hawk-text-input value-start",
     "data-type": "currency",
     value: minValue,
     onChange: onRangeStartChange
-  }), React__default.createElement("input", {
+  }), /*#__PURE__*/React__default.createElement("input", {
     type: "text",
     className: "hawk-text-input value-end",
     onChange: onRangeEndChange,
@@ -16475,23 +16809,23 @@ function OpenRange() {
       facet = _useFacet.facet;
 
   if (facet.DataType && facet.DataType === 'datetime') {
-    return React__default.createElement(OpenRangeDatetime, null);
+    return /*#__PURE__*/React__default.createElement(OpenRangeDatetime, null);
   }
 
-  return React__default.createElement(OpenRangeNumber, null);
+  return /*#__PURE__*/React__default.createElement(OpenRangeNumber, null);
 }
 
-var SizeItem = React__default.memo(function (_ref) {
+var SizeItem = /*#__PURE__*/React__default.memo(function (_ref) {
   var size = _ref.size,
       onSwatchSelected = _ref.onSwatchSelected,
       isNegated = _ref.isNegated;
-  return React__default.createElement("li", {
+  return /*#__PURE__*/React__default.createElement("li", {
     key: size.Value,
     className: size.Selected ? 'selected' : '',
     onClick: function onClick() {
       return onSwatchSelected(size.Value, isNegated);
     }
-  }, React__default.createElement("div", null, size.Label));
+  }, /*#__PURE__*/React__default.createElement("div", null, size.Label));
 });
 
 function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -16511,18 +16845,18 @@ function Size() {
     isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-size"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list col-sm-8"
   }, facet.Values && facetValues.map(function (value) {
     var selectionState = store.isFacetSelected(facet, value).state;
     var isNegated = selectionState === FacetSelectionState.Negated;
-    return React__default.createElement(SizeItem, {
+    return /*#__PURE__*/React__default.createElement(SizeItem, {
       key: value.Value,
-      size: _objectSpread$5({}, value, {
+      size: _objectSpread$5(_objectSpread$5({}, value), {}, {
         Value: value.Value || '',
         Label: value.Label || ''
       }),
@@ -16540,12 +16874,12 @@ function NestedLinkItem(item) {
       facet = _useFacet.facet;
 
   var _useState = useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       isExpanded = _useState2[0],
       setIsExpanded = _useState2[1];
 
   var _useState3 = useState(facet.shouldTruncate),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       isTruncated = _useState4[0],
       setIsTruncated = _useState4[1];
 
@@ -16561,9 +16895,9 @@ function NestedLinkItem(item) {
   }
 
   function renderChildTruncation() {
-    return React__default.createElement(React__default.Fragment, null, shouldTruncateChildren && React__default.createElement("li", {
+    return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, shouldTruncateChildren && /*#__PURE__*/React__default.createElement("li", {
       className: "hawk-facet-rail__facet-list-item hawk-show-more"
-    }, React__default.createElement("button", {
+    }, /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick() {
         return setIsTruncated(!isTruncated);
       },
@@ -16571,43 +16905,43 @@ function NestedLinkItem(item) {
     }, isTruncated ? "(+) Show ".concat(remainingValues, " More") : '(-) Show Less')));
   }
 
-  return React__default.createElement("li", {
+  return /*#__PURE__*/React__default.createElement("li", {
     className: "hawk-facet-rail__facet-list-item hawkFacet-group"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawkFacet-group__inline"
-  }, React__default.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick() {
       return item.onValueSelected(hierarchyValue, false);
     },
     className: "hawk-facet-rail__facet-btn",
     "aria-pressed": item.isSelected
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     style: item.isNegated ? {
       textDecoration: 'line-through'
     } : undefined,
     className: item.isSelected ? 'hawk-facet-rail__facet-name checked' : 'hawk-facet-rail__facet-name'
-  }, item.hierarchyValue.Label, " (", item.hierarchyValue.Count, ")")), hierarchyChildren.length > 0 ? React__default.createElement("button", {
+  }, item.hierarchyValue.Label, " (", item.hierarchyValue.Count, ")")), hierarchyChildren.length > 0 ? /*#__PURE__*/React__default.createElement("button", {
     className: isExpanded ? 'hawk-collapseState hawk-linklist' : 'hawk-collapseState hawk-linklist collapsed',
     "aria-expanded": "false",
     onClick: function onClick() {
       return setIsExpanded(!isExpanded);
     }
-  }, "\xA0") : null), isExpanded && hierarchyChildren ? React__default.createElement("div", {
+  }, "\xA0") : null), isExpanded && hierarchyChildren ? /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__w-100"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawkFacet-group-inside"
   }, hierarchyChildren.map(function (value) {
     var selectionState = store.isFacetSelected(facet, value).state;
     var isNegated = selectionState === FacetSelectionState.Negated;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
-    return React__default.createElement(NestedLinkItem, {
+    return /*#__PURE__*/React__default.createElement(NestedLinkItem, {
       key: value.Path,
       hierarchyValue: value,
       isSelected: isSelected,
       isNegated: isNegated,
       onValueSelected: item.onValueSelected
     });
-  }), renderChildTruncation())) : React__default.createElement(React__default.Fragment, null));
+  }), renderChildTruncation())) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null));
 }
 
 function NestedLink() {
@@ -16624,18 +16958,18 @@ function NestedLink() {
     isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-linklist"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, facetValues.map(function (value) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
     var selectionState = store.isFacetSelected(facet, value).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
     var isNegated = selectionState === FacetSelectionState.Negated;
-    return React__default.createElement(NestedLinkItem, {
+    return /*#__PURE__*/React__default.createElement(NestedLinkItem, {
       key: value.Value,
       hierarchyValue: value,
       isSelected: isSelected,
@@ -16768,7 +17102,7 @@ function SearchBoxBase(_ref) {
       searchResults = _useHawksearch$store.searchResults;
 
   var _useState = useState(''),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       initialInput = _useState2[0],
       setInitialInput = _useState2[1]; // Will update the suggested selected keyword in the autocomplete input box
 
@@ -16796,7 +17130,7 @@ function SearchBoxBase(_ref) {
       //
       // then we want to retain the input value that was originally typed in. by default downshift
       // will clear the input value, so we're overriding this behavior here.
-      return _objectSpread$6({}, changes, {
+      return _objectSpread$6(_objectSpread$6({}, changes), {}, {
         inputValue: state.inputValue
       });
     }
@@ -16838,9 +17172,9 @@ function SearchBoxBase(_ref) {
     return matchedStrategy.SuggestionStrategy.toString(item);
   }
 
-  return React__default.createElement(React__default.Suspense, {
-    fallback: React__default.createElement("div", null, t('Loading'), "...")
-  }, React__default.createElement(Downshift, {
+  return /*#__PURE__*/React__default.createElement(React__default.Suspense, {
+    fallback: /*#__PURE__*/React__default.createElement("div", null, t('Loading'), "...")
+  }, /*#__PURE__*/React__default.createElement(Downshift, {
     stateReducer: handleStateChange,
     itemToString: function itemToString(item) {
       return handleToString(item);
@@ -16855,13 +17189,13 @@ function SearchBoxBase(_ref) {
         openMenu = options.openMenu,
         closeMenu = options.closeMenu;
     var showSuggestions = isOpen && inputValue && inputValue.length > 0;
-    return React__default.createElement("div", {
+    return /*#__PURE__*/React__default.createElement("div", {
       className: "hawk__searchBox__searchInput",
       "aria-labelledby": "autocomplete-search-box"
-    }, React__default.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       id: "autocomplete-search-box",
       className: "hidden-label"
-    }, "Autocomplete search box"), React__default.createElement("input", _extends({
+    }, "Autocomplete search box"), /*#__PURE__*/React__default.createElement("input", _extends({
       type: "text",
       style: {
         width: '100%'
@@ -16884,7 +17218,7 @@ function SearchBoxBase(_ref) {
       },
       placeholder: t('Enter a search term'),
       'aria-labelledby': 'autocomplete-search-box'
-    }))), showSuggestions ? React__default.createElement(SearchSuggestions, {
+    }))), showSuggestions ? /*#__PURE__*/React__default.createElement(SearchSuggestions, {
       query: inputValue || '',
       downshift: options,
       onViewMatches: onViewMatches,
@@ -16898,8 +17232,9 @@ function SearchBoxBase(_ref) {
  * This search box is intended to be used on non-search pages. On search pages, the `SearchBox` component should be
  * used instead.
  */
+function GlobalSearchBox(_ref) {
+  var SuggestionList = _ref.SuggestionList;
 
-function GlobalSearchBox() {
   var _useHawkConfig = useHawkConfig(),
       config = _useHawkConfig.config;
 
@@ -16934,11 +17269,12 @@ function GlobalSearchBox() {
     closeMenu();
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk hawk__searchBox"
-  }, React__default.createElement(SearchBoxBase, {
+  }, /*#__PURE__*/React__default.createElement(SearchBoxBase, {
     onSubmit: handleSubmit,
-    onViewMatches: handleViewAllMatches
+    onViewMatches: handleViewAllMatches,
+    SuggestionList: SuggestionList
   }));
 }
 
@@ -16973,14 +17309,216 @@ function SearchBox(_ref) {
     closeMenu();
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk__searchBox"
-  }, React__default.createElement(SearchBoxBase, {
+  }, /*#__PURE__*/React__default.createElement(SearchBoxBase, {
     onViewMatches: handleViewAllMatches,
     initialValue: store && store.pendingSearch ? store.pendingSearch.Keyword : '',
     onSubmit: handleSubmit,
     SuggestionList: SuggestionList
   }));
+}
+
+var SuggestType$1;
+
+(function (SuggestType) {
+  SuggestType[SuggestType["PopularSearches"] = 1] = "PopularSearches";
+  SuggestType[SuggestType["TopCategories"] = 2] = "TopCategories";
+  SuggestType[SuggestType["TopProductMatches"] = 3] = "TopProductMatches";
+  SuggestType[SuggestType["TopContentMatches"] = 4] = "TopContentMatches";
+})(SuggestType$1 || (SuggestType$1 = {}));
+
+function getAtLeastOneExist(popular, categories, products, content) {
+  var hasPopular = popular && popular.length > 0;
+  var hasCategories = categories && categories.length > 0;
+  var hasProducts = products && products.length > 0;
+  var hasContent = content && content.length > 0;
+  return hasPopular || hasCategories || hasProducts || hasContent;
+}
+
+function strip_html_tags(str) {
+  if (str === null || str === '') {
+    return '';
+  } else {
+    str = str.toString();
+    str = str.replace(/&raquo;/g, '');
+  }
+
+  return str.replace(/<[^>]*>/g, '');
+}
+
+function ProductsComponent(_ref) {
+  var products = _ref.products,
+      ProductHeading = _ref.ProductHeading,
+      getItemProps = _ref.getItemProps,
+      redirectItemDetails = _ref.redirectItemDetails,
+      isAtleastOneExist = _ref.isAtleastOneExist,
+      onViewMatches = _ref.onViewMatches,
+      downshift = _ref.downshift,
+      searchedKeyword = _ref.searchedKeyword;
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, products && products.length ? /*#__PURE__*/React__default.createElement("ul", null, /*#__PURE__*/React__default.createElement("h3", null, ProductHeading), products.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", getItemProps({
+      item: item,
+      index: "Product_".concat(index),
+      key: "Product_".concat(index),
+      onClick: function onClick() {
+        redirectItemDetails(item.Results.DocId);
+        TrackingEvent$1.track('autocompleteclick', {
+          keyword: searchedKeyword,
+          suggestType: SuggestType$1.TopProductMatches,
+          name: item.ProductName,
+          url: item.Url
+        });
+      }
+    }), item.Thumb && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
+      className: "hawk-sqItemImage-thumb",
+      src: item.Thumb.Url
+    })), /*#__PURE__*/React__default.createElement("span", {
+      className: "p-name"
+    }, item.ProductName));
+  }), isAtleastOneExist && /*#__PURE__*/React__default.createElement("div", {
+    className: "view-matches",
+    onClick: function onClick() {
+      return onViewMatches(downshift);
+    }
+  }, "View all matches")) : null);
+}
+
+function SuggestionList(_ref2) {
+  var downshift = _ref2.downshift,
+      searchResults = _ref2.searchResults,
+      onViewMatches = _ref2.onViewMatches,
+      isLoading = _ref2.isLoading;
+  var popular = searchResults.Popular,
+      categories = searchResults.Categories,
+      products = searchResults.Products,
+      content = searchResults.Content,
+      PopularHeading = searchResults.PopularHeading,
+      CategoryHeading = searchResults.CategoryHeading,
+      ProductHeading = searchResults.ProductHeading,
+      ContentHeading = searchResults.ContentHeading;
+
+  var _useHawksearch = useHawksearch(),
+      actor = _useHawksearch.actor,
+      store = _useHawksearch.store;
+
+  var _useState = useState(''),
+      _useState2 = _slicedToArray$1(_useState, 2),
+      hoverKeyword = _useState2[0],
+      setHoverKeyword = _useState2[1];
+
+  var _useState3 = useState(''),
+      _useState4 = _slicedToArray$1(_useState3, 2),
+      searchedKeyword = _useState4[0],
+      setSearchedKeyword = _useState4[1];
+
+  var _useState5 = useState([]),
+      _useState6 = _slicedToArray$1(_useState5, 2),
+      hoverProducts = _useState6[0],
+      setHoverProducts = _useState6[1];
+
+  var _useHawkConfig = useHawkConfig(),
+      previewConfig = _useHawkConfig.previewConfig;
+
+  var getItemProps = downshift.getItemProps,
+      getMenuProps = downshift.getMenuProps,
+      highlightedIndex = downshift.highlightedIndex,
+      getInputProps = downshift.getInputProps;
+  var isAtleastOneExist = getAtLeastOneExist(popular, categories, products, content);
+
+  function setKeyword(keyword) {
+    setHoverKeyword(keyword);
+  }
+
+  function redirectItemDetails(id) {//browserHistory.push({
+    //	pathname: `${browserHistory.location.pathname}/details`,
+    //	search: `itemid=${id}`,
+    //});
+  }
+
+  function searchProduct(keyword, typeId, item) {
+    TrackingEvent$1.track('autocompleteclick', {
+      keyword: keyword,
+      suggestType: typeId,
+      name: item.Value,
+      url: item.Url
+    });
+    actor.setSearch({
+      PageId: undefined,
+      CustomUrl: undefined,
+      Keyword: strip_html_tags(item.Value),
+      FacetSelections: undefined
+    });
+    downshift.toggleMenu();
+  }
+
+  return /*#__PURE__*/React__default.createElement("ul", _extends({
+    className: "dropdown-menu autosuggest-menu__list"
+  }, getMenuProps()), isLoading && /*#__PURE__*/React__default.createElement("li", {
+    className: "autosuggest-menu__item loading-label"
+  }, "Loading..."), hoverProducts && hoverProducts.length ? /*#__PURE__*/React__default.createElement(ProductsComponent, {
+    products: hoverProducts,
+    ProductHeading: ProductHeading,
+    getItemProps: getItemProps,
+    redirectItemDetails: redirectItemDetails,
+    isAtleastOneExist: isAtleastOneExist,
+    onViewMatches: onViewMatches,
+    downshift: downshift,
+    searchedKeyword: searchedKeyword
+  }) : /*#__PURE__*/React__default.createElement(ProductsComponent, {
+    products: products,
+    ProductHeading: ProductHeading,
+    getItemProps: getItemProps,
+    redirectItemDetails: redirectItemDetails,
+    isAtleastOneExist: isAtleastOneExist,
+    onViewMatches: onViewMatches,
+    downshift: downshift,
+    searchedKeyword: searchedKeyword
+  }), /*#__PURE__*/React__default.createElement("div", null, categories && categories.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, CategoryHeading), categories.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", _extends({
+      key: "Category_".concat(index),
+      className: highlightedIndex === "Category_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item',
+      onClick: function onClick() {
+        return searchProduct(searchedKeyword, SuggestType$1.TopCategories, item);
+      }
+    }, getInputProps({
+      onMouseOver: function onMouseOver() {
+        setKeyword(strip_html_tags(item.Value));
+      }
+    })), /*#__PURE__*/React__default.createElement("div", {
+      dangerouslySetInnerHTML: {
+        __html: item.Value
+      }
+    }));
+  })) : null, popular && popular.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, PopularHeading), popular.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", _extends({
+      key: "Popular_".concat(index),
+      onClick: function onClick() {
+        return searchProduct(searchedKeyword, SuggestType$1.PopularSearches, item);
+      },
+      className: highlightedIndex === "Popular_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item'
+    }, getInputProps({
+      onMouseOver: function onMouseOver() {
+        setKeyword(strip_html_tags(item.Value));
+      }
+    })), /*#__PURE__*/React__default.createElement("div", {
+      dangerouslySetInnerHTML: {
+        __html: item.Value
+      }
+    }));
+  })) : null, content && content.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, ContentHeading), content.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", _extends({
+      key: "Content_".concat(index),
+      onClick: function onClick() {
+        return searchProduct(searchedKeyword, SuggestType$1.TopContentMatches, item);
+      },
+      className: highlightedIndex === "Content_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item'
+    }, getInputProps({
+      onMouseOver: function onMouseOver() {
+        setKeyword(strip_html_tags(item.Value));
+      }
+    })), item.Value);
+  })) : null));
 }
 
 function CompareTiles(_ref) {
@@ -16990,20 +17528,20 @@ function CompareTiles(_ref) {
       item = _ref.item;
 
   if (item && onSelectTiles) {
-    return React__default.createElement("div", {
+    return /*#__PURE__*/React__default.createElement("div", {
       onClick: function onClick() {
         return onSelectTiles(item);
       },
       className: "hawk__compare-tiles"
-    }, imageURL && React__default.createElement("img", {
+    }, imageURL && /*#__PURE__*/React__default.createElement("img", {
       src: imageURL,
       alt: itemName
     }));
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk__compare-tiles"
-  }, imageURL && React__default.createElement("img", {
+  }, imageURL && /*#__PURE__*/React__default.createElement("img", {
     src: imageURL,
     alt: itemName
   }));
@@ -17014,15 +17552,15 @@ function CompareItems(_ref2) {
       onSelectCompareItems = _ref2.onSelectCompareItems,
       clearItems = _ref2.clearItems,
       onSelectTiles = _ref2.onSelectTiles;
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk__compare-container"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk__compare-container__list"
   }, _toConsumableArray(Array(5)).map(function (_, index) {
     if (itemsList && itemsList.length && itemsList[index]) {
       var imageURL = itemsList[index].getDocumentValue('image');
       var itemName = itemsList[index].getDocumentValue('itemname');
-      return React__default.createElement(CompareTiles, {
+      return /*#__PURE__*/React__default.createElement(CompareTiles, {
         onSelectTiles: onSelectTiles,
         imageURL: imageURL || '',
         itemName: itemName || '',
@@ -17031,19 +17569,19 @@ function CompareItems(_ref2) {
       });
     }
 
-    return React__default.createElement(CompareTiles, {
+    return /*#__PURE__*/React__default.createElement(CompareTiles, {
       onSelectTiles: onSelectTiles,
       imageURL: '',
       itemName: '',
       key: index
     });
-  })), React__default.createElement("div", null, React__default.createElement("button", {
+  })), /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("button", {
     disabled: itemsList.length < 2,
     onClick: function onClick() {
       return onSelectCompareItems();
     },
     className: "hawk-btn hawk-btn-primary-outline"
-  }, "Compare"), React__default.createElement("button", {
+  }, "Compare"), /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick() {
       return clearItems();
     },
@@ -17053,18 +17591,18 @@ function CompareItems(_ref2) {
 
 function PlaceholderFacetValue() {
   var _useState = useState(Math.round(Math.random() * (200 - 100) + 100)),
-      _useState2 = _slicedToArray(_useState, 1),
+      _useState2 = _slicedToArray$1(_useState, 1),
       width = _useState2[0];
 
-  return React__default.createElement("li", {
+  return /*#__PURE__*/React__default.createElement("li", {
     className: "hawk-facet-rail__facet-list-item"
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox-placeholder"
-  }), React__default.createElement("button", {
+  }), /*#__PURE__*/React__default.createElement("button", {
     className: "hawk-facet-rail__facet-btn"
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-facet-rail__facet-name"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-name-placeholder",
     style: {
       width: "".concat(width, "px")
@@ -17074,32 +17612,32 @@ function PlaceholderFacetValue() {
 
 function PlaceholderFacet() {
   var _useState = useState(Math.round(Math.random() * (250 - 125) + 125)),
-      _useState2 = _slicedToArray(_useState, 1),
+      _useState2 = _slicedToArray$1(_useState, 1),
       width = _useState2[0];
 
   var _useState3 = useState(Math.round(Math.random() * (8 - 1) + 1)),
-      _useState4 = _slicedToArray(_useState3, 1),
+      _useState4 = _slicedToArray$1(_useState3, 1),
       numValues = _useState4[0];
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-heading"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-heading-placeholder",
     style: {
       width: "".concat(width, "px")
     }
-  })), React__default.createElement("div", {
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-body"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values hawk-facet-rail__facet-values-placeholder"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values-checkbox"
-  }, React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, _toConsumableArray(Array(numValues)).map(function (_, i) {
-    return React__default.createElement(PlaceholderFacetValue, {
+    return /*#__PURE__*/React__default.createElement(PlaceholderFacetValue, {
       key: i
     });
   }))))));
@@ -17114,11 +17652,11 @@ function FacetList() {
 
 
   var _useState = useState(Math.round(Math.random() * (5 - 3) + 3)),
-      _useState2 = _slicedToArray(_useState, 1),
+      _useState2 = _slicedToArray$1(_useState, 1),
       numPlaceholders = _useState2[0];
 
   var components = getFacetComponents(config.facetOverrides || []);
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-list"
   }, searchResults ? // if there are search results, render the facets
   searchResults.Facets.map(function (facet) {
@@ -17134,13 +17672,13 @@ function FacetList() {
       return component.facetType === facet.FacetType;
     });
     var Component = !registeredComponent ? null : registeredComponent.component;
-    return React__default.createElement(Facet$1, {
+    return /*#__PURE__*/React__default.createElement(Facet$1, {
       key: facet.FacetId,
       facet: facet
-    }, Component ? React__default.createElement(Component, null) : React__default.createElement("div", null, facet.FieldType, " ", facet.FacetType, " is not implemented!"));
+    }, Component ? /*#__PURE__*/React__default.createElement(Component, null) : /*#__PURE__*/React__default.createElement("div", null, facet.FieldType, " ", facet.FacetType, " is not implemented!"));
   }) : // otherwise render a couple placeholders
   _toConsumableArray(Array(numPlaceholders)).map(function (_, i) {
-    return React__default.createElement(PlaceholderFacet, {
+    return /*#__PURE__*/React__default.createElement(PlaceholderFacet, {
       key: i
     });
   }));
@@ -17151,11 +17689,11 @@ function FacetRail() {
       t = _useTranslation.t,
       i18n = _useTranslation.i18n;
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__heading"
-  }, t('Narrow Results')), React__default.createElement(FacetList, null));
+  }, t('Narrow Results')), /*#__PURE__*/React__default.createElement(FacetList, null));
 }
 
 /**
@@ -17164,18 +17702,18 @@ function FacetRail() {
  * @returns
  */
 function XCircleSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 32 32",
     className: 'icon icon-help-header ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     fill: "#d9534f",
     d: "M15.998 0c8.837 0 16 7.163 16 16s-7.163 16-16 16c-8.837 0-16-7.163-16-16v0c0-8.837 7.163-16 16-16v0z"
-  }), createElement("path", {
+  }), /*#__PURE__*/createElement("path", {
     fill: "#fff",
     d: "M13.6 11.646l7.171 7.171c0.541 0.541 0.541 1.417 0 1.958l0.002-0.002c-0.541 0.541-1.417 0.541-1.958 0l-7.171-7.171c-0.541-0.541-0.541-1.417 0-1.958l-0.002 0.002c0.541-0.541 1.417-0.541 1.958 0z"
-  }), createElement("path", {
+  }), /*#__PURE__*/createElement("path", {
     fill: "#fff",
     d: "M20.774 13.6l-7.174 7.174c-0.54 0.54-1.415 0.54-1.955 0l-0.002-0.002c-0.54-0.54-0.54-1.415 0-1.955l7.174-7.174c0.54-0.54 1.415-0.54 1.955 0l0.002 0.002c0.54 0.54 0.54 1.415 0 1.955z"
   }));
@@ -17239,7 +17777,7 @@ function Selections$1() {
   function renderLabel(selection, item) {
     if (selection.facet.FacetType === 'openRange' && selection.facet.DataType === 'datetime') {
       var _split = (item.label || ',').split(','),
-          _split2 = _slicedToArray(_split, 2),
+          _split2 = _slicedToArray$1(_split, 2),
           startDate = _split2[0],
           endDate = _split2[1];
 
@@ -17253,47 +17791,47 @@ function Selections$1() {
     return item.label;
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__selections"
-  }, React__default.createElement("h4", null, t("You've Selected")), React__default.createElement("ul", {
+  }, /*#__PURE__*/React__default.createElement("h4", null, t("You've Selected")), /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-selections"
   }, keys.map(function (key) {
     var selection = facetSelections[key];
-    return React__default.createElement("li", {
+    return /*#__PURE__*/React__default.createElement("li", {
       key: key,
       className: "hawk-selections__category"
-    }, React__default.createElement("div", {
+    }, /*#__PURE__*/React__default.createElement("div", {
       className: "hawk-selections__category-wrapper"
-    }, React__default.createElement("span", {
+    }, /*#__PURE__*/React__default.createElement("span", {
       className: "hawk-selections__category-name"
-    }, selection.label, ":"), React__default.createElement("ul", {
+    }, selection.label, ":"), /*#__PURE__*/React__default.createElement("ul", {
       className: "hawk-selections__item-list"
     }, selection.items.map(function (item) {
       var negation = item.value.startsWith('-');
-      return React__default.createElement("li", {
+      return /*#__PURE__*/React__default.createElement("li", {
         key: item.value,
         className: "hawk-selections__item"
-      }, React__default.createElement("button", {
+      }, /*#__PURE__*/React__default.createElement("button", {
         onClick: function onClick() {
           return clearSelection(key, item);
         },
         className: "hawk-selections__item-remove"
-      }, React__default.createElement(XCircleSVG, null), React__default.createElement("span", {
+      }, /*#__PURE__*/React__default.createElement(XCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
         className: "visually-hidden"
-      }, "Unselect facet ", selection.label, " ", item.label)), React__default.createElement("span", {
+      }, "Unselect facet ", selection.label, " ", item.label)), /*#__PURE__*/React__default.createElement("span", {
         className: negation ? 'hawk-selections__item-name hawk-selections__item-name--negated' : 'hawk-selections__item-name'
       }, renderLabel(selection, item)));
-    }))), React__default.createElement("button", {
+    }))), /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick() {
         return clearSelection(key);
       },
       className: "hawk-selections__category-remove"
-    }, React__default.createElement(XCircleSVG, null), ' ', React__default.createElement("span", {
+    }, /*#__PURE__*/React__default.createElement(XCircleSVG, null), ' ', /*#__PURE__*/React__default.createElement("span", {
       className: "visually-hidden"
     }, "Unselect all facets for ", selection.label)));
-  }), React__default.createElement("li", {
+  }), /*#__PURE__*/React__default.createElement("li", {
     className: "hawk-selections__category"
-  }, React__default.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     onClick: clearAll,
     className: "hawk-btn hawk-btn-primary-outline"
   }, t('Clear All')))));
@@ -17306,7 +17844,7 @@ function SearchResultsLabel() {
       searchResults = _useHawksearch$store.searchResults;
 
   var _useState = useState(''),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       keyword = _useState2[0],
       setKeyword = _useState2[1];
 
@@ -17327,9 +17865,9 @@ function SearchResultsLabel() {
     return null;
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__results-label"
-  }, React__default.createElement("h3", null, pendingSearch.Keyword ? t('Search Results for') + ' ' + keyword : t('Search Results')));
+  }, /*#__PURE__*/React__default.createElement("h3", null, pendingSearch.Keyword ? t('Search Results for') + ' ' + keyword : t('Search Results')));
 }
 
 function Sorting$1() {
@@ -17349,20 +17887,20 @@ function Sorting$1() {
     });
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-sorting"
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-sorting__label"
-  }, t('Sort By')), React__default.createElement("select", {
+  }, t('Sort By')), /*#__PURE__*/React__default.createElement("select", {
     value: pendingSearch.SortBy,
     onChange: onChange
   }, searchResults ? searchResults.Sorting.Items.map(function (sortingItem) {
-    return React__default.createElement("option", {
+    return /*#__PURE__*/React__default.createElement("option", {
       key: sortingItem.Value,
       value: sortingItem.Value,
       selected: sortingItem.Selected
     }, sortingItem.Label);
-  }) : React__default.createElement("option", {
+  }) : /*#__PURE__*/React__default.createElement("option", {
     value: "score"
   }, "Best Match")));
 }
@@ -17373,12 +17911,12 @@ function Sorting$1() {
  * @returns
  */
 function LeftChevronSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 19 32",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M18.462 27.891c0.457 0.427 0.742 1.034 0.742 1.707s-0.285 1.279-0.741 1.705l-0.001 0.001c-0.467 0.437-1.097 0.705-1.789 0.705s-1.322-0.268-1.79-0.706l0.002 0.001-14.146-13.598c-0.457-0.427-0.742-1.034-0.742-1.707s0.285-1.28 0.741-1.705l0.001-0.001 14.142-13.589c0.468-0.436 1.097-0.704 1.79-0.704s1.322 0.268 1.791 0.706l-0.002-0.001c0.457 0.427 0.742 1.034 0.742 1.707s-0.285 1.28-0.741 1.705l-0.001 0.001-11.597 11.883z"
   }));
 }
@@ -17389,12 +17927,12 @@ function LeftChevronSVG(props) {
  * @returns
  */
 function RightChevronSVG(props) {
-  return createElement("svg", {
+  return /*#__PURE__*/createElement("svg", {
     viewBox: "0 0 19 32",
     className: 'icon ' + props["class"],
     focusable: "false",
     "aria-hidden": "true"
-  }, createElement("path", {
+  }, /*#__PURE__*/createElement("path", {
     d: "M0.738 4.109c-0.457-0.427-0.742-1.034-0.742-1.707s0.285-1.28 0.741-1.705l0.001-0.001c0.467-0.437 1.097-0.705 1.789-0.705s1.322 0.268 1.79 0.706l-0.002-0.001 14.146 13.598c0.457 0.427 0.742 1.034 0.742 1.707s-0.285 1.279-0.741 1.705l-0.001 0.001-14.142 13.589c-0.468 0.436-1.097 0.704-1.79 0.704s-1.322-0.268-1.791-0.706l0.002 0.001c-0.457-0.427-0.742-1.034-0.742-1.707s0.285-1.279 0.741-1.705l0.001-0.001 11.597-11.883z"
   }));
 }
@@ -17405,12 +17943,12 @@ function Pager(_ref) {
       onPageChange = _ref.onPageChange;
 
   var _useState = useState(undefined),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       inputValue = _useState2[0],
       setInputValue = _useState2[1];
 
   var _useState3 = useState(false),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       hasError = _useState4[0],
       setHasError = _useState4[1];
 
@@ -17515,16 +18053,16 @@ function Pager(_ref) {
     setInputValue(event.currentTarget.value);
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-pagination__controls"
-  }, React__default.createElement("button", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     className: "hawk-pagination__item",
     onClick: goToPreviousPage
-  }, React__default.createElement(LeftChevronSVG, {
+  }, /*#__PURE__*/React__default.createElement(LeftChevronSVG, {
     "class": "hawk-pagination__left"
-  }), React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Previous page")), React__default.createElement("input", {
+  }, "Previous page")), /*#__PURE__*/React__default.createElement("input", {
     type: "number",
     value: getInputValue(),
     onChange: onChange,
@@ -17535,14 +18073,14 @@ function Pager(_ref) {
     min: "1",
     max: totalPages,
     className: hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'
-  }), React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-pagination__total-text"
-  }, "\xA0 of ", totalPages), React__default.createElement("button", {
+  }, "\xA0 of ", totalPages), /*#__PURE__*/React__default.createElement("button", {
     className: "hawk-pagination__item",
     onClick: goToNextPage
-  }, React__default.createElement(RightChevronSVG, {
+  }, /*#__PURE__*/React__default.createElement(RightChevronSVG, {
     "class": "hawk-pagination__right"
-  }), React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
   }, "Next page")));
 }
@@ -17562,17 +18100,17 @@ function ItemsPerPage() {
     });
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-items-per-page"
-  }, React__default.createElement("select", {
+  }, /*#__PURE__*/React__default.createElement("select", {
     value: pendingSearch.MaxPerPage,
     onChange: onChange
   }, searchResults ? searchResults.Pagination.Items.map(function (paginationItem) {
-    return React__default.createElement("option", {
+    return /*#__PURE__*/React__default.createElement("option", {
       key: paginationItem.PageSize,
       value: paginationItem.PageSize
     }, paginationItem.Label);
-  }) : React__default.createElement("option", null, "12 Items Per Page")));
+  }) : /*#__PURE__*/React__default.createElement("option", null, "12 Items Per Page")));
 }
 
 function Pagination$1() {
@@ -17589,52 +18127,52 @@ function Pagination$1() {
     });
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-pagination"
-  }, React__default.createElement(Pager, {
+  }, /*#__PURE__*/React__default.createElement(Pager, {
     page: searchResults ? pendingSearch.PageNo || 1 : 0,
     totalPages: searchResults ? searchResults.Pagination.NofPages : 0,
     onPageChange: onPageChange
-  }), React__default.createElement(ItemsPerPage, null));
+  }), /*#__PURE__*/React__default.createElement(ItemsPerPage, null));
 }
 
 function ToolRow() {
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-tool-row"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-tool-row__item"
-  }, React__default.createElement(Sorting$1, null)), React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement(Sorting$1, null)), /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-tool-row__item"
-  }, React__default.createElement(Pagination$1, null)));
+  }, /*#__PURE__*/React__default.createElement(Pagination$1, null)));
 }
 
 function PlaceholderImage(_ref) {
   var showSpinner = _ref.showSpinner;
 
   var _useState = useState(Math.round(Math.random() * (175 - 125) + 125)),
-      _useState2 = _slicedToArray(_useState, 1),
+      _useState2 = _slicedToArray$1(_useState, 1),
       height = _useState2[0];
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item-placeholder",
     style: {
       height: "".concat(height, "px")
     }
-  }, showSpinner && React__default.createElement("div", {
+  }, showSpinner && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-placeholder__image"
   }, "Loading..."));
 }
 
 function PlaceholderItem() {
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item-image"
-  }, React__default.createElement(PlaceholderImage, {
+  }, /*#__PURE__*/React__default.createElement(PlaceholderImage, {
     showSpinner: false
-  })), React__default.createElement("div", {
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item-name"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item-name-placeholder"
   })));
 }
@@ -17650,9 +18188,9 @@ function Spinner(_ref) {
     return null;
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: 'hawk-modal'
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     className: 'hawk-modal__content'
   }, t('Loading'), "..."));
 }
@@ -17667,7 +18205,7 @@ function ResultImage(_ref) {
       onLoadCallBack = _ref.onLoadCallBack;
 
   var _useState = useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       imageLoaded = _useState2[0],
       setImageLoaded = _useState2[1];
 
@@ -17689,15 +18227,15 @@ function ResultImage(_ref) {
     imageUrl = websiteUrl + imageUrl;
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item-image"
-  }, React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("div", {
     style: imageLoaded ? {} : {
       overflow: 'hidden',
       width: '0px',
       height: '0px'
     }
-  }, React__default.createElement("img", {
+  }, /*#__PURE__*/React__default.createElement("img", {
     onLoad: function onLoad() {
       if (onLoadCallBack) {
         onLoadCallBack();
@@ -17707,7 +18245,9 @@ function ResultImage(_ref) {
     },
     src: imageUrl,
     alt: "Image for ".concat(imageTitle)
-  })), !imageLoaded ? // if the main image hasn't loaded yet, show a placeholder
+  })), !imageLoaded ?
+  /*#__PURE__*/
+  // if the main image hasn't loaded yet, show a placeholder
   React__default.createElement(PlaceholderImage, {
     showSpinner: true
   }) : null);
@@ -17716,13 +18256,13 @@ function ResultImage(_ref) {
 function ResultItem(_ref) {
   var item = _ref.item;
   var itemName = item.getDocumentValue('itemname');
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item"
-  }, React__default.createElement(ResultImage, {
+  }, /*#__PURE__*/React__default.createElement(ResultImage, {
     item: item
-  }), React__default.createElement("div", {
+  }), /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__item-name"
-  }, React__default.createElement("span", null, itemName)));
+  }, /*#__PURE__*/React__default.createElement("span", null, itemName)));
 }
 
 function ResultListing(_ref) {
@@ -17735,22 +18275,127 @@ function ResultListing(_ref) {
       searchResults = _useHawksearch$store.searchResults;
 
   var results = searchResults ? searchResults.Results : [];
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__listing"
-  }, React__default.createElement(Spinner, {
+  }, /*#__PURE__*/React__default.createElement(Spinner, {
     isVisible: isLoading
   }), results.length ? // if we have results, display them
   results.map(function (result) {
-    return React__default.createElement(ResultItem$1, {
+    return /*#__PURE__*/React__default.createElement(ResultItem$1, {
       key: result.DocId,
       item: result
     });
   }) : // otherwise display placeholder items as we're loading
   _toConsumableArray(Array(12)).map(function (_, i) {
-    return React__default.createElement(PlaceholderItem, {
+    return /*#__PURE__*/React__default.createElement(PlaceholderItem, {
       key: i
     });
   }));
+}
+
+function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function MerchandisingBanner(_ref) {
+  var BannerZone = _ref.BannerZone;
+
+  var _useHawksearch = useHawksearch(),
+      _useHawksearch$store = _useHawksearch.store,
+      isLoading = _useHawksearch$store.isLoading,
+      searchResults = _useHawksearch$store.searchResults;
+
+  var matchedMerchandisingItems = searchResults ? searchResults.Merchandising.Items.filter(function (i) {
+    return i.Zone === BannerZone;
+  }) : [];
+  matchedMerchandisingItems = matchedMerchandisingItems.concat(searchResults ? searchResults.FeaturedItems.Items.filter(function (i) {
+    return i.Zone === BannerZone;
+  }) : []);
+
+  function getBannerHtml(matchedMerchandisingItem) {
+    return {
+      __html: matchedMerchandisingItem.Output
+    };
+  }
+
+  function renderBanner(merchandisingItem, bannerIndex) {
+    function trackEvent(type, trackEventPayload) {
+      if (searchResults && searchResults.TrackingId) {
+        TrackingEvent$1.track(type, _objectSpread$7(_objectSpread$7({}, trackEventPayload), {}, {
+          trackingId: searchResults.TrackingId
+        }));
+      }
+    }
+
+    switch (merchandisingItem.ContentType) {
+      case ContentType.Custom:
+        return /*#__PURE__*/React__default.createElement("div", {
+          key: bannerIndex
+        }, /*#__PURE__*/React__default.createElement("div", {
+          onClick: function onClick() {
+            trackEvent('bannerclick', {
+              bannerId: merchandisingItem.BannerId,
+              campaignId: merchandisingItem.CampaignId
+            });
+          },
+          className: "text-left",
+          dangerouslySetInnerHTML: getBannerHtml(merchandisingItem)
+        }));
+
+      case ContentType.Widget:
+        return /*#__PURE__*/React__default.createElement("div", {
+          key: bannerIndex
+        }, /*#__PURE__*/React__default.createElement("div", {
+          onClick: function onClick() {
+            trackEvent('bannerclick', {
+              bannerId: merchandisingItem.BannerId,
+              campaignId: merchandisingItem.CampaignId
+            });
+          },
+          className: "text-left",
+          dangerouslySetInnerHTML: getBannerHtml(merchandisingItem)
+        }));
+
+      case ContentType.Image:
+        var imageURL = merchandisingItem.ImageUrl;
+        return /*#__PURE__*/React__default.createElement("div", {
+          className: "text-left",
+          key: bannerIndex
+        }, /*#__PURE__*/React__default.createElement("a", {
+          onClick: function onClick() {
+            trackEvent('bannerclick', {
+              bannerId: merchandisingItem.BannerId,
+              campaignId: merchandisingItem.CampaignId
+            });
+          },
+          href: merchandisingItem.ForwardUrl,
+          title: merchandisingItem.ImageTitle
+        }, /*#__PURE__*/React__default.createElement("img", {
+          onLoad: function onLoad() {
+            trackEvent('bannerimpression', {
+              bannerId: merchandisingItem.BannerId,
+              campaignId: merchandisingItem.CampaignId
+            });
+          },
+          src: imageURL,
+          title: merchandisingItem.ImageTitle,
+          alt: merchandisingItem.AltTag
+        })));
+
+      default:
+        return null;
+    }
+  }
+
+  if (matchedMerchandisingItems.length > 0) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "hawk-preview__banner-container"
+    }, matchedMerchandisingItems.map(function (merchendisingItem, index) {
+      return renderBanner(merchendisingItem, index);
+    }));
+  } else {
+    return null;
+  }
 }
 
 function Results(_ref) {
@@ -17768,23 +18413,35 @@ function Results(_ref) {
       i18n = _useTranslation.i18n;
 
   if (requestError) {
-    return React__default.createElement("span", null, "An error occurred while searching for your results. Please contact the site administrator.");
+    return /*#__PURE__*/React__default.createElement("span", null, "An error occurred while searching for your results. Please contact the site administrator.");
   } // end of overrides
 
 
   if ((!searchResults || searchResults.Results.length === 0) && !isLoading) {
-    return React__default.createElement("span", null, t('No Results'));
+    return /*#__PURE__*/React__default.createElement("span", null, t('No Results'));
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results"
-  }, React__default.createElement(SearchResultsLabel, null), React__default.createElement(Selections$1, null), React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement(SearchResultsLabel, null), /*#__PURE__*/React__default.createElement(Selections$1, null), /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-preview__bannerTop"
+  }, /*#__PURE__*/React__default.createElement(MerchandisingBanner, {
+    BannerZone: "Top"
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__top-tool-row"
-  }, React__default.createElement(ToolRow, null)), React__default.createElement(ResultListing, {
+  }, /*#__PURE__*/React__default.createElement(ToolRow, null)), /*#__PURE__*/React__default.createElement(ResultListing, {
     ResultItem: ResultItem$1
-  }), React__default.createElement("div", {
+  }), /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-preview__bannerBottom"
+  }, /*#__PURE__*/React__default.createElement(MerchandisingBanner, {
+    BannerZone: "Bottom"
+  }), /*#__PURE__*/React__default.createElement(MerchandisingBanner, {
+    BannerZone: "Bottom2"
+  }), /*#__PURE__*/React__default.createElement(MerchandisingBanner, {
+    BannerZone: "BannerBottom2"
+  })), /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-results__bottom-tool-row"
-  }, React__default.createElement(ToolRow, null)));
+  }, /*#__PURE__*/React__default.createElement(ToolRow, null)));
 }
 
 function AdjustedKeyword() {
@@ -17793,9 +18450,9 @@ function AdjustedKeyword() {
       actor = _useHawksearch.actor;
 
   if (searchResults && searchResults.AdjustedKeyword) {
-    return React__default.createElement("div", {
+    return /*#__PURE__*/React__default.createElement("div", {
       className: "hawk__adjusted-keyword"
-    }, "Showing results for ", React__default.createElement("b", null, searchResults.AdjustedKeyword), ". Search instead for", ' ', React__default.createElement("b", {
+    }, "Showing results for ", /*#__PURE__*/React__default.createElement("b", null, searchResults.AdjustedKeyword), ". Search instead for", ' ', /*#__PURE__*/React__default.createElement("b", {
       onClick: function onClick() {
         return actor.setSearch({
           Keyword: searchResults.Keyword,
@@ -17818,7 +18475,7 @@ function LanguageSelector(_ref) {
       actor = _useHawksearch.actor;
 
   var _useState = useState('sl'),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       selectedValue = _useState2[0],
       setValue = _useState2[1];
 
@@ -17836,18 +18493,18 @@ function LanguageSelector(_ref) {
     });
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-language"
-  }, React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-language__label"
-  }, title), React__default.createElement("select", {
+  }, title), /*#__PURE__*/React__default.createElement("select", {
     value: selectedValue,
     onChange: onChange
   }, [{
     value: 'sl',
     label: title
   }].concat(languages).map(function (language) {
-    return React__default.createElement("option", {
+    return /*#__PURE__*/React__default.createElement("option", {
       key: language.value,
       value: language.value,
       selected: selectedValue === language.value,
@@ -17952,15 +18609,13 @@ function warning(condition, message) {
 var isProduction$1 = process.env.NODE_ENV === 'production';
 var prefix = 'Invariant failed';
 function invariant(condition, message) {
-  if (condition) {
-    return;
-  }
-
-  if (isProduction$1) {
-    throw new Error(prefix);
-  } else {
+    if (condition) {
+        return;
+    }
+    if (isProduction$1) {
+        throw new Error(prefix);
+    }
     throw new Error(prefix + ": " + (message || ''));
-  }
 }
 
 function addLeadingSlash(path) {
@@ -18468,9 +19123,15 @@ function _objectWithoutProperties(source, excluded) {
   return target;
 }
 
-function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _createForOfIteratorHelper$2(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
+
+function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 /** Represents parts of the browser query string that are fixed and are always single strings. */
 
@@ -18611,28 +19272,19 @@ function convertObjectToQueryString(queryObj) {
         var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
 
         var escapedValues = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+
+        var _iterator = _createForOfIteratorHelper$2(values),
+            _step;
 
         try {
-          for (var _iterator = values[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var unescapedValue = _step.value;
             escapedValues.push(unescapedValue.replace(',', '::'));
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _iterator.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _iterator.f();
         }
 
         queryStringValues.push(_key + '=' + escapedValues.join(','));
@@ -18649,7 +19301,7 @@ function convertObjectToQueryString(queryObj) {
 
 
 function getSearchQueryString(searchRequest) {
-  var searchQuery = _objectSpread$7({
+  var searchQuery = _objectSpread$8({
     keyword: searchRequest.Keyword,
     sort: searchRequest.SortBy,
     pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
@@ -18750,17 +19402,17 @@ function RedirectURLListener(_ref) {
       store = _useHawksearch.store;
 
   var _useState = useState(false),
-      _useState2 = _slicedToArray(_useState, 2),
+      _useState2 = _slicedToArray$1(_useState, 2),
       showAlert = _useState2[0],
       setAlert = _useState2[1];
 
   var _useState3 = useState(false),
-      _useState4 = _slicedToArray(_useState3, 2),
+      _useState4 = _slicedToArray$1(_useState3, 2),
       shouldRedirect = _useState4[0],
       setRedirect = _useState4[1];
 
   var _useState5 = useState(''),
-      _useState6 = _slicedToArray(_useState5, 2),
+      _useState6 = _slicedToArray$1(_useState5, 2),
       redirectURL = _useState6[0],
       setRedirectURL = _useState6[1];
 
@@ -18789,13 +19441,13 @@ function RedirectURLListener(_ref) {
   }
 
   if (RedirectAlertMessage) {
-    return React__default.createElement(RedirectAlertMessage, {
+    return /*#__PURE__*/React__default.createElement(RedirectAlertMessage, {
       message: redirectURL,
       setRedirect: setRedirect
     });
   }
 
-  return React__default.createElement("div", null, "Alert message component is missing.");
+  return /*#__PURE__*/React__default.createElement("div", null, "Alert message component is missing.");
 }
 
 function AutoCorrectSuggestion() {
@@ -18809,12 +19461,12 @@ function AutoCorrectSuggestion() {
     });
   }
 
-  return React__default.createElement("div", {
+  return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-autocorrect-suggestion-container"
-  }, searchResults && searchResults.DidYouMean && searchResults.DidYouMean.length ? React__default.createElement("div", {
+  }, searchResults && searchResults.DidYouMean && searchResults.DidYouMean.length ? /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-autocorrect-suggestion"
-  }, React__default.createElement("h3", null, "Did you mean?"), searchResults.DidYouMean.map(function (keyword, index) {
-    return React__default.createElement("span", {
+  }, /*#__PURE__*/React__default.createElement("h3", null, "Did you mean?"), searchResults.DidYouMean.map(function (keyword, index) {
+    return /*#__PURE__*/React__default.createElement("span", {
       onClick: function onClick() {
         return selectKeyword(keyword);
       },
@@ -18823,5 +19475,5 @@ function AutoCorrectSuggestion() {
   })) : null);
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, ResultImage, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, ToolRow, TrackingEvent$1 as TrackingEvent, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawksearch };
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, ResultImage, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StoreProvider, Suggestion, SuggestionList, SuggestionType, Swatch$1 as Swatch, SwatchItem, ToolRow, TrackingEvent$1 as TrackingEvent, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map

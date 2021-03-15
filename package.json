@@ -23,7 +23,8 @@
 		"bundle:analyze": "npm run clean && cross-env BUILD_ENV=min webpack -p --profile --json > ./dist/min/bundle.json && webpack-bundle-analyzer ./dist/min/bundle.json",
 		"build:prod": "npm run clean && npm run check:all && npm test && npm run bundle:min:prod && npm run bundle:esm:prod",
 		"build:dev": "npm run clean && npm run check:all && npm test && npm run bundle:min:dev && npm run bundle:esm:dev",
-		"start": "npm run clean && webpack-dev-server --open"
+		"start": "npm run clean && webpack-dev-server --open",
+		"dev": "cross-env BUILD_ENV=esm NODE_ENV=development rollup -c --watch"
 	},
 	"module": "dist/esm/react-hawksearch.js",
 	"devDependencies": {
@@ -91,6 +92,7 @@
 		"i18next": "^19.4.4",
 		"moment": "^2.29.1",
 		"react": "^16.12.0",
+		"react-cookie": "^4.0.3",
 		"react-dom": "^16.12.0",
 		"react-i18next": "^11.4.0",
 		"react-number-format": "^4.3.1",
