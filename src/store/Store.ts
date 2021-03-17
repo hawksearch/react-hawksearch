@@ -49,6 +49,8 @@ export class SearchStore {
 
 	public requestError: boolean;
 
+	public language?: string | null | undefined;
+
 	public constructor(initial?: Partial<SearchStore>) {
 		Object.assign(this, initial);
 	}

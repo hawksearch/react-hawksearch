@@ -109,9 +109,9 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 			UserAgent: navigator.userAgent
 		};
 
-		if (config['language']) {
+		if (store.language) {
 			clientData["Custom"] = {
-				"language": config['language']
+				"language": store.language
 			};
 		}
 

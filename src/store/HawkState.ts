@@ -16,6 +16,7 @@ import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
+import { getInitialProps } from 'react-i18next';
 
 export interface SearchActor {
 	/**
@@ -110,6 +111,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			comparedResults: [],
 			itemsToCompareIds: [],
 			productDetails: {},
+			language: getInitialLanguage(),
 		}),
 		SearchStore
 	);
@@ -534,16 +536,24 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			VisitId: visitId || '',
 			UserAgent: navigator.userAgent,
 			PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : []
-        };
+		};
 
-        if (config['language']) {
+		let language = store.language;
+
+		if (language) {
             clientData["Custom"] = {
-                "language": config['language']
+                "language": language
             };
 		}
 
         return clientData;
-    }
+	}
+
+	function getInitialLanguage() {
+		let urlParams = new URLSearchParams(location.search);
+		let language = urlParams.get('language') || config['language'];
+		return language;
+	}
 
 	const actor: SearchActor = {
 		search,

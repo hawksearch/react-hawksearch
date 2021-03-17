@@ -5103,6 +5103,8 @@ var SearchStore = /*#__PURE__*/function () {
 
     _defineProperty(this, "requestError", void 0);
 
+    _defineProperty(this, "language", void 0);
+
     Object.assign(this, initial);
   }
   /**
@@ -7179,7 +7181,8 @@ function useHawkState(initialSearch) {
     itemsToCompare: [],
     comparedResults: [],
     itemsToCompareIds: [],
-    productDetails: {}
+    productDetails: {},
+    language: getInitialLanguage()
   }), SearchStore),
       _useMergableState2 = _slicedToArray$1(_useMergableState, 2),
       store = _useMergableState2[0],
@@ -7771,14 +7774,21 @@ function useHawkState(initialSearch) {
         return v.Id;
       }) : []
     };
+    var language = store.language;
 
-    if (config['language']) {
+    if (language) {
       clientData["Custom"] = {
-        "language": config['language']
+        "language": language
       };
     }
 
     return clientData;
+  }
+
+  function getInitialLanguage() {
+    var urlParams = new URLSearchParams(location.search);
+    var language = urlParams.get('language') || config['language'];
+    return language;
   }
 
   var actor = {
@@ -8354,9 +8364,9 @@ function SearchSuggestions(_ref) {
       UserAgent: navigator.userAgent
     };
 
-    if (config['language']) {
+    if (store.language) {
       clientData["Custom"] = {
-        "language": config['language']
+        "language": store.language
       };
     }
 
@@ -17364,6 +17374,9 @@ function ProductsComponent(_ref) {
       downshift = _ref.downshift,
       searchedKeyword = _ref.searchedKeyword;
 
+  var _useHawksearch = useHawksearch(),
+      language = _useHawksearch.store.language;
+
   var _useHawkConfig = useHawkConfig(),
       config = _useHawkConfig.config;
 
@@ -17371,11 +17384,11 @@ function ProductsComponent(_ref) {
   var titleField = config.suggestionItem && config.suggestionItem.titleField;
 
   var getField = function getField(field, item) {
-    if (config.language) {
+    if (language) {
       var langIndiffFields = config.suggestionItem && config.suggestionItem.langIndiffFields && config.suggestionItem.langIndiffFields.length ? config.suggestionItem.langIndiffFields : [];
 
       if (!langIndiffFields.includes(field)) {
-        field += "_".concat(config.language);
+        field += "_".concat(language);
       }
     }
 
@@ -17426,9 +17439,9 @@ function SuggestionList(_ref2) {
       ProductHeading = searchResults.ProductHeading,
       ContentHeading = searchResults.ContentHeading;
 
-  var _useHawksearch = useHawksearch(),
-      actor = _useHawksearch.actor,
-      store = _useHawksearch.store;
+  var _useHawksearch2 = useHawksearch(),
+      actor = _useHawksearch2.actor,
+      store = _useHawksearch2.store;
 
   var _useState = useState(''),
       _useState2 = _slicedToArray$1(_useState, 2),

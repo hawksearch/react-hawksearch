@@ -38,16 +38,19 @@ function ProductsComponent({
 	downshift,
 	searchedKeyword,
 }) {
+	const {
+		store: { language },
+	} = useHawksearch();
 	const { config } = useHawkConfig();
 	const linkField = config.suggestionItem && config.suggestionItem.linkField;
 	const titleField = config.suggestionItem && config.suggestionItem.titleField;
 
 	const getField = (field, item) => {
-		if (config.language) {
+		if (language) {
 			var langIndiffFields = (config.suggestionItem && config.suggestionItem.langIndiffFields && config.suggestionItem.langIndiffFields.length) ? config.suggestionItem.langIndiffFields : [];
 
 			if (!langIndiffFields.includes(field)) {
-				field += `_${config.language}`;
+				field += `_${language}`;
 			}
 		}
 
