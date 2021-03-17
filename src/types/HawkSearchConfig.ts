@@ -130,4 +130,10 @@ export interface HawksearchConfig {
 	 * Enable/Disable the trackevent
 	 */
 	enableTrackEvent?: boolean;
+
+	resultItem?: object;
+
+	suggestionItem?: object;
+
+	language?: string
 }

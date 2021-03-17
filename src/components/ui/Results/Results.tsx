@@ -7,6 +7,7 @@ import { default as DefaultResultItem, ResultItemProps } from 'components/ui/Res
 import SearchResultsLabel from 'components/ui/Facets/SearchResultsLabel';
 import { useTranslation } from 'react-i18next';
 import MerchandisingBanner from './MerchandisingBanner';
+import Tabs from './Tabs';
 
 export interface ResultsProps {
 	ResultItem?: React.ComponentType<ResultItemProps>;
@@ -31,11 +32,14 @@ function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 	return (
 		<div className="hawk-results">
 			<SearchResultsLabel />
-			<Selections />
 
             <div className="hawk-preview__bannerTop">
                 <MerchandisingBanner BannerZone="Top" />
-            </div>
+			</div>
+
+			<Selections />
+
+			<Tabs/>
 
 			<div className="hawk-results__top-tool-row">
 				<ToolRow />

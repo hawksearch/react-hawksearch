@@ -38,6 +38,29 @@ function ProductsComponent({
 	downshift,
 	searchedKeyword,
 }) {
+	const { config } = useHawkConfig();
+	const linkField = config.suggestionItem && config.suggestionItem.linkField;
+	const titleField = config.suggestionItem && config.suggestionItem.titleField;
+
+	const getField = (field, item) => {
+		if (config.language) {
+			var langIndiffFields = (config.suggestionItem && config.suggestionItem.langIndiffFields && config.suggestionItem.langIndiffFields.length) ? config.suggestionItem.langIndiffFields : [];
+
+			if (!langIndiffFields.includes(field)) {
+				field += `_${config.language}`;
+			}
+		}
+
+		if (item &&
+			item.Results &&
+			item.Results.Document &&
+			item.Results.Document[field] &&
+			item.Results.Document[field].length) {
+
+			return item.Results.Document[field][0];
+		}
+	}
+
 	return (
 		<>
 			{products && products.length ? (
@@ -51,11 +74,12 @@ function ProductsComponent({
 								key: `Product_${index}`,
 								onClick: () => {
 									redirectItemDetails(item.Results.DocId);
+
 									TrackingEvent.track('autocompleteclick', {
 										keyword: searchedKeyword,
 										suggestType: SuggestType.TopProductMatches,
-										name: item.ProductName,
-										url: item.Url,
+										name: item.ProductName || getField(titleField, item),
+										url: item.Url || getField(linkField, item),
 									});
 								},
 							})}
@@ -65,7 +89,7 @@ function ProductsComponent({
                                     <img className="hawk-sqItemImage-thumb" src={item.Thumb.Url} />
                                 </div>
                             )}
-							<span className="p-name">{item.ProductName}</span>
+							<span className="p-name">{item.ProductName || getField(titleField, item)}</span>
 						</li>
 					))}
 					{isAtleastOneExist && (
@@ -95,7 +119,6 @@ function SuggestionList({ downshift, searchResults, onViewMatches, isLoading }) 
 	const [hoverKeyword, setHoverKeyword] = useState('');
 	const [searchedKeyword, setSearchedKeyword] = useState('');
 	const [hoverProducts, setHoverProducts] = useState([] as Array<{ Value: string; Url: string }>);
-	const { previewConfig } = useHawkConfig();
 
 	const { getItemProps, getMenuProps, highlightedIndex, getInputProps } = downshift;
 	const isAtleastOneExist = getAtLeastOneExist(popular, categories, products, content);
