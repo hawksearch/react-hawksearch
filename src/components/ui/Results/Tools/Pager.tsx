@@ -70,7 +70,22 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 		}
 	}
 
-	function onInput(event: any) {
+	function onBlur(event: React.FocusEvent<HTMLInputElement>) {
+		if (Number(event.currentTarget.value) !== page) {
+			const wantedPageNo = parseInt(event.currentTarget.value, 10);
+			goToPage(wantedPageNo);
+		}
+	}
+
+	function onKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+		const keyCode = event.keyCode || event.which;
+		const keyValue = String.fromCharCode(keyCode);
+		if (keyValue.match(/[+-.e]+/g)) {
+			event.preventDefault();
+		}
+	}
+
+	function onInput(event: React.KeyboardEvent<HTMLInputElement>) {
 		let wantedPageNo = parseInt(event.currentTarget.value, 10);
 
 		if (wantedPageNo > totalPages) {
@@ -111,6 +126,8 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 				onChange={onChange}
 				onInput={onInput}
 				onKeyDown={onKeyDown}
+				onKeyPress={onKeyPress}
+				onBlur={onBlur}
 				min="1"
 				max={totalPages}
 				className={hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'}
