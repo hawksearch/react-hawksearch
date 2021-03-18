@@ -9,9 +9,17 @@ export interface ResultImageProps {
 	itemTitleFieldName?: string;
 	imageUrlFieldName?: string;
 	onLoadCallBack?: () => void;
+	onClickImage?: (e) => void;
 }
 
-function ResultImage({ item, websiteUrl, itemTitleFieldName, imageUrlFieldName, onLoadCallBack }: ResultImageProps) {
+function ResultImage({
+	item,
+	websiteUrl,
+	itemTitleFieldName,
+	imageUrlFieldName,
+	onLoadCallBack,
+	onClickImage,
+}: ResultImageProps) {
 	const [imageLoaded, setImageLoaded] = useState(false);
 
 	let imageUrl = imageUrlFieldName ? item.getDocumentValue(imageUrlFieldName) : item.getDocumentValue('image');
@@ -27,7 +35,7 @@ function ResultImage({ item, websiteUrl, itemTitleFieldName, imageUrlFieldName, 
 	}
 
 	return (
-		<div className="hawk-results__item-image">
+		<div className="hawk-results__item-image" {...(onClickImage && { onClick: e => onClickImage(e) })}>
 			<div style={imageLoaded ? {} : { overflow: 'hidden', width: '0px', height: '0px' }}>
 				<img
 					onLoad={() => {
