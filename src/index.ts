@@ -20,6 +20,7 @@ export { default as CompareItems } from 'components/ui/Compare/CompareItems';
 
 // facets
 export { default as FacetRail } from 'components/ui/Facets/FacetRail';
+export { default as StickyComponent } from 'components/ui/Facets/StickyComponent';
 export { default as FacetList } from 'components/ui/Facets/FacetList';
 export { default as Facet } from 'components/ui/Facets/Facet';
 export { default as Selections } from 'components/ui/Facets/Selections';
