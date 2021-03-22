@@ -17382,6 +17382,7 @@ function ProductsComponent(_ref) {
 
   var linkField = config.suggestionItem && config.suggestionItem.linkField;
   var titleField = config.suggestionItem && config.suggestionItem.titleField;
+  var thumbField = config.suggestionItem && config.suggestionItem.thumbField;
 
   var getField = function getField(field, item) {
     if (language) {
@@ -17413,7 +17414,7 @@ function ProductsComponent(_ref) {
       }
     }), item.Thumb && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
       className: "hawk-sqItemImage-thumb",
-      src: item.Thumb.Url
+      src: JSON.parse(item.Thumb.Url).mediaUrl
     })), /*#__PURE__*/React__default.createElement("span", {
       className: "p-name"
     }, item.ProductName || getField(titleField, item)));

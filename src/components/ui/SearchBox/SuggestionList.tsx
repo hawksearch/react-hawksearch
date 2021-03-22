@@ -44,6 +44,7 @@ function ProductsComponent({
 	const { config } = useHawkConfig();
 	const linkField = config.suggestionItem && config.suggestionItem.linkField;
 	const titleField = config.suggestionItem && config.suggestionItem.titleField;
+	const thumbField = config.suggestionItem && config.suggestionItem.thumbField;
 
 	const getField = (field, item) => {
 		if (language) {
@@ -89,9 +90,9 @@ function ProductsComponent({
 						>
                             {item.Thumb && (
                                 <div>
-                                    <img className="hawk-sqItemImage-thumb" src={item.Thumb.Url} />
+									<img className="hawk-sqItemImage-thumb" src={JSON.parse(item.Thumb.Url).mediaUrl} />
                                 </div>
-                            )}
+							)}
 							<span className="p-name">{item.ProductName || getField(titleField, item)}</span>
 						</li>
 					))}
