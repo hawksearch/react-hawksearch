@@ -2,6 +2,7 @@
 	border: 1px solid $primary;
 	background-color: $grey2;
 	width: 100%;
+	z-index: 100;
 
 	@include md {
 		width: auto;
