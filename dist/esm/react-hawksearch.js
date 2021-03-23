@@ -17364,6 +17364,16 @@ function strip_html_tags(str) {
   return str.replace(/<[^>]*>/g, '');
 }
 
+function getThumbUrl(item, configThumb) {
+  var url = item.Thumb && item.Thumb.Url || configThumb;
+
+  try {
+    url = JSON.parse(url).mediaUrl;
+  } catch (e) {}
+
+  return url;
+}
+
 function ProductsComponent(_ref) {
   var products = _ref.products,
       ProductHeading = _ref.ProductHeading,
@@ -17412,9 +17422,9 @@ function ProductsComponent(_ref) {
           url: item.Url || getField(linkField, item)
         });
       }
-    }), item.Thumb && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
+    }), getThumbUrl(item, getField(thumbField, item)) && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
       className: "hawk-sqItemImage-thumb",
-      src: JSON.parse(item.Thumb.Url).mediaUrl
+      src: getThumbUrl(item, getField(thumbField, item))
     })), /*#__PURE__*/React__default.createElement("span", {
       className: "p-name"
     }, item.ProductName || getField(titleField, item)));

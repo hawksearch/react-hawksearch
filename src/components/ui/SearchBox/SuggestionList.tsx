@@ -28,6 +28,16 @@ function strip_html_tags(str: string) {
 	return str.replace(/<[^>]*>/g, '');
 }
 
+function getThumbUrl(item, configThumb) {
+	var url = (item.Thumb && item.Thumb.Url) || configThumb;
+
+	try {
+		url = JSON.parse(url).mediaUrl;
+	} catch (e) { }
+
+	return url;
+}
+
 function ProductsComponent({
 	products,
 	ProductHeading,
@@ -88,9 +98,9 @@ function ProductsComponent({
 								},
 							})}
 						>
-                            {item.Thumb && (
+							{getThumbUrl(item, getField(thumbField, item)) && (
                                 <div>
-									<img className="hawk-sqItemImage-thumb" src={JSON.parse(item.Thumb.Url).mediaUrl} />
+									<img className="hawk-sqItemImage-thumb" src={getThumbUrl(item, getField(thumbField, item))} />
                                 </div>
 							)}
 							<span className="p-name">{item.ProductName || getField(titleField, item)}</span>
