@@ -14,7 +14,6 @@ export { default as StoreProvider } from 'components/StoreProvider';
 // search boxes
 export { default as GlobalSearchBox } from 'components/ui/SearchBox/GlobalSearchBox';
 export { default as SearchBox } from 'components/ui/SearchBox/SearchBox';
-export { default as SuggestionList } from 'components/ui/SearchBox/SuggestionList';
 
 // Compare Item Bar
 export { default as CompareItems } from 'components/ui/Compare/CompareItems';
