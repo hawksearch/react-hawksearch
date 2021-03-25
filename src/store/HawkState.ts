@@ -16,7 +16,6 @@ import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
-import { getInitialProps } from 'react-i18next';
 
 export interface SearchActor {
 	/**
