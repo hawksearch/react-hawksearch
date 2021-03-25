@@ -44,6 +44,7 @@
 		"@types/node": "^10.17.9",
 		"@types/react-dom": "^16.9.4",
 		"@types/react-hot-loader": "^4.1.1",
+		"@types/react-sticky": "^6.0.3",
 		"@types/react-test-renderer": "^16.9.1",
 		"@types/rheostat": "^2.1.4",
 		"@types/webpack": "^4.41.0",
@@ -86,6 +87,7 @@
 	"dependencies": {
 		"@babel/polyfill": "^7.7.0",
 		"@babel/runtime": "^7.7.6",
+		"@react-hook/window-size": "^3.0.7",
 		"axios": "^0.18.1",
 		"downshift": "^3.4.8",
 		"history": "^4.10.1",
@@ -97,6 +99,7 @@
 		"react-i18next": "^11.4.0",
 		"react-number-format": "^4.3.1",
 		"reactstrap": "^8.9.0",
+		"react-sticky": "^6.0.3",
 		"rheostat": "^4.1.0",
 		"url-search-params-polyfill": "^5.1.0"
 	},

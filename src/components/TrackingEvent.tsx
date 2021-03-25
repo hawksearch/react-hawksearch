@@ -64,7 +64,7 @@ class TrackingEvent {
 	private static instance: TrackingEvent;
 	private trackingURL: string;
 	private clientGUID: string;
-	private trackConfig: any;
+	private trackConfig: string[];
 
 	/**
 	 * The Singleton's constructor should always be private to prevent direct
@@ -222,6 +222,10 @@ class TrackingEvent {
 					UniqueId: uniqueId,
 					ViewportHeight: c.clientHeight,
 					ViewportWidth: c.clientWidth,
+					ScrollX: window.scrollX,
+					ScrollY: window.scrollY,
+					MouseX: event.clientX,
+					MouseY: event.clientY,
 				})
 			),
 		};
@@ -386,7 +390,7 @@ class TrackingEvent {
 				return this.writeSearchTracking(args.trackingId, args.typeId, args.keyword); // CHANGED
 			case 'click':
 				// HawkSearch.Tracking.track('click',{event: e, uniqueId: "33333", trackingId: "75a0801a-a93c-4bcb-81f1-f4b011f616e3"});
-				return this.writeClick(args.event, args.uniqueId, args.trackingId, ''); // CHANGED
+				return this.writeClick(args.event, args.uniqueId, args.trackingId, args.url); // CHANGED
 			case 'bannerclick':
 				// HawkSearch.Tracking.track('bannerclick',{bannerId: 1, campaignId: 2, trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
 				return this.writeBannerClick(args.bannerId, args.campaignId, args.trackingId); // CHANGED
