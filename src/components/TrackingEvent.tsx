@@ -64,7 +64,7 @@ class TrackingEvent {
 	private static instance: TrackingEvent;
 	private trackingURL: string;
 	private clientGUID: string;
-	private trackConfig: any;
+	private trackConfig: string[];
 
 	/**
 	 * The Singleton's constructor should always be private to prevent direct
