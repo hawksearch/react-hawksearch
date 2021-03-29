@@ -48,6 +48,7 @@ export { default as LanguageSelector } from 'components/ui/LanguageSelector';
 
 // hooks
 export { useHawksearch } from 'components/StoreProvider';
+export { useHawkConfig } from 'components/ConfigProvider';
 export { useFacet } from 'components/ui/Facets/Facet';
 
 // utils

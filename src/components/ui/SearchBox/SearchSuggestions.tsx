@@ -8,6 +8,7 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { useHawksearch } from 'components/StoreProvider';
 
 export interface SearchSuggestionsProps {
@@ -62,6 +63,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 						IndexName: config.indexName,
 						DisplayFullResponse: true,
 						FacetSelections: store.pendingSearch.FacetSelections,
+						ClientData: getClientData(),
 					},
 					cancellationToken
 				)
@@ -85,6 +87,35 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 		if (response) {
 			setResults(response);
 		}
+	}
+
+	function getClientData() {
+		let visitId = getCookie('hawk_visit_id');
+		let visitorId = getCookie('hawk_visitor_id');
+
+		if (!visitId) {
+			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+			visitId = getCookie('hawk_visit_id');
+		}
+
+		if (!visitorId) {
+			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
+			visitorId = getCookie('hawk_visitor_id');
+		}
+
+		let clientData = {
+			VisitorId: visitorId || '',
+			VisitId: visitId || '',
+			UserAgent: navigator.userAgent
+		};
+
+		if (store.language) {
+			clientData["Custom"] = {
+				"language": store.language
+			};
+		}
+
+		return clientData;
 	}
 
 	return (

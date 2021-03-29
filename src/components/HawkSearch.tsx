@@ -18,6 +18,7 @@ function Hawksearch(props: HawksearchProps) {
 	if (props.config.enableTrackEvent && props.config.trackEventUrl) {
 		// Set URL to track event
 		TrackingEvent.setTrackingURL(props.config.trackEventUrl);
+		TrackingEvent.setTrackConfig(props.config.trackConfig);
 		TrackingEvent.setClientGUID(props.config.clientGuid);
 	}
 	return (
