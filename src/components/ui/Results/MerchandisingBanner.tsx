@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import { useHawksearch } from 'components/StoreProvider';
 import { ContentType } from 'models/Search/ContentType';
@@ -26,8 +26,7 @@ function MerchandisingBanner({ BannerZone }: MerchandisingBannerProps) {
 
 	matchedMerchandisingItems = matchedMerchandisingItems.concat(
 		searchResults ? searchResults.FeaturedItems.Items.filter(i => i.Zone === BannerZone) : []
-	)
-		;
+	);
 	function getBannerHtml(matchedMerchandisingItem: PageContentItem) {
 		return { __html: matchedMerchandisingItem.Output };
 	}
@@ -77,7 +76,7 @@ function MerchandisingBanner({ BannerZone }: MerchandisingBannerProps) {
 
 			case ContentType.Image:
 				const absoluteUrlTester = new RegExp('^https?://|^//', 'i');
-				let imageURL = merchandisingItem.ImageUrl;
+				const imageURL = merchandisingItem.ImageUrl;
 				return (
 					<div className="text-left" key={bannerIndex}>
 						<a

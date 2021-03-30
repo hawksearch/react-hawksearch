@@ -11,6 +11,15 @@ import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionL
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { useHawksearch } from 'components/StoreProvider';
 
+interface ClientData {
+	VisitorId: string;
+	VisitId: string;
+	UserAgent: string;
+	Custom?: {
+		language: string;
+	};
+}
+
 export interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
 	query: string;
@@ -103,15 +112,15 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 			visitorId = getCookie('hawk_visitor_id');
 		}
 
-		let clientData = {
+		const clientData: ClientData = {
 			VisitorId: visitorId || '',
 			VisitId: visitId || '',
-			UserAgent: navigator.userAgent
+			UserAgent: navigator.userAgent,
 		};
 
 		if (store.language) {
-			clientData["Custom"] = {
-				"language": store.language
+			clientData.Custom = {
+				language: store.language,
 			};
 		}
 

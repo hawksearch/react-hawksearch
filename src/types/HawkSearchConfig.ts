@@ -135,5 +135,7 @@ export interface HawksearchConfig {
 
 	suggestionItem?: object;
 
-	language?: string
+	language?: string;
+
+	trackConfig?: object;
 }

@@ -33,13 +33,13 @@ function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 		<div className="hawk-results">
 			<SearchResultsLabel />
 
-            <div className="hawk-preview__bannerTop">
-                <MerchandisingBanner BannerZone="Top" />
+			<div className="hawk-preview__bannerTop">
+				<MerchandisingBanner BannerZone="Top" />
 			</div>
 
 			<Selections />
 
-			<Tabs/>
+			<Tabs />
 
 			<div className="hawk-results__top-tool-row">
 				<ToolRow />
@@ -47,11 +47,11 @@ function Results({ ResultItem = DefaultResultItem }: ResultsProps) {
 
 			<ResultListing ResultItem={ResultItem} />
 
-            <div className="hawk-preview__bannerBottom">
-                <MerchandisingBanner BannerZone="Bottom" />
-                <MerchandisingBanner BannerZone="Bottom2" />
-                <MerchandisingBanner BannerZone="BannerBottom2" />
-            </div>
+			<div className="hawk-preview__bannerBottom">
+				<MerchandisingBanner BannerZone="Bottom" />
+				<MerchandisingBanner BannerZone="Bottom2" />
+				<MerchandisingBanner BannerZone="BannerBottom2" />
+			</div>
 
 			<div className="hawk-results__bottom-tool-row">
 				<ToolRow />

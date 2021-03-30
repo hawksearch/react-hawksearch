@@ -52,6 +52,9 @@ export class PageContentItem {
 	public MobileWidth: string;
 	public MobileHeight: string;
 	public Trigger: BannerTrigger;
+	public BannerId: number;
+	public CampaignId: number;
+	public ImageTitle: string;
 
 	public constructor(init: PageContentItem) {
 		Object.assign(this, init);
