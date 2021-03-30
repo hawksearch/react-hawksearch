@@ -17,6 +17,16 @@ import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
 
+interface ClientData {
+	VisitorId: string;
+	VisitId: string;
+	UserAgent: string;
+	PreviewBuckets?: number[];
+	Custom?: {
+		language: string;
+	};
+}
+
 export interface SearchActor {
 	/**
 	 * Performs a search with the currently configured pending search request. The search request can be
@@ -530,27 +540,27 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			visitorId = getCookie('hawk_visitor_id');
 		}
 
-        let clientData = {
+		const clientData: ClientData = {
 			VisitorId: visitorId || '',
 			VisitId: visitId || '',
 			UserAgent: navigator.userAgent,
-			PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : []
+			PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
 		};
 
-		let language = store.language;
+		const language = store.language;
 
 		if (language) {
-            clientData["Custom"] = {
-                "language": language
-            };
+			clientData.Custom = {
+				language,
+			};
 		}
 
-        return clientData;
+		return clientData;
 	}
 
 	function getInitialLanguage() {
-		let urlParams = new URLSearchParams(location.search);
-		let language = urlParams.get('language') || config['language'];
+		const urlParams = new URLSearchParams(location.search);
+		const language = urlParams.get('language') || config.language;
 		return language;
 	}
 

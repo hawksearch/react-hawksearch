@@ -29,10 +29,7 @@ function Tabs() {
 				<Nav tabs>
 					{tabFacet.Values.map((tabValue, index, tabValues) => {
 						return (
-							<NavItem
-								className={getTabCssClassName(tabValues, index)}
-								key={`results_type_tab_${index}`}
-							>
+							<NavItem className={getTabCssClassName(tabValues, index)} key={`results_type_tab_${index}`}>
 								<NavLink
 									onClick={() => {
 										hawkActor.setFacetValues(tabFacet, [tabValue]);
@@ -46,8 +43,7 @@ function Tabs() {
 				</Nav>
 			</div>
 		);
-	}
-	else {
+	} else {
 		return null;
 	}
 }

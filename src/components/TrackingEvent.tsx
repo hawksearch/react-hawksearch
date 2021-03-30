@@ -33,32 +33,25 @@ export enum SearchType {
 }
 
 const TrackEventNameMapping = {
-	'Click': 'click',
-	'Cart': '',
-	'CopyRequestTracking': '',
-	'RequestTracking': '',
-	'Search': 'searchtracking',
-	'Sale': 'sale',
-	'RecommendationImpression': '',
-	'RecommendationClick': 'recommendationclick',
-	'Rate': 'rate',
-	'PageLoad': 'pageload',
-	'Identify': '',
-	'BannerImpression': 'bannerimpression',
-	'BannerClick': 'bannerclick',
-	'AutocompleteClick': 'autocompleteclick',
-	'Add2CartMultiple': 'add2cartmultiple',
-	'Add2Cart': 'add2cart'
-}
+	Click: 'click',
+	Cart: '',
+	CopyRequestTracking: '',
+	RequestTracking: '',
+	Search: 'searchtracking',
+	Sale: 'sale',
+	RecommendationImpression: '',
+	RecommendationClick: 'recommendationclick',
+	Rate: 'rate',
+	PageLoad: 'pageload',
+	Identify: '',
+	BannerImpression: 'bannerimpression',
+	BannerClick: 'bannerclick',
+	AutocompleteClick: 'autocompleteclick',
+	Add2CartMultiple: 'add2cartmultiple',
+	Add2Cart: 'add2cart',
+};
 
-const AvailableEvents = [
-	'click',
-	'pageload',
-	'searchtracking',
-	'autocompleteclick',
-	'bannerclick',
-	'bannerimpression'
-]
+const AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression'];
 
 class TrackingEvent {
 	private static instance: TrackingEvent;
@@ -370,10 +363,9 @@ class TrackingEvent {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(pl),
-		})
-			.catch(error => {
-				console.error('Error:', error);
-			});
+		}).catch(error => {
+			console.error('Error:', error);
+		});
 	}
 
 	public track(eventName, args) {
@@ -419,7 +411,10 @@ class TrackingEvent {
 	}
 
 	public isEnabled(eventName) {
-		return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(e => TrackEventNameMapping[e] == eventName)));
+		return Boolean(
+			AvailableEvents.includes(eventName) &&
+				(!this.trackConfig || this.trackConfig.find(e => TrackEventNameMapping[e] === eventName))
+		);
 	}
 }
 
