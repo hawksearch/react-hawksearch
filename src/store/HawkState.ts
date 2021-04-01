@@ -254,7 +254,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					TrackingEvent.track('searchtracking', {
 						trackingId: prevState.searchResults.TrackingId,
 						typeId: SearchType.Initial,
-						keyword: pendingSearch.Keyword,
+						keyword: prevState.pendingSearch.Keyword,
 					});
 				} else {
 					TrackingEvent.track('searchtracking', {
