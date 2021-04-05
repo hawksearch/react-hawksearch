@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
+import { createContext } from 'store/ContextInstance';
 
 import { HawksearchConfig } from 'types/HawksearchConfig';
 
-const ConfigContext = React.createContext({} as ConfigContextValue);
+let ConfigContext;
 
 export interface ConfigContextValue {
 	/** Global configuration. */
@@ -12,6 +13,7 @@ export interface ConfigContextValue {
 export interface ConfigProviderProps {
 	config: HawksearchConfig;
 	children: React.ReactNode;
+	widgetBinding: string;
 }
 
 // declare webpack's constant to appease typescript
@@ -33,6 +35,8 @@ function ConfigProvider({ config, children }: ConfigProviderProps) {
 		// hosting our JS from /assets/ (the default path)
 		__webpack_public_path__ = path;
 	}
+
+	ConfigContext = createContext('ConfigContext_1', {} as ConfigContextValue);
 
 	return <ConfigContext.Provider value={{ config }}>{children}</ConfigContext.Provider>;
 }

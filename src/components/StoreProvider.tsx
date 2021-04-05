@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 
+import { createContext } from 'store/ContextInstance';
 import { SearchStore } from 'store/Store';
 import { useHawkState, SearchActor } from 'store/Hawkstate';
 import { Request } from 'models/Search';
 
-const HawkContext = React.createContext({} as HawkContextValue);
+let HawkContext;
 
 export interface HawkContextValue {
 	/** The store of data used throughout the application. */
@@ -20,6 +21,7 @@ export interface HawkStoreProviderProps {
 	/** The initial search to perform when initializing the search components. */
 	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
+	widgetBinding: string;
 }
 
 /**
@@ -28,6 +30,8 @@ export interface HawkStoreProviderProps {
  */
 function StoreProvider({ initialSearch, children }: HawkStoreProviderProps) {
 	const [store, actor] = useHawkState(initialSearch);
+
+	HawkContext = createContext('HawkContext_1', {} as HawkContextValue);
 
 	return <HawkContext.Provider value={{ store, actor }}>{children}</HawkContext.Provider>;
 }

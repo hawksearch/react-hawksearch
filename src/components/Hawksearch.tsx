@@ -12,6 +12,7 @@ export interface HawksearchProps {
 	/** The initial search to perform when initializing the search components. */
 	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
+	widgetBinding?: string;
 }
 
 function Hawksearch(props: HawksearchProps) {
@@ -21,9 +22,16 @@ function Hawksearch(props: HawksearchProps) {
 		TrackingEvent.setTrackConfig(props.config.trackConfig);
 		TrackingEvent.setClientGUID(props.config.clientGuid);
 	}
+
+	let widgetBinding = props.widgetBinding;
+
+	if (!widgetBinding) {
+		widgetBinding = 'single';
+	}
+
 	return (
-		<ConfigProvider config={props.config}>
-			<StoreProvider initialSearch={props.initialSearch}>{props.children}</StoreProvider>
+		<ConfigProvider config={props.config} widgetBinding={widgetBinding}>
+			<StoreProvider initialSearch={props.initialSearch} widgetBinding={widgetBinding}>{props.children}</StoreProvider>
 		</ConfigProvider>
 	);
 }
