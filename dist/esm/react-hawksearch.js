@@ -6246,7 +6246,7 @@ function () {
     }, function (error) {
       var originalRequest = error.config;
 
-      if (error.response.status === 401 && !originalRequest._retry) {
+      if (error.response && error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         var token = AuthToken$1.getTokens();
         return _this.axiosInstance.post(new URL(_this.refreshTokenURL, _this.baseUrl).href, {
@@ -6989,6 +6989,17 @@ var createGuid = function createGuid() {
   var uuid = s.join('');
   return uuid;
 };
+var createWidgetId = function createWidgetId() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 16; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  var uuid = s.join('');
+  return uuid;
+};
 var getCookie = function getCookie(name) {
   var nameEQ = name + '=';
   var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
@@ -7274,7 +7285,7 @@ function useHawkState(initialSearch) {
           TrackingEvent$1.track('searchtracking', {
             trackingId: prevState.searchResults.TrackingId,
             typeId: SearchType.Initial,
-            keyword: pendingSearch.Keyword
+            keyword: prevState.pendingSearch.Keyword
           });
         } else {
           TrackingEvent$1.track('searchtracking', {
@@ -7629,9 +7640,40 @@ function useHawkState(initialSearch) {
     updatePinOrder: updatePinOrder,
     rebuildIndex: rebuildIndex,
     getProductDetails: getProductDetails,
-    setProductDetailsResults: setProductDetailsResults
+    setProductDetailsResults: setProductDetailsResults,
+    setStore: setStore
   };
   return [store, actor];
+}
+
+var dataLayers = {};
+var configurations = {};
+function updateBindedStores(_ref) {
+  var dataLayer = _ref.dataLayer,
+      widgetId = _ref.widgetId,
+      store = _ref.store,
+      actor = _ref.actor,
+      config = _ref.config;
+
+  if (!dataLayers.hasOwnProperty(dataLayer)) {
+    dataLayers[dataLayer] = {};
+  }
+
+  dataLayers[dataLayer][widgetId] = {
+    store: store,
+    actor: actor
+  };
+  configurations[widgetId] = config;
+
+  for (var _i = 0, _Object$entries = Object.entries(dataLayers[dataLayer]); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+        id = _Object$entries$_i[0],
+        instance = _Object$entries$_i[1];
+
+    if (id != widgetId && instance.actor && !_.isEqual(instance.store.searchResults, store.searchResults) && configurations[id].indexName == config.indexName) {
+      instance.actor.setStore(store);
+    }
+  }
 }
 
 var HawkContext = React__default.createContext({});
@@ -7642,13 +7684,29 @@ var HawkContext = React__default.createContext({});
  */
 function StoreProvider(_ref) {
   var initialSearch = _ref.initialSearch,
-      children = _ref.children;
+      children = _ref.children,
+      widgetId = _ref.widgetId;
 
   var _useHawkState = useHawkState(initialSearch),
       _useHawkState2 = _slicedToArray(_useHawkState, 2),
       store = _useHawkState2[0],
       actor = _useHawkState2[1];
 
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
+  var dataLayer = config.dataLayer;
+  useEffect(function () {
+    if (dataLayer) {
+      updateBindedStores({
+        dataLayer: dataLayer,
+        widgetId: widgetId,
+        store: store,
+        actor: actor,
+        config: config
+      });
+    }
+  }, [store.searchResults]);
   return React__default.createElement(HawkContext.Provider, {
     value: {
       store: store,
@@ -7666,6 +7724,13 @@ function useHawksearch() {
 }
 
 function Hawksearch(props) {
+  var id = createWidgetId();
+
+  var _useState = useState(id),
+      _useState2 = _slicedToArray(_useState, 2),
+      widgetId = _useState2[0],
+      setWidgetId = _useState2[1];
+
   if (props.config.enableTrackEvent && props.config.trackEventUrl) {
     // Set URL to track event
     TrackingEvent$1.setTrackingURL(props.config.trackEventUrl);
@@ -7676,7 +7741,8 @@ function Hawksearch(props) {
   return React__default.createElement(ConfigProvider, {
     config: props.config
   }, React__default.createElement(StoreProvider, {
-    initialSearch: props.initialSearch
+    initialSearch: props.initialSearch,
+    widgetId: widgetId
   }, props.children));
 }
 
