@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
-import { createContext } from 'store/ContextInstance';
 import { SearchStore } from 'store/Store';
 import { useHawkState, SearchActor } from 'store/Hawkstate';
 import { Request } from 'models/Search';
+import { useHawkConfig } from './ConfigProvider';
+import { updateBindedStores } from 'util/WidgetBinding';
 
-let HawkContext;
+const HawkContext = React.createContext({} as HawkContextValue);
 
 export interface HawkContextValue {
 	/** The store of data used throughout the application. */
@@ -21,17 +22,23 @@ export interface HawkStoreProviderProps {
 	/** The initial search to perform when initializing the search components. */
 	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
-	widgetBinding: string;
+	widgetId?: String;
 }
 
 /**
  * This component acts as the global store for the hawksearch application state. Only one instance of this component
  * should exist, and it should be the root level component.
  */
-function StoreProvider({ initialSearch, children }: HawkStoreProviderProps) {
+function StoreProvider({ initialSearch, children, widgetId }: HawkStoreProviderProps) {
 	const [store, actor] = useHawkState(initialSearch);
+	const { config } = useHawkConfig();
+	const dataLayer = config.dataLayer;
 
-	HawkContext = createContext('HawkContext_1', {} as HawkContextValue);
+	useEffect(() => {
+		if (dataLayer) {
+			updateBindedStores({ dataLayer, widgetId, store, actor, config });
+		}
+	}, [store.searchResults])
 
 	return <HawkContext.Provider value={{ store, actor }}>{children}</HawkContext.Provider>;
 }

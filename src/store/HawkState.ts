@@ -103,6 +103,8 @@ export interface SearchActor {
 
 	// Get product details
 	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
+
+	setStore: any
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -581,6 +583,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		rebuildIndex,
 		getProductDetails,
 		setProductDetailsResults,
+		setStore,
 	};
 
 	return [store, actor];

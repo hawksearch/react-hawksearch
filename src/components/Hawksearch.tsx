@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import ConfigProvider from 'components/ConfigProvider';
 import StoreProvider from 'components/StoreProvider';
 import { HawksearchConfig } from 'types/HawksearchConfig';
 import { Request } from 'models/Search';
 import TrackingEvent from './TrackingEvent';
+import { createWidgetId } from 'helpers/utils';
 
 export interface HawksearchProps {
 	/** Global configuration. */
@@ -12,10 +13,12 @@ export interface HawksearchProps {
 	/** The initial search to perform when initializing the search components. */
 	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
-	widgetBinding?: string;
 }
 
 function Hawksearch(props: HawksearchProps) {
+	let id = createWidgetId();
+	const [widgetId, setWidgetId] = useState(id);
+
 	if (props.config.enableTrackEvent && props.config.trackEventUrl) {
 		// Set URL to track event
 		TrackingEvent.setTrackingURL(props.config.trackEventUrl);
@@ -23,15 +26,9 @@ function Hawksearch(props: HawksearchProps) {
 		TrackingEvent.setClientGUID(props.config.clientGuid);
 	}
 
-	let widgetBinding = props.widgetBinding;
-
-	if (!widgetBinding) {
-		widgetBinding = 'single';
-	}
-
 	return (
-		<ConfigProvider config={props.config} widgetBinding={widgetBinding}>
-			<StoreProvider initialSearch={props.initialSearch} widgetBinding={widgetBinding}>{props.children}</StoreProvider>
+		<ConfigProvider config={props.config}>
+			<StoreProvider initialSearch={props.initialSearch} widgetId={widgetId}>{props.children}</StoreProvider>
 		</ConfigProvider>
 	);
 }
