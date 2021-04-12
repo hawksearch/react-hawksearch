@@ -140,4 +140,6 @@ export interface HawksearchConfig {
 	trackConfig?: object;
 
 	dataLayer?: String;
+
+	tabConfig?: object;
 }
