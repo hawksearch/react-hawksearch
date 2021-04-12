@@ -16,7 +16,7 @@ function Tabs() {
         if (tabFacet && tabFacet.Values.filter(t => t.Selected).length == 0 && config.tabConfig && config.tabConfig.alwaysOn) {
             hawkActor.setFacetValues(tabFacet, [tabFacet.Values[0]]);
         }
-    })
+    }, [tabFacet])
 
     function getTabCssClassName(tabValues, index: number): string {
         const bootstrapClasses = 'ml-2 mr-2 mt-2 mb-2';
