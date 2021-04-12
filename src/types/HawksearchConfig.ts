@@ -138,4 +138,6 @@ export interface HawksearchConfig {
 	language?: string;
 
 	trackConfig?: object;
+
+	tabConfig?: object;
 }
