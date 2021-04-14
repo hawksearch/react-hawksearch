@@ -546,7 +546,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			VisitorId: visitorId || '',
 			VisitId: visitId || '',
 			UserAgent: navigator.userAgent,
-			PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
+			PreviewBuckets: (store.searchResults && !config.disablePreviewBuckets) ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
 		};
 
 		const language = store.language;
