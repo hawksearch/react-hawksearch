@@ -7603,7 +7603,7 @@ function useHawkState(initialSearch) {
       VisitorId: visitorId || '',
       VisitId: visitId || '',
       UserAgent: navigator.userAgent,
-      PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(function (v) {
+      PreviewBuckets: store.searchResults && !config.disablePreviewBuckets ? store.searchResults.VisitorTargets.map(function (v) {
         return v.Id;
       }) : []
     };
@@ -29955,9 +29955,16 @@ function LanguageSelector(_ref) {
   }, [pendingSearch.FacetSelections]);
 
   function onChange(event) {
-    actor.setSearch({
-      FacetSelections: _defineProperty({}, facetName, [event.currentTarget.value])
-    });
+    if (facetName) {
+      actor.setSearch({
+        FacetSelections: _defineProperty({}, facetName, [event.currentTarget.value])
+      });
+    } else {
+      actor.setStore({
+        language: event.currentTarget.value
+      });
+      actor.setSearch({});
+    }
   }
 
   return React__default.createElement("div", {
