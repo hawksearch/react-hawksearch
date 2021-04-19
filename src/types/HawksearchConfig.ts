@@ -139,5 +139,5 @@ export interface HawksearchConfig {
 
 	trackConfig?: object;
 
-	tabConfig?: object;
+	tabConfig?: { alwaysOn?: boolean };
 }
