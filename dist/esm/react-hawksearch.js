@@ -7274,7 +7274,7 @@ function useHawkState(initialSearch) {
           TrackingEvent$1.track('searchtracking', {
             trackingId: prevState.searchResults.TrackingId,
             typeId: SearchType.Initial,
-            keyword: pendingSearch.Keyword
+            keyword: prevState.pendingSearch.Keyword
           });
         } else {
           TrackingEvent$1.track('searchtracking', {
@@ -29755,19 +29755,22 @@ function Tabs() {
       hawkActor = _useHawksearch.actor,
       searchResults = _useHawksearch.store.searchResults;
 
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
   var tabFacet = searchResults && searchResults.Facets.find(function (facet) {
     return facet.FieldType === 'tab';
   });
+  useEffect(function () {
+    if (tabFacet && tabFacet.Values.filter(function (t) {
+      return t.Selected;
+    }).length === 0 && config.tabConfig && config.tabConfig.alwaysOn) {
+      hawkActor.setFacetValues(tabFacet, [tabFacet.Values[0]]);
+    }
+  }, [tabFacet]);
 
   function getTabCssClassName(tabValues, index) {
-    var tabSelectedValue = tabValues.filter(function (t) {
-      return t.Selected;
-    });
-    var bootstrapClasses = 'ml-2 mr-2 mt-2 mb-2'; // // Make default selection
-
-    if (tabSelectedValue.length === 0 && index === 0) {
-      return "".concat(bootstrapClasses, " active");
-    }
+    var bootstrapClasses = 'ml-2 mr-2 mt-2 mb-2';
 
     if (tabValues[index].Selected) {
       return "".concat(bootstrapClasses, " active");
