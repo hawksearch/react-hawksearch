@@ -59,6 +59,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 						Keyword: decodeURIComponent(input),
 						IndexName: config.indexName,
 						DisplayFullResponse: true,
+						IsInPreview: config.isInPreview,
 					},
 					cancellationToken
 				)
