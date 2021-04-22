@@ -250,16 +250,19 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 		setStore(prevState => {
 			if (prevState.searchResults && prevState.searchResults.TrackingId) {
-				if (prevState.pendingSearch.Keyword !== pendingSearch.Keyword) {
+				const facetsLength = pendingSearch.FacetSelections
+					? Object.keys(pendingSearch.FacetSelections).length
+					: 0;
+				if (pendingSearch.PageNo || pendingSearch.SortBy || pendingSearch.MaxPerPage || facetsLength) {
 					TrackingEvent.track('searchtracking', {
 						trackingId: prevState.searchResults.TrackingId,
-						typeId: SearchType.Initial,
-						keyword: pendingSearch.Keyword,
+						typeId: SearchType.Refinement,
+						keyword: prevState.pendingSearch.Keyword,
 					});
 				} else {
 					TrackingEvent.track('searchtracking', {
 						trackingId: prevState.searchResults.TrackingId,
-						typeId: SearchType.Refinement,
+						typeId: SearchType.Initial,
 						keyword: pendingSearch.Keyword,
 					});
 				}
