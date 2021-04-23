@@ -137,7 +137,7 @@ export interface HawksearchConfig {
 
 	language?: string;
 
-	trackConfig?: object;
+	tabConfig?: { alwaysOn?: boolean };
 
 	dataLayer?: String;
 }
