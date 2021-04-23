@@ -104,7 +104,7 @@ export interface SearchActor {
 	// Get product details
 	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
 
-	setStore: any
+	setStore(store: SearchStore): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
