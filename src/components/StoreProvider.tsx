@@ -22,7 +22,7 @@ export interface HawkStoreProviderProps {
 	/** The initial search to perform when initializing the search components. */
 	initialSearch?: Partial<Request>;
 	children: React.ReactNode;
-	widgetId?: String;
+	widgetId?: string;
 }
 
 /**
@@ -38,7 +38,7 @@ function StoreProvider({ initialSearch, children, widgetId }: HawkStoreProviderP
 		if (dataLayer) {
 			updateBindedStores({ dataLayer, widgetId, store, actor, config });
 		}
-	}, [store.searchResults])
+	}, [store.searchResults]);
 
 	return <HawkContext.Provider value={{ store, actor }}>{children}</HawkContext.Provider>;
 }

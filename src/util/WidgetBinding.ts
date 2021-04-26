@@ -1,13 +1,15 @@
+import { isEqual } from 'lodash';
+
 /**
  * Object containing all initialized stores
- * */
-const dataLayers = {}
+ */
+const dataLayers = {};
 
 /**
  * All initialized configurations
  * Used for index name verification
- * */
-const configurations = {}
+ */
+const configurations = {};
 
 /**
  * A method invoked at store updates that propagates the data between similar stores
@@ -21,11 +23,13 @@ export function updateBindedStores({ dataLayer, widgetId, store, actor, config }
 	dataLayers[dataLayer][widgetId] = { store, actor };
 	configurations[widgetId] = config;
 
-	for (let [id, instance] of Object.entries(dataLayers[dataLayer])) {
-		if (id != widgetId &&
+	for (const [id, instance] of Object.entries(dataLayers[dataLayer])) {
+		if (
+			id !== widgetId &&
 			instance.actor &&
-			!_.isEqual(instance.store.searchResults, store.searchResults) &&
-			configurations[id].indexName == config.indexName) {
+			!isEqual(instance.store.searchResults, store.searchResults) &&
+			configurations[id].indexName === config.indexName
+		) {
 			instance.actor.setStore(store);
 		}
 	}

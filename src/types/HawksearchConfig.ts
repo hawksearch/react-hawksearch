@@ -139,5 +139,5 @@ export interface HawksearchConfig {
 
 	tabConfig?: { alwaysOn?: boolean };
 
-	dataLayer?: String;
+	dataLayer?: string;
 }

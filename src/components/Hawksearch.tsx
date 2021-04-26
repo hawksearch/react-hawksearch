@@ -16,7 +16,7 @@ export interface HawksearchProps {
 }
 
 function Hawksearch(props: HawksearchProps) {
-	let id = createWidgetId();
+	const id = createWidgetId();
 	const [widgetId, setWidgetId] = useState(id);
 
 	if (props.config.enableTrackEvent && props.config.trackEventUrl) {
