@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash';
 
 /**
  * Object containing all initialized stores
@@ -20,6 +19,8 @@ export function updateBindedStores({ dataLayer, widgetId, store, actor, config }
 		dataLayers[dataLayer] = {};
 	}
 
+	const _ = require('lodash');
+
 	dataLayers[dataLayer][widgetId] = { store, actor };
 	configurations[widgetId] = config;
 
@@ -27,7 +28,7 @@ export function updateBindedStores({ dataLayer, widgetId, store, actor, config }
 		if (
 			id !== widgetId &&
 			instance.actor &&
-			!isEqual(instance.store.searchResults, store.searchResults) &&
+			!_.isEqual(instance.store.searchResults, store.searchResults) &&
 			configurations[id].indexName === config.indexName
 		) {
 			instance.actor.setStore(store);

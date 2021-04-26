@@ -140,4 +140,6 @@ export interface HawksearchConfig {
 	tabConfig?: { alwaysOn?: boolean };
 
 	dataLayer?: string;
+
+	trackConfig?: string[];
 }
