@@ -87,7 +87,6 @@
 	"dependencies": {
 		"@babel/polyfill": "^7.7.0",
 		"@babel/runtime": "^7.7.6",
-		"@react-hook/window-size": "^3.0.7",
 		"axios": "^0.18.1",
 		"downshift": "^3.4.8",
 		"history": "^4.10.1",
