@@ -137,9 +137,11 @@ export interface HawksearchConfig {
 
 	language?: string;
 
-	trackConfig?: object;
-
 	tabConfig?: { alwaysOn?: boolean };
+
+	dataLayer?: string;
+
+	trackConfig?: string[];
 
 	disablePreviewBuckets?: boolean | false;
 }

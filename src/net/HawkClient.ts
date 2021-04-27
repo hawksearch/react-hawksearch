@@ -55,7 +55,7 @@ class HawkClient {
 			error => {
 				const originalRequest = error.config;
 
-				if (error.response.status === 401 && !originalRequest._retry) {
+				if (error.response && error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
 					const token = AuthToken.getTokens();
 					return this.axiosInstance
