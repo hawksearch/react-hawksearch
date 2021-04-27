@@ -192,6 +192,26 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				console.error('Search result error:', searchResults);
 				setStore({ requestError: true });
 			} else {
+				const selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
+				if (
+					searchParams.SortBy ||
+					searchParams.PageNo ||
+					searchParams.MaxPerPage ||
+					selectedFacets.length ||
+					searchParams.SearchWithin
+				) {
+					TrackingEvent.track('searchtracking', {
+						trackingId: searchResults.TrackingId,
+						typeId: SearchType.Refinement,
+						keyword: searchParams.Keyword,
+					});
+				} else {
+					TrackingEvent.track('searchtracking', {
+						trackingId: searchResults.TrackingId,
+						typeId: SearchType.Initial,
+						keyword: searchParams.Keyword,
+					});
+				}
 				setStore({
 					searchResults: new Response(searchResults),
 					requestError: false,
@@ -251,21 +271,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setStore(prevState => {
-			if (prevState.searchResults && prevState.searchResults.TrackingId) {
-				if (prevState.pendingSearch.Keyword !== pendingSearch.Keyword) {
-					TrackingEvent.track('searchtracking', {
-						trackingId: prevState.searchResults.TrackingId,
-						typeId: SearchType.Initial,
-						keyword: pendingSearch.Keyword,
-					});
-				} else {
-					TrackingEvent.track('searchtracking', {
-						trackingId: prevState.searchResults.TrackingId,
-						typeId: SearchType.Refinement,
-						keyword: pendingSearch.Keyword,
-					});
-				}
-			}
 			const newState = {
 				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
@@ -546,7 +551,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			VisitorId: visitorId || '',
 			VisitId: visitId || '',
 			UserAgent: navigator.userAgent,
-			PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
+			PreviewBuckets: (store.searchResults && !config.disablePreviewBuckets) ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
 		};
 
 		const language = store.language;

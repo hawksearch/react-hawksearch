@@ -142,4 +142,6 @@ export interface HawksearchConfig {
 	dataLayer?: string;
 
 	trackConfig?: string[];
+
+	disablePreviewBuckets?: boolean | false;
 }
