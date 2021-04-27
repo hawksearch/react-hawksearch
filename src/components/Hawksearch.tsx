@@ -28,7 +28,9 @@ function Hawksearch(props: HawksearchProps) {
 
 	return (
 		<ConfigProvider config={props.config}>
-			<StoreProvider initialSearch={props.initialSearch} widgetId={widgetId}>{props.children}</StoreProvider>
+			<StoreProvider initialSearch={props.initialSearch} widgetId={widgetId}>
+				{props.children}
+			</StoreProvider>
 		</ConfigProvider>
 	);
 }

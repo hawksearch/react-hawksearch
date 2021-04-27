@@ -1,4 +1,4 @@
-
+import { HawkContextValue } from './../components/StoreProvider';
 /**
  * Object containing all initialized stores
  */
@@ -27,11 +27,11 @@ export function updateBindedStores({ dataLayer, widgetId, store, actor, config }
 	for (const [id, instance] of Object.entries(dataLayers[dataLayer])) {
 		if (
 			id !== widgetId &&
-			instance.actor &&
-			!_.isEqual(instance.store.searchResults, store.searchResults) &&
+			(instance as HawkContextValue).actor &&
+			!_.isEqual((instance as HawkContextValue).store.searchResults, store.searchResults) &&
 			configurations[id].indexName === config.indexName
 		) {
-			instance.actor.setStore(store);
+			(instance as HawkContextValue).actor.setStore(store);
 		}
 	}
 }
