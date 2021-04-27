@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-const throttle = <T extends []>(callback: (..._: T) => void, wait: number): ((..._: T) => void) => {
-	let timeout: NodeJS.Timeout | any;
-	let lastArgs: T;
-	const next = () => {
-		timeout = clearTimeout(timeout) as undefined;
-		callback(...lastArgs);
-	};
-
-	return (...args: T) => {
-		lastArgs = args;
-
-		if (timeout === void 0) {
-			timeout = setTimeout(next, wait);
+function throttle(func, timeout) {
+	let ready: boolean = true;
+	return (...args) => {
+		if (!ready) {
+			return;
 		}
+
+		ready = false;
+		func(...args);
+		setTimeout(() => {
+			ready = true;
+		}, timeout);
 	};
-};
+}
 
 // Hook
 export function useWindowSize() {
@@ -39,7 +37,9 @@ export function useWindowSize() {
 		handleResize();
 
 		// Remove event listener on cleanup
-		return () => window.removeEventListener('resize', handleResize);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
 	}, []); // Empty array ensures that effect is only run on mount
 
 	return windowSize;

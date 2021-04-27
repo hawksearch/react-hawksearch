@@ -1,10 +1,8 @@
 import React from 'react';
 import { StickyContainer, Sticky } from 'react-sticky';
-//import { useWindowSize } from '@react-hook/window-size';
 import { useWindowSize } from 'util/WindowResize';
 
 function StickyComponent({ children }: { children: React.ReactElement[] }) {
-	//const [width] = useWindowSize();
 	const size = useWindowSize();
 
 	if (size.width > 767) {

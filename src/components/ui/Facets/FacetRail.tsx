@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-//import { useWindowSize } from '@react-hook/window-size';
 import { useWindowSize } from 'util/WindowResize';
 
 import { useTranslation } from 'react-i18next';
@@ -8,7 +7,6 @@ import FacetList from './FacetList';
 function FacetRail() {
 	const { t, i18n } = useTranslation();
 	const [isCollapsed, setCollapsed] = useState(false);
-	//const [width] = useWindowSize();
 	const size = useWindowSize();
 
 	return (
