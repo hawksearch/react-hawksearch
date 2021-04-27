@@ -140,4 +140,6 @@ export interface HawksearchConfig {
 	trackConfig?: object;
 
 	tabConfig?: { alwaysOn?: boolean };
+
+	disablePreviewBuckets?: boolean | false;
 }

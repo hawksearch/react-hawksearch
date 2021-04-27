@@ -3,7 +3,7 @@ import { useHawksearch } from '../StoreProvider';
 
 interface LanguageSelectorProps {
 	title: string;
-	facetName: string;
+	facetName?: string;
 	languages: Array<{ value: string; label: string }>;
 }
 
@@ -16,15 +16,24 @@ function LanguageSelector({ title, languages, facetName }: LanguageSelectorProps
 
 	useEffect(() => {
 		const languageFacet = ((pendingSearch || {}).FacetSelections || {})[facetName];
+
 		if (languageFacet) {
 			setValue(languageFacet[0]);
 		}
 	}, [pendingSearch.FacetSelections]);
+
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
-		actor.setSearch({
-			FacetSelections: { [facetName]: [event.currentTarget.value] },
-		});
+		if (facetName) {
+			actor.setSearch({
+				FacetSelections: { [facetName]: [event.currentTarget.value] },
+			});
+		}
+		else {
+			actor.setStore({ language: event.currentTarget.value });
+			actor.setSearch({});
+		}
 	}
+
 	return (
 		<div className="hawk-language">
 			<span className="hawk-language__label">{title}</span>
