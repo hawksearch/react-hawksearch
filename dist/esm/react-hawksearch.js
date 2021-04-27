@@ -2704,10 +2704,11 @@ function _iterableToArrayLimit(arr, i) {
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (_i = _i.call(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -2900,45 +2901,6 @@ i18next.use(initReactI18next) // passes i18n down to react-i18next
   resources: resources
 });
 
-var ConfigContext = /*#__PURE__*/React__default.createContext({});
-
-function ConfigProvider(_ref) {
-  var config = _ref.config,
-      children = _ref.children;
-
-  if (config.assetPath) {
-    var path = config.assetPath; // ensure the provided path both starts and ends with a slash
-
-    if (!path.startsWith('/')) {
-      path = '/' + path;
-    }
-
-    if (!path.endsWith('/')) {
-      path = path + '/';
-    } // allow consumers to tell webpack where to load code split/lazy loaded files from, as they may not be
-    // hosting our JS from /assets/ (the default path)
-
-
-    __webpack_public_path__ = path;
-  }
-
-  return /*#__PURE__*/React__default.createElement(ConfigContext.Provider, {
-    value: {
-      config: config
-    }
-  }, children);
-}
-
-function useHawkConfig() {
-  var context = useContext(ConfigContext);
-
-  if (!context.config) {
-    throw new Error('No HawksearchConfig is available, did you forget to wrap your components in a ConfigProvider component?');
-  }
-
-  return context;
-}
-
 function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
 }
@@ -2950,10 +2912,11 @@ function _iterableToArrayLimit(arr, i) {
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (_i = _i.call(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -2997,6 +2960,45 @@ function _nonIterableRest() {
 
 function _slicedToArray$1(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+var ConfigContext = /*#__PURE__*/React__default.createContext({});
+
+function ConfigProvider(_ref) {
+  var config = _ref.config,
+      children = _ref.children;
+
+  if (config.assetPath) {
+    var path = config.assetPath; // ensure the provided path both starts and ends with a slash
+
+    if (!path.startsWith('/')) {
+      path = '/' + path;
+    }
+
+    if (!path.endsWith('/')) {
+      path = path + '/';
+    } // allow consumers to tell webpack where to load code split/lazy loaded files from, as they may not be
+    // hosting our JS from /assets/ (the default path)
+
+
+    __webpack_public_path__ = path;
+  }
+
+  return /*#__PURE__*/React__default.createElement(ConfigContext.Provider, {
+    value: {
+      config: config
+    }
+  }, children);
+}
+
+function useHawkConfig() {
+  var context = useContext(ConfigContext);
+
+  if (!context.config) {
+    throw new Error('No HawksearchConfig is available, did you forget to wrap your components in a ConfigProvider component?');
+  }
+
+  return context;
 }
 
 function _arrayWithoutHoles(arr) {
@@ -6343,7 +6345,7 @@ var HawkClient = /*#__PURE__*/function () {
     }, function (error) {
       var originalRequest = error.config;
 
-      if (error.response.status === 401 && !originalRequest._retry) {
+      if (error.response && error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         var token = AuthToken$1.getTokens();
         return _this.axiosInstance.post(new URL(_this.refreshTokenURL, _this.baseUrl).href, {
@@ -7140,6 +7142,17 @@ var createGuid = function createGuid() {
   var uuid = s.join('');
   return uuid;
 };
+var createWidgetId = function createWidgetId() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 16; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  var uuid = s.join('');
+  return uuid;
+};
 var getCookie = function getCookie(name) {
   var nameEQ = name + '=';
   var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
@@ -7228,7 +7241,7 @@ function useHawkState(initialSearch) {
 
   function _search() {
     _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(cancellationToken) {
-      var searchResults, searchParams;
+      var searchResults, searchParams, selectedFacets;
       return regenerator.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -7302,6 +7315,22 @@ function useHawkState(initialSearch) {
                     requestError: true
                   });
                 } else {
+                  selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
+
+                  if (searchParams.SortBy || searchParams.PageNo || searchParams.MaxPerPage || selectedFacets.length || searchParams.SearchWithin) {
+                    TrackingEvent$1.track('searchtracking', {
+                      trackingId: searchResults.TrackingId,
+                      typeId: SearchType.Refinement,
+                      keyword: searchParams.Keyword
+                    });
+                  } else {
+                    TrackingEvent$1.track('searchtracking', {
+                      trackingId: searchResults.TrackingId,
+                      typeId: SearchType.Initial,
+                      keyword: searchParams.Keyword
+                    });
+                  }
+
                   setStore({
                     searchResults: new Response(searchResults),
                     requestError: false
@@ -7468,22 +7497,6 @@ function useHawkState(initialSearch) {
     }
 
     setStore(function (prevState) {
-      if (prevState.searchResults && prevState.searchResults.TrackingId) {
-        if (prevState.pendingSearch.Keyword !== pendingSearch.Keyword) {
-          TrackingEvent$1.track('searchtracking', {
-            trackingId: prevState.searchResults.TrackingId,
-            typeId: SearchType.Initial,
-            keyword: pendingSearch.Keyword
-          });
-        } else {
-          TrackingEvent$1.track('searchtracking', {
-            trackingId: prevState.searchResults.TrackingId,
-            typeId: SearchType.Refinement,
-            keyword: pendingSearch.Keyword
-          });
-        }
-      }
-
       var newState = {
         pendingSearch: _objectSpread$4(_objectSpread$4({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
@@ -7782,7 +7795,7 @@ function useHawkState(initialSearch) {
       VisitorId: visitorId || '',
       VisitId: visitId || '',
       UserAgent: navigator.userAgent,
-      PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(function (v) {
+      PreviewBuckets: store.searchResults && !config.disablePreviewBuckets ? store.searchResults.VisitorTargets.map(function (v) {
         return v.Id;
       }) : []
     };
@@ -7819,9 +7832,55 @@ function useHawkState(initialSearch) {
     updatePinOrder: updatePinOrder,
     rebuildIndex: rebuildIndex,
     getProductDetails: getProductDetails,
-    setProductDetailsResults: setProductDetailsResults
+    setProductDetailsResults: setProductDetailsResults,
+    setStore: setStore
   };
   return [store, actor];
+}
+
+/**
+ * Object containing all initialized stores
+ */
+var dataLayers = {};
+/**
+ * All initialized configurations
+ * Used for index name verification
+ */
+
+var configurations = {};
+/**
+ * A method invoked at store updates that propagates the data between similar stores
+ * Store matching is based on the unique identifier and the configuration index name
+ */
+
+function updateBindedStores(_ref) {
+  var dataLayer = _ref.dataLayer,
+      widgetId = _ref.widgetId,
+      store = _ref.store,
+      actor = _ref.actor,
+      config = _ref.config;
+
+  if (!dataLayers.hasOwnProperty(dataLayer)) {
+    dataLayers[dataLayer] = {};
+  }
+
+  var _ = require('lodash');
+
+  dataLayers[dataLayer][widgetId] = {
+    store: store,
+    actor: actor
+  };
+  configurations[widgetId] = config;
+
+  for (var _i = 0, _Object$entries = Object.entries(dataLayers[dataLayer]); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = _slicedToArray$1(_Object$entries[_i], 2),
+        id = _Object$entries$_i[0],
+        instance = _Object$entries$_i[1];
+
+    if (id !== widgetId && instance.actor && !_.isEqual(instance.store.searchResults, store.searchResults) && configurations[id].indexName === config.indexName) {
+      instance.actor.setStore(store);
+    }
+  }
 }
 
 var HawkContext = /*#__PURE__*/React__default.createContext({});
@@ -7832,13 +7891,29 @@ var HawkContext = /*#__PURE__*/React__default.createContext({});
  */
 function StoreProvider(_ref) {
   var initialSearch = _ref.initialSearch,
-      children = _ref.children;
+      children = _ref.children,
+      widgetId = _ref.widgetId;
 
   var _useHawkState = useHawkState(initialSearch),
       _useHawkState2 = _slicedToArray$1(_useHawkState, 2),
       store = _useHawkState2[0],
       actor = _useHawkState2[1];
 
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
+  var dataLayer = config.dataLayer;
+  useEffect(function () {
+    if (dataLayer) {
+      updateBindedStores({
+        dataLayer: dataLayer,
+        widgetId: widgetId,
+        store: store,
+        actor: actor,
+        config: config
+      });
+    }
+  }, [store.searchResults]);
   return /*#__PURE__*/React__default.createElement(HawkContext.Provider, {
     value: {
       store: store,
@@ -7856,6 +7931,13 @@ function useHawksearch() {
 }
 
 function Hawksearch(props) {
+  var id = createWidgetId();
+
+  var _useState = useState(id),
+      _useState2 = _slicedToArray$1(_useState, 2),
+      widgetId = _useState2[0],
+      setWidgetId = _useState2[1];
+
   if (props.config.enableTrackEvent && props.config.trackEventUrl) {
     // Set URL to track event
     TrackingEvent$1.setTrackingURL(props.config.trackEventUrl);
@@ -7866,7 +7948,8 @@ function Hawksearch(props) {
   return /*#__PURE__*/React__default.createElement(ConfigProvider, {
     config: props.config
   }, /*#__PURE__*/React__default.createElement(StoreProvider, {
-    initialSearch: props.initialSearch
+    initialSearch: props.initialSearch,
+    widgetId: widgetId
   }, props.children));
 }
 
@@ -8312,7 +8395,8 @@ function SearchSuggestions(_ref) {
                 IndexName: config.indexName,
                 DisplayFullResponse: true,
                 FacetSelections: store.pendingSearch.FacetSelections,
-                ClientData: getClientData()
+                ClientData: getClientData(),
+                IsInPreview: config.isInPreview
               }, cancellationToken).then(function (o) {
                 // ensure, returned object will return response
                 // since by default, axios uses JSON.parse to parse an object,
@@ -17417,27 +17501,20 @@ function CompareItems(_ref2) {
   }, "Clear")));
 }
 
-var throttle = function throttle(callback, wait) {
-  var timeout;
-  var lastArgs;
-
-  var next = function next() {
-    timeout = clearTimeout(timeout);
-    callback.apply(void 0, _toConsumableArray(lastArgs));
-  };
-
+function throttle(func, timeout) {
+  var ready = true;
   return function () {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
+    if (!ready) {
+      return;
     }
 
-    lastArgs = args;
-
-    if (timeout === void 0) {
-      timeout = setTimeout(next, wait);
-    }
+    ready = false;
+    func.apply(void 0, arguments);
+    setTimeout(function () {
+      ready = true;
+    }, timeout);
   };
-}; // Hook
+} // Hook
 
 
 function useWindowSize() {
@@ -17462,7 +17539,7 @@ function useWindowSize() {
     handleResize(); // Remove event listener on cleanup
 
     return function () {
-      return window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []); // Empty array ensures that effect is only run on mount
 
@@ -17572,8 +17649,7 @@ function FacetRail() {
   var _useState = useState(false),
       _useState2 = _slicedToArray$1(_useState, 2),
       isCollapsed = _useState2[0],
-      setCollapsed = _useState2[1]; //const [width] = useWindowSize();
-
+      setCollapsed = _useState2[1];
 
   var size = useWindowSize();
   return /*#__PURE__*/React__default.createElement("div", {
@@ -19135,7 +19211,6 @@ var lib_2 = lib.Sticky;
 
 function StickyComponent(_ref) {
   var children = _ref.children;
-  //const [width] = useWindowSize();
   var size = useWindowSize();
 
   if (size.width > 767) {
@@ -30228,17 +30303,21 @@ function LanguageSelector(_ref) {
       setValue = _useState2[1];
 
   useEffect(function () {
-    var languageFacet = ((pendingSearch || {}).FacetSelections || {})[facetName];
+    if (facetName) {
+      var languageFacet = ((pendingSearch || {}).FacetSelections || {})[facetName];
 
-    if (languageFacet) {
-      setValue(languageFacet[0]);
+      if (languageFacet) {
+        setValue(languageFacet[0]);
+      }
     }
   }, [pendingSearch.FacetSelections]);
 
   function onChange(event) {
-    actor.setSearch({
-      FacetSelections: _defineProperty({}, facetName, [event.currentTarget.value])
-    });
+    if (facetName) {
+      actor.setSearch({
+        FacetSelections: _defineProperty({}, facetName, [event.currentTarget.value])
+      });
+    }
   }
 
   return /*#__PURE__*/React__default.createElement("div", {

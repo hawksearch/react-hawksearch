@@ -15,10 +15,12 @@ function LanguageSelector({ title, languages, facetName }: LanguageSelectorProps
 	const [selectedValue, setValue] = useState('sl');
 
 	useEffect(() => {
-		const languageFacet = ((pendingSearch || {}).FacetSelections || {})[facetName];
+		if (facetName) {
+			const languageFacet = ((pendingSearch || {}).FacetSelections || {})[facetName];
 
-		if (languageFacet) {
-			setValue(languageFacet[0]);
+			if (languageFacet) {
+				setValue(languageFacet[0]);
+			}
 		}
 	}, [pendingSearch.FacetSelections]);
 
@@ -27,10 +29,6 @@ function LanguageSelector({ title, languages, facetName }: LanguageSelectorProps
 			actor.setSearch({
 				FacetSelections: { [facetName]: [event.currentTarget.value] },
 			});
-		}
-		else {
-			actor.setStore({ language: event.currentTarget.value });
-			actor.setSearch({});
 		}
 	}
 
