@@ -51,7 +51,16 @@ const TrackEventNameMapping = {
 	Add2Cart: 'add2cart',
 };
 
-const AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression'];
+const AvailableEvents = [
+	'click',
+	'pageload',
+	'searchtracking',
+	'autocompleteclick',
+	'bannerclick',
+	'bannerimpression',
+	'sale',
+	'add2cart',
+];
 
 class TrackingEvent {
 	private static instance: TrackingEvent;
