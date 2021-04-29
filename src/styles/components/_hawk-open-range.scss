@@ -19,9 +19,6 @@
 
 .hawk-facet-type-date {
 	display: flex;
-	flex-wrap: wrap;
 	align-items: center;
-	align-content: center;
-	flex: 1;
-	justify-content: space-between;
+	flex-direction: column;
 }
