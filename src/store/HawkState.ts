@@ -3,15 +3,18 @@ import axios, { CancelToken } from 'axios';
 
 import { SearchStore, FacetSelectionState } from './Store';
 import HawkClient from 'net/HawkClient';
-import { Response, Request, FacetSelections } from 'models/Search';
+import { Response, Request, FacetSelections, Result } from 'models/Search';
 import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
+import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
+import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+
 export interface SearchActor {
 	/**
 	 * Performs a search with the currently configured pending search request. The search request can be
@@ -67,6 +70,24 @@ export interface SearchActor {
 
 	// update sorting order of pinned items
 	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
+
+	// Store items to make comparision via request
+	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
+
+	// To store items after getting the results from compare request
+	setComparedResults(comparedResults: Result[]): void;
+
+	// To store items after getting the results from compare request
+	setProductDetailsResults(detailsResult: Result): void;
+
+	// Clear stored compared items
+	clearItemsToCompare(): void;
+
+	// Get comparision of items from request
+	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
+
+	// Get product details
+	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -80,6 +101,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				FacetSelections: {},
 			},
 			isLoading: true,
+			itemsToCompare: [],
+			comparedResults: [],
+			itemsToCompareIds: [],
+			productDetails: {},
 		}),
 		SearchStore
 	);
@@ -182,6 +207,29 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	async function updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
 		return await client.updatePinOrder(request, cancellationToken);
+	}
+
+	/**
+	 * Performs a comparision between two or more than two products based on ID
+	 * user can use this method from view application.
+	 * @returns A promise that resolves when the compare request has been completed.
+	 */
+	async function getComparedItems(
+		request: CompareItemRequest,
+		cancellationToken?: CancelToken
+	): Promise<CompareDataResponse> {
+		return await client.getComparedItems(request, cancellationToken);
+	}
+
+	/**
+	 * Get product details by ID
+	 * @returns A promise that resolves when the product details request has been completed.
+	 */
+	async function getProductDetails(
+		request: ProductDetailsRequest,
+		cancellationToken?: CancelToken
+	): Promise<ProductDetailsResponse> {
+		return await client.getProductDetails(request, cancellationToken);
 	}
 
 	/**
@@ -419,6 +467,41 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setSearchSelections(undefined, undefined);
 	}
 
+	function setItemsToCompare(resultItem: Result, isCheck: boolean): void {
+		let itemsArray = [...store.itemsToCompare];
+		if (isCheck) {
+			// append
+			itemsArray = [...itemsArray, ...[resultItem]];
+		} else {
+			// filter out
+			itemsArray = itemsArray.filter(item => item.DocId !== resultItem.DocId);
+		}
+		// setStore({ itemsToCompare: itemsArray });
+		setStore({
+			itemsToCompare: itemsArray,
+			itemsToCompareIds: itemsArray.map(item => item.DocId),
+		});
+	}
+
+	function setComparedResults(data: Result[]): void {
+		setStore({
+			comparedResults: data,
+		});
+	}
+
+	function setProductDetailsResults(data: Result): void {
+		setStore({
+			productDetails: data,
+		});
+	}
+
+	function clearItemsToCompare() {
+		setStore({
+			itemsToCompare: [],
+			itemsToCompareIds: [],
+		});
+	}
+
 	const actor: SearchActor = {
 		search,
 		setSearch,
@@ -429,6 +512,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		clearAllFacets,
 		pinItem,
 		updatePinOrder,
+		setItemsToCompare,
+		setComparedResults,
+		clearItemsToCompare,
+		getComparedItems,
+		getProductDetails,
+		setProductDetailsResults,
 	};
 
 	return [store, actor];

@@ -3,23 +3,16 @@ import { useEffect } from 'react';
 import { useHawksearch } from './StoreProvider';
 import { history } from 'util/History';
 import { parseSearchQueryString, getSearchQueryString } from 'util/QueryString';
-import AuthToken from './AuthToken';
 
 let doSearch = true;
 
-function QueryStringListener() {
+function QueryStringListenerSF() {
 	const { store, actor } = useHawksearch();
 
 	useEffect(() => {
 		// listen to history so that when we navigate backward/forward, trigger a new search based off
 		// the new query string
 		const unlisten = history.listen(location => {
-			if (!doSearch) {
-				// if the previous history change specified that we shouldn't do a search, clear the flag and bail
-				doSearch = true;
-				return;
-			}
-
 			const searchRequest = parseSearchQueryString(location.search);
 
 			actor.setSearch(
@@ -50,13 +43,7 @@ function QueryStringListener() {
 		}
 	}, [store.pendingSearch]);
 
-	// Extract access token and refresh token from query string on load
-	useEffect(() => {
-		const params = new URLSearchParams(location.search);
-		AuthToken.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(/ /g, '+') || '');
-	}, []);
-
 	return null;
 }
 
-export default QueryStringListener;
+export default QueryStringListenerSF;

@@ -7,13 +7,16 @@ import 'styles/app.scss';
 export { default as tConfig } from 'util/i18n';
 
 // context providers
-export { default as HawkSearch } from 'components/HawkSearch';
+export { default as Hawksearch } from 'components/Hawksearch';
 export { default as ConfigProvider } from 'components/ConfigProvider';
 export { default as StoreProvider } from 'components/StoreProvider';
 
 // search boxes
 export { default as GlobalSearchBox } from 'components/ui/SearchBox/GlobalSearchBox';
 export { default as SearchBox } from 'components/ui/SearchBox/SearchBox';
+
+// Compare Item Bar
+export { default as CompareItems } from 'components/ui/Compare/CompareItems';
 
 // facets
 export { default as FacetRail } from 'components/ui/Facets/FacetRail';
@@ -40,13 +43,16 @@ export * from 'models/Autocomplete/Suggestion';
 export { default as PlaceholderItem } from 'components/ui/Results/PlaceholderItem';
 export { default as Spinner } from 'components/ui/Spinner';
 export { default as AdjustedKeyword } from 'components/ui/AdjustedKeyword';
+export { default as LanguageSelector } from 'components/ui/LanguageSelector';
 
 // hooks
-export { useHawkSearch } from 'components/StoreProvider';
+export { useHawksearch } from 'components/StoreProvider';
 export { useFacet } from 'components/ui/Facets/Facet';
 
 // utils
 export { default as QueryStringListener } from 'components/QueryStringListener';
+export { default as QueryStringListenerSF } from 'components/QueryStringListenerSF';
+
 export { default as RedirectURLListener } from 'components/RedirectURLListener';
 export * from 'util/QueryString';
 

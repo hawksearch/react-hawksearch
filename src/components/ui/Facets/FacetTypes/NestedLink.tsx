@@ -3,10 +3,10 @@ import React from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { FacetSelectionState } from 'store/Store';
 import { useFacet } from 'components/ui/Facets/Facet';
-import NestedItem from './NestedItem';
+import NestedLinkItem from './NestedLinkItem';
 import { Value } from 'models/Facets/Value';
 
-function Nested() {
+function NestedLink() {
 	const { store } = useHawksearch();
 	const {
 		facet,
@@ -21,7 +21,7 @@ function Nested() {
 
 	return (
 		<div className="hawk-facet-rail__facet-values">
-			<div className="hawk-facet-rail__facet-values-checkbox">
+			<div className="hawk-facet-rail__facet-values-linklist">
 				<ul className="hawk-facet-rail__facet-list">
 					{facetValues.map(value => {
 						// facets can be selected or negated, so explicitly check that the facet is not selected
@@ -31,7 +31,7 @@ function Nested() {
 						const isNegated = selectionState === FacetSelectionState.Negated;
 
 						return (
-							<NestedItem
+							<NestedLinkItem
 								key={value.Value}
 								hierarchyValue={value}
 								isSelected={isSelected}
@@ -49,4 +49,4 @@ function Nested() {
 	);
 }
 
-export default Nested;
+export default NestedLink;

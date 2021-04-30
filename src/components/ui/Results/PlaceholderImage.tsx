@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import PlaceHolderSVG from 'components/svg/PlaceholderSVG';
 
 export interface PlaceholderImageProps {
 	/** Whether or not to display a spinner in the center of the placeholder. */
@@ -6,11 +7,9 @@ export interface PlaceholderImageProps {
 }
 
 function PlaceholderImage({ showSpinner }: PlaceholderImageProps) {
-	const [height] = useState(Math.round(Math.random() * (175 - 125) + 125));
-
 	return (
-		<div className="hawk-results__item-placeholder" style={{ height: `${height}px` }}>
-			{showSpinner && <div className="hawk-placeholder__image">Loading...</div>}
+		<div className="hawk-results__item-placeholder">
+			<PlaceHolderSVG class="hawk-placeholderSVG" />
 		</div>
 	);
 }
