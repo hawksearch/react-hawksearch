@@ -61,6 +61,8 @@ function Selections() {
 			return `${startDate} - ${endDate}`;
 		} else if (selection.facet.FieldType === 'range') {
 			return renderRange(item, selection.facet);
+		} else if (selection.facet.FacetType === 'search') {
+			return decodeURIComponent(item.label);
 		}
 		return item.label;
 	}
