@@ -33,7 +33,7 @@ function Search() {
 		}
 
 		// otherwise, use the value from the store
-		return store.pendingSearch.SearchWithin || '';
+		return decodeURIComponent(store.pendingSearch.SearchWithin || '');
 	}
 
 	return (

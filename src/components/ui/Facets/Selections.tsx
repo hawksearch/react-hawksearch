@@ -3,6 +3,7 @@ import React from 'react';
 import { useHawkSearch } from 'components/StoreProvider';
 import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
+import moment from 'moment';
 import { Facet, Range } from 'models/Facets';
 
 import { useTranslation } from 'react-i18next';
@@ -53,6 +54,20 @@ function Selections() {
 		return displayValue.replace(',', ' - ');
 	}
 
+	function renderLabel(selection, item) {
+		if (selection.facet.FacetType === 'openRange' && selection.facet.DataType === 'datetime') {
+			let [startDate, endDate] = (item.label || ',').split(',');
+			startDate = moment(startDate.replace(/\//g, '-')).format('LLLL');
+			endDate = moment(endDate.replace(/\//g, '-')).format('LLLL');
+			return `${startDate} - ${endDate}`;
+		} else if (selection.facet.FieldType === 'range') {
+			return renderRange(item, selection.facet);
+		} else if (selection.facet.FacetType === 'search') {
+			return decodeURIComponent(item.label);
+		}
+		return item.label;
+	}
+
 	return (
 		<div className="hawk-facet-rail__selections">
 			<h4>{t("You've Selected")}</h4>
@@ -88,11 +103,7 @@ function Selections() {
 															: 'hawk-selections__item-name'
 													}
 												>
-													{selection.facet.FieldType === 'range'
-														? // render ranges in a specific way
-														  renderRange(item, selection.facet)
-														: // other facets can have their labels rendered directly
-														  item.label}
+													{renderLabel(selection, item)}
 												</span>
 											</li>
 										);
