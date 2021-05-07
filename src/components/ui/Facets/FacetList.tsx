@@ -26,7 +26,7 @@ function FacetList() {
 						if (!facet.IsVisible) {
 							return null;
 						}
-						if (facet.FieldType === 'tab') {
+						if (facet.FieldType === 'tab' || facet.FacetType === 'related') {
 							return null;
 						}
 						const registeredComponent = components.find(

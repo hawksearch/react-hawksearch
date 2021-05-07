@@ -59,6 +59,7 @@ export { default as RedirectURLListener } from 'components/RedirectURLListener';
 export * from 'util/QueryString';
 
 export { default as AutoCorrectSuggestion } from 'components/ui/AutoCorrect/AutoCorrectSuggestion';
+export { default as RelatedSearch } from 'components/ui/RelatedSearch';
 
 // Tracking Event
 export { default as TrackingEvent } from 'components/TrackingEvent';
