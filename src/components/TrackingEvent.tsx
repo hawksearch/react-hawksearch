@@ -133,10 +133,10 @@ class TrackingEvent {
 
 		if (this.language) {
 			params = {
-				"CustomDictionary": {
-					"language": this.language
-				}
-			}
+				CustomDictionary: {
+					language: this.language,
+				},
+			};
 		}
 
 		return params;
@@ -369,7 +369,7 @@ class TrackingEvent {
 	private mr(data) {
 		let visitId = this.getCookie('hawk_visit_id');
 		let visitorId = this.getCookie('hawk_visitor_id');
-		let languageParams = this.getLanguageParams();
+		const languageParams = this.getLanguageParams();
 
 		if (!visitId) {
 			this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
