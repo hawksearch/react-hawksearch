@@ -67,6 +67,7 @@ class TrackingEvent {
 	private trackingURL: string;
 	private clientGUID: string;
 	private trackConfig: string[];
+	private language: string;
 
 	/**
 	 * The Singleton's constructor should always be private to prevent direct
@@ -121,6 +122,24 @@ class TrackingEvent {
 		// 4 hours
 		d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
 		return d.toUTCString();
+	}
+
+	public setLanguage(language) {
+		this.language = language;
+	}
+
+	public getLanguageParams() {
+		let params = {};
+
+		if (this.language) {
+			params = {
+				"CustomDictionary": {
+					"language": this.language
+				}
+			}
+		}
+
+		return params;
 	}
 
 	public createGuid() {
@@ -350,14 +369,18 @@ class TrackingEvent {
 	private mr(data) {
 		let visitId = this.getCookie('hawk_visit_id');
 		let visitorId = this.getCookie('hawk_visitor_id');
+		let languageParams = this.getLanguageParams();
+
 		if (!visitId) {
 			this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
 			visitId = this.getCookie('hawk_visit_id');
 		}
+
 		if (!visitorId) {
 			this.setCookie('hawk_visitor_id', this.createGuid(), this.getVisitorExpiry());
 			visitorId = this.getCookie('hawk_visitor_id');
 		}
+
 		const pl = Object.assign(
 			{
 				ClientGuid: this.clientGUID,
@@ -366,8 +389,10 @@ class TrackingEvent {
 				// TrackingProperties: hs.Context,
 				// CustomDictionary: hs.Context.Custom,
 			},
+			languageParams,
 			data
 		);
+
 		fetch(this.trackingURL, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },

@@ -196,6 +196,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				setStore({ requestError: true });
 			} else {
 				const selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
+
+				TrackingEvent.setLanguage(store.language);
+
 				if (
 					searchParams.SortBy ||
 					searchParams.PageNo ||
@@ -215,6 +218,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 						keyword: searchParams.Keyword,
 					});
 				}
+
 				setStore({
 					searchResults: new Response(searchResults),
 					requestError: false,
