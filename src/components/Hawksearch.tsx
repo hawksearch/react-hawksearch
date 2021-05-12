@@ -24,6 +24,7 @@ function Hawksearch(props: HawksearchProps) {
 		TrackingEvent.setTrackingURL(props.config.trackEventUrl);
 		TrackingEvent.setTrackConfig(props.config.trackConfig);
 		TrackingEvent.setClientGUID(props.config.clientGuid);
+		TrackingEvent.setLanguage(props.config.language);
 	}
 
 	return (
