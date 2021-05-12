@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 
 import { SearchStore } from 'store/Store';
-import { useHawkState, SearchActor } from 'store/Hawkstate';
+import { useHawkState, SearchActor } from '../store/HawkState';
 import { Request } from 'models/Search';
 import { useHawkConfig } from './ConfigProvider';
 import { updateBindedStores } from 'util/WidgetBinding';

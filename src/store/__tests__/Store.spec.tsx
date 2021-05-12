@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { CancelToken } from 'axios';
 import TestRenderer from 'react-test-renderer';
 
-import { useHawkState } from 'store/Hawkstate';
+import { useHawkState } from '../HawkState';
 import HawkClient from 'net/HawkClient';
 import { Request, Response } from 'models/Search';
 import ConfigProvider from 'components/ConfigProvider';

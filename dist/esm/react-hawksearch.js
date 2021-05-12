@@ -6640,7 +6640,7 @@ var FacetType;
   FacetType["Size"] = "size";
   FacetType["SearchWithin"] = "search";
   FacetType["RecentSearches"] = "recentsearches";
-  FacetType["RelatedSearches"] = "relatedsearches";
+  FacetType["RelatedSearches"] = "related";
   FacetType["OpenRange"] = "openRange";
 })(FacetType || (FacetType = {}));
 
@@ -6704,7 +6704,7 @@ var TrackEventNameMapping = {
   Add2CartMultiple: 'add2cartmultiple',
   Add2Cart: 'add2cart'
 };
-var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression'];
+var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart'];
 
 var TrackingEvent = /*#__PURE__*/function () {
   /**
@@ -6719,6 +6719,8 @@ var TrackingEvent = /*#__PURE__*/function () {
     _defineProperty(this, "clientGUID", void 0);
 
     _defineProperty(this, "trackConfig", void 0);
+
+    _defineProperty(this, "language", void 0);
   }
   /**
    * The static method that controls the access to the singleton instance.
@@ -6768,6 +6770,26 @@ var TrackingEvent = /*#__PURE__*/function () {
 
       d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
       return d.toUTCString();
+    }
+  }, {
+    key: "setLanguage",
+    value: function setLanguage(language) {
+      this.language = language;
+    }
+  }, {
+    key: "getLanguageParams",
+    value: function getLanguageParams() {
+      var params = {};
+
+      if (this.language) {
+        params = {
+          CustomDictionary: {
+            language: this.language
+          }
+        };
+      }
+
+      return params;
     }
   }, {
     key: "createGuid",
@@ -7000,6 +7022,7 @@ var TrackingEvent = /*#__PURE__*/function () {
     value: function mr(data) {
       var visitId = this.getCookie('hawk_visit_id');
       var visitorId = this.getCookie('hawk_visitor_id');
+      var languageParams = this.getLanguageParams();
 
       if (!visitId) {
         this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
@@ -7017,7 +7040,7 @@ var TrackingEvent = /*#__PURE__*/function () {
         VisitorId: visitorId // TrackingProperties: hs.Context,
         // CustomDictionary: hs.Context.Custom,
 
-      }, data);
+      }, languageParams, data);
       fetch(this.trackingURL, {
         method: 'POST',
         headers: {
@@ -7256,7 +7279,8 @@ function useHawkState(initialSearch) {
                 // and override some of the request fields with config values
                 ClientGuid: config.clientGuid,
                 ClientData: getClientData(),
-                Keyword: store.pendingSearch.Keyword ? decodeURIComponent(store.pendingSearch.Keyword || '') : store.pendingSearch.Keyword
+                Keyword: store.pendingSearch.Keyword ? decodeURIComponent(store.pendingSearch.Keyword || '') : store.pendingSearch.Keyword,
+                SearchWithin: store.pendingSearch.SearchWithin ? decodeURIComponent(store.pendingSearch.SearchWithin || '') : store.pendingSearch.SearchWithin
               }); // The index name in the configuration takes priority over the one supplied from the URL
 
               if (config.indexName) {
@@ -7316,6 +7340,7 @@ function useHawkState(initialSearch) {
                   });
                 } else {
                   selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
+                  TrackingEvent$1.setLanguage(store.language);
 
                   if (searchParams.SortBy || searchParams.PageNo || searchParams.MaxPerPage || selectedFacets.length || searchParams.SearchWithin) {
                     TrackingEvent$1.track('searchtracking', {
@@ -7943,6 +7968,7 @@ function Hawksearch(props) {
     TrackingEvent$1.setTrackingURL(props.config.trackEventUrl);
     TrackingEvent$1.setTrackConfig(props.config.trackConfig);
     TrackingEvent$1.setClientGUID(props.config.clientGuid);
+    TrackingEvent$1.setLanguage(props.config.language);
   }
 
   return /*#__PURE__*/React__default.createElement(ConfigProvider, {
@@ -8913,7 +8939,7 @@ function Search() {
     } // otherwise, use the value from the store
 
 
-    return store.pendingSearch.SearchWithin || '';
+    return decodeURIComponent(store.pendingSearch.SearchWithin || '');
   }
 
   return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
@@ -17405,7 +17431,7 @@ function SearchBox(_ref) {
         PageId: undefined,
         CustomUrl: undefined,
         Keyword: encodeURIComponent(event.currentTarget.value),
-        FacetSelections: undefined,
+        FacetSelections: store.pendingSearch.FacetSelections,
         IgnoreSpellcheck: false
       });
     }
@@ -17621,7 +17647,7 @@ function FacetList() {
       return null;
     }
 
-    if (facet.FieldType === 'tab') {
+    if (facet.FieldType === 'tab' || facet.FacetType === 'related') {
       return null;
     }
 
@@ -19325,6 +19351,8 @@ function Selections$1() {
       return "".concat(startDate, " - ").concat(endDate);
     } else if (selection.facet.FieldType === 'range') {
       return renderRange(item, selection.facet);
+    } else if (selection.facet.FacetType === 'search') {
+      return decodeURIComponent(item.label);
     }
 
     return item.label;
@@ -30970,6 +30998,11 @@ function parseQueryStringToObject(search) {
       if (!value) {
         // no useful value for this query param, so skip it
         return;
+      } // NOTE: Don't pass these values as facet selection
+
+
+      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
+        return;
       } // multiple selections are split by commas, so split into an array
 
 
@@ -31287,5 +31320,39 @@ function AutoCorrectSuggestion() {
   })) : null);
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, ResultImage, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, ToolRow, TrackingEvent$1 as TrackingEvent, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+function RelatedSearch() {
+  var _useHawksearch = useHawksearch(),
+      hawkActor = _useHawksearch.actor,
+      searchResults = _useHawksearch.store.searchResults;
+
+  var relatedFacet = searchResults && searchResults.Facets.find(function (facet) {
+    return facet.FacetType === 'related';
+  });
+
+  function searchWithKeyword(keyword) {
+    hawkActor.setSearch({
+      Keyword: keyword
+    });
+  }
+
+  if (!relatedFacet) {
+    return null;
+  }
+
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-related_search-container"
+  }, /*#__PURE__*/React__default.createElement("span", {
+    className: "heading"
+  }, "Related Searches: "), relatedFacet.Values.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("span", {
+      key: index,
+      onClick: function onClick() {
+        return searchWithKeyword(item.Value);
+      },
+      className: "related-searched-words"
+    }, ' ', item.Label, " ", index < relatedFacet.Values.length - 1 && /*#__PURE__*/React__default.createElement(React__default.Fragment, null, "|"));
+  })));
+}
+
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, ToolRow, TrackingEvent$1 as TrackingEvent, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map
