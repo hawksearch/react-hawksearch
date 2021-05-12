@@ -18,7 +18,7 @@ interface SearchBoxProps {
  */
 function GlobalSearchBox({ SuggestionList }: SearchBoxProps) {
 	const { config } = useHawkConfig();
-	const { actor } = useHawksearch();
+	const { store, actor } = useHawksearch();
 
 	const searchUrl = config.searchPageUrl;
 
@@ -30,6 +30,10 @@ function GlobalSearchBox({ SuggestionList }: SearchBoxProps) {
 
 			if (config.indexName) {
 				redirect += '&indexName=' + config.indexName;
+			}
+
+			if (store.language) {
+				redirect += '&language=' + store.language;
 			}
 
 			location.assign(redirect);
