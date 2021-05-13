@@ -22,32 +22,32 @@ function GlobalSearchBox({ SuggestionList }: SearchBoxProps) {
 
 	const searchUrl = config.searchPageUrl;
 
+	function redirectToPage(inputValue: string | null) {
+		let redirect = `${searchUrl}?keyword=${inputValue}`;
+
+		if (config.indexName) {
+			redirect += '&indexName=' + config.indexName;
+		}
+
+		if (store.language) {
+			redirect += '&language=' + store.language;
+		}
+
+		location.assign(redirect);
+	}
+
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue } = downshift;
 
 		if (event.key === 'Enter') {
-			let redirect = `${searchUrl}?keyword=${inputValue}`;
-
-			if (config.indexName) {
-				redirect += '&indexName=' + config.indexName;
-			}
-
-			if (store.language) {
-				redirect += '&language=' + store.language;
-			}
-
-			location.assign(redirect);
+			redirectToPage(inputValue);
 		}
 	}
 
 	// On select view all matches from suggestions list
 	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue, closeMenu } = downshift;
-		actor.setSearch({
-			PageId: undefined,
-			CustomUrl: undefined,
-			Keyword: inputValue || '',
-		});
+		redirectToPage(inputValue);
 		closeMenu();
 	}
 
