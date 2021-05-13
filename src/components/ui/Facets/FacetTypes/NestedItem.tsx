@@ -59,6 +59,28 @@ function NestedItem(item: NestedItemProps) {
 		);
 	}
 
+	function isIE() {
+		var ua = window.navigator.userAgent;
+		var old_ie = ua.indexOf('MSIE ');
+		var new_ie = ua.indexOf('Trident/');
+
+		return ((old_ie > -1) || (new_ie > -1))
+	}
+
+	function getCollapseStateClass(isExpanded) {
+		let classes = ['hawk-collapseState'];
+
+		if (!isExpanded) {
+			classes.push('collapsed');
+		}
+
+		if (isIE()) {
+			classes.push('ie-fix');
+		}
+
+		return classes.join(' ');
+	}
+
 	useEffect(() => {
 		const isPartialSelection = checkChildSelections(
 			(store.facetSelections[facet.Field] || {}).items || [],
@@ -120,7 +142,7 @@ function NestedItem(item: NestedItemProps) {
 				</button>
 				{hierarchyChildren.length > 0 ? (
 					<button
-						className={isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed'}
+						className={getCollapseStateClass(isExpanded)}
 						aria-expanded="false"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
