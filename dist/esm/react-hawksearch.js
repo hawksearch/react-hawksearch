@@ -17405,21 +17405,25 @@ function GlobalSearchBox(_ref) {
 
   var searchUrl = config.searchPageUrl;
 
+  function redirectToPage(inputValue) {
+    var redirect = "".concat(searchUrl, "?keyword=").concat(inputValue);
+
+    if (config.indexName) {
+      redirect += '&indexName=' + config.indexName;
+    }
+
+    if (store.language) {
+      redirect += '&language=' + store.language;
+    }
+
+    location.assign(redirect);
+  }
+
   function handleSubmit(event, downshift) {
     var inputValue = downshift.inputValue;
 
     if (event.key === 'Enter') {
-      var redirect = "".concat(searchUrl, "?keyword=").concat(inputValue);
-
-      if (config.indexName) {
-        redirect += '&indexName=' + config.indexName;
-      }
-
-      if (store.language) {
-        redirect += '&language=' + store.language;
-      }
-
-      location.assign(redirect);
+      redirectToPage(inputValue);
     }
   } // On select view all matches from suggestions list
 
@@ -17427,11 +17431,7 @@ function GlobalSearchBox(_ref) {
   function handleViewAllMatches(downshift) {
     var inputValue = downshift.inputValue,
         closeMenu = downshift.closeMenu;
-    actor.setSearch({
-      PageId: undefined,
-      CustomUrl: undefined,
-      Keyword: inputValue || ''
-    });
+    redirectToPage(inputValue);
     closeMenu();
   }
 
