@@ -60,17 +60,17 @@ function NestedItem(item: NestedItemProps) {
 	}
 
 	function isIE() {
-		var ua = window.navigator.userAgent;
-		var old_ie = ua.indexOf('MSIE ');
-		var new_ie = ua.indexOf('Trident/');
+		const ua = window.navigator.userAgent;
+		const oldIE = ua.indexOf('MSIE ');
+		const newIe = ua.indexOf('Trident/');
 
-		return ((old_ie > -1) || (new_ie > -1))
+		return oldIE > -1 || newIe > -1;
 	}
 
-	function getCollapseStateClass(isExpanded) {
-		let classes = ['hawk-collapseState'];
+	function getCollapseStateClass(expanded) {
+		const classes = ['hawk-collapseState'];
 
-		if (!isExpanded) {
+		if (!expanded) {
 			classes.push('collapsed');
 		}
 

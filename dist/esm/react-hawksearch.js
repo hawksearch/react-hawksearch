@@ -11007,6 +11007,27 @@ function NestedItem(item) {
     }, isTruncated ? "(+) Show ".concat(remainingValues, " More") : '(-) Show Less')));
   }
 
+  function isIE() {
+    var ua = window.navigator.userAgent;
+    var oldIE = ua.indexOf('MSIE ');
+    var newIe = ua.indexOf('Trident/');
+    return oldIE > -1 || newIe > -1;
+  }
+
+  function getCollapseStateClass(expanded) {
+    var classes = ['hawk-collapseState'];
+
+    if (!expanded) {
+      classes.push('collapsed');
+    }
+
+    if (isIE()) {
+      classes.push('ie-fix');
+    }
+
+    return classes.join(' ');
+  }
+
   useEffect(function () {
     var isPartialSelection = checkChildSelections((store.facetSelections[facet.Field] || {}).items || [], item.hierarchyValue.Value);
 
@@ -11054,7 +11075,7 @@ function NestedItem(item) {
   }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
   }, "Exclude facet"))), hierarchyChildren.length > 0 ? /*#__PURE__*/React__default.createElement("button", {
-    className: isExpanded ? 'hawk-collapseState' : 'hawk-collapseState collapsed',
+    className: getCollapseStateClass(isExpanded),
     "aria-expanded": "false",
     onClick: function onClick() {
       return setIsExpanded(!isExpanded);
