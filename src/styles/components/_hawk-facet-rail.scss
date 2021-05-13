@@ -294,7 +294,7 @@
 
 button.hawk-collapseState {
 	position: absolute;
-	background-color: inherit;
+	background-color: transparent;
 	border: none;
 	display: inline-block;
 	padding: 0;
@@ -316,6 +316,12 @@ button.hawk-collapseState {
 	}
 }
 
+button.hawk-collapseState.ie-fix {
+	z-index: 100;
+	left: 20px;
+	background: transparent;
+}
+
 .hawk-linklist.hawk-collapseState {
 	position: relative;
 
@@ -327,11 +333,12 @@ button.hawk-collapseState {
 
 .hawk-facet-rail__facet-btn-exclude {
 	@include ButtonLink;
+	max-height: 28px;
 }
 
 .hawk-facet-rail__facet-btn-include {
 	@include ButtonLink;
-
+	max-height: 28px;
 	color: $primary;
 }
 
