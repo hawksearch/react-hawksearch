@@ -17379,6 +17379,7 @@ function GlobalSearchBox(_ref) {
       config = _useHawkConfig.config;
 
   var _useHawksearch = useHawksearch(),
+      store = _useHawksearch.store,
       actor = _useHawksearch.actor;
 
   var searchUrl = config.searchPageUrl;
@@ -17391,6 +17392,10 @@ function GlobalSearchBox(_ref) {
 
       if (config.indexName) {
         redirect += '&indexName=' + config.indexName;
+      }
+
+      if (store.language) {
+        redirect += '&language=' + store.language;
       }
 
       location.assign(redirect);
