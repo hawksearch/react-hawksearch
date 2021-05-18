@@ -22,6 +22,7 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 		if (event.key === 'Enter') {
 			actor.setSearch({
 				Keyword: encodeURIComponent(event.currentTarget.value),
+				IgnoreSpellcheck: false,
 			}, true, true);
 		}
 	}
