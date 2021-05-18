@@ -60,6 +60,11 @@ function parseQueryStringToObject(search: string) {
 				return;
 			}
 
+			// NOTE: Don't pass these values as facet selection
+			if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
+				return;
+			}
+
 			// multiple selections are split by commas, so split into an array
 			const multipleValues = value.split(',');
 
