@@ -21,12 +21,9 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		if (event.key === 'Enter') {
 			actor.setSearch({
-				PageId: undefined,
-				CustomUrl: undefined,
 				Keyword: encodeURIComponent(event.currentTarget.value),
-				FacetSelections: store.pendingSearch.FacetSelections,
 				IgnoreSpellcheck: false,
-			});
+			}, true, true);
 		}
 	}
 
