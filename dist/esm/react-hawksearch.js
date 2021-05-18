@@ -7516,14 +7516,14 @@ function useHawkState(initialSearch) {
     return _getProductDetails.apply(this, arguments);
   }
 
-  function setSearch(pendingSearch, doHistory) {
+  function setSearch(pendingSearch, doHistory, fromInput) {
     if (doHistory === undefined) {
       doHistory = true;
     }
 
     setStore(function (prevState) {
       var newState = {
-        pendingSearch: _objectSpread$4(_objectSpread$4({}, prevState.pendingSearch), pendingSearch),
+        pendingSearch: fromInput ? pendingSearch : _objectSpread$4(_objectSpread$4({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
       };
 
@@ -17454,12 +17454,9 @@ function SearchBox(_ref) {
   function handleSubmit(event, downshift) {
     if (event.key === 'Enter') {
       actor.setSearch({
-        PageId: undefined,
-        CustomUrl: undefined,
         Keyword: encodeURIComponent(event.currentTarget.value),
-        FacetSelections: store.pendingSearch.FacetSelections,
         IgnoreSpellcheck: false
-      });
+      }, true, true);
     }
   } // On Select view all matches from suggestion list
 
