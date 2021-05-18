@@ -44,7 +44,7 @@ export interface SearchActor {
 	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
 	 * 					not specified, the default is `true`.
 	 */
-	setSearch(search: Partial<Request>, doHistory?: boolean): void;
+	setSearch(search: Partial<Request>, doHistory?: boolean, fromInput?: boolean): void;
 
 	/**
 	 * Toggles a facet value for the next search request that will be executed. If the given facet had previously
@@ -272,14 +272,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
 	 * 					not specified, the default is `true`.
 	 */
-	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean): void {
+	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean, fromInput?: boolean): void {
 		if (doHistory === undefined) {
 			doHistory = true;
 		}
 
 		setStore(prevState => {
 			const newState = {
-				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
+				pendingSearch: fromInput ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
 			};
 			if (newState.pendingSearch.Keyword === '') {
