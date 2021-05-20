@@ -7222,9 +7222,7 @@ function useHawkState(initialSearch) {
   var client = new HawkClient(config);
 
   var _useMergableState = useMergableState(new SearchStore({
-    pendingSearch: initialSearch || {
-      FacetSelections: {}
-    },
+    pendingSearch: initialSearch || {},
     isLoading: true,
     itemsToCompare: [],
     comparedResults: [],
@@ -7239,7 +7237,11 @@ function useHawkState(initialSearch) {
   useEffect(function () {
     // when the pending search changes, trigger a search
     var cts = axios$1.CancelToken.source();
-    search(cts.token);
+
+    if (Object.keys(store.pendingSearch).length) {
+      search(cts.token);
+    }
+
     return function () {
       cts.cancel();
     };
