@@ -114,9 +114,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	const [store, setStore] = useMergableState(
 		new SearchStore({
-			pendingSearch: initialSearch || {
-				FacetSelections: {},
-			},
+			pendingSearch: initialSearch || {},
 			isLoading: true,
 			itemsToCompare: [],
 			comparedResults: [],
@@ -131,7 +129,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		// when the pending search changes, trigger a search
 
 		const cts = axios.CancelToken.source();
-		search(cts.token);
+
+		if (Object.keys(store.pendingSearch).length) {
+			search(cts.token);
+		}
 
 		return () => {
 			cts.cancel();
