@@ -20,10 +20,14 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		if (event.key === 'Enter') {
-			actor.setSearch({
-				Keyword: encodeURIComponent(event.currentTarget.value),
-				IgnoreSpellcheck: false,
-			}, true, true);
+			actor.setSearch(
+				{
+					Keyword: encodeURIComponent(event.currentTarget.value),
+					IgnoreSpellcheck: false,
+				},
+				true,
+				true
+			);
 		}
 	}
 
