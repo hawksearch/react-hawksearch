@@ -43,4 +43,6 @@ export class Request {
 	public IndexName?: string;
 
 	public FacetSelections?: { [key: string]: string[] | undefined };
+
+	public PreviewDate?: string;
 }

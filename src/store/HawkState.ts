@@ -105,6 +105,8 @@ export interface SearchActor {
 	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
 
 	setStore(store: SearchStore): void;
+
+	setPreviewDate(previewDate: string): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -119,6 +121,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			itemsToCompare: [],
 			comparedResults: [],
 			itemsToCompareIds: [],
+			previewDate: '',
 			productDetails: {},
 			language: getInitialLanguage(),
 		}),
@@ -541,6 +544,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
+	function setPreviewDate(previewDate: string) {
+		setStore({
+			previewDate,
+		});
+	}
+
 	function getClientData() {
 		let visitId = getCookie('hawk_visit_id');
 		let visitorId = getCookie('hawk_visitor_id');
@@ -600,6 +609,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		getProductDetails,
 		setProductDetailsResults,
 		setStore,
+		setPreviewDate,
 	};
 
 	return [store, actor];
