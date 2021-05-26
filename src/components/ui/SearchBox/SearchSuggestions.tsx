@@ -74,6 +74,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 						FacetSelections: store.pendingSearch.FacetSelections,
 						ClientData: getClientData(),
 						IsInPreview: config.isInPreview,
+						PreviewDate: store.previewDate || undefined,
 					},
 					cancellationToken
 				)

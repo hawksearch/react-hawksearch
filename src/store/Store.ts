@@ -43,6 +43,7 @@ export class SearchStore {
 	public itemsToCompareIds: string[];
 	public comparedResults: Result[];
 	public productDetails: Partial<Result>;
+	public previewDate?: string;
 
 	/** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
 	public searchResults?: Response;
