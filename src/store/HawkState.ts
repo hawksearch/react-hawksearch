@@ -103,6 +103,9 @@ export interface SearchActor {
 
 	// rebuild Index
 	rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null>;
+	setStore(store: SearchStore): void;
+
+	setPreviewDate(previewDate: string): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -119,6 +122,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			itemsToCompare: [],
 			comparedResults: [],
 			itemsToCompareIds: [],
+			previewDate: '',
 			productDetails: {},
 			language: getInitialLanguage(),
 			smartBar: {},
@@ -527,6 +531,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
+	function setPreviewDate(previewDate: string) {
+		setStore({
+			previewDate,
+		});
+	}
+
 	function getClientData() {
 		let visitId = getCookie('hawk_visit_id');
 		let visitorId = getCookie('hawk_visitor_id');
@@ -590,6 +600,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		getProductDetails,
 		setProductDetailsResults,
 		rebuildIndex,
+		setStore,
+		setPreviewDate,
 	};
 
 	return [store, actor];
