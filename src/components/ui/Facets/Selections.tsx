@@ -3,6 +3,7 @@ import moment from 'moment';
 import { useHawksearch } from 'components/StoreProvider';
 import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
+import moment from 'moment';
 import { Facet, Range } from 'models/Facets';
 
 import { useTranslation } from 'react-i18next';
@@ -61,6 +62,8 @@ function Selections() {
 			return `${startDate} - ${endDate}`;
 		} else if (selection.facet.FieldType === 'range') {
 			return renderRange(item, selection.facet);
+		} else if (selection.facet.FacetType === 'search') {
+			return decodeURIComponent(item.label);
 		}
 		return item.label;
 	}
