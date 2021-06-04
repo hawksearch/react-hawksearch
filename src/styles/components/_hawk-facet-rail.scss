@@ -172,6 +172,13 @@
 	background-color: $white;
 	border: 1px solid $grey;
 	padding: 10px;
+	.hawk-facet-rail__facet-values-link {
+		.hawk-facet-rail__facet-list-item {
+			.selected {
+				color: #f47b20;
+			}
+		}
+	}
 }
 
 .hawk-facet-rail__facet-values__checkbox {
@@ -246,6 +253,9 @@
 	.hawk-facet-rail__facet-name {
 		word-break: break-all;
 	}
+	.hawk-facet-rail__facet-name.checked {
+		color: #f47b20;
+	}
 
 	&:focus,
 	&:active {
@@ -285,6 +295,15 @@ button.hawk-collapseState {
 	}
 }
 
+.hawk-linklist.hawk-collapseState {
+	position: relative;
+
+	&:after {
+		font-size: 20px;
+		top: -5px;
+	}
+}
+
 .hawk-facet-rail__facet-btn-exclude {
 	@include ButtonLink;
 }
@@ -318,8 +337,9 @@ button.hawk-collapseState {
 
 .hawk-date-value-start,
 .hawk-date-value-end {
-	width: 126px !important;
+	width: 215px !important;
 	float: left;
+	margin: 5px;
 }
 
 .hawk-date-value-end {

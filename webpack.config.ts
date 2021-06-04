@@ -22,7 +22,7 @@ export default (env, argv): webpack.Configuration => {
 			path: path.resolve(__dirname, './dist/min'),
 
 			// by default, we expect our library assets to exist at /assets/
-			// this is configurable by consumers via the HawkSearchConfig
+			// this is configurable by consumers via the HawksearchConfig
 			publicPath: '/assets/',
 		},
 

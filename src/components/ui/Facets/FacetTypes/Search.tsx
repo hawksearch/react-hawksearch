@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { useTranslation } from 'react-i18next';
 
 function Search() {
-	const { store, actor: hawkActor } = useHawkSearch();
+	const { store, actor: hawkActor } = useHawksearch();
 	const { facet, actor } = useFacet();
 
 	const [input, setInput] = useState<string | undefined>(undefined);

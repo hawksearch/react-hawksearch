@@ -101,6 +101,7 @@
 		"react": ">=16.8.x",
 		"react-dom": ">=16.8.x",
 		"downshift": "^3.0.0",
-		"rheostat": "^4.0.0"
+		"rheostat": "^4.0.0",
+		"react-cookie": "^4.0.3"
 	}
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PublicState } from 'rheostat';
 
-import { useHawkSearch } from 'components/StoreProvider';
+import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderCalendarInputs from '../SliderCalendarInputs';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
@@ -27,7 +27,7 @@ function getTime(date) {
 function SliderDate() {
 	const {
 		store: { facetSelections },
-	} = useHawkSearch();
+	} = useHawksearch();
 
 	const {
 		state: { facetValues, decimalPrecision },

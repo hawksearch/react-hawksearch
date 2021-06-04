@@ -63,9 +63,41 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 	}
 
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+		const wantedPageNo = parseInt(event.currentTarget.value, 10);
+
 		if (event.key === 'Enter') {
+			goToPage(wantedPageNo);
+		}
+	}
+
+	function onBlur(event: React.FocusEvent<HTMLInputElement>) {
+		if (Number(event.currentTarget.value) !== page) {
 			const wantedPageNo = parseInt(event.currentTarget.value, 10);
 			goToPage(wantedPageNo);
+		}
+	}
+
+	function onKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+		const keyCode = event.keyCode || event.which;
+		const keyValue = String.fromCharCode(keyCode);
+		if (keyValue.match(/[+-.e]+/g)) {
+			event.preventDefault();
+		}
+	}
+
+	function onInput(event: React.KeyboardEvent<HTMLInputElement>) {
+		let wantedPageNo = parseInt(event.currentTarget.value, 10);
+
+		if (wantedPageNo > totalPages) {
+			wantedPageNo = totalPages;
+			event.currentTarget.value = '';
+			event.preventDefault();
+		}
+
+		if (wantedPageNo < 1) {
+			wantedPageNo = 1;
+			event.currentTarget.value = '';
+			event.preventDefault();
 		}
 	}
 
@@ -92,7 +124,12 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 				type="number"
 				value={getInputValue()}
 				onChange={onChange}
+				onInput={onInput}
 				onKeyDown={onKeyDown}
+				onKeyPress={onKeyPress}
+				onBlur={onBlur}
+				min="1"
+				max={totalPages}
 				className={hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'}
 			/>
 			<span className="hawk-pagination__total-text">&nbsp; of {totalPages}</span>

@@ -8,6 +8,18 @@
 	margin-right: 10px;
 }
 
+.hawk-language {
+	display: flex;
+	align-items: center;
+	&__label {
+		white-space: nowrap;
+		margin-right: 10px;
+	}
+	select {
+		min-width: 156px;
+	}
+}
+
 .hawk-tool-row__item {
 	margin-right: 15px;
 	padding: 0 0 15px;

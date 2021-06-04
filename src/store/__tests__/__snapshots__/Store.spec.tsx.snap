@@ -9,6 +9,10 @@ exports[`Store performs a search 1`] = `
   },
   "doHistory": true,
   "isLoading": false,
+  "itemsToCompare": [],
+  "itemsToCompareIds": [],
+  "comparedResults": [],
+  "productDetails": {},
   "searchResults": {
     "Success": true,
     "Pagination": {

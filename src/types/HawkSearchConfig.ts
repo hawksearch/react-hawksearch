@@ -1,7 +1,7 @@
 import { FacetComponent } from 'types/FacetComponent';
 import { SuggestionStrategyMatch } from 'models/Autocomplete/Suggestion';
 
-export interface HawkSearchConfig {
+export interface HawksearchConfig {
 	/**
 	 * Optional URL of the Hawksearch API that will be used for all search and autocomplete requests. This can also
 	 * be the URL of a proxy server that can act as a trusted middleware between the React frontend components and the
@@ -112,4 +112,13 @@ export interface HawkSearchConfig {
 	 * URL to update the sorting of pinned items. If not provided default will be /api/pinning/update-pin-order/
 	 */
 	updatePinOrderURL?: string;
+	/*
+	 * It will compare the properties of two or more items
+	 */
+	compareItemsURL?: string;
+
+	/**
+	 * Get product details. If not provided default will be api/internal-preview/item-detail
+	 */
+	productDetailsURL?: string;
 }
