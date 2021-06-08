@@ -13,6 +13,7 @@ import { FacetComponent } from 'types/FacetComponent';
 import { FacetType } from 'models/Facets/FacetType';
 import { SuggestionStrategyMatch, SuggestionType } from 'models/Autocomplete/Suggestion';
 import { ProductStrategy, CategoryStrategy, PopularStrategy, ContentStrategy } from 'models/Autocomplete';
+import RecentSearches from './FacetTypes/RecentSearches';
 
 // the default set of facet components that we support
 const defaultFacetComponents: FacetComponent[] = [
@@ -25,6 +26,7 @@ const defaultFacetComponents: FacetComponent[] = [
 	{ facetType: FacetType.OpenRange, component: DefaultOpenRange },
 	{ facetType: FacetType.Size, component: DefaultSize },
 	{ facetType: FacetType.Nestedlink, component: DefaultNestedLink },
+	{ facetType: FacetType.RecentSearches, component: RecentSearches },
 ];
 
 const defaultAutocompleteStrategies: SuggestionStrategyMatch[] = [
