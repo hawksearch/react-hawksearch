@@ -282,6 +282,18 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setStore(prevState => {
+			const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
+			const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
+
+			if (tab?.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue?.Value) {
+				pendingSearch = {
+					...pendingSearch,
+					FacetSelections: {
+						...pendingSearch.FacetSelections,
+						[tab.Field]: [facetValue.Value],
+					},
+				};
+			}
 			const newState = {
 				pendingSearch: fromInput ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
