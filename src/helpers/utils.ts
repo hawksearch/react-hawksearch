@@ -1,3 +1,5 @@
+import { FacetType } from 'models/Facets/FacetType';
+
 export const getVisitorExpiry = () => {
 	const d = new Date();
 	// 1 year
@@ -63,4 +65,58 @@ export const setCookie = (name, value, expiry) => {
 		expires = '';
 	}
 	document.cookie = name + '=' + value + expires + '; path=/';
+};
+
+function getRecentFacetExpiry() {
+	const d = new Date();
+	// 12 hours
+	d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
+	return d.toUTCString();
+}
+
+export const getParsedObject = facetC => {
+	if (!facetC) {
+		return {};
+	}
+	const dict = {};
+	(facetC || '').split(',').forEach(element => {
+		const splitText = element.split('|');
+		dict[splitText[0]] = splitText[1];
+	});
+	return dict;
+};
+
+function getStringifyObject(obj) {
+	let str = '';
+	Object.keys(obj).forEach((element, index) => {
+		if (index !== 0) {
+			str += ',';
+		}
+		str += element + '|' + obj[element];
+	});
+	return str;
+}
+
+export const setRecentSearch = val => {
+	const cookie = getCookie(FacetType.RecentSearches);
+	if (!cookie) {
+		setCookie(FacetType.RecentSearches, `${val}|1`, getRecentFacetExpiry());
+		return;
+	}
+	let dict = getParsedObject(cookie);
+	if (dict[val]) {
+		dict[val] = Number(dict[val]) + 1;
+	} else {
+		dict = {
+			...dict,
+			[val]: 1,
+		};
+	}
+	const str = getStringifyObject(dict);
+
+	setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
+};
+
+export const deleteCookie = name => {
+	document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };

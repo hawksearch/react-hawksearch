@@ -14,7 +14,7 @@ import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
-import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
+import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
 
 interface ClientData {
@@ -300,8 +300,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			};
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
+			} else {
+				setRecentSearch(pendingSearch.Keyword);
 			}
-
 			return newState;
 		});
 	}
