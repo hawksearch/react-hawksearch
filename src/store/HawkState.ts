@@ -11,9 +11,20 @@ import { FacetType } from 'models/Facets/FacetType';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
-import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
-import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import TrackingEvent, { SearchType } from 'components/TrackingEvent';
+import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
+import { ClientSelectionValue } from './ClientSelections';
+
+interface ClientData {
+	VisitorId: string;
+	VisitId: string;
+	UserAgent: string;
+	PreviewBuckets?: number[];
+	Custom?: {
+		language: string;
+	};
+}
 
 export interface SearchActor {
 	/**
@@ -286,8 +297,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			};
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
+			} else {
+				setRecentSearch(pendingSearch.Keyword);
 			}
-
 			return newState;
 		});
 	}
