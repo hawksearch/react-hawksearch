@@ -79,7 +79,7 @@ function Checkbox() {
 
 				const isSelected = selectionState !== FacetSelectionState.NotSelected;
 				const isNegated = selectionState === FacetSelectionState.Negated;
-
+				const decodedLabel = `${decodeURI(value.Label || '')} (${value.Count})`;
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
@@ -93,7 +93,7 @@ function Checkbox() {
 								style={isNegated ? { textDecoration: 'line-through' } : undefined}
 								className="hawk-facet-rail__facet-name"
 							>
-								{value.Label} ({value.Count})
+								<div dangerouslySetInnerHTML={{ __html: decodedLabel }} />
 							</span>
 						</button>
 
