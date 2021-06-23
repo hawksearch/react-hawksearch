@@ -22,9 +22,9 @@
 	img {
 		display: block;
 		margin: auto;
-
 		width: 175px;
-		max-width: 100%;
+		height: 175px;
+		object-fit: contain;
 	}
 }
 
