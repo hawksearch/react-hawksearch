@@ -53,6 +53,8 @@ export class Facet {
 	public IsCollapsedDefault: boolean;
 	/** Indicates if the facet is set to be visible. */
 	public IsVisible: boolean;
+	/** Indicates if the facet count set to be visible. */
+	public ShowItemsCount: boolean;
 	/**
 	 * Indicates if search is enabled for this facet. If it is enabled, a search box should be available for
 	 * users to filter the facet values by typing in the search box.
