@@ -62,7 +62,7 @@ function NestedLinkItem(item: NestedLinkItemProps) {
 							item.isSelected ? 'hawk-facet-rail__facet-name checked' : 'hawk-facet-rail__facet-name'
 						}
 					>
-						{item.hierarchyValue.Label} ({item.hierarchyValue.Count})
+						{item.hierarchyValue.Label} {facet.ShowItemsCount ? `(${item.hierarchyValue.Count})` : ''}
 					</span>
 				</button>
 				{hierarchyChildren.length > 0 ? (
