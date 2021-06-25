@@ -46,7 +46,7 @@ function Link() {
 									aria-pressed={isSelected}
 								>
 									<span className="hawk-facet-rail__facet-name">
-										{value.Label} ({value.Count})
+										{value.Label} {facet.ShowItemsCount ? `(${value.Count})` : ''}
 									</span>
 								</button>
 							</li>
