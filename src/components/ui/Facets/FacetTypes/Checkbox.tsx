@@ -144,10 +144,19 @@ function Checkbox() {
 		);
 	}
 
+	function getScrollHeight(scrollHeight: number) {
+		if (scrollHeight === 0) {
+			return { height: 'inherit' };
+		}
+		return { height: scrollHeight, overflow: 'auto' };
+	}
+
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-checkbox">
-				<ul className="hawk-facet-rail__facet-list">{renderOptions()}</ul>
+				<ul className="hawk-facet-rail__facet-list" style={getScrollHeight(facet.ScrollHeight)}>
+					{renderOptions()}
+				</ul>
 			</div>
 
 			{/* render the default truncation control as we don't need to customize this */}
