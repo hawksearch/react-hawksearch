@@ -36,6 +36,24 @@ export class Result {
 		return undefined;
 	}
 
+	public getHittedChildAttributeValue(field: string): string | undefined {
+		if (!this.Document) {
+			return undefined;
+		}
+		const childAttributesFieldName = 'hawk_child_attributes_hit';
+		const attributes = this.Document[childAttributesFieldName];
+
+		if (!attributes || attributes.length === 0) {
+			return undefined;
+		}
+		const values = attributes[0];
+		if (values && values[field] && values[field].length > 0) {
+			return values[field][0];
+		}
+
+		return undefined;
+	}
+
 	public constructor(init: Result) {
 		Object.assign(this, init);
 	}

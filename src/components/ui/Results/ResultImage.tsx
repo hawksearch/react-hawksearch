@@ -6,6 +6,8 @@ import PlaceholderImage from './PlaceholderImage';
 export interface ResultImageProps {
 	item: Result;
 	websiteUrl?: string;
+	imageTitle?: string;
+	imageUrl?: string;
 	itemTitleFieldName?: string;
 	imageUrlFieldName?: string;
 	onLoadCallBack?: () => void;
@@ -17,17 +19,23 @@ function ResultImage({
 	websiteUrl,
 	itemTitleFieldName,
 	imageUrlFieldName,
+	imageUrl,
+	imageTitle,
 	onLoadCallBack,
 	onClickImage,
 }: ResultImageProps) {
 	const [imageLoaded, setImageLoaded] = useState(false);
 
-	let imageUrl = imageUrlFieldName ? item.getDocumentValue(imageUrlFieldName) : item.getDocumentValue('image');
+	if (!imageUrl) {
+		imageUrl = imageUrlFieldName ? item.getDocumentValue(imageUrlFieldName) : item.getDocumentValue('image');
+	}
 	if (!imageUrl) {
 		return null;
 	}
 
-	const itemName = itemTitleFieldName ? item.getDocumentValue(itemTitleFieldName) : item.getDocumentValue('itemname');
+	if (!imageTitle) {
+		imageTitle = itemTitleFieldName ? item.getDocumentValue(itemTitleFieldName) : item.getDocumentValue('itemname');
+	}
 
 	const absoluteUrlTester = new RegExp('^https?://|^//', 'i');
 	if (!absoluteUrlTester.test(imageUrl) && websiteUrl) {
@@ -45,7 +53,7 @@ function ResultImage({
 						setImageLoaded(true);
 					}}
 					src={imageUrl}
-					alt={`Image for ${itemName}`}
+					alt={`Image for ${imageTitle}`}
 				/>
 			</div>
 
