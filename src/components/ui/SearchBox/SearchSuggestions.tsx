@@ -8,6 +8,7 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { useHawksearch } from 'components/StoreProvider';
 
 export interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
@@ -22,6 +23,7 @@ export interface SearchSuggestionsProps {
 
 function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
+	const { store } = useHawksearch();
 
 	const client = new HawkClient(config);
 
@@ -60,6 +62,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 						IndexName: config.indexName,
 						DisplayFullResponse: true,
 						IsInPreview: config.isInPreview,
+						FacetSelections: store.pendingSearch.FacetSelections,
 					},
 					cancellationToken
 				)
