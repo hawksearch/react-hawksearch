@@ -51,7 +51,20 @@ function parseQueryStringToObject(search: string) {
 			key === 'ignoreSpellcheck'
 		) {
 			// `keyword` is special and should never be turned into an array
-			parsed[key] = encodeURIComponent(value);
+			parsed[key] = encodeURIComponent(value).
+				replace(/%60/gi, '`').
+				replace(/%2C/gi, ',').
+				replace(/%3A/gi, ':').
+				replace(/%C3%B6/gi, 'ö').
+				replace(/%C3%A4/gi, 'ä').
+				replace(/%C3%BC/gi, 'ü').
+				replace(/%40/gi, '@').
+				replace(/%3A/gi, ':').
+				replace(/%24/g, '$').
+				replace(/%2C/gi, ',').
+				replace(/%20/g, '+').
+				replace(/%5B/gi, '[').
+				replace(/%5D/gi, ']');
 		} else {
 			// everything else should be turned into an array
 

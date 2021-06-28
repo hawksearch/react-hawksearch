@@ -7407,7 +7407,6 @@ function useHawkState(initialSearch) {
                   requestError: true
                 });
               } else {
-                console.log(searchResults);
                 selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
                 TrackingEvent$1.setLanguage(store.language);
 
@@ -7425,7 +7424,6 @@ function useHawkState(initialSearch) {
                   });
                 }
 
-                console.log(new Response(searchResults));
                 setStore({
                   searchResults: new Response(searchResults),
                   requestError: false
@@ -8664,7 +8662,7 @@ function getInitialCollapsibleState(facet, cookies) {
   var cookieValue = cookies[facet.Field];
 
   if (cookieValue !== undefined) {
-    return cookieValue === 'true'; // Convert string to boolean
+    return cookieValue === 'true';
   }
 
   return facet.IsCollapsible && facet.IsCollapsedDefault;
@@ -8721,30 +8719,25 @@ function Facet$1(_ref) {
   }
 
   function renderTruncation() {
-    // only show the toggle button if the facet is configured for truncation and we're not filtering
     return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, facet.shouldTruncate && !filter && /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick() {
         return actor.setTruncated(!isTruncated);
       },
       className: "hawk-facet-rail__show-more-btn"
     }, isTruncated ? "(+) Show ".concat(remainingFacets, " More") : '(-) Show Less'));
-  } // TODO: sort facet values
+  }
 
-
-  var facetValues = facet.Values; // first, perform any filtering if enabled and a filter has been typed in
+  var facetValues = facet.Values;
 
   if (facet.shouldSearch && filter) {
     facetValues = facet.Values.filter(function (val) {
       if (!val.Label) {
-        // if a facet value doesn't have a label, we can't really filter down to it
-        // so exclude it
         return false;
       }
 
       return val.Label.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
     });
-  } // next, handle truncation
-
+  }
 
   var remainingFacets = 0;
 
@@ -31246,7 +31239,7 @@ function parseQueryStringToObject(search) {
   params.forEach(function (value, key) {
     if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck') {
       // `keyword` is special and should never be turned into an array
-      parsed[key] = encodeURIComponent(value);
+      parsed[key] = encodeURIComponent(value).replace(/%60/gi, '`').replace(/%2C/gi, ',').replace(/%3A/gi, ':').replace(/%C3%B6/gi, 'ö').replace(/%C3%A4/gi, 'ä').replace(/%C3%BC/gi, 'ü').replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, '+').replace(/%5B/gi, '[').replace(/%5D/gi, ']');
     } else {
       // everything else should be turned into an array
       if (!value) {
