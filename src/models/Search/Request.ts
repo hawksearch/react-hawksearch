@@ -109,7 +109,7 @@ export class Request {
 	 * These are options that can be set by the user in the Preview SmartBar. You can use this if you desire
 	 * additional score information returned.
 	 */
-	public SmartBar?: SmartBar[];
+	public SmartBar?: SmartBar;
 
 	public PageId?: number;
 	/**
