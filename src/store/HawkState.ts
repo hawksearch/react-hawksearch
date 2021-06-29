@@ -16,6 +16,7 @@ import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
+import { Console } from 'console';
 
 interface ClientData {
 	VisitorId: string;
@@ -181,6 +182,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		try {
+			console.log(searchParams);
 			searchResults = await client.search(searchParams, cancellationToken);
 		} catch (error) {
 			if (axios.isCancel(error)) {

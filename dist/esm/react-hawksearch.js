@@ -7366,38 +7366,39 @@ function useHawkState(initialSearch) {
 
             case 7:
               _context.prev = 7;
-              _context.next = 10;
+              console.log(searchParams);
+              _context.next = 11;
               return client.search(searchParams, cancellationToken);
 
-            case 10:
+            case 11:
               searchResults = _context.sent;
-              _context.next = 19;
+              _context.next = 20;
               break;
 
-            case 13:
-              _context.prev = 13;
+            case 14:
+              _context.prev = 14;
               _context.t0 = _context["catch"](7);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 17;
+                _context.next = 18;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 17:
+            case 18:
               console.error('Search request error:', _context.t0);
               setStore({
                 requestError: true
               });
 
-            case 19:
+            case 20:
               setStore({
                 isLoading: false
               });
 
               if (!searchResults) {
-                _context.next = 24;
+                _context.next = 25;
                 break;
               }
 
@@ -7430,18 +7431,18 @@ function useHawkState(initialSearch) {
                 });
               }
 
-              _context.next = 25;
+              _context.next = 26;
               break;
 
-            case 24:
+            case 25:
               return _context.abrupt("return");
 
-            case 25:
+            case 26:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[7, 13]]);
+      }, _callee, null, [[7, 14]]);
     }));
     return _search.apply(this, arguments);
   }
@@ -31239,7 +31240,7 @@ function parseQueryStringToObject(search) {
   params.forEach(function (value, key) {
     if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck') {
       // `keyword` is special and should never be turned into an array
-      parsed[key] = encodeURIComponent(value).replace(/%60/gi, '`').replace(/%2C/gi, ',').replace(/%3A/gi, ':').replace(/%C3%B6/gi, 'ö').replace(/%C3%A4/gi, 'ä').replace(/%C3%BC/gi, 'ü').replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, '+').replace(/%5B/gi, '[').replace(/%5D/gi, ']');
+      parsed[key] = encodeURIComponent(value);
     } else {
       // everything else should be turned into an array
       if (!value) {
@@ -31359,7 +31360,7 @@ function convertObjectToQueryString(queryObj) {
         } // certain strings are special and are never arrays
 
 
-        queryStringValues.push(_key + '=' + value);
+        queryStringValues.push(_key + '=' + encodeURIComponent(value));
       } else {
         var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
 
@@ -31371,7 +31372,7 @@ function convertObjectToQueryString(queryObj) {
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var unescapedValue = _step.value;
-            escapedValues.push(unescapedValue.replace(',', '::'));
+            escapedValues.push(encodeURIComponent(unescapedValue.replace(',', '::')));
           }
         } catch (err) {
           _iterator.e(err);
