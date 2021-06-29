@@ -60,7 +60,7 @@ function Checkbox() {
 										style={isNegated ? { textDecoration: 'line-through' } : undefined}
 										className="hawk-facet-rail__facet-name"
 									>
-										{value.Label} ({value.Count})
+										{value.Label} {facet.ShowItemsCount ? `(${value.Count})` : ''}
 									</span>
 								</>
 							) : (
@@ -69,7 +69,7 @@ function Checkbox() {
 										style={isNegated ? { textDecoration: 'line-through' } : undefined}
 										className="hawk-facet-rail__facet-name"
 									>
-										{value.Label} ({value.Count})
+										{value.Label} {facet.ShowItemsCount ? `(${value.Count})` : ''}
 									</span>
 								</>
 							)}
@@ -86,7 +86,9 @@ function Checkbox() {
 
 				const isSelected = selectionState !== FacetSelectionState.NotSelected;
 				const isNegated = selectionState === FacetSelectionState.Negated;
-				const decodedLabel = `${decodeURI(value.Label || '')} (${value.Count})`;
+				const decodedLabel = `${decodeURI(value.Label || '')} ${
+					facet.ShowItemsCount ? `(${value.Count})` : ''
+				}`;
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
@@ -142,10 +144,19 @@ function Checkbox() {
 		);
 	}
 
+	function getScrollHeight(scrollHeight: number) {
+		if (scrollHeight === 0) {
+			return { height: 'inherit' };
+		}
+		return { height: scrollHeight, overflow: 'auto' };
+	}
+
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-checkbox">
-				<ul className="hawk-facet-rail__facet-list">{renderOptions()}</ul>
+				<ul className="hawk-facet-rail__facet-list" style={getScrollHeight(facet.ScrollHeight)}>
+					{renderOptions()}
+				</ul>
 			</div>
 
 			{/* render the default truncation control as we don't need to customize this */}
