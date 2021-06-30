@@ -38,7 +38,7 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 			PageId: undefined,
 			CustomUrl: undefined,
 			Keyword: inputValue || '',
-		});
+		}, true, true);
 		closeMenu();
 	}
 
