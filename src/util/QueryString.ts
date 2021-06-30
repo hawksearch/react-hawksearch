@@ -185,7 +185,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				}
 
 				// certain strings are special and are never arrays
-				queryStringValues.push(key + '=' + value);
+				queryStringValues.push(key + '=' + encodeURIComponent(value));
 			} else {
 				const values = queryObj[key];
 
@@ -193,7 +193,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				const escapedValues: string[] = [];
 
 				for (const unescapedValue of values) {
-					escapedValues.push(unescapedValue.replace(',', '::'));
+					escapedValues.push(encodeURIComponent(unescapedValue.replace(',', '::')));
 				}
 
 				queryStringValues.push(key + '=' + escapedValues.join(','));

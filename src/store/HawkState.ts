@@ -233,6 +233,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				});
 			}
 		}
+		else {
+			return
+		}
 	}
 
 	/**

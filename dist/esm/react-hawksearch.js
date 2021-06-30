@@ -2562,7 +2562,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 
 var _createClass$1 = unwrapExports(createClass);
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var defaultOptions = {
@@ -2570,6 +2570,7 @@ var defaultOptions = {
   bindI18nStore: '',
   transEmptyNodeValue: '',
   transSupportBasicHtmlNodes: true,
+  transWrapTextNodes: '',
   transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'],
   useSuspense: true
 };
@@ -2698,7 +2699,7 @@ unwrapExports(arrayWithHoles);
 
 var iterableToArrayLimit = createCommonjsModule(function (module) {
 function _iterableToArrayLimit(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
 
   if (_i == null) return;
   var _arr = [];
@@ -2788,7 +2789,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 
 var _slicedToArray = unwrapExports(slicedToArray);
 
-function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useTranslation(ns) {
@@ -2906,7 +2907,7 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArrayLimit(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
 
   if (_i == null) return;
   var _arr = [];
@@ -5103,6 +5104,8 @@ var SearchStore = /*#__PURE__*/function () {
 
     _defineProperty(this, "productDetails", void 0);
 
+    _defineProperty(this, "previewDate", void 0);
+
     _defineProperty(this, "searchResults", void 0);
 
     _defineProperty(this, "requestError", void 0);
@@ -7136,6 +7139,9 @@ _defineProperty(TrackingEvent, "instance", void 0);
 
 var TrackingEvent$1 = TrackingEvent.getInstance();
 
+function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var getVisitorExpiry = function getVisitorExpiry() {
   var d = new Date(); // 1 year
 
@@ -7206,15 +7212,70 @@ var setCookie = function setCookie(name, value, expiry) {
   document.cookie = name + '=' + value + expires + '; path=/';
 };
 
+function getRecentFacetExpiry() {
+  var d = new Date(); // 12 hours
+
+  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
+  return d.toUTCString();
+}
+
+var getParsedObject = function getParsedObject(facetC) {
+  if (!facetC) {
+    return {};
+  }
+
+  var dict = {};
+  (facetC || '').split(',').forEach(function (element) {
+    var splitText = element.split('|');
+    dict[splitText[0]] = splitText[1];
+  });
+  return dict;
+};
+
+function getStringifyObject(obj) {
+  var str = '';
+  Object.keys(obj).forEach(function (element, index) {
+    if (index !== 0) {
+      str += ',';
+    }
+
+    str += element + '|' + obj[element];
+  });
+  return str;
+}
+
+var setRecentSearch = function setRecentSearch(val) {
+  var cookie = getCookie(FacetType.RecentSearches);
+
+  if (!cookie) {
+    setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
+    return;
+  }
+
+  var dict = getParsedObject(cookie);
+
+  if (dict[val]) {
+    dict[val] = Number(dict[val]) + 1;
+  } else {
+    dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
+  }
+
+  var str = getStringifyObject(dict);
+  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
+};
+var deleteCookie = function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
+
 function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
 function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
 
 function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useHawkState(initialSearch) {
   var _useHawkConfig = useHawkConfig(),
       config = _useHawkConfig.config;
@@ -7227,6 +7288,7 @@ function useHawkState(initialSearch) {
     itemsToCompare: [],
     comparedResults: [],
     itemsToCompareIds: [],
+    previewDate: '',
     productDetails: {},
     language: getInitialLanguage()
   }), SearchStore),
@@ -7275,7 +7337,7 @@ function useHawkState(initialSearch) {
                 isLoading: true
               });
               searchResults = null;
-              searchParams = _objectSpread$4(_objectSpread$4({}, store.pendingSearch), {}, {
+              searchParams = _objectSpread$5(_objectSpread$5({}, store.pendingSearch), {}, {
                 // pass parameter for extended response
                 IsInPreview: config.isInPreview,
                 // and override some of the request fields with config values
@@ -7304,73 +7366,83 @@ function useHawkState(initialSearch) {
 
             case 7:
               _context.prev = 7;
-              _context.next = 10;
+              console.log(searchParams);
+              _context.next = 11;
               return client.search(searchParams, cancellationToken);
 
-            case 10:
+            case 11:
               searchResults = _context.sent;
-              _context.next = 19;
+              _context.next = 20;
               break;
 
-            case 13:
-              _context.prev = 13;
+            case 14:
+              _context.prev = 14;
               _context.t0 = _context["catch"](7);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 17;
+                _context.next = 18;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 17:
+            case 18:
               console.error('Search request error:', _context.t0);
               setStore({
                 requestError: true
               });
 
-            case 19:
+            case 20:
               setStore({
                 isLoading: false
               });
 
-              if (searchResults) {
-                if (!searchResults.Success) {
-                  console.error('Search result error:', searchResults);
-                  setStore({
-                    requestError: true
-                  });
-                } else {
-                  selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
-                  TrackingEvent$1.setLanguage(store.language);
-
-                  if (searchParams.SortBy || searchParams.PageNo || searchParams.MaxPerPage || selectedFacets.length || searchParams.SearchWithin) {
-                    TrackingEvent$1.track('searchtracking', {
-                      trackingId: searchResults.TrackingId,
-                      typeId: SearchType.Refinement,
-                      keyword: searchParams.Keyword
-                    });
-                  } else {
-                    TrackingEvent$1.track('searchtracking', {
-                      trackingId: searchResults.TrackingId,
-                      typeId: SearchType.Initial,
-                      keyword: searchParams.Keyword
-                    });
-                  }
-
-                  setStore({
-                    searchResults: new Response(searchResults),
-                    requestError: false
-                  });
-                }
+              if (!searchResults) {
+                _context.next = 25;
+                break;
               }
 
-            case 21:
+              if (!searchResults.Success) {
+                console.error('Search result error:', searchResults);
+                setStore({
+                  requestError: true
+                });
+              } else {
+                selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
+                TrackingEvent$1.setLanguage(store.language);
+
+                if (searchParams.SortBy || searchParams.PageNo || searchParams.MaxPerPage || selectedFacets.length || searchParams.SearchWithin) {
+                  TrackingEvent$1.track('searchtracking', {
+                    trackingId: searchResults.TrackingId,
+                    typeId: SearchType.Refinement,
+                    keyword: searchParams.Keyword
+                  });
+                } else {
+                  TrackingEvent$1.track('searchtracking', {
+                    trackingId: searchResults.TrackingId,
+                    typeId: SearchType.Initial,
+                    keyword: searchParams.Keyword
+                  });
+                }
+
+                setStore({
+                  searchResults: new Response(searchResults),
+                  requestError: false
+                });
+              }
+
+              _context.next = 26;
+              break;
+
+            case 25:
+              return _context.abrupt("return");
+
+            case 26:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[7, 13]]);
+      }, _callee, null, [[7, 14]]);
     }));
     return _search.apply(this, arguments);
   }
@@ -7524,13 +7596,30 @@ function useHawkState(initialSearch) {
     }
 
     setStore(function (prevState) {
+      var _prevState$searchResu;
+
+      var tab = (_prevState$searchResu = prevState.searchResults) === null || _prevState$searchResu === void 0 ? void 0 : _prevState$searchResu.Facets.find(function (f) {
+        return f.FieldType === 'tab';
+      });
+      var facetValue = (tab || {}).Values ? tab === null || tab === void 0 ? void 0 : tab.Values.find(function (v) {
+        return v.Selected;
+      }) : undefined;
+
+      if (tab !== null && tab !== void 0 && tab.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue !== null && facetValue !== void 0 && facetValue.Value) {
+        pendingSearch = _objectSpread$5(_objectSpread$5({}, pendingSearch), {}, {
+          FacetSelections: _objectSpread$5(_objectSpread$5({}, pendingSearch.FacetSelections), {}, _defineProperty({}, tab.Field, [facetValue.Value]))
+        });
+      }
+
       var newState = {
-        pendingSearch: fromInput ? pendingSearch : _objectSpread$4(_objectSpread$4({}, prevState.pendingSearch), pendingSearch),
+        pendingSearch: fromInput ? pendingSearch : _objectSpread$5(_objectSpread$5({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
       };
 
       if (newState.pendingSearch.Keyword === '') {
         newState.pendingSearch.Keyword = undefined;
+      } else {
+        setRecentSearch(pendingSearch.Keyword);
       }
 
       return newState;
@@ -7804,6 +7893,12 @@ function useHawkState(initialSearch) {
     });
   }
 
+  function setPreviewDate(previewDate) {
+    setStore({
+      previewDate: previewDate
+    });
+  }
+
   function getClientData() {
     var visitId = getCookie('hawk_visit_id');
     var visitorId = getCookie('hawk_visitor_id');
@@ -7860,7 +7955,8 @@ function useHawkState(initialSearch) {
     rebuildIndex: rebuildIndex,
     getProductDetails: getProductDetails,
     setProductDetailsResults: setProductDetailsResults,
-    setStore: setStore
+    setStore: setStore,
+    setPreviewDate: setPreviewDate
   };
   return [store, actor];
 }
@@ -8424,7 +8520,8 @@ function SearchSuggestions(_ref) {
                 DisplayFullResponse: true,
                 FacetSelections: store.pendingSearch.FacetSelections,
                 ClientData: getClientData(),
-                IsInPreview: config.isInPreview
+                IsInPreview: config.isInPreview,
+                PreviewDate: store.previewDate || undefined
               }, cancellationToken).then(function (o) {
                 // ensure, returned object will return response
                 // since by default, axios uses JSON.parse to parse an object,
@@ -8566,7 +8663,7 @@ function getInitialCollapsibleState(facet, cookies) {
   var cookieValue = cookies[facet.Field];
 
   if (cookieValue !== undefined) {
-    return cookieValue === 'true'; // Convert string to boolean
+    return cookieValue === 'true';
   }
 
   return facet.IsCollapsible && facet.IsCollapsedDefault;
@@ -8623,30 +8720,25 @@ function Facet$1(_ref) {
   }
 
   function renderTruncation() {
-    // only show the toggle button if the facet is configured for truncation and we're not filtering
     return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, facet.shouldTruncate && !filter && /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick() {
         return actor.setTruncated(!isTruncated);
       },
       className: "hawk-facet-rail__show-more-btn"
     }, isTruncated ? "(+) Show ".concat(remainingFacets, " More") : '(-) Show Less'));
-  } // TODO: sort facet values
+  }
 
-
-  var facetValues = facet.Values; // first, perform any filtering if enabled and a filter has been typed in
+  var facetValues = facet.Values;
 
   if (facet.shouldSearch && filter) {
     facetValues = facet.Values.filter(function (val) {
       if (!val.Label) {
-        // if a facet value doesn't have a label, we can't really filter down to it
-        // so exclude it
         return false;
       }
 
       return val.Label.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
     });
-  } // next, handle truncation
-
+  }
 
   var remainingFacets = 0;
 
@@ -8851,6 +8943,7 @@ function Checkbox() {
         var selectionState = store.isFacetSelected(facet, value).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
+        var decodedLabel = "".concat(decodeURI(value.Label || ''), " (").concat(value.Count, ")");
         return /*#__PURE__*/React__default.createElement("li", {
           key: value.Value,
           className: "hawk-facet-rail__facet-list-item"
@@ -8865,7 +8958,11 @@ function Checkbox() {
             textDecoration: 'line-through'
           } : undefined,
           className: "hawk-facet-rail__facet-name"
-        }, value.Label, " (", value.Count, ")")), renderFacetActions(value.Value || '', isNegated));
+        }, /*#__PURE__*/React__default.createElement("div", {
+          dangerouslySetInnerHTML: {
+            __html: decodedLabel
+          }
+        }))), renderFacetActions(value.Value || '', isNegated));
       });
     }
   }
@@ -9252,7 +9349,7 @@ function SliderDate() {
 }
 
 /**
- * react-number-format - 4.5.5
+ * react-number-format - 4.6.3
  * Author : Sudhanshu Yadav
  * Copyright (c) 2016, 2021 to Sudhanshu Yadav, released under the MIT license.
  * https://github.com/s-yadav/react-number-format
@@ -9433,10 +9530,10 @@ function limitToScale(numStr        , scale        , fixedDecimalScale         )
 }
 
 function repeat(str, count) {
-  return Array(count + 1).join(str)
+  return Array(count + 1).join(str);
 }
 
-function toNumericString(num) {  
+function toNumericString(num) {
   num += ''; // typecast number to string
 
   // store the sign and remove it from the number.
@@ -9466,14 +9563,15 @@ function toNumericString(num) {
 
   if (decimalIndex < 0) {
     // if decimal index is less then 0 add preceding 0s
-    // add 1 as join will have 
+    // add 1 as join will have
     coefficient = '0.' + repeat('0', Math.abs(decimalIndex)) + coefficient;
   } else if (decimalIndex >= coffiecientLn) {
     // if decimal index is less then 0 add leading 0s
     coefficient = coefficient + repeat('0', decimalIndex - coffiecientLn);
   } else {
     // else add decimal point at proper index
-    coefficient = (coefficient.substring(0, decimalIndex) || '0') + '.' + coefficient.substring(decimalIndex);
+    coefficient =
+      (coefficient.substring(0, decimalIndex) || '0') + '.' + coefficient.substring(decimalIndex);
   }
 
   return sign + coefficient;
@@ -9494,7 +9592,7 @@ function roundToPrecision(numStr        , scale        , fixedDecimalScale      
   var hasNagation = ref.hasNagation;
   var floatValue = parseFloat(("0." + (afterDecimal || '0')));
   var floatValueStr =
-    afterDecimal.length <= scale ? toNumericString(floatValue) : floatValue.toFixed(scale);
+    afterDecimal.length <= scale ? ("0." + afterDecimal) : floatValue.toFixed(scale);
   var roundedDecimalParts = floatValueStr.split('.');
   var intPart = beforeDecimal
     .split('')
@@ -9596,7 +9694,6 @@ function addInputMode(format                                   ) {
 
 //     
 
-
 var propTypes$1 = {
   thousandSeparator: propTypes.oneOfType([propTypes.string, propTypes.oneOf([true])]),
   decimalSeparator: propTypes.string,
@@ -9607,20 +9704,11 @@ var propTypes$1 = {
   displayType: propTypes.oneOf(['input', 'text']),
   prefix: propTypes.string,
   suffix: propTypes.string,
-  format: propTypes.oneOfType([
-    propTypes.string,
-    propTypes.func
-  ]),
+  format: propTypes.oneOfType([propTypes.string, propTypes.func]),
   removeFormatting: propTypes.func,
   mask: propTypes.oneOfType([propTypes.string, propTypes.arrayOf(propTypes.string)]),
-  value: propTypes.oneOfType([
-    propTypes.number,
-    propTypes.string
-  ]),
-  defaultValue: propTypes.oneOfType([
-    propTypes.number,
-    propTypes.string
-  ]),
+  value: propTypes.oneOfType([propTypes.number, propTypes.string]),
+  defaultValue: propTypes.oneOfType([propTypes.number, propTypes.string]),
   isNumericString: propTypes.bool,
   customInput: propTypes.elementType,
   allowNegative: propTypes.bool,
@@ -9637,8 +9725,7 @@ var propTypes$1 = {
   renderText: propTypes.func,
   getInputRef: propTypes.oneOfType([
     propTypes.func, // for legacy refs
-    propTypes.shape({ current: propTypes.any })
-  ])
+    propTypes.shape({ current: propTypes.any }) ]),
 };
 
 var defaultProps = {
@@ -9659,7 +9746,7 @@ var defaultProps = {
   onMouseUp: noop$1,
   onFocus: noop$1,
   onBlur: noop$1,
-  isAllowed: returnTrue
+  isAllowed: returnTrue,
 };
 var NumberFormat = /*@__PURE__*/(function (superclass) {
   function NumberFormat(props        ) {
@@ -9680,7 +9767,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     this.selectionBeforeInput = {
       selectionStart: 0,
-      selectionEnd: 0
+      selectionEnd: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -9698,7 +9785,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     // set mounted state
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      mounted: true
+      mounted: true,
     });
   };
 
@@ -9708,6 +9795,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
   NumberFormat.prototype.componentWillUnmount = function componentWillUnmount () {
     clearTimeout(this.focusTimeout);
+    clearTimeout(this.caretPositionTimeout);
   };
 
   NumberFormat.prototype.updateValueIfRequired = function updateValueIfRequired (prevProps        ) {
@@ -9719,7 +9807,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var lastNumStr = state.numAsString; if ( lastNumStr === void 0 ) lastNumStr = '';
 
     // If only state changed no need to do any thing
-    if(prevProps !== props) {
+    if (prevProps !== props) {
       //validate props
       this.validateProps();
 
@@ -9756,24 +9844,26 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     //remove negation for regex check
     var hasNegation = num[0] === '-';
-    if(hasNegation) { num = num.replace('-', ''); }
+    if (hasNegation) { num = num.replace('-', ''); }
 
     //if decimal scale is zero remove decimal and number after decimalSeparator
     if (decimalSeparator && decimalScale === 0) {
       num = num.split(decimalSeparator)[0];
     }
 
-    num  = (num.match(numRegex) || []).join('').replace(decimalSeparator, '.');
+    num = (num.match(numRegex) || []).join('').replace(decimalSeparator, '.');
 
     //remove extra decimals
     var firstDecimalIndex = num.indexOf('.');
 
     if (firstDecimalIndex !== -1) {
-      num = (num.substring(0, firstDecimalIndex)) + "." + (num.substring(firstDecimalIndex + 1, num.length).replace(new RegExp(escapeRegExp(decimalSeparator), 'g'), ''));
+      num = (num.substring(0, firstDecimalIndex)) + "." + (num
+        .substring(firstDecimalIndex + 1, num.length)
+        .replace(new RegExp(escapeRegExp(decimalSeparator), 'g'), ''));
     }
 
     //add negation back
-    if(hasNegation) { num = '-' + num; }
+    if (hasNegation) { num = '-' + num; }
 
     return num;
   };
@@ -9785,7 +9875,13 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var decimalScale = ref.decimalScale;
     var ref$1 = this.getSeparators();
     var decimalSeparator = ref$1.decimalSeparator;
-    return new RegExp('\\d' + (decimalSeparator && decimalScale !== 0 && !ignoreDecimalSeparator && !format ? '|' + escapeRegExp(decimalSeparator) : ''), g ? 'g' : undefined);
+    return new RegExp(
+      '\\d' +
+        (decimalSeparator && decimalScale !== 0 && !ignoreDecimalSeparator && !format
+          ? '|' + escapeRegExp(decimalSeparator)
+          : ''),
+      g ? 'g' : undefined
+    );
   };
 
   NumberFormat.prototype.getSeparators = function getSeparators () {
@@ -9806,7 +9902,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       decimalSeparator: decimalSeparator,
       thousandSeparator: thousandSeparator,
       allowedDecimalSeparators: allowedDecimalSeparators,
-    }
+    };
   };
 
   NumberFormat.prototype.getMaskAtIndex = function getMaskAtIndex (index        ) {
@@ -9825,9 +9921,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return {
       formattedValue: formattedValue,
       value: numAsString,
-      floatValue: isNaN(floatValue) ? undefined : floatValue
+      floatValue: isNaN(floatValue) ? undefined : floatValue,
     };
-
   };
 
   NumberFormat.prototype.validateProps = function validateProps () {
@@ -9847,10 +9942,9 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (mask) {
       var maskAsStr = mask === 'string' ? mask : mask.toString();
       if (maskAsStr.match(/\d/g)) {
-        throw new Error(("\n          Mask " + mask + " should not contain numeric character;\n        "))
+        throw new Error(("\n          Mask " + mask + " should not contain numeric character;\n        "));
       }
     }
-
   };
   /** Misc methods end **/
 
@@ -9860,8 +9954,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     otherwise browser resets the caret position after we set it
     We are also setting it without timeout so that in normal browser we don't see the flickering */
     setCaretPosition(el, caretPos);
-    setTimeout(function () {
-      if(el.value === currentValue) { setCaretPosition(el, caretPos); }
+    this.caretPositionTimeout = setTimeout(function () {
+      if (el.value === currentValue) { setCaretPosition(el, caretPos); }
     }, 0);
   };
 
@@ -9890,10 +9984,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     /* in case format is string find the closest # position from the caret position */
 
     //in case the caretPos have input value on it don't do anything
-    if (format[caretPos] === '#' && charIsNumber(value[caretPos])) { return caretPos; }
+    if (format[caretPos] === '#' && charIsNumber(value[caretPos])) {
+      return caretPos;
+    }
 
     //if caretPos is just after input value don't do anything
-    if (format[caretPos - 1] === '#' && charIsNumber(value[caretPos - 1])) { return caretPos; }
+    if (format[caretPos - 1] === '#' && charIsNumber(value[caretPos - 1])) {
+      return caretPos;
+    }
 
     //find the nearest caret position
     var firstHashPosition = format.indexOf('#');
@@ -9907,13 +10005,17 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var caretRightBound = caretPos + (nextPos === -1 ? 0 : nextPos);
 
     //get the position where the last number is present
-    while (caretLeftBound > firstHashPosition && (format[caretLeftBound] !== '#' || !charIsNumber(value[caretLeftBound]))) {
+    while (
+      caretLeftBound > firstHashPosition &&
+      (format[caretLeftBound] !== '#' || !charIsNumber(value[caretLeftBound]))
+    ) {
       caretLeftBound -= 1;
     }
 
-    var goToLeft = !charIsNumber(value[caretRightBound])
-    || (direction === 'left' && caretPos !== firstHashPosition)
-    || (caretPos - caretLeftBound < caretRightBound - caretPos);
+    var goToLeft =
+      !charIsNumber(value[caretRightBound]) ||
+      (direction === 'left' && caretPos !== firstHashPosition) ||
+      caretPos - caretLeftBound < caretRightBound - caretPos;
 
     if (goToLeft) {
       //check if number should be taken after the bound or after it
@@ -9935,23 +10037,34 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     j = 0;
 
-    for(i=0; i<caretPos; i++){
+    for (i = 0; i < caretPos; i++) {
       var currentInputChar = inputValue[i] || '';
       var currentFormatChar = formattedValue[j] || '';
       //no need to increase new cursor position if formatted value does not have those characters
       //case inputValue = 1a23 and formattedValue =  123
-      if(!currentInputChar.match(numRegex) && currentInputChar !== currentFormatChar) { continue; }
+      if (!currentInputChar.match(numRegex) && currentInputChar !== currentFormatChar) {
+        continue;
+      }
 
       //When we are striping out leading zeros maintain the new cursor position
       //Case inputValue = 00023 and formattedValue = 23;
-      if (currentInputChar === '0' && currentFormatChar.match(numRegex) && currentFormatChar !== '0' && inputNumber.length !== formattedNumber.length) { continue; }
+      if (
+        currentInputChar === '0' &&
+        currentFormatChar.match(numRegex) &&
+        currentFormatChar !== '0' &&
+        inputNumber.length !== formattedNumber.length
+      ) {
+        continue;
+      }
 
       //we are not using currentFormatChar because j can change here
-      while(currentInputChar !== formattedValue[j] && j < formattedValue.length) { j++; }
+      while (currentInputChar !== formattedValue[j] && j < formattedValue.length) {
+        j++;
+      }
       j++;
     }
 
-    if ((typeof format === 'string' && !stateValue)) {
+    if (typeof format === 'string' && !stateValue) {
       //set it to the maximum value so it goes after the last number
       j = formattedValue.length;
     }
@@ -9962,7 +10075,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return j;
   };
   /** caret specific methods ends **/
-
 
   /** methods to remove formattting **/
   NumberFormat.prototype.removePrefixAndSuffix = function removePrefixAndSuffix (val        ) {
@@ -9983,7 +10095,10 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
       //remove suffix
       var suffixLastIndex = val.lastIndexOf(suffix);
-      val = suffix && suffixLastIndex !== -1 && suffixLastIndex === val.length - suffix.length ? val.substring(0, suffixLastIndex) : val;
+      val =
+        suffix && suffixLastIndex !== -1 && suffixLastIndex === val.length - suffix.length
+          ? val.substring(0, suffixLastIndex)
+          : val;
 
       //add negation sign back
       if (isNegative) { val = '-' + val; }
@@ -9999,7 +10114,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var start = 0;
     var numStr = '';
 
-    for (var i=0, ln=formatArray.length; i <= ln; i++) {
+    for (var i = 0, ln = formatArray.length; i <= ln; i++) {
       var part = formatArray[i] || '';
 
       //if i is the last fragment take the index of end of the value
@@ -10032,7 +10147,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       val = this.getFloatString(val);
     } else if (typeof format === 'string') {
       val = this.removePatternFormatting(val);
-    } else if (typeof removeFormatting === 'function') { //condition need to be handled if format method is provide,
+    } else if (typeof removeFormatting === 'function') {
+      //condition need to be handled if format method is provide,
       val = removeFormatting(val);
     } else {
       val = (val.match(/\d/g) || []).join('');
@@ -10040,7 +10156,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return val;
   };
   /** methods to remove formattting end **/
-
 
   /*** format specific methods start ***/
   /**
@@ -10084,20 +10199,22 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var addNegation = ref$2.addNegation; // eslint-disable-line prefer-const
 
     //apply decimal precision if its defined
-    if (decimalScale !== undefined) { afterDecimal = limitToScale(afterDecimal, decimalScale, fixedDecimalScale); }
+    if (decimalScale !== undefined) {
+      afterDecimal = limitToScale(afterDecimal, decimalScale, fixedDecimalScale);
+    }
 
-    if(thousandSeparator) {
+    if (thousandSeparator) {
       beforeDecimal = applyThousandSeparator(beforeDecimal, thousandSeparator, thousandsGroupStyle);
     }
 
     //add prefix and suffix
-    if(prefix) { beforeDecimal = prefix + beforeDecimal; }
-    if(suffix) { afterDecimal = afterDecimal + suffix; }
+    if (prefix) { beforeDecimal = prefix + beforeDecimal; }
+    if (suffix) { afterDecimal = afterDecimal + suffix; }
 
     //restore negation sign
     if (addNegation) { beforeDecimal = '-' + beforeDecimal; }
 
-    numStr = beforeDecimal + (hasDecimalSeparator && decimalSeparator ||  '') + afterDecimal;
+    numStr = beforeDecimal + ((hasDecimalSeparator && decimalSeparator) || '') + afterDecimal;
 
     return numStr;
   };
@@ -10125,7 +10242,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return formattedValue;
   };
 
-  NumberFormat.prototype.formatValueProp = function formatValueProp (defaultValue               ) {
+  NumberFormat.prototype.formatValueProp = function formatValueProp (defaultValue                 ) {
     var ref = this.props;
     var format = ref.format;
     var decimalScale = ref.decimalScale;
@@ -10225,20 +10342,15 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (typeof format === 'string' && format[caretPos] !== '#') { return true; }
 
     //check in number format
-    if (!format && (caretPos < prefix.length
-      || caretPos >= value.length - suffix.length
-      || (decimalScale && fixedDecimalScale && value[caretPos] === decimalSeparator))
+    if (
+      !format &&
+      (caretPos < prefix.length ||
+        caretPos >= value.length - suffix.length ||
+        (decimalScale && fixedDecimalScale && value[caretPos] === decimalSeparator))
     ) {
       return true;
     }
 
-    return false;
-  };
-
-  NumberFormat.prototype.checkIfFormatGotDeleted = function checkIfFormatGotDeleted (start        , end        , value        ) {
-    for (var i = start; i < end; i++) {
-      if (this.isCharacterAFormat(i, value)) { return true; }
-    }
     return false;
   };
 
@@ -10247,6 +10359,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
    * It will also work as fallback if android chome keyDown handler does not work
    **/
   NumberFormat.prototype.correctInputValue = function correctInputValue (caretPos        , lastValue        , value        ) {
+    var this$1 = this;
+
     var ref = this.props;
     var format = ref.format;
     var allowNegative = ref.allowNegative;
@@ -10265,11 +10379,16 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var end = ref$3.end;
 
     /** Check for any allowed decimal separator is added in the numeric format and replace it with decimal separator */
-    if (!format && start === end && allowedDecimalSeparators.indexOf(value[selectionStart]) !== -1  ) {
+    if (
+      !format &&
+      start === end &&
+      allowedDecimalSeparators.indexOf(value[selectionStart]) !== -1
+    ) {
       var separator = decimalScale === 0 ? '' : decimalSeparator;
-      return value.substr(0, selectionStart) + separator + value.substr(selectionStart + 1, value.length);
+      return (
+        value.substr(0, selectionStart) + separator + value.substr(selectionStart + 1, value.length)
+      );
     }
-
 
     var leftBound = !!format ? 0 : prefix.length;
     var rightBound = lastValue.length - (!!format ? 0 : suffix.length);
@@ -10277,7 +10396,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (
       // don't do anything if something got added
       value.length > lastValue.length ||
-      // or if the new value is an empty string 
+      // or if the new value is an empty string
       !value.length ||
       // or if nothing has changed, in which case start will be same as end
       start === end ||
@@ -10285,30 +10404,64 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       (selectionStart === 0 && selectionEnd === lastValue.length) ||
       // or in case if the whole content is replaced by browser, example (autocomplete)
       (start === 0 && end === lastValue.length) ||
-      // or if charcters between prefix and suffix is selected. 
+      // or if charcters between prefix and suffix is selected.
       // For numeric inputs we apply the format so, prefix and suffix can be ignored
       (selectionStart === leftBound && selectionEnd === rightBound)
     ) {
       return value;
     }
 
-    //if format got deleted reset the value to last value
-    if (this.checkIfFormatGotDeleted(start, end, lastValue)) {
-      value = lastValue;
+    // check whether the deleted portion has a character that is part of a format
+    var deletedValues = lastValue.substr(start, end - start);
+    var formatGotDeleted = !![].concat( deletedValues ).find(function (deletedVal, idx) { return this$1.isCharacterAFormat(idx + start, lastValue); });
+
+    // if it has, only remove characters that are not part of the format
+    if(formatGotDeleted) {
+      var deletedValuePortion = lastValue.substr(start);
+      var recordIndexOfFormatCharacters = {};
+      var resolvedPortion = [];
+      [].concat( deletedValuePortion ).forEach(function (currentPortion, idx) {
+        if(this$1.isCharacterAFormat(idx + start, lastValue)){
+          recordIndexOfFormatCharacters[idx] = currentPortion;
+        } else if (idx > deletedValues.length - 1) {
+          resolvedPortion.push(currentPortion);
+        }
+      });
+
+      Object.keys(recordIndexOfFormatCharacters).forEach(function (idx) {
+        if(resolvedPortion.length > idx){
+          resolvedPortion.splice(idx, 0, recordIndexOfFormatCharacters[idx]);
+        } else {
+          resolvedPortion.push(recordIndexOfFormatCharacters[idx]);
+        }
+      });
+
+      value = lastValue.substr(0, start) + resolvedPortion.join('');
     }
+
+
+
 
     //for numbers check if beforeDecimal got deleted and there is nothing after decimal,
     //clear all numbers in such case while keeping the - sign
     if (!format) {
       var numericString = this.removeFormatting(value);
-      var ref$4 = splitDecimal(numericString, allowNegative);
+      var ref$4 = splitDecimal(
+        numericString,
+        allowNegative
+      );
       var beforeDecimal = ref$4.beforeDecimal;
       var afterDecimal = ref$4.afterDecimal;
       var addNegation = ref$4.addNegation; // eslint-disable-line prefer-const
 
       //clear only if something got deleted
       var isBeforeDecimalPoint = caretPos < value.indexOf(decimalSeparator) + 1;
-      if (numericString.length < lastNumStr.length && isBeforeDecimalPoint && beforeDecimal === '' && !parseFloat(afterDecimal)) {
+      if (
+        numericString.length < lastNumStr.length &&
+        isBeforeDecimalPoint &&
+        beforeDecimal === '' &&
+        !parseFloat(afterDecimal)
+      ) {
         return addNegation ? '-' : '';
       }
     }
@@ -10318,14 +10471,13 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
   /** Update value and caret position */
   NumberFormat.prototype.updateValue = function updateValue (params   
-                             
-                          
-                         
-                              
+                           
+                        
                        
-                                
-     
-  ) {
+                            
+                     
+                              
+   ) {
     var formattedValue = params.formattedValue;
     var input = params.input;
     var setCaretPosition = params.setCaretPosition; if ( setCaretPosition === void 0 ) setCaretPosition = true;
@@ -10339,7 +10491,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (input) {
       //set caret position, and value imperatively when element is provided
       if (setCaretPosition) {
-
         //calculate caret position if not defined
         if (!caretPos) {
           var inputValue = params.inputValue || input.value;
@@ -10368,7 +10519,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       }
     }
 
-
     //calculate numeric string if not passed
     if (numAsString === undefined) {
       numAsString = this.removeFormatting(formattedValue);
@@ -10376,7 +10526,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     //update state if value is changed
     if (formattedValue !== lastValue) {
-      this.setState({ value : formattedValue, numAsString: numAsString });
+      this.setState({ value: formattedValue, numAsString: numAsString });
 
       // trigger onValueChange synchronously, so parent is updated along with the number format. Fix for #277, #287
       onValueChange(this.getValueObject(formattedValue, numAsString));
@@ -10394,7 +10544,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     var currentCaretPosition = getCurrentCaretPosition(el);
 
-    inputValue =  this.correctInputValue(currentCaretPosition, lastValue, inputValue);
+    inputValue = this.correctInputValue(currentCaretPosition, lastValue, inputValue);
 
     var formattedValue = this.formatInput(inputValue) || '';
     var numAsString = this.removeFormatting(formattedValue);
@@ -10408,7 +10558,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, inputValue: inputValue, input: el });
 
-    if(isChangeAllowed) {
+    if (isChangeAllowed) {
       props.onChange(e);
     }
   };
@@ -10425,7 +10575,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     this.focusedElm = null;
 
     clearTimeout(this.focusTimeout);
-
+    clearTimeout(this.caretPositionTimeout);
 
     if (!format) {
       // if the numAsString is not a valid number reset it to empty
@@ -10442,7 +10592,12 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       //change the state
       if (formattedValue !== lastValue) {
         // the event needs to be persisted because its properties can be accessed in an asynchronous way
-        this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, input: e.target, setCaretPosition: false });
+        this.updateValue({
+          formattedValue: formattedValue,
+          numAsString: numAsString,
+          input: e.target,
+          setCaretPosition: false,
+        });
         onBlur(e);
         return;
       }
@@ -10471,7 +10626,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     this.selectionBeforeInput = {
       selectionStart: selectionStart,
-      selectionEnd: selectionEnd
+      selectionEnd: selectionEnd,
     };
 
     //Handle backspace and delete against non numerical/decimal characters or arrow keys
@@ -10497,8 +10652,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (key === 'ArrowLeft' || key === 'ArrowRight') {
       var direction = key === 'ArrowLeft' ? 'left' : 'right';
       newCaretPosition = this.correctCaretPosition(value, expectedCaretPosition, direction);
-    } else if (key === 'Delete' && !numRegex.test(value[expectedCaretPosition]) && !negativeRegex.test(value[expectedCaretPosition])) {
-      while (!numRegex.test(value[newCaretPosition]) && newCaretPosition < rightBound) { newCaretPosition++; }
+    } else if (
+      key === 'Delete' &&
+      !numRegex.test(value[expectedCaretPosition]) &&
+      !negativeRegex.test(value[expectedCaretPosition])
+    ) {
+      while (!numRegex.test(value[newCaretPosition]) && newCaretPosition < rightBound) {
+        newCaretPosition++;
+      }
     } else if (key === 'Backspace' && !numRegex.test(value[expectedCaretPosition])) {
       /* NOTE: This is special case when backspace is pressed on a
       negative value while the cursor position is after prefix. We can't handle it on onChange because
@@ -10506,15 +10667,24 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       */
       if (selectionStart <= leftBound + 1 && value[0] === '-' && typeof format === 'undefined') {
         var newValue = value.substring(1);
-        this.updateValue({formattedValue: newValue, caretPos: newCaretPosition, input: el});
+        this.updateValue({
+          formattedValue: newValue,
+          caretPos: newCaretPosition,
+          input: el,
+        });
       } else if (!negativeRegex.test(value[expectedCaretPosition])) {
-        while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound){ newCaretPosition--; }
+        while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound) {
+          newCaretPosition--;
+        }
         newCaretPosition = this.correctCaretPosition(value, newCaretPosition, 'left');
       }
     }
 
-
-    if (newCaretPosition !== expectedCaretPosition || expectedCaretPosition < leftBound || expectedCaretPosition > rightBound) {
+    if (
+      newCaretPosition !== expectedCaretPosition ||
+      expectedCaretPosition < leftBound ||
+      expectedCaretPosition > rightBound
+    ) {
       e.preventDefault();
       this.setPatchedCaretPosition(el, newCaretPosition, value);
     }
@@ -10525,9 +10695,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       this.setPatchedCaretPosition(el, newCaretPosition, value);
     }
 
-
     onKeyDown(e);
-
   };
 
   /** required to handle the caret position when click anywhere within the input **/
@@ -10537,7 +10705,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     /**
      * NOTE: we have to give default value for value as in case when custom input is provided
      * value can come as undefined when nothing is provided on value prop.
-    */
+     */
     var selectionStart = el.selectionStart;
     var selectionEnd = el.selectionEnd;
     var value = el.value; if ( value === void 0 ) value = '';
@@ -10569,7 +10737,10 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       var caretPosition = this$1.correctCaretPosition(value, selectionStart);
 
       //setPatchedCaretPosition only when everything is not selected on focus (while tabbing into the field)
-      if (caretPosition !== selectionStart && !(selectionStart === 0 && selectionEnd === value.length)) {
+      if (
+        caretPosition !== selectionStart &&
+        !(selectionStart === 0 && selectionEnd === value.length)
+      ) {
         this$1.setPatchedCaretPosition(el, caretPosition, value);
       }
 
@@ -10591,7 +10762,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     var otherProps = omit(this.props, propTypes$1);
 
-    // add input mode on element based on format prop and device once the component is mounted 
+    // add input mode on element based on format prop and device once the component is mounted
     var inputMode = mounted && addInputMode(format) ? 'numeric' : undefined;
 
     var inputProps = Object.assign({ inputMode: inputMode }, otherProps, {
@@ -10601,25 +10772,23 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       onKeyDown: this.onKeyDown,
       onMouseUp: this.onMouseUp,
       onFocus: this.onFocus,
-      onBlur: this.onBlur
+      onBlur: this.onBlur,
     });
 
-    if( displayType === 'text'){
-      return renderText ? (renderText(value, otherProps) || null) : React__default.createElement( 'span', Object.assign({}, otherProps, { ref: getInputRef }), value);
-    }
-
-    else if (customInput) {
+    if (displayType === 'text') {
+      return renderText ? (
+        renderText(value, otherProps) || null
+      ) : (
+        React__default.createElement( 'span', Object.assign({}, otherProps, { ref: getInputRef }),
+          value
+        )
+      );
+    } else if (customInput) {
       var CustomInput = customInput;
-      return (
-        React__default.createElement( CustomInput, Object.assign({},
-          inputProps, { ref: getInputRef }))
-      )
+      return React__default.createElement( CustomInput, Object.assign({}, inputProps, { ref: getInputRef }));
     }
 
-    return (
-      React__default.createElement( 'input', Object.assign({},
-        inputProps, { ref: getInputRef }))
-    )
+    return React__default.createElement( 'input', Object.assign({}, inputProps, { ref: getInputRef }));
   };
 
   return NumberFormat;
@@ -16991,9 +17160,9 @@ var SizeItem = /*#__PURE__*/React__default.memo(function (_ref) {
   }, /*#__PURE__*/React__default.createElement("div", null, size.Label));
 });
 
-function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function Size() {
   var _useHawksearch = useHawksearch(),
@@ -17019,7 +17188,7 @@ function Size() {
     var isNegated = selectionState === FacetSelectionState.Negated;
     return /*#__PURE__*/React__default.createElement(SizeItem, {
       key: value.Value,
-      size: _objectSpread$5(_objectSpread$5({}, value), {}, {
+      size: _objectSpread$6(_objectSpread$6({}, value), {}, {
         Value: value.Value || '',
         Label: value.Label || ''
       }),
@@ -17142,6 +17311,57 @@ function NestedLink() {
   }))), renderer.renderTruncation());
 }
 
+function RecentSearches() {
+  var _useFacet = useFacet(),
+      facet = _useFacet.facet;
+
+  var _useHawksearch = useHawksearch(),
+      actor = _useHawksearch.actor,
+      pendingSearch = _useHawksearch.store.pendingSearch;
+
+  var cookie = getCookie(facet.FacetType);
+  var dictRecentSearch = getParsedObject(cookie);
+
+  var _useState = useState(dictRecentSearch),
+      _useState2 = _slicedToArray$1(_useState, 2),
+      recentSearch = _useState2[0],
+      setRecentSearch = _useState2[1]; // NOTE: If user search with the new keyword it should update the dictionary
+
+
+  useEffect(function () {
+    setRecentSearch(getParsedObject(cookie));
+  }, [pendingSearch.Keyword]);
+
+  function setKeyword(keyword) {
+    actor.setSearch({
+      Keyword: keyword,
+      IgnoreSpellcheck: false
+    }, true, true);
+  }
+
+  function clearRecentSearch() {
+    setRecentSearch([]);
+    deleteCookie(facet.FacetType);
+  }
+
+  return /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-facet-rail__facet-values"
+  }, Object.keys(recentSearch).length ? /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-facet-rail__facet-values-recent-search"
+  }, Object.keys(recentSearch).map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      key: index,
+      onClick: function onClick() {
+        return setKeyword(item);
+      }
+    }, item, " (", recentSearch[item], ")");
+  }), /*#__PURE__*/React__default.createElement("button", {
+    onClick: function onClick() {
+      return clearRecentSearch();
+    }
+  }, "Clear All")) : /*#__PURE__*/React__default.createElement("div", null, "Recent searches are empty"));
+}
+
 var defaultFacetComponents = [{
   facetType: FacetType.Checkbox,
   component: Checkbox
@@ -17169,6 +17389,9 @@ var defaultFacetComponents = [{
 }, {
   facetType: FacetType.Nestedlink,
   component: NestedLink
+}, {
+  facetType: FacetType.RecentSearches,
+  component: RecentSearches
 }];
 var defaultAutocompleteStrategies = [{
   SuggestionType: SuggestionType.Product,
@@ -17240,9 +17463,9 @@ function getAutocompleteStrategies(overridedStrategies) {
   return suggestionStrategies;
 }
 
-function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function SearchBoxBase(_ref) {
   var initialValue = _ref.initialValue,
@@ -17293,7 +17516,7 @@ function SearchBoxBase(_ref) {
       //
       // then we want to retain the input value that was originally typed in. by default downshift
       // will clear the input value, so we're overriding this behavior here.
-      return _objectSpread$6(_objectSpread$6({}, changes), {}, {
+      return _objectSpread$7(_objectSpread$7({}, changes), {}, {
         inputValue: state.inputValue
       });
     }
@@ -19753,9 +19976,9 @@ function PlaceHolderSVG(props) {
     focusable: "false",
     "aria-hidden": "true"
   }, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("path", {
-    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6\r C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3\r c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2\r c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0\r l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
+    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6 C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3 c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2 c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0 l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
   }), /*#__PURE__*/createElement("path", {
-    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96\r c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
+    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96 c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
   }))));
 }
 
@@ -19903,9 +20126,9 @@ function ResultListing(_ref) {
   }));
 }
 
-function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function MerchandisingBanner(_ref) {
   var BannerZone = _ref.BannerZone;
@@ -19931,7 +20154,7 @@ function MerchandisingBanner(_ref) {
   function renderBanner(merchandisingItem, bannerIndex) {
     function trackEvent(type, trackEventPayload) {
       if (searchResults && searchResults.TrackingId) {
-        TrackingEvent$1.track(type, _objectSpread$7(_objectSpread$7({}, trackEventPayload), {}, {
+        TrackingEvent$1.track(type, _objectSpread$8(_objectSpread$8({}, trackEventPayload), {}, {
           trackingId: searchResults.TrackingId
         }));
       }
@@ -21599,8 +21822,8 @@ defineProperties_1(polyfill$2, {
 
 var objectIs = polyfill$2;
 
-var hasSymbols$3 = hasSymbols();
-var hasToStringTag$1 = hasSymbols$3 && typeof Symbol.toStringTag === 'symbol';
+var hasSymbols$3 = shams();
+var hasToStringTag$1 = hasSymbols$3 && !!Symbol.toStringTag;
 var has$3;
 var $exec;
 var isRegexMarker;
@@ -21749,7 +21972,7 @@ var tryDateObject = function tryDateGetDayCall(value) {
 
 var toStr$4 = Object.prototype.toString;
 var dateClass = '[object Date]';
-var hasToStringTag$2 = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var hasToStringTag$2 = typeof Symbol === 'function' && !!Symbol.toStringTag;
 
 var isDateObject = function isDateObject(value) {
 	if (typeof value !== 'object' || value === null) {
@@ -25541,9 +25764,9 @@ DropdownItem.propTypes = propTypes$l;
 DropdownItem.defaultProps = defaultProps$7;
 DropdownItem.contextType = DropdownContext;
 
-function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var propTypes$m = {
   tag: tagPropType,
   children: propTypes$2.node.isRequired,
@@ -25606,7 +25829,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
       var position1 = directionPositionMap[this.context.direction] || 'bottom';
       var position2 = right ? 'end' : 'start';
       var poperPlacement = position1 + "-" + position2;
-      var poperModifiers = !flip ? _objectSpread$8(_objectSpread$8({}, modifiers), noFlipModifier) : modifiers;
+      var poperModifiers = !flip ? _objectSpread$9(_objectSpread$9({}, modifiers), noFlipModifier) : modifiers;
       var popperPositionFixed = !!positionFixed;
       var popper = /*#__PURE__*/React__default.createElement(Popper$1, {
         placement: poperPlacement,
@@ -25617,7 +25840,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
             style = _ref.style,
             placement = _ref.placement;
 
-        var combinedStyle = _objectSpread$8(_objectSpread$8({}, _this.props.style), style);
+        var combinedStyle = _objectSpread$9(_objectSpread$9({}, _this.props.style), style);
 
         var handleRef = function handleRef(tagRef) {
           // Send the ref to `react-popper`
@@ -27563,11 +27786,11 @@ var reactTransitionGroup_2 = reactTransitionGroup.TransitionGroup;
 var reactTransitionGroup_3 = reactTransitionGroup.ReplaceTransition;
 var reactTransitionGroup_4 = reactTransitionGroup.CSSTransition;
 
-function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var propTypes$o = _objectSpread$9(_objectSpread$9({}, reactTransitionGroup_1.propTypes), {}, {
+var propTypes$o = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.propTypes), {}, {
   children: propTypes$2.oneOfType([propTypes$2.arrayOf(propTypes$2.node), propTypes$2.node]),
   tag: tagPropType,
   baseClass: propTypes$2.string,
@@ -27577,7 +27800,7 @@ var propTypes$o = _objectSpread$9(_objectSpread$9({}, reactTransitionGroup_1.pro
   innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
 });
 
-var defaultProps$a = _objectSpread$9(_objectSpread$9({}, reactTransitionGroup_1.defaultProps), {}, {
+var defaultProps$a = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.defaultProps), {}, {
   tag: 'div',
   baseClass: 'fade',
   baseClassActive: 'show',
@@ -27693,9 +27916,9 @@ var propTypes$z = {
   cssModule: propTypes$2.object
 };
 
-function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var CarouselItem = /*#__PURE__*/function (_React$Component) {
   _inheritsLoose(CarouselItem, _React$Component);
@@ -27790,7 +28013,7 @@ var CarouselItem = /*#__PURE__*/function (_React$Component) {
   return CarouselItem;
 }(React__default.Component);
 
-CarouselItem.propTypes = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.propTypes), {}, {
+CarouselItem.propTypes = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.propTypes), {}, {
   tag: tagPropType,
   in: propTypes$2.bool,
   cssModule: propTypes$2.object,
@@ -27798,7 +28021,7 @@ CarouselItem.propTypes = _objectSpread$a(_objectSpread$a({}, reactTransitionGrou
   slide: propTypes$2.bool,
   className: propTypes$2.string
 });
-CarouselItem.defaultProps = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.defaultProps), {}, {
+CarouselItem.defaultProps = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.defaultProps), {}, {
   tag: 'div',
   timeout: TransitionTimeouts.Carousel,
   slide: true
@@ -28364,9 +28587,9 @@ var propTypes$F = {
   innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
 };
 
-function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function noop$2() {}
 
@@ -28404,7 +28627,7 @@ var defaultProps$b = {
   modifiers: {},
   onClosed: noop$2,
   fade: true,
-  transition: _objectSpread$b({}, Fade.defaultProps)
+  transition: _objectSpread$c({}, Fade.defaultProps)
 };
 
 var PopperContent = /*#__PURE__*/function (_React$Component) {
@@ -28490,7 +28713,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
     var arrowClassName = mapToCssModules(classnames('arrow', _arrowClassName), cssModule);
     var popperClassName = mapToCssModules(classnames(_popperClassName, placementPrefix ? placementPrefix + "-auto" : ''), this.props.cssModule);
 
-    var extendedModifiers = _objectSpread$b({
+    var extendedModifiers = _objectSpread$c({
       offset: {
         offset: offset
       },
@@ -28503,7 +28726,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
       }
     }, modifiers);
 
-    var popperTransition = _objectSpread$b(_objectSpread$b(_objectSpread$b({}, Fade.defaultProps), transition), {}, {
+    var popperTransition = _objectSpread$c(_objectSpread$c(_objectSpread$c({}, Fade.defaultProps), transition), {}, {
       baseClass: fade ? transition.baseClass : '',
       timeout: fade ? transition.timeout : 0
     });
@@ -28973,9 +29196,9 @@ var Popover = function Popover(props) {
 Popover.propTypes = propTypes$H;
 Popover.defaultProps = defaultProps$d;
 
-function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys = ['defaultOpen'];
 
 var UncontrolledPopover = /*#__PURE__*/function (_Component) {
@@ -29009,7 +29232,7 @@ var UncontrolledPopover = /*#__PURE__*/function (_Component) {
 
   return UncontrolledPopover;
 }(Component);
-UncontrolledPopover.propTypes = _objectSpread$c({
+UncontrolledPopover.propTypes = _objectSpread$d({
   defaultOpen: propTypes$2.bool
 }, Popover.propTypes);
 
@@ -29085,9 +29308,9 @@ var Portal$1 = /*#__PURE__*/function (_React$Component) {
 
 Portal$1.propTypes = propTypes$L;
 
-function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function noop$3() {}
 
@@ -29504,12 +29727,12 @@ var Modal = /*#__PURE__*/function (_React$Component) {
       };
       var hasTransition = this.props.fade;
 
-      var modalTransition = _objectSpread$d(_objectSpread$d(_objectSpread$d({}, Fade.defaultProps), this.props.modalTransition), {}, {
+      var modalTransition = _objectSpread$e(_objectSpread$e(_objectSpread$e({}, Fade.defaultProps), this.props.modalTransition), {}, {
         baseClass: hasTransition ? this.props.modalTransition.baseClass : '',
         timeout: hasTransition ? this.props.modalTransition.timeout : 0
       });
 
-      var backdropTransition = _objectSpread$d(_objectSpread$d(_objectSpread$d({}, Fade.defaultProps), this.props.backdropTransition), {}, {
+      var backdropTransition = _objectSpread$e(_objectSpread$e(_objectSpread$e({}, Fade.defaultProps), this.props.backdropTransition), {}, {
         baseClass: hasTransition ? this.props.backdropTransition.baseClass : '',
         timeout: hasTransition ? this.props.backdropTransition.timeout : 0
       });
@@ -29888,9 +30111,9 @@ var propTypes$16 = {
   cssModule: propTypes$2.object
 };
 
-function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var propTypes$17 = {
   children: propTypes$2.node,
   className: propTypes$2.string,
@@ -29911,14 +30134,14 @@ var defaultProps$h = {
   tag: 'div',
   closeAriaLabel: 'Close',
   fade: true,
-  transition: _objectSpread$e(_objectSpread$e({}, Fade.defaultProps), {}, {
+  transition: _objectSpread$f(_objectSpread$f({}, Fade.defaultProps), {}, {
     unmountOnExit: true
   })
 };
 
-function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var propTypes$18 = {
   children: propTypes$2.node,
   className: propTypes$2.string,
@@ -29933,7 +30156,7 @@ var defaultProps$i = {
   isOpen: true,
   tag: 'div',
   fade: true,
-  transition: _objectSpread$f(_objectSpread$f({}, Fade.defaultProps), {}, {
+  transition: _objectSpread$g(_objectSpread$g({}, Fade.defaultProps), {}, {
     unmountOnExit: true
   })
 };
@@ -29960,11 +30183,11 @@ var propTypes$1a = {
 
 var _transitionStatusToCl;
 
-function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var propTypes$1b = _objectSpread$g(_objectSpread$g({}, reactTransitionGroup_1.propTypes), {}, {
+var propTypes$1b = _objectSpread$h(_objectSpread$h({}, reactTransitionGroup_1.propTypes), {}, {
   isOpen: propTypes$2.bool,
   children: propTypes$2.oneOfType([propTypes$2.arrayOf(propTypes$2.node), propTypes$2.node]),
   tag: tagPropType,
@@ -29974,7 +30197,7 @@ var propTypes$1b = _objectSpread$g(_objectSpread$g({}, reactTransitionGroup_1.pr
   innerRef: propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.object])
 });
 
-var defaultProps$j = _objectSpread$g(_objectSpread$g({}, reactTransitionGroup_1.defaultProps), {}, {
+var defaultProps$j = _objectSpread$h(_objectSpread$h({}, reactTransitionGroup_1.defaultProps), {}, {
   isOpen: false,
   appear: false,
   enter: true,
@@ -30055,9 +30278,9 @@ var ListInlineItem = /*#__PURE__*/forwardRef(function (props, ref) {
 ListInlineItem.propTypes = propTypes$1g;
 ListInlineItem.defaultProps = defaultProps$l;
 
-function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys$1 = ['defaultOpen'];
 
 var UncontrolledButtonDropdown = /*#__PURE__*/function (_Component) {
@@ -30091,7 +30314,7 @@ var UncontrolledButtonDropdown = /*#__PURE__*/function (_Component) {
 
   return UncontrolledButtonDropdown;
 }(Component);
-UncontrolledButtonDropdown.propTypes = _objectSpread$h({
+UncontrolledButtonDropdown.propTypes = _objectSpread$i({
   defaultOpen: propTypes$2.bool
 }, ButtonDropdown.propTypes);
 
@@ -30101,9 +30324,9 @@ var propTypes$1h = {
   toggleEvents: propTypes$2.arrayOf(propTypes$2.string)
 };
 
-function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys$2 = ['defaultOpen'];
 
 var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
@@ -30141,14 +30364,14 @@ var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
 
   return UncontrolledDropdown;
 }(Component);
-UncontrolledDropdown.propTypes = _objectSpread$i({
+UncontrolledDropdown.propTypes = _objectSpread$j({
   defaultOpen: propTypes$2.bool,
   onToggle: propTypes$2.func
 }, Dropdown.propTypes);
 
-function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$k(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys$3 = ['defaultOpen'];
 
 var UncontrolledTooltip = /*#__PURE__*/function (_Component) {
@@ -30182,7 +30405,7 @@ var UncontrolledTooltip = /*#__PURE__*/function (_Component) {
 
   return UncontrolledTooltip;
 }(Component);
-UncontrolledTooltip.propTypes = _objectSpread$j({
+UncontrolledTooltip.propTypes = _objectSpread$k({
   defaultOpen: propTypes$2.bool
 }, Tooltip.propTypes);
 
@@ -30988,9 +31211,9 @@ function _objectWithoutProperties(source, excluded) {
   return target;
 }
 
-function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$k(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$l(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -31137,7 +31360,7 @@ function convertObjectToQueryString(queryObj) {
         } // certain strings are special and are never arrays
 
 
-        queryStringValues.push(_key + '=' + value);
+        queryStringValues.push(_key + '=' + encodeURIComponent(value));
       } else {
         var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
 
@@ -31149,7 +31372,7 @@ function convertObjectToQueryString(queryObj) {
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var unescapedValue = _step.value;
-            escapedValues.push(unescapedValue.replace(',', '::'));
+            escapedValues.push(encodeURIComponent(unescapedValue.replace(',', '::')));
           }
         } catch (err) {
           _iterator.e(err);
@@ -31171,7 +31394,7 @@ function convertObjectToQueryString(queryObj) {
 
 
 function getSearchQueryString(searchRequest) {
-  var searchQuery = _objectSpread$k({
+  var searchQuery = _objectSpread$l({
     keyword: searchRequest.Keyword,
     sort: searchRequest.SortBy,
     pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
@@ -31350,7 +31573,7 @@ function RelatedSearch() {
       hawkActor = _useHawksearch.actor,
       searchResults = _useHawksearch.store.searchResults;
 
-  var relatedFacet = searchResults && searchResults.Facets.find(function (facet) {
+  var relatedFacet = searchResults && searchResults.Facets.length && searchResults.Facets.find(function (facet) {
     return facet.FacetType === 'related';
   });
 
@@ -31360,11 +31583,7 @@ function RelatedSearch() {
     });
   }
 
-  if (!relatedFacet) {
-    return null;
-  }
-
-  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("div", {
+  return relatedFacet ? /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-related_search-container"
   }, /*#__PURE__*/React__default.createElement("span", {
     className: "heading"
@@ -31376,7 +31595,7 @@ function RelatedSearch() {
       },
       className: "related-searched-words"
     }, ' ', item.Label, " ", index < relatedFacet.Values.length - 1 && /*#__PURE__*/React__default.createElement(React__default.Fragment, null, "|"));
-  })));
+  })) : null;
 }
 
 export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, ToolRow, TrackingEvent$1 as TrackingEvent, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
