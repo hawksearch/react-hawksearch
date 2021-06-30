@@ -107,6 +107,8 @@ export interface SearchActor {
 	setStore(store: SearchStore): void;
 
 	setPreviewDate(previewDate: string): void;
+
+	setSmartBar(data: { [key: string]: string }): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -124,6 +126,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			previewDate: '',
 			productDetails: {},
 			language: getInitialLanguage(),
+			smartBar: {},
 		}),
 		SearchStore
 	);
@@ -167,6 +170,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			SearchWithin: store.pendingSearch.SearchWithin
 				? decodeURIComponent(store.pendingSearch.SearchWithin || '')
 				: store.pendingSearch.SearchWithin,
+			SmartBar: store.smartBar || undefined,
 		};
 
 		// The index name in the configuration takes priority over the one supplied from the URL
@@ -604,6 +608,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return language;
 	}
 
+	function setSmartBar(data: { [key: string]: string }): void {
+		setStore({
+			smartBar: data,
+		});
+	}
+
 	const actor: SearchActor = {
 		search,
 		setSearch,
@@ -623,6 +633,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setProductDetailsResults,
 		setStore,
 		setPreviewDate,
+		setSmartBar,
 	};
 
 	return [store, actor];

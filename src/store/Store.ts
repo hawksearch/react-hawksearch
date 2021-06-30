@@ -44,6 +44,9 @@ export class SearchStore {
 	public comparedResults: Result[];
 	public productDetails: Partial<Result>;
 	public previewDate?: string;
+	public smartBar?: {
+		[key: string]: string;
+	};
 
 	/** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
 	public searchResults?: Response;
