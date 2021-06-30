@@ -232,9 +232,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					requestError: false,
 				});
 			}
-		}
-		else {
-			return
+		} else {
+			return;
 		}
 	}
 

@@ -34,11 +34,15 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 	// On Select view all matches from suggestion list
 	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue, closeMenu } = downshift;
-		actor.setSearch({
-			PageId: undefined,
-			CustomUrl: undefined,
-			Keyword: inputValue || '',
-		}, true, true);
+		actor.setSearch(
+			{
+				PageId: undefined,
+				CustomUrl: undefined,
+				Keyword: inputValue || '',
+			},
+			true,
+			true
+		);
 		closeMenu();
 	}
 
