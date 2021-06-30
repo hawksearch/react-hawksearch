@@ -16,38 +16,72 @@ export interface FacetProps {
 }
 
 interface FacetContextValue {
+	/** The facet model returned from the server for this facet. */
 	facet: FacetModel;
+
+	/** Returns the state of the parent facet container. */
 	state: FacetState;
+
+	/** An actor interface to perform actions for this facet. */
 	actor: FacetActor;
+
 	renderer: FacetRenderer;
 }
 
 export interface FacetState {
+	/**
+	 * An array of facet values for this facet. If this facet has a quick lookup search bar, this list
+	 * will be filtered by this quick lookup.
+	 */
 	facetValues: Value[];
+
+	/**
+	 * If the facet is configured for filtering, this is the user's entered filter value. Updated on
+	 * immediately when the user types.
+	 */
 	filter: string;
+
+	/** Whether or not this facet has its values truncated. */
 	isTruncated: boolean;
+	/** Whether or not this facet is collapsed. */
 	isCollapsed: boolean;
+	/** If filter is enabled, contains the number of facets that are truncated. */
 	remainingFacets: number;
+
+	// It shows the decimal count in slider
 	decimalPrecision: number;
 }
 
 export interface FacetActor {
+	/** Select the given facet value. */
 	selectFacet(facetValue: Value | string): void;
+	/** Selects and negates the given facet value. */
 	negateFacet(facetValue: Value | string): void;
+
+	/** Sets the selected facet values by replacing existing selections for this facet.  */
 	setFacets(facetValues: Value[] | string[]): void;
+
+	/** Sets the filter for this facet container. */
 	setFilter(filter: string): void;
+
+	/** Sets whether or not this facet is currently being truncated. */
 	setTruncated(truncated: boolean): void;
+	/** Sets whether or not this facet is currently collapsed. */
 	setCollapsed(collapsed: boolean): void;
 }
 
 export interface FacetRenderer {
+	/**
+	 * Conditionally renders the default truncation UI (the "Show More"/"Show Less" buttons). Nothing will render
+	 * if the facet is configured to not be truncated.
+	 */
 	renderTruncation();
 }
 
 function getInitialCollapsibleState(facet: FacetModel, cookies: { [key: string]: string }) {
 	const cookieValue = cookies[facet.Field];
 	if (cookieValue !== undefined) {
-		return cookieValue === 'true'
+		return cookieValue === 'true'; // Convert string to boolean
 	}
 	return facet.IsCollapsible && facet.IsCollapsedDefault;
 }
@@ -77,6 +111,8 @@ function Facet({ facet, children }: FacetProps) {
 	}
 
 	function renderTruncation() {
+		// only show the toggle button if the facet is configured for truncation and we're not filtering
+
 		return (
 			<>
 				{facet.shouldTruncate && !filter && (
@@ -88,17 +124,23 @@ function Facet({ facet, children }: FacetProps) {
 		);
 	}
 
+	// TODO: sort facet values
 	let facetValues = facet.Values;
 
+	// first, perform any filtering if enabled and a filter has been typed in
 	if (facet.shouldSearch && filter) {
 		facetValues = facet.Values.filter(val => {
 			if (!val.Label) {
+				// if a facet value doesn't have a label, we can't really filter down to it
+				// so exclude it
 				return false;
 			}
+
 			return val.Label.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
 		});
 	}
 
+	// next, handle truncation
 	let remainingFacets = 0;
 
 	if (facet.shouldTruncate && isTruncated) {
@@ -112,15 +154,20 @@ function Facet({ facet, children }: FacetProps) {
 	const actor: FacetActor = {
 		selectFacet,
 		negateFacet,
+
 		setFacets,
+
 		setFilter,
+
 		setTruncated,
 		setCollapsed,
 	};
 
 	const state: FacetState = {
 		facetValues,
+
 		filter,
+
 		isTruncated,
 		isCollapsed,
 		remainingFacets,
