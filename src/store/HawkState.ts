@@ -583,7 +583,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			visitorId = getCookie('hawk_visitor_id');
 		}
 
-		const clientData: ClientData = {
+		let clientData: ClientData = {
 			VisitorId: visitorId || '',
 			VisitId: visitId || '',
 			UserAgent: navigator.userAgent,
@@ -592,7 +592,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					? store.searchResults.VisitorTargets.map(v => v.Id)
 					: [],
 		};
-
+		if (store.pendingSearch.ClientData) {
+			clientData = {
+				...clientData,
+				PreviewBuckets: store.pendingSearch.ClientData.PreviewBuckets,
+			};
+		}
 		const language = store.language;
 
 		if (language) {
