@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getSearchQueryString escapes commas 1`] = `"?keyword=this is my keyword&priceslider=123::456"`;
+exports[`getSearchQueryString escapes commas 1`] = `"?keyword=this%20is%20my%20keyword&priceslider=123%3A%3A456"`;
 
 exports[`getSearchQueryString turns arrays into query string 1`] = `"?color=black&brand=cool"`;
 
 exports[`getSearchQueryString turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
 
-exports[`getSearchQueryString turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this is my keyword&color=black&brand=cool,kinda-cool"`;
+exports[`getSearchQueryString turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this%20is%20my%20keyword&color=black&brand=cool,kinda-cool"`;
 
 exports[`parseSearchQueryString handles keyword when it has multiple values 1`] = `
 Object {
