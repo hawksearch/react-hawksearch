@@ -13,6 +13,7 @@ exports[`Store performs a search 1`] = `
   "itemsToCompareIds": [],
   "comparedResults": [],
   "productDetails": {},
+  "smartBar": {},
   "searchResults": {
     "Success": true,
     "Pagination": {
