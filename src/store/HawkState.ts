@@ -170,7 +170,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			SearchWithin: store.pendingSearch.SearchWithin
 				? decodeURIComponent(store.pendingSearch.SearchWithin || '')
 				: store.pendingSearch.SearchWithin,
-			SmartBar: store.smartBar || undefined,
+			SmartBar: store.pendingSearch.SmartBar,
 		};
 
 		// The index name in the configuration takes priority over the one supplied from the URL
