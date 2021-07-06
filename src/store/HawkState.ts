@@ -593,7 +593,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					: [],
 		};
 		if (store.pendingSearch.ClientData) {
-			console.log(store.pendingSearch);
 			clientData = {
 				...clientData,
 				PreviewBuckets: store.pendingSearch.ClientData.PreviewBuckets,
