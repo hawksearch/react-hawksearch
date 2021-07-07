@@ -6,6 +6,8 @@ import { useFacet } from 'components/ui/Facets/Facet';
 import SliderNumericInputs from 'components/ui/Facets/SliderNumericInputs';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
+import { addToRangeFacets } from 'util/QueryString';
+
 function SliderNumeric() {
 	const {
 		store: { facetSelections },
@@ -52,6 +54,9 @@ function SliderNumeric() {
 			setMinValue(Number(selectedValues[0]));
 			setMaxValue(Number(selectedValues[1]));
 		}
+
+		addToRangeFacets(paramName);
+
 	}, [facetSelections]);
 
 	useEffect(() => {

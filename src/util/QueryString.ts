@@ -25,6 +25,14 @@ interface ParsedQueryStringDynamic {
 
 type ParsedQueryString = ParsedQueryStringFixed & ParsedQueryStringDynamic;
 
+const rangeFacets: string[] = [];
+
+export function addToRangeFacets(facetName: string) {
+	if (!rangeFacets.includes(facetName)) {
+		rangeFacets.push(facetName);
+	}
+}
+
 /**
  * Parses the input query string and returns an object that can be used to build a search request.
  * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
@@ -32,7 +40,7 @@ type ParsedQueryString = ParsedQueryStringFixed & ParsedQueryStringDynamic;
  * @param search The input query string.
  */
 function parseQueryStringToObject(search: string) {
-	const params = new URLSearchParams(search);
+	const params = new URLSearchParams(urlStringToParamEntries(search));
 
 	const parsed: ParsedQueryString = {};
 
@@ -68,12 +76,7 @@ function parseQueryStringToObject(search: string) {
 			// multiple selections are split by commas, so split into an array
 			const multipleValues = value.split(',');
 
-			// and now handle any comma escaping - any single value that contained a comma is escaped to '::'
-			for (let x = 0; x < multipleValues.length; ++x) {
-				multipleValues[x] = multipleValues[x].replace('::', ',');
-			}
-
-			parsed[key] = multipleValues;
+			parsed[key] = multipleValues.map(i => decodeURIComponent(i).replace('::', ','));
 		}
 	});
 
@@ -192,8 +195,12 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
 				const escapedValues: string[] = [];
 
-				for (const unescapedValue of values) {
-					escapedValues.push(encodeURIComponent(unescapedValue.replace(',', '::')));
+				for (let unescapedValue of values) {
+					if (rangeFacets.includes(key)) {
+						unescapedValue = unescapedValue.replace(',', '::');
+					}
+
+					escapedValues.push(encodeURIComponent(unescapedValue));
 				}
 
 				queryStringValues.push(key + '=' + escapedValues.join(','));
@@ -226,4 +233,17 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 	} as ParsedQueryString;
 
 	return convertObjectToQueryString(searchQuery);
+}
+
+function urlStringToParamEntries(searchQuery: string) {
+	if (searchQuery && typeof searchQuery == 'string' && searchQuery.length) {
+		if (searchQuery[0] == '?') {
+			searchQuery = searchQuery.slice(1);
+		}
+
+		return searchQuery.split('&').map(i => i.split('='));
+	}
+	else {
+		return searchQuery
+	}
 }

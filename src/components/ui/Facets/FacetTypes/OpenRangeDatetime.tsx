@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
+import { addToRangeFacets } from 'util/QueryString';
 
 function replaceHyphen(date: string) {
 	if (!date) {
@@ -79,6 +80,10 @@ function OpenRangeDatetime() {
 			actor.setFacets([selection]);
 		}
 	}
+
+	const paramName = facet.ParamName || facet.Field;
+
+	addToRangeFacets(paramName);
 
 	return (
 		<div className="hawk-facet-rail__facet-values">
