@@ -7351,7 +7351,7 @@ function useHawkState(initialSearch) {
                 ClientData: getClientData(),
                 Keyword: store.pendingSearch.Keyword ? decodeURIComponent(store.pendingSearch.Keyword || '') : store.pendingSearch.Keyword,
                 SearchWithin: store.pendingSearch.SearchWithin ? decodeURIComponent(store.pendingSearch.SearchWithin || '') : store.pendingSearch.SearchWithin,
-                SmartBar: store.smartBar || undefined
+                SmartBar: store.pendingSearch.SmartBar
               }); // The index name in the configuration takes priority over the one supplied from the URL
 
               if (config.indexName) {
@@ -7927,6 +7927,13 @@ function useHawkState(initialSearch) {
         return v.Id;
       }) : []
     };
+
+    if (store.pendingSearch.ClientData) {
+      clientData = _objectSpread$5(_objectSpread$5({}, clientData), {}, {
+        PreviewBuckets: store.pendingSearch.ClientData.PreviewBuckets
+      });
+    }
+
     var language = store.language;
 
     if (language) {
@@ -9202,6 +9209,259 @@ function SliderCalendarInputs(sliderProps) {
   }));
 }
 
+function _objectWithoutPropertiesLoose$1(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$1(source, excluded);
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
+
+function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+/** Represents parts of the browser query string that are fixed and are always single strings. */
+
+/**
+ * Represents the parts of the browser query string that are dynamic (the selected facets). Facets
+ * can have multiple values, so the value of these is always an array of strings.
+ */
+var rangeFacets = [];
+function addToRangeFacets(facetName) {
+  if (!rangeFacets.includes(facetName)) {
+    rangeFacets.push(facetName);
+  }
+}
+/**
+ * Parses the input query string and returns an object that can be used to build a search request.
+ * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
+ * for every selected facet.
+ * @param search The input query string.
+ */
+
+function parseQueryStringToObject(search) {
+  var params = new URLSearchParams(urlStringToParamEntries(search));
+  var parsed = {};
+  params.forEach(function (value, key) {
+    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck') {
+      // `keyword` is special and should never be turned into an array
+      parsed[key] = encodeURIComponent(value);
+    } else {
+      // everything else should be turned into an array
+      if (!value) {
+        // no useful value for this query param, so skip it
+        return;
+      } // NOTE: Don't pass these values as facet selection
+
+
+      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
+        return;
+      } // multiple selections are split by commas, so split into an array
+
+
+      var multipleValues = value.split(',');
+      parsed[key] = multipleValues.map(function (i) {
+        return decodeURIComponent(i).replace('::', ',');
+      });
+    }
+  });
+  return parsed;
+}
+/**
+ * Parses the abosulte url into a `HawkClient` client search request object.
+ * @param location The input location
+ */
+
+
+function parseLocation(location) {
+  var searchUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/search';
+  var searchRequest = parseSearchQueryString(location.search); // customUrl have priority over keywords
+
+  if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
+    searchRequest.Keyword = undefined;
+    searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
+  }
+
+  return searchRequest;
+}
+/**
+ * Parses the input query string into a `HawkClient` client search request object.
+ * @param search The input query string.
+ */
+
+function parseSearchQueryString(search) {
+  var queryObj = parseQueryStringToObject(search); // extract out components, including facet selections
+
+  var keyword = queryObj.keyword,
+      sort = queryObj.sort,
+      pg = queryObj.pg,
+      mpp = queryObj.mpp,
+      lp = queryObj.lp,
+      PageId = queryObj.PageId,
+      lpurl = queryObj.lpurl,
+      searchWithin = queryObj.searchWithin,
+      is100Coverage = queryObj.is100Coverage,
+      indexName = queryObj.indexName,
+      ignoreSpellcheck = queryObj.ignoreSpellcheck,
+      facetSelections = _objectWithoutProperties(queryObj, ["keyword", "sort", "pg", "mpp", "lp", "PageId", "lpurl", "searchWithin", "is100Coverage", "indexName", "ignoreSpellcheck"]); // ignore landing pages if keyword is passed
+
+
+  var pageId = lp || PageId;
+  return {
+    Keyword: lpurl || pageId ? '' : keyword,
+    SortBy: sort,
+    PageNo: pg ? Number(pg) : undefined,
+    MaxPerPage: mpp ? Number(mpp) : undefined,
+    PageId: pageId ? Number(pageId) : undefined,
+    CustomUrl: lpurl,
+    SearchWithin: searchWithin,
+    Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
+    FacetSelections: facetSelections,
+    IndexName: indexName,
+    IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
+  };
+}
+function checkIfUrlRefsLandingPage(path, searchUrl) {
+  if (!path) {
+    // if there's no path, this request can't be for a landing page
+    return false;
+  }
+
+  if (!path.endsWith('/')) {
+    path = path + '/';
+  }
+
+  if (!searchUrl.endsWith('/')) {
+    searchUrl = searchUrl + '/';
+  }
+
+  return path !== searchUrl;
+}
+/**
+ * Converts a search query object (such as one returned from `parseSearchQueryString`) and converts
+ * it into a browser query string
+ * @param queryObj The query object to convert to a query string.
+ */
+
+function convertObjectToQueryString(queryObj) {
+  var queryStringValues = [];
+
+  for (var _key in queryObj) {
+    if (queryObj.hasOwnProperty(_key)) {
+      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck') {
+        var value = queryObj[_key];
+
+        if (value === undefined || value === null) {
+          // if any of the special keys just aren't defined or are null, don't include them in
+          // the query string
+          continue;
+        }
+
+        if (typeof value !== 'string') {
+          throw new Error("".concat(_key, " must be a string"));
+        } // certain strings are special and are never arrays
+
+
+        queryStringValues.push(_key + '=' + encodeURIComponent(value));
+      } else {
+        var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
+
+        var escapedValues = [];
+
+        var _iterator = _createForOfIteratorHelper$2(values),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var unescapedValue = _step.value;
+
+            if (rangeFacets.includes(_key)) {
+              unescapedValue = unescapedValue.replace(',', '::');
+            }
+
+            escapedValues.push(encodeURIComponent(unescapedValue));
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        queryStringValues.push(_key + '=' + escapedValues.join(','));
+      }
+    }
+  }
+
+  return '?' + queryStringValues.join('&');
+}
+/**
+ * Converts a partial search request object into a browser query string.
+ * @param searchRequest The search request object to convert.
+ */
+
+
+function getSearchQueryString(searchRequest) {
+  var searchQuery = _objectSpread$6({
+    keyword: searchRequest.Keyword,
+    sort: searchRequest.SortBy,
+    pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
+    mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
+    is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
+    searchWithin: searchRequest.SearchWithin,
+    indexName: searchRequest.IndexName,
+    ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
+  }, searchRequest.FacetSelections);
+
+  return convertObjectToQueryString(searchQuery);
+}
+
+function urlStringToParamEntries(searchQuery) {
+  if (searchQuery && typeof searchQuery == 'string' && searchQuery.length) {
+    if (searchQuery[0] == '?') {
+      searchQuery = searchQuery.slice(1);
+    }
+
+    return searchQuery.split('&').map(function (i) {
+      return i.split('=');
+    });
+  } else {
+    return searchQuery;
+  }
+}
+
 var Rheostat = /*#__PURE__*/React__default.lazy(function () {
   return import(
   /* webpackChunkName: "rheostat" */
@@ -9360,6 +9620,8 @@ function SliderDate() {
     actor.setFacets([selection]);
   }
 
+  var paramName = facet.ParamName || facet.Field;
+  addToRangeFacets(paramName);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -10901,6 +11163,8 @@ function SliderNumeric() {
       setMinValue(Number(selectedValues[0]));
       setMaxValue(Number(selectedValues[1]));
     }
+
+    addToRangeFacets(paramName);
   }, [facetSelections]);
   useEffect(function () {
     var newRange = facetValues.length > 0 ? facetValues[0] : null;
@@ -17004,6 +17268,8 @@ function OpenRangeDatetime() {
     }
   }
 
+  var paramName = facet.ParamName || facet.Field;
+  addToRangeFacets(paramName);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -17076,6 +17342,8 @@ function OpenRangeNumber() {
     return null;
   }
 
+  var paramName = facet.ParamName || facet.Field;
+  addToRangeFacets(paramName);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -17120,9 +17388,9 @@ var SizeItem = /*#__PURE__*/React__default.memo(function (_ref) {
   }, /*#__PURE__*/React__default.createElement("div", null, size.Label));
 });
 
-function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function Size() {
   var _useHawksearch = useHawksearch(),
@@ -17148,7 +17416,7 @@ function Size() {
     var isNegated = selectionState === FacetSelectionState.Negated;
     return /*#__PURE__*/React__default.createElement(SizeItem, {
       key: value.Value,
-      size: _objectSpread$6(_objectSpread$6({}, value), {}, {
+      size: _objectSpread$7(_objectSpread$7({}, value), {}, {
         Value: value.Value || '',
         Label: value.Label || ''
       }),
@@ -17423,9 +17691,9 @@ function getAutocompleteStrategies(overridedStrategies) {
   return suggestionStrategies;
 }
 
-function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$7(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$6(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$6(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function SearchBoxBase(_ref) {
   var initialValue = _ref.initialValue,
@@ -17476,7 +17744,7 @@ function SearchBoxBase(_ref) {
       //
       // then we want to retain the input value that was originally typed in. by default downshift
       // will clear the input value, so we're overriding this behavior here.
-      return _objectSpread$7(_objectSpread$7({}, changes), {}, {
+      return _objectSpread$8(_objectSpread$8({}, changes), {}, {
         inputValue: state.inputValue
       });
     }
@@ -20086,9 +20354,9 @@ function ResultListing(_ref) {
   }));
 }
 
-function ownKeys$7(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$8(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$7(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$7(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function MerchandisingBanner(_ref) {
   var BannerZone = _ref.BannerZone;
@@ -20114,7 +20382,7 @@ function MerchandisingBanner(_ref) {
   function renderBanner(merchandisingItem, bannerIndex) {
     function trackEvent(type, trackEventPayload) {
       if (searchResults && searchResults.TrackingId) {
-        TrackingEvent$1.track(type, _objectSpread$8(_objectSpread$8({}, trackEventPayload), {}, {
+        TrackingEvent$1.track(type, _objectSpread$9(_objectSpread$9({}, trackEventPayload), {}, {
           trackingId: searchResults.TrackingId
         }));
       }
@@ -20189,21 +20457,6 @@ function MerchandisingBanner(_ref) {
   } else {
     return null;
   }
-}
-
-function _objectWithoutPropertiesLoose$1(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
 }
 
 var classnames = createCommonjsModule(function (module) {
@@ -25724,9 +25977,9 @@ DropdownItem.propTypes = propTypes$l;
 DropdownItem.defaultProps = defaultProps$7;
 DropdownItem.contextType = DropdownContext;
 
-function ownKeys$8(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$9(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$8(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$8(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var propTypes$m = {
   tag: tagPropType,
   children: propTypes$2.node.isRequired,
@@ -25789,7 +26042,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
       var position1 = directionPositionMap[this.context.direction] || 'bottom';
       var position2 = right ? 'end' : 'start';
       var poperPlacement = position1 + "-" + position2;
-      var poperModifiers = !flip ? _objectSpread$9(_objectSpread$9({}, modifiers), noFlipModifier) : modifiers;
+      var poperModifiers = !flip ? _objectSpread$a(_objectSpread$a({}, modifiers), noFlipModifier) : modifiers;
       var popperPositionFixed = !!positionFixed;
       var popper = /*#__PURE__*/React__default.createElement(Popper$1, {
         placement: poperPlacement,
@@ -25800,7 +26053,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
             style = _ref.style,
             placement = _ref.placement;
 
-        var combinedStyle = _objectSpread$9(_objectSpread$9({}, _this.props.style), style);
+        var combinedStyle = _objectSpread$a(_objectSpread$a({}, _this.props.style), style);
 
         var handleRef = function handleRef(tagRef) {
           // Send the ref to `react-popper`
@@ -27746,11 +27999,11 @@ var reactTransitionGroup_2 = reactTransitionGroup.TransitionGroup;
 var reactTransitionGroup_3 = reactTransitionGroup.ReplaceTransition;
 var reactTransitionGroup_4 = reactTransitionGroup.CSSTransition;
 
-function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var propTypes$o = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.propTypes), {}, {
+var propTypes$o = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.propTypes), {}, {
   children: propTypes$2.oneOfType([propTypes$2.arrayOf(propTypes$2.node), propTypes$2.node]),
   tag: tagPropType,
   baseClass: propTypes$2.string,
@@ -27760,7 +28013,7 @@ var propTypes$o = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.pro
   innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
 });
 
-var defaultProps$a = _objectSpread$a(_objectSpread$a({}, reactTransitionGroup_1.defaultProps), {}, {
+var defaultProps$a = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.defaultProps), {}, {
   tag: 'div',
   baseClass: 'fade',
   baseClassActive: 'show',
@@ -27876,9 +28129,9 @@ var propTypes$z = {
   cssModule: propTypes$2.object
 };
 
-function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 var CarouselItem = /*#__PURE__*/function (_React$Component) {
   _inheritsLoose(CarouselItem, _React$Component);
@@ -27973,7 +28226,7 @@ var CarouselItem = /*#__PURE__*/function (_React$Component) {
   return CarouselItem;
 }(React__default.Component);
 
-CarouselItem.propTypes = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.propTypes), {}, {
+CarouselItem.propTypes = _objectSpread$c(_objectSpread$c({}, reactTransitionGroup_1.propTypes), {}, {
   tag: tagPropType,
   in: propTypes$2.bool,
   cssModule: propTypes$2.object,
@@ -27981,7 +28234,7 @@ CarouselItem.propTypes = _objectSpread$b(_objectSpread$b({}, reactTransitionGrou
   slide: propTypes$2.bool,
   className: propTypes$2.string
 });
-CarouselItem.defaultProps = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.defaultProps), {}, {
+CarouselItem.defaultProps = _objectSpread$c(_objectSpread$c({}, reactTransitionGroup_1.defaultProps), {}, {
   tag: 'div',
   timeout: TransitionTimeouts.Carousel,
   slide: true
@@ -28547,9 +28800,9 @@ var propTypes$F = {
   innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
 };
 
-function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function noop$2() {}
 
@@ -28587,7 +28840,7 @@ var defaultProps$b = {
   modifiers: {},
   onClosed: noop$2,
   fade: true,
-  transition: _objectSpread$c({}, Fade.defaultProps)
+  transition: _objectSpread$d({}, Fade.defaultProps)
 };
 
 var PopperContent = /*#__PURE__*/function (_React$Component) {
@@ -28673,7 +28926,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
     var arrowClassName = mapToCssModules(classnames('arrow', _arrowClassName), cssModule);
     var popperClassName = mapToCssModules(classnames(_popperClassName, placementPrefix ? placementPrefix + "-auto" : ''), this.props.cssModule);
 
-    var extendedModifiers = _objectSpread$c({
+    var extendedModifiers = _objectSpread$d({
       offset: {
         offset: offset
       },
@@ -28686,7 +28939,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
       }
     }, modifiers);
 
-    var popperTransition = _objectSpread$c(_objectSpread$c(_objectSpread$c({}, Fade.defaultProps), transition), {}, {
+    var popperTransition = _objectSpread$d(_objectSpread$d(_objectSpread$d({}, Fade.defaultProps), transition), {}, {
       baseClass: fade ? transition.baseClass : '',
       timeout: fade ? transition.timeout : 0
     });
@@ -29156,9 +29409,9 @@ var Popover = function Popover(props) {
 Popover.propTypes = propTypes$H;
 Popover.defaultProps = defaultProps$d;
 
-function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$c(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$c(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys = ['defaultOpen'];
 
 var UncontrolledPopover = /*#__PURE__*/function (_Component) {
@@ -29192,7 +29445,7 @@ var UncontrolledPopover = /*#__PURE__*/function (_Component) {
 
   return UncontrolledPopover;
 }(Component);
-UncontrolledPopover.propTypes = _objectSpread$d({
+UncontrolledPopover.propTypes = _objectSpread$e({
   defaultOpen: propTypes$2.bool
 }, Popover.propTypes);
 
@@ -29268,9 +29521,9 @@ var Portal$1 = /*#__PURE__*/function (_React$Component) {
 
 Portal$1.propTypes = propTypes$L;
 
-function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$e(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$d(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$d(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function noop$3() {}
 
@@ -29687,12 +29940,12 @@ var Modal = /*#__PURE__*/function (_React$Component) {
       };
       var hasTransition = this.props.fade;
 
-      var modalTransition = _objectSpread$e(_objectSpread$e(_objectSpread$e({}, Fade.defaultProps), this.props.modalTransition), {}, {
+      var modalTransition = _objectSpread$f(_objectSpread$f(_objectSpread$f({}, Fade.defaultProps), this.props.modalTransition), {}, {
         baseClass: hasTransition ? this.props.modalTransition.baseClass : '',
         timeout: hasTransition ? this.props.modalTransition.timeout : 0
       });
 
-      var backdropTransition = _objectSpread$e(_objectSpread$e(_objectSpread$e({}, Fade.defaultProps), this.props.backdropTransition), {}, {
+      var backdropTransition = _objectSpread$f(_objectSpread$f(_objectSpread$f({}, Fade.defaultProps), this.props.backdropTransition), {}, {
         baseClass: hasTransition ? this.props.backdropTransition.baseClass : '',
         timeout: hasTransition ? this.props.backdropTransition.timeout : 0
       });
@@ -30071,9 +30324,9 @@ var propTypes$16 = {
   cssModule: propTypes$2.object
 };
 
-function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$e(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$e(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var propTypes$17 = {
   children: propTypes$2.node,
   className: propTypes$2.string,
@@ -30094,14 +30347,14 @@ var defaultProps$h = {
   tag: 'div',
   closeAriaLabel: 'Close',
   fade: true,
-  transition: _objectSpread$f(_objectSpread$f({}, Fade.defaultProps), {}, {
+  transition: _objectSpread$g(_objectSpread$g({}, Fade.defaultProps), {}, {
     unmountOnExit: true
   })
 };
 
-function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var propTypes$18 = {
   children: propTypes$2.node,
   className: propTypes$2.string,
@@ -30116,7 +30369,7 @@ var defaultProps$i = {
   isOpen: true,
   tag: 'div',
   fade: true,
-  transition: _objectSpread$g(_objectSpread$g({}, Fade.defaultProps), {}, {
+  transition: _objectSpread$h(_objectSpread$h({}, Fade.defaultProps), {}, {
     unmountOnExit: true
   })
 };
@@ -30143,11 +30396,11 @@ var propTypes$1a = {
 
 var _transitionStatusToCl;
 
-function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var propTypes$1b = _objectSpread$h(_objectSpread$h({}, reactTransitionGroup_1.propTypes), {}, {
+var propTypes$1b = _objectSpread$i(_objectSpread$i({}, reactTransitionGroup_1.propTypes), {}, {
   isOpen: propTypes$2.bool,
   children: propTypes$2.oneOfType([propTypes$2.arrayOf(propTypes$2.node), propTypes$2.node]),
   tag: tagPropType,
@@ -30157,7 +30410,7 @@ var propTypes$1b = _objectSpread$h(_objectSpread$h({}, reactTransitionGroup_1.pr
   innerRef: propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.object])
 });
 
-var defaultProps$j = _objectSpread$h(_objectSpread$h({}, reactTransitionGroup_1.defaultProps), {}, {
+var defaultProps$j = _objectSpread$i(_objectSpread$i({}, reactTransitionGroup_1.defaultProps), {}, {
   isOpen: false,
   appear: false,
   enter: true,
@@ -30238,9 +30491,9 @@ var ListInlineItem = /*#__PURE__*/forwardRef(function (props, ref) {
 ListInlineItem.propTypes = propTypes$1g;
 ListInlineItem.defaultProps = defaultProps$l;
 
-function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys$1 = ['defaultOpen'];
 
 var UncontrolledButtonDropdown = /*#__PURE__*/function (_Component) {
@@ -30274,7 +30527,7 @@ var UncontrolledButtonDropdown = /*#__PURE__*/function (_Component) {
 
   return UncontrolledButtonDropdown;
 }(Component);
-UncontrolledButtonDropdown.propTypes = _objectSpread$i({
+UncontrolledButtonDropdown.propTypes = _objectSpread$j({
   defaultOpen: propTypes$2.bool
 }, ButtonDropdown.propTypes);
 
@@ -30284,9 +30537,9 @@ var propTypes$1h = {
   toggleEvents: propTypes$2.arrayOf(propTypes$2.string)
 };
 
-function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$j(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$i(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$i(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$k(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys$2 = ['defaultOpen'];
 
 var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
@@ -30324,14 +30577,14 @@ var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
 
   return UncontrolledDropdown;
 }(Component);
-UncontrolledDropdown.propTypes = _objectSpread$j({
+UncontrolledDropdown.propTypes = _objectSpread$k({
   defaultOpen: propTypes$2.bool,
   onToggle: propTypes$2.func
 }, Dropdown.propTypes);
 
-function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$k(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$j(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$j(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$l(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var omitKeys$3 = ['defaultOpen'];
 
 var UncontrolledTooltip = /*#__PURE__*/function (_Component) {
@@ -30365,7 +30618,7 @@ var UncontrolledTooltip = /*#__PURE__*/function (_Component) {
 
   return UncontrolledTooltip;
 }(Component);
-UncontrolledTooltip.propTypes = _objectSpread$k({
+UncontrolledTooltip.propTypes = _objectSpread$l({
   defaultOpen: propTypes$2.bool
 }, Tooltip.propTypes);
 
@@ -31152,222 +31405,6 @@ function createBrowserHistory(props) {
 
 var history = createBrowserHistory();
 
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$1(source, excluded);
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-
-function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$l(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$k(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$k(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
-
-function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-/** Represents parts of the browser query string that are fixed and are always single strings. */
-
-/**
- * Represents the parts of the browser query string that are dynamic (the selected facets). Facets
- * can have multiple values, so the value of these is always an array of strings.
- */
-
-/**
- * Parses the input query string and returns an object that can be used to build a search request.
- * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
- * for every selected facet.
- * @param search The input query string.
- */
-function parseQueryStringToObject(search) {
-  var params = new URLSearchParams(search);
-  var parsed = {};
-  params.forEach(function (value, key) {
-    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck') {
-      // `keyword` is special and should never be turned into an array
-      parsed[key] = encodeURIComponent(value);
-    } else {
-      // everything else should be turned into an array
-      if (!value) {
-        // no useful value for this query param, so skip it
-        return;
-      } // NOTE: Don't pass these values as facet selection
-
-
-      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
-        return;
-      } // multiple selections are split by commas, so split into an array
-
-
-      var multipleValues = value.split(','); // and now handle any comma escaping - any single value that contained a comma is escaped to '::'
-
-      for (var x = 0; x < multipleValues.length; ++x) {
-        multipleValues[x] = multipleValues[x].replace('::', ',');
-      }
-
-      parsed[key] = multipleValues;
-    }
-  });
-  return parsed;
-}
-/**
- * Parses the abosulte url into a `HawkClient` client search request object.
- * @param location The input location
- */
-
-
-function parseLocation(location) {
-  var searchUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/search';
-  var searchRequest = parseSearchQueryString(location.search); // customUrl have priority over keywords
-
-  if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
-    searchRequest.Keyword = undefined;
-    searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
-  }
-
-  return searchRequest;
-}
-/**
- * Parses the input query string into a `HawkClient` client search request object.
- * @param search The input query string.
- */
-
-function parseSearchQueryString(search) {
-  var queryObj = parseQueryStringToObject(search); // extract out components, including facet selections
-
-  var keyword = queryObj.keyword,
-      sort = queryObj.sort,
-      pg = queryObj.pg,
-      mpp = queryObj.mpp,
-      lp = queryObj.lp,
-      PageId = queryObj.PageId,
-      lpurl = queryObj.lpurl,
-      searchWithin = queryObj.searchWithin,
-      is100Coverage = queryObj.is100Coverage,
-      indexName = queryObj.indexName,
-      ignoreSpellcheck = queryObj.ignoreSpellcheck,
-      facetSelections = _objectWithoutProperties(queryObj, ["keyword", "sort", "pg", "mpp", "lp", "PageId", "lpurl", "searchWithin", "is100Coverage", "indexName", "ignoreSpellcheck"]); // ignore landing pages if keyword is passed
-
-
-  var pageId = lp || PageId;
-  return {
-    Keyword: lpurl || pageId ? '' : keyword,
-    SortBy: sort,
-    PageNo: pg ? Number(pg) : undefined,
-    MaxPerPage: mpp ? Number(mpp) : undefined,
-    PageId: pageId ? Number(pageId) : undefined,
-    CustomUrl: lpurl,
-    SearchWithin: searchWithin,
-    Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-    FacetSelections: facetSelections,
-    IndexName: indexName,
-    IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
-  };
-}
-function checkIfUrlRefsLandingPage(path, searchUrl) {
-  if (!path) {
-    // if there's no path, this request can't be for a landing page
-    return false;
-  }
-
-  if (!path.endsWith('/')) {
-    path = path + '/';
-  }
-
-  if (!searchUrl.endsWith('/')) {
-    searchUrl = searchUrl + '/';
-  }
-
-  return path !== searchUrl;
-}
-/**
- * Converts a search query object (such as one returned from `parseSearchQueryString`) and converts
- * it into a browser query string
- * @param queryObj The query object to convert to a query string.
- */
-
-function convertObjectToQueryString(queryObj) {
-  var queryStringValues = [];
-
-  for (var _key in queryObj) {
-    if (queryObj.hasOwnProperty(_key)) {
-      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck') {
-        var value = queryObj[_key];
-
-        if (value === undefined || value === null) {
-          // if any of the special keys just aren't defined or are null, don't include them in
-          // the query string
-          continue;
-        }
-
-        if (typeof value !== 'string') {
-          throw new Error("".concat(_key, " must be a string"));
-        } // certain strings are special and are never arrays
-
-
-        queryStringValues.push(_key + '=' + encodeURIComponent(value));
-      } else {
-        var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
-
-        var escapedValues = [];
-
-        var _iterator = _createForOfIteratorHelper$2(values),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var unescapedValue = _step.value;
-            escapedValues.push(encodeURIComponent(unescapedValue.replace(',', '::')));
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        queryStringValues.push(_key + '=' + escapedValues.join(','));
-      }
-    }
-  }
-
-  return '?' + queryStringValues.join('&');
-}
-/**
- * Converts a partial search request object into a browser query string.
- * @param searchRequest The search request object to convert.
- */
-
-
-function getSearchQueryString(searchRequest) {
-  var searchQuery = _objectSpread$l({
-    keyword: searchRequest.Keyword,
-    sort: searchRequest.SortBy,
-    pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
-    mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-    is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
-    searchWithin: searchRequest.SearchWithin,
-    indexName: searchRequest.IndexName,
-    ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
-  }, searchRequest.FacetSelections);
-
-  return convertObjectToQueryString(searchQuery);
-}
-
 var doSearch = true;
 
 function QueryStringListener() {
@@ -31558,5 +31595,5 @@ function RelatedSearch() {
   })) : null;
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map
