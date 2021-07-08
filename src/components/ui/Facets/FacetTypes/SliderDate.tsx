@@ -6,6 +6,8 @@ import { useFacet } from 'components/ui/Facets/Facet';
 import SliderCalendarInputs from '../SliderCalendarInputs';
 const Rheostat = React.lazy(() => import(/* webpackChunkName: "rheostat" */ 'rheostat'));
 
+import { addToRangeFacets } from 'util/QueryString';
+
 function formatDate(date: Date) {
 	const year = date.getFullYear().toString();
 	const month = (date.getMonth() + 101).toString().substring(1);
@@ -139,6 +141,10 @@ function SliderDate() {
 		const selection = `${formattedMinVal},${formattedMaxVal}`;
 		actor.setFacets([selection]);
 	}
+
+	const paramName = facet.ParamName || facet.Field;
+
+	addToRangeFacets(paramName);
 
 	return (
 		<div className="hawk-facet-rail__facet-values">

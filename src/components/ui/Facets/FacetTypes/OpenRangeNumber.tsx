@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
+import { addToRangeFacets } from 'util/QueryString';
 
 function OpenRangeNumber() {
 	const { actor: hawkActor } = useHawksearch();
@@ -47,6 +48,10 @@ function OpenRangeNumber() {
 		// this facet is somehow misconfigured so don't render
 		return null;
 	}
+
+	const paramName = facet.ParamName || facet.Field;
+
+	addToRangeFacets(paramName);
 
 	return (
 		<div className="hawk-facet-rail__facet-values">
