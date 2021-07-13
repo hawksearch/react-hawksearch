@@ -128,16 +128,24 @@ function Checkbox() {
 	}
 	function renderFacetActions(value: string, isNegated: boolean) {
 		return (
-			<button onClick={e => actor.negateFacet(value)} className="hawk-facet-rail__facet-btn-exclude">
+			<button
+				onClick={e => actor.negateFacet(value)}
+				className="hawk-facet-rail__facet-btn-exclude"
+				aria-describedby="visually-hidden"
+			>
 				{isNegated ? (
 					<>
 						<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
-						<span className="visually-hidden">Include facet</span>
+						<span id="visually-hidden" className="visually-hidden">
+							Include facet
+						</span>
 					</>
 				) : (
 					<>
 						<DashCircleSVG />
-						<span className="visually-hidden">Exclude facet</span>
+						<span id="visually-hidden" className="visually-hidden">
+							Exclude facet
+						</span>
 					</>
 				)}
 			</button>

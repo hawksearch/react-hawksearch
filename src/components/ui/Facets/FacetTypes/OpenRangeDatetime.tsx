@@ -96,6 +96,7 @@ function OpenRangeDatetime() {
 						min={rangeStartDate}
 						max={rangeEndDate}
 						onChange={ondateRangeStartChange}
+						aria-label="start date"
 					/>
 					<input
 						type="datetime-local"
@@ -104,6 +105,7 @@ function OpenRangeDatetime() {
 						min={rangeStartDate}
 						max={rangeEndDate}
 						onChange={ondateRangeEndChange}
+						aria-label="end date"
 					/>
 				</div>
 			</div>

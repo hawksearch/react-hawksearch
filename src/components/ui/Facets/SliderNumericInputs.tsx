@@ -55,6 +55,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				onValueChange={onMinUpdate}
 				onBlur={reloadFacets}
 				decimalScale={sliderProps.decimalPrecision}
+				aria-label="min range"
 			/>
 
 			<NumberFormat
@@ -67,6 +68,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				onValueChange={onMaxUpdate}
 				onBlur={reloadFacets}
 				decimalScale={sliderProps.decimalPrecision}
+				aria-label="max range"
 			/>
 		</div>
 	);
