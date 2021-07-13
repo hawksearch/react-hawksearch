@@ -236,14 +236,13 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 }
 
 function urlStringToParamEntries(searchQuery: string) {
-	if (searchQuery && typeof searchQuery == 'string' && searchQuery.length) {
-		if (searchQuery[0] == '?') {
+	if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
+		if (searchQuery[0] === '?') {
 			searchQuery = searchQuery.slice(1);
 		}
 
 		return searchQuery.split('&').map(i => i.split('='));
-	}
-	else {
-		return searchQuery
+	} else {
+		return searchQuery;
 	}
 }

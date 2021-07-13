@@ -81,9 +81,9 @@ function OpenRangeDatetime() {
 		}
 	}
 
-	const paramName = facet.ParamName || facet.Field;
+	const param = facet.ParamName || facet.Field;
 
-	addToRangeFacets(paramName);
+	addToRangeFacets(param);
 
 	return (
 		<div className="hawk-facet-rail__facet-values">

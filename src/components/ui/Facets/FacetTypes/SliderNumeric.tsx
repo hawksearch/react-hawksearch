@@ -56,7 +56,6 @@ function SliderNumeric() {
 		}
 
 		addToRangeFacets(paramName);
-
 	}, [facetSelections]);
 
 	useEffect(() => {
