@@ -91,9 +91,11 @@
 }
 
 .hawk-facet-rail__facet-heading {
-	cursor: pointer;
 	display: flex;
-	align-items: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    width: 100%;
 
 	h4 {
 		margin: 5px 0 5px 0;
@@ -102,6 +104,7 @@
 		padding: 0 5px 0 0;
 		font-size: 1em;
 		font-weight: bold;
+		text-align: left;
 	}
 
 	.icon {

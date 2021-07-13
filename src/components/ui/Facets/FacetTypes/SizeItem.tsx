@@ -12,12 +12,10 @@ interface SizeItemProps {
 
 const SizeItem = React.memo(({ size, onSwatchSelected, isNegated }: SizeItemProps) => {
 	return (
-		<li
-			key={size.Value}
-			className={size.Selected ? 'selected' : ''}
-			onClick={() => onSwatchSelected(size.Value, isNegated)}
-		>
-			<div>{size.Label}</div>
+		<li key={size.Value} className={size.Selected ? 'selected' : ''}>
+			<button onClick={() => onSwatchSelected(size.Value, isNegated)} aria-pressed={size.Selected}>
+				<div>{size.Label}</div>
+			</button>
 		</li>
 	);
 });

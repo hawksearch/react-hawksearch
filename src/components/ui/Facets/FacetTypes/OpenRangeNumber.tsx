@@ -58,12 +58,14 @@ function OpenRangeNumber() {
 						data-type="currency"
 						value={minValue}
 						onChange={onRangeStartChange}
+						aria-label="min range"
 					/>
 					<input
 						type="text"
 						className="hawk-text-input value-end"
 						onChange={onRangeEndChange}
 						value={maxValue}
+						aria-label="max range"
 					/>
 				</div>
 			</div>

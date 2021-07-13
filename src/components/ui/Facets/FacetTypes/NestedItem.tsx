@@ -127,16 +127,21 @@ function NestedItem(item: NestedItemProps) {
 				<button
 					onClick={e => item.onValueSelected(hierarchyValue, true)}
 					className="hawk-facet-rail__facet-btn-exclude"
+					aria-describedby="visually-hidden"
 				>
 					{item.isNegated ? (
 						<>
 							<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
-							<span className="visually-hidden">Include facet</span>
+							<span id="visually-hidden" className="visually-hidden">
+								Include facet
+							</span>
 						</>
 					) : (
 						<>
 							<DashCircleSVG />
-							<span className="visually-hidden">Exclude facet</span>
+							<span id="visually-hidden" className="visually-hidden">
+								Exclude facet
+							</span>
 						</>
 					)}
 				</button>
