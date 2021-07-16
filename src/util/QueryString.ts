@@ -219,7 +219,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
  * Converts a partial search request object into a browser query string.
  * @param searchRequest The search request object to convert.
  */
-export function getSearchQueryString(searchRequest: Partial<Request>, store?: SearchStore ) {
+export function getSearchQueryString(searchRequest: Partial<Request>, store?: SearchStore) {
 	const searchQuery = {
 		keyword: searchRequest.Keyword,
 
@@ -246,7 +246,17 @@ function urlStringToParamEntries(searchQuery: string) {
 			searchQuery = searchQuery.slice(1);
 		}
 
-		return searchQuery.split('&').map(i => i.split('='));
+		return searchQuery.split('&').map(i => {
+			const entries = i.split('=');
+
+			if (entries.length === 2) {
+				return entries;
+			} else if (entries.length > 2) {
+				return [entries[0], entries.slice(0, 1).join('')];
+			} else {
+				return [entries.join(''), ''];
+			}
+		});
 	} else {
 		return searchQuery;
 	}
