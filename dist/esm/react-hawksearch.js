@@ -7599,8 +7599,12 @@ function useHawkState(initialSearch) {
   function setSearch(pendingSearch, doHistory, fromInput) {
     if (doHistory === undefined) {
       doHistory = true;
-    }
+    } // Check if any additional parameters, besides the keyword, are required.
+    // If the configuration is set and the search is triggered from user input
+    // only the entered term is used for the request.
 
+
+    var removeSearchParams = config.removeSearchParams && fromInput;
     setStore(function (prevState) {
       var _prevState$searchResu;
 
@@ -7611,14 +7615,14 @@ function useHawkState(initialSearch) {
         return v.Selected;
       }) : undefined;
 
-      if (tab !== null && tab !== void 0 && tab.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue !== null && facetValue !== void 0 && facetValue.Value) {
+      if (!removeSearchParams && tab !== null && tab !== void 0 && tab.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue !== null && facetValue !== void 0 && facetValue.Value) {
         pendingSearch = _objectSpread$5(_objectSpread$5({}, pendingSearch), {}, {
           FacetSelections: _objectSpread$5(_objectSpread$5({}, pendingSearch.FacetSelections), {}, _defineProperty({}, tab.Field, [facetValue.Value]))
         });
       }
 
       var newState = {
-        pendingSearch: fromInput ? pendingSearch : _objectSpread$5(_objectSpread$5({}, prevState.pendingSearch), pendingSearch),
+        pendingSearch: removeSearchParams ? pendingSearch : _objectSpread$5(_objectSpread$5({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
       };
 
@@ -8809,16 +8813,20 @@ function Facet$1(_ref) {
       actor: actor,
       renderer: renderer
     }
-  }, /*#__PURE__*/React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("li", {
     className: "hawk-facet-rail__facet"
-  }, /*#__PURE__*/React__default.createElement("div", {
+  }, /*#__PURE__*/React__default.createElement("button", {
     className: "hawk-facet-rail__facet-heading",
+    "aria-label": facet.Name,
+    tabIndex: 0,
     onClick: function onClick(event) {
       return toggleCollapsible(event);
-    }
+    },
+    "aria-expanded": !isCollapsed
   }, /*#__PURE__*/React__default.createElement("h4", null, facet.Name), facet.Tooltip && /*#__PURE__*/React__default.createElement("div", {
     className: "custom-tooltip",
-    ref: wrapperRef
+    ref: wrapperRef,
+    tabIndex: 0
   }, /*#__PURE__*/React__default.createElement(QuestionmarkSVG, {
     "class": "hawk-questionmark"
   }), /*#__PURE__*/React__default.createElement("div", {
@@ -9005,12 +9013,15 @@ function Checkbox() {
       onClick: function onClick(e) {
         return actor.negateFacet(value);
       },
-      className: "hawk-facet-rail__facet-btn-exclude"
+      className: "hawk-facet-rail__facet-btn-exclude",
+      "aria-describedby": "visually-hidden"
     }, isNegated ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusCircleSVG, {
       "class": "hawk-facet-rail__facet-btn-include"
     }), /*#__PURE__*/React__default.createElement("span", {
+      id: "visually-hidden",
       className: "visually-hidden"
     }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
+      id: "visually-hidden",
       className: "visually-hidden"
     }, "Exclude facet")));
   }
@@ -9276,7 +9287,7 @@ function parseQueryStringToObject(search) {
   var params = new URLSearchParams(urlStringToParamEntries(search));
   var parsed = {};
   params.forEach(function (value, key) {
-    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck') {
+    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck' || key === 'language') {
       // `keyword` is special and should never be turned into an array
       parsed[key] = encodeURIComponent(value);
     } else {
@@ -9381,7 +9392,7 @@ function convertObjectToQueryString(queryObj) {
 
   for (var _key in queryObj) {
     if (queryObj.hasOwnProperty(_key)) {
-      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck') {
+      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck' || _key === 'language') {
         var value = queryObj[_key];
 
         if (value === undefined || value === null) {
@@ -9433,7 +9444,7 @@ function convertObjectToQueryString(queryObj) {
  */
 
 
-function getSearchQueryString(searchRequest) {
+function getSearchQueryString(searchRequest, store) {
   var searchQuery = _objectSpread$6({
     keyword: searchRequest.Keyword,
     sort: searchRequest.SortBy,
@@ -9442,6 +9453,7 @@ function getSearchQueryString(searchRequest) {
     is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
     searchWithin: searchRequest.SearchWithin,
     indexName: searchRequest.IndexName,
+    language: store && store.language ? store.language : undefined,
     ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
   }, searchRequest.FacetSelections);
 
@@ -9449,8 +9461,8 @@ function getSearchQueryString(searchRequest) {
 }
 
 function urlStringToParamEntries(searchQuery) {
-  if (searchQuery && typeof searchQuery == 'string' && searchQuery.length) {
-    if (searchQuery[0] == '?') {
+  if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
+    if (searchQuery[0] === '?') {
       searchQuery = searchQuery.slice(1);
     }
 
@@ -9620,8 +9632,8 @@ function SliderDate() {
     actor.setFacets([selection]);
   }
 
-  var paramName = facet.ParamName || facet.Field;
-  addToRangeFacets(paramName);
+  var param = facet.ParamName || facet.Field;
+  addToRangeFacets(param);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -11073,7 +11085,8 @@ function SliderNumericInputs(sliderProps) {
     max: sliderProps.max,
     onValueChange: onMinUpdate,
     onBlur: reloadFacets,
-    decimalScale: sliderProps.decimalPrecision
+    decimalScale: sliderProps.decimalPrecision,
+    "aria-label": "min range"
   }), /*#__PURE__*/React__default.createElement(NumberFormat, {
     thousandSeparator: sliderProps.isCurrency,
     prefix: sliderProps.isCurrency ? sliderProps.currencySymbol : '',
@@ -11083,7 +11096,8 @@ function SliderNumericInputs(sliderProps) {
     max: sliderProps.max,
     onValueChange: onMaxUpdate,
     onBlur: reloadFacets,
-    decimalScale: sliderProps.decimalPrecision
+    decimalScale: sliderProps.decimalPrecision,
+    "aria-label": "max range"
   }));
 }
 
@@ -11462,12 +11476,15 @@ function NestedItem(item) {
     onClick: function onClick(e) {
       return item.onValueSelected(hierarchyValue, true);
     },
-    className: "hawk-facet-rail__facet-btn-exclude"
+    className: "hawk-facet-rail__facet-btn-exclude",
+    "aria-describedby": "visually-hidden"
   }, item.isNegated ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusCircleSVG, {
     "class": "hawk-facet-rail__facet-btn-include"
   }), /*#__PURE__*/React__default.createElement("span", {
+    id: "visually-hidden",
     className: "visually-hidden"
   }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
+    id: "visually-hidden",
     className: "visually-hidden"
   }, "Exclude facet"))), hierarchyChildren.length > 0 ? /*#__PURE__*/React__default.createElement("button", {
     className: getCollapseStateClass(isExpanded),
@@ -17268,8 +17285,8 @@ function OpenRangeDatetime() {
     }
   }
 
-  var paramName = facet.ParamName || facet.Field;
-  addToRangeFacets(paramName);
+  var param = facet.ParamName || facet.Field;
+  addToRangeFacets(param);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -17282,14 +17299,16 @@ function OpenRangeDatetime() {
     value: minDateValue,
     min: rangeStartDate,
     max: rangeEndDate,
-    onChange: ondateRangeStartChange
+    onChange: ondateRangeStartChange,
+    "aria-label": "start date"
   }), /*#__PURE__*/React__default.createElement("input", {
     type: "datetime-local",
     className: "hawk-text-input hawk-date-value-end",
     value: maxDateValue,
     min: rangeStartDate,
     max: rangeEndDate,
-    onChange: ondateRangeEndChange
+    onChange: ondateRangeEndChange,
+    "aria-label": "end date"
   }))));
 }
 
@@ -17355,12 +17374,14 @@ function OpenRangeNumber() {
     className: "hawk-text-input value-start",
     "data-type": "currency",
     value: minValue,
-    onChange: onRangeStartChange
+    onChange: onRangeStartChange,
+    "aria-label": "min range"
   }), /*#__PURE__*/React__default.createElement("input", {
     type: "text",
     className: "hawk-text-input value-end",
     onChange: onRangeEndChange,
-    value: maxValue
+    value: maxValue,
+    "aria-label": "max range"
   }))));
 }
 
@@ -17381,11 +17402,13 @@ var SizeItem = /*#__PURE__*/React__default.memo(function (_ref) {
       isNegated = _ref.isNegated;
   return /*#__PURE__*/React__default.createElement("li", {
     key: size.Value,
-    className: size.Selected ? 'selected' : '',
+    className: size.Selected ? 'selected' : ''
+  }, /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick() {
       return onSwatchSelected(size.Value, isNegated);
-    }
-  }, /*#__PURE__*/React__default.createElement("div", null, size.Label));
+    },
+    "aria-pressed": size.Selected
+  }, /*#__PURE__*/React__default.createElement("div", null, size.Label)));
 });
 
 function ownKeys$6(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -18115,8 +18138,10 @@ function FacetList() {
       numPlaceholders = _useState2[0];
 
   var components = getFacetComponents(config.facetOverrides || []);
-  return /*#__PURE__*/React__default.createElement("div", {
-    className: "hawk-facet-rail__facet-list"
+  return /*#__PURE__*/React__default.createElement("ul", {
+    className: "hawk-facet-rail__facet-list",
+    tabIndex: 0,
+    "aria-label": "Facet list"
   }, searchResults ? // if there are search results, render the facets
   searchResults.Facets.map(function (facet) {
     if (!facet.IsVisible) {
@@ -19933,10 +19958,12 @@ function Sorting$1() {
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-sorting"
   }, /*#__PURE__*/React__default.createElement("span", {
+    id: "sort-label",
     className: "hawk-sorting__label"
   }, t('Sort By')), /*#__PURE__*/React__default.createElement("select", {
     value: pendingSearch.SortBy,
-    onChange: onChange
+    onChange: onChange,
+    "aria-labelledby": "sort-label"
   }, searchResults ? searchResults.Sorting.Items.map(function (sortingItem) {
     return /*#__PURE__*/React__default.createElement("option", {
       key: sortingItem.Value,
@@ -20115,6 +20142,7 @@ function Pager(_ref) {
     onBlur: onBlur,
     min: "1",
     max: totalPages,
+    "aria-label": "".concat(getInputValue(), " of ").concat(totalPages),
     className: hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'
   }), /*#__PURE__*/React__default.createElement("span", {
     className: "hawk-pagination__total-text"
@@ -31441,7 +31469,7 @@ function QueryStringListener() {
       // change
       doSearch = false;
       history.push({
-        search: getSearchQueryString(store.pendingSearch)
+        search: getSearchQueryString(store.pendingSearch, store)
       });
     }
   }, [store.pendingSearch]); // Extract access token and refresh token from query string on load
