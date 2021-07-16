@@ -144,4 +144,6 @@ export interface HawksearchConfig {
 	trackConfig?: string[];
 
 	disablePreviewBuckets?: boolean | false;
+
+	removeSearchParams?: boolean | false;
 }

@@ -287,11 +287,16 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			doHistory = true;
 		}
 
+		// Check if any additional parameters, besides the keyword, are required.
+		// If the configuration is set and the search is triggered from user input
+		// only the entered term is used for the request.
+		const removeSearchParams = (config.removeSearchParams && fromInput);
+
 		setStore(prevState => {
 			const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
 			const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
 
-			if (tab?.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue?.Value) {
+			if (!removeSearchParams && tab?.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue?.Value) {
 				pendingSearch = {
 					...pendingSearch,
 					FacetSelections: {
@@ -301,7 +306,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				};
 			}
 			const newState = {
-				pendingSearch: fromInput ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
+				pendingSearch: removeSearchParams ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
 			};
 			if (newState.pendingSearch.Keyword === '') {
