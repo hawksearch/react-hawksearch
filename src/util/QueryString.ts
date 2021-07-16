@@ -246,7 +246,19 @@ function urlStringToParamEntries(searchQuery: string) {
 			searchQuery = searchQuery.slice(1);
 		}
 
-		return searchQuery.split('&').map(i => i.split('='));
+		return searchQuery.split('&').map(i => {
+			let entries = i.split('=');
+
+			if (entries.length == 2) {
+				return entries;
+			}
+			else if (entries.length > 2) {
+				return [entries[0], entries.slice(0, 1).join('')]
+			}
+			else {
+				return [entries.join(''), null];
+			}
+		});
 	} else {
 		return searchQuery;
 	}
