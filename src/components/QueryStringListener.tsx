@@ -45,7 +45,7 @@ function QueryStringListener() {
 			doSearch = false;
 
 			history.push({
-				search: getSearchQueryString(store.pendingSearch),
+				search: getSearchQueryString(store.pendingSearch, store),
 			});
 		}
 	}, [store.pendingSearch]);

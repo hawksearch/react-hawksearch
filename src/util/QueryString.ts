@@ -1,4 +1,5 @@
 import { Request } from 'models/Search/Request';
+import { SearchStore } from '../store/Store';
 
 /** Represents parts of the browser query string that are fixed and are always single strings. */
 interface ParsedQueryStringFixed {
@@ -13,6 +14,7 @@ interface ParsedQueryStringFixed {
 	is100Coverage?: string;
 	indexName?: string;
 	ignoreSpellcheck?: string;
+	language?: string;
 }
 
 /**
@@ -56,7 +58,8 @@ function parseQueryStringToObject(search: string) {
 			key === 'searchWithin' ||
 			key === 'is100Coverage' ||
 			key === 'indexName' ||
-			key === 'ignoreSpellcheck'
+			key === 'ignoreSpellcheck' ||
+			key === 'language'
 		) {
 			// `keyword` is special and should never be turned into an array
 			parsed[key] = encodeURIComponent(value);
@@ -173,7 +176,8 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				key === 'searchWithin' ||
 				key === 'is100Coverage' ||
 				key === 'indexName' ||
-				key === 'ignoreSpellcheck'
+				key === 'ignoreSpellcheck' ||
+				key === 'language'
 			) {
 				const value = queryObj[key];
 
@@ -215,7 +219,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
  * Converts a partial search request object into a browser query string.
  * @param searchRequest The search request object to convert.
  */
-export function getSearchQueryString(searchRequest: Partial<Request>) {
+export function getSearchQueryString(searchRequest: Partial<Request>, store?: SearchStore ) {
 	const searchQuery = {
 		keyword: searchRequest.Keyword,
 
@@ -225,6 +229,7 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
 		indexName: searchRequest.IndexName,
+		language: store && store.language ? store.language : undefined,
 		ignoreSpellcheck:
 			!searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck
 				? undefined
