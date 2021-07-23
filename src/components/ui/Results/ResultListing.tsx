@@ -16,7 +16,7 @@ function ResultListing({ ResultItem = DefaultResultItem }: ResultsListingProps) 
 	const results = searchResults ? searchResults.Results : [];
 
 	return (
-		<div className="hawk-results__listing">
+		<ul className="hawk-results__listing" aria-label="search result">
 			<Spinner isVisible={isLoading} />
 
 			{results.length
@@ -24,7 +24,7 @@ function ResultListing({ ResultItem = DefaultResultItem }: ResultsListingProps) 
 				  results.map(result => <ResultItem key={result.DocId} item={result} />)
 				: // otherwise display placeholder items as we're loading
 				  [...Array(12)].map((_, i) => <PlaceholderItem key={i} />)}
-		</div>
+		</ul>
 	);
 }
 
