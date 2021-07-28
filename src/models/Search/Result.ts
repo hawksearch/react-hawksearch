@@ -1,5 +1,4 @@
 import { Explain } from './Explain';
-import { ChildResult } from './ChildResult';
 
 export class Result {
 	/** Unique identifier for this search result item. */
@@ -13,13 +12,11 @@ export class Result {
 	 * of string values. The keys correspond to the name of the field within the hawk dashboard,
 	 * and the value of the map is an array of strings for each of the values for that field.
 	 */
-	public Document?: { [field: string]: string[] };
+	public Document?: { [field: string]: any[] };
 
 	public Explain?: Explain;
 
 	public IsPin: boolean;
-
-	public ChildResults?: ChildResult;
 
 	public BestFragment: string;
 	/**
@@ -39,10 +36,25 @@ export class Result {
 		return undefined;
 	}
 
+	public getHittedChildAttributeValue(field: string): string | undefined {
+		if (!this.Document) {
+			return undefined;
+		}
+		const childAttributesFieldName = 'hawk_child_attributes_hits';
+		const attributes = this.Document[childAttributesFieldName];
+
+		if (!attributes || attributes.length === 0) {
+			return undefined;
+		}
+		const values = attributes[0].Items[0];
+		if (values && values[field] && values[field].length > 0) {
+			return values[field][0];
+		}
+
+		return undefined;
+	}
+
 	public constructor(init: Result) {
 		Object.assign(this, init);
-		if (init.ChildResults) {
-			this.ChildResults = new ChildResult(init.ChildResults);
-		}
 	}
 }
