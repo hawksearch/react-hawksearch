@@ -12,7 +12,7 @@ export class Result {
 	 * of string values. The keys correspond to the name of the field within the hawk dashboard,
 	 * and the value of the map is an array of strings for each of the values for that field.
 	 */
-	public Document?: { [field: string]: string[] };
+	public Document?: { [field: string]: any[] };
 
 	public Explain?: Explain;
 
@@ -40,13 +40,13 @@ export class Result {
 		if (!this.Document) {
 			return undefined;
 		}
-		const childAttributesFieldName = 'hawk_child_attributes_hit';
+		const childAttributesFieldName = 'hawk_child_attributes_hits';
 		const attributes = this.Document[childAttributesFieldName];
 
 		if (!attributes || attributes.length === 0) {
 			return undefined;
 		}
-		const values = attributes[0];
+		const values = attributes[0].Items[0];
 		if (values && values[field] && values[field].length > 0) {
 			return values[field][0];
 		}
