@@ -1,5 +1,4 @@
 export * from './Pagination';
-export * from './ChildResult';
 export * from './Result';
 export * from './Request';
 export * from './Response';
