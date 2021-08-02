@@ -63,6 +63,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 						DisplayFullResponse: true,
 						IsInPreview: config.isInPreview,
 						FacetSelections: store.pendingSearch.FacetSelections,
+						PreviewDate: store.previewDate || undefined,
 					},
 					cancellationToken
 				)
