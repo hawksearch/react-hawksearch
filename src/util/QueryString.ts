@@ -51,7 +51,11 @@ function parseQueryStringToObject(search: string) {
 			key === 'ignoreSpellcheck'
 		) {
 			// `keyword` is special and should never be turned into an array
-			parsed[key] = encodeURIComponent(value);
+			if (key === 'keyword') {
+				parsed[key] = value;
+			} else {
+				parsed[key] = encodeURIComponent(value);
+			}
 		} else {
 			// everything else should be turned into an array
 
