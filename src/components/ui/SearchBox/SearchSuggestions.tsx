@@ -49,6 +49,9 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 	 * @param input The user entered search string that results will be autocompleted for.
 	 */
 	async function doAutocomplete(input: string, cancellationToken?: CancelToken) {
+		if (!input.trim().length) {
+			return;
+		}
 		setIsLoading(true);
 
 		let response: Response | null = null;
