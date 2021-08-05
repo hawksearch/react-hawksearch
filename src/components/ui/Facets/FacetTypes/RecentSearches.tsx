@@ -41,7 +41,7 @@ function RecentSearches() {
 					{Object.keys(recentSearch).map((item, index) => {
 						return (
 							<div key={index} onClick={() => setKeyword(item)}>
-								{item} ({recentSearch[item]})
+								{decodeURIComponent(item)} ({recentSearch[item]})
 							</div>
 						);
 					})}
