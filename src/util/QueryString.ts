@@ -185,7 +185,11 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				}
 
 				// certain strings are special and are never arrays
-				queryStringValues.push(key + '=' + value);
+				if (key === 'keyword') {
+					queryStringValues.push(key + '=' + value);
+				} else {
+					queryStringValues.push(key + '=' + encodeURIComponent(value));
+				}
 			} else {
 				const values = queryObj[key];
 
