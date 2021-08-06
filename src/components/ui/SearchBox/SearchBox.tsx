@@ -19,7 +19,8 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 	const { store, actor } = useHawksearch();
 
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
-		if (event.key === 'Enter') {
+		const keywordLength = event.currentTarget.value.trim().length;
+		if (event.key === 'Enter' && keywordLength) {
 			actor.setSearch(
 				{
 					Keyword: encodeURIComponent(event.currentTarget.value),
