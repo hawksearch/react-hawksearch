@@ -37,6 +37,7 @@ export { default as Pagination } from 'components/ui/Results/Tools/Pagination';
 export { default as Results } from 'components/ui/Results/Results';
 export { default as ResultListing } from 'components/ui/Results/ResultListing';
 export { default as ResultItem } from 'components/ui/Results/ResultItem';
+export { default as ResultItemProps } from 'components/ui/Results/ResultItem';
 export { default as ResultImage } from 'components/ui/Results/ResultImage';
 export { default as Tabs } from 'components/ui/Results/Tabs';
 export { default as MerchandisingBanner } from 'components/ui/Results/MerchandisingBanner';

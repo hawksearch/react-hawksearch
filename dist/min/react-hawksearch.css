@@ -151,7 +151,7 @@
   color: #fff;
   border-radius: 4px;
   outline: none;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
   .hawk-btn:focus {
     outline: none; }
 
@@ -977,9 +977,11 @@ input[type='submit'].hawk-btn-block {
   border-top: 1px solid #fff; }
 
 .hawk-facet-rail__facet-heading {
-  cursor: pointer;
   display: flex;
   align-items: center;
+  background: transparent;
+  border: none;
+  width: 100%;
   cursor: pointer; }
   .hawk-facet-rail__facet-heading h4 {
     margin: 5px 0 5px 0;
@@ -987,7 +989,8 @@ input[type='submit'].hawk-btn-block {
     flex-grow: 1;
     padding: 0 5px 0 0;
     font-size: 1em;
-    font-weight: bold; }
+    font-weight: bold;
+    text-align: left; }
   .hawk-facet-rail__facet-heading .icon {
     width: 1em;
     height: 1em; }
@@ -1293,7 +1296,8 @@ button.hawk-collapseState.ie-fix {
 
 .hawk-results__listing {
   display: flex;
-  flex-wrap: wrap; }
+  flex-wrap: wrap;
+  padding: 0px; }
 
 .hawk-results__top-tool-row {
   margin-top: 2em;
@@ -1906,6 +1910,9 @@ ul.hawk-facet-rail__facet-list.colors {
     .hawk-facet-rail__facet-values-size ul li div {
       text-align: center;
       font-size: 14px; }
+    .hawk-facet-rail__facet-values-size ul li button {
+      border: none;
+      background: transparent; }
   .hawk-facet-rail__facet-values-size ul li.selected {
     border: 2px solid #f37624; }
 
