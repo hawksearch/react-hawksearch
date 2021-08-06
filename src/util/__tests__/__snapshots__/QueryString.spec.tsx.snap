@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getSearchQueryString escapes commas 1`] = `"?keyword=this%20is%20my%20keyword&priceslider=123%2C456"`;
+exports[`getSearchQueryString escapes commas 1`] = `"?keyword=this is my keyword&priceslider=123%2C456"`;
 
 exports[`getSearchQueryString turns arrays into query string 1`] = `"?color=black&brand=cool"`;
 
 exports[`getSearchQueryString turns arrays with multiple values into query string 1`] = `"?color=black&brand=cool,kinda-cool"`;
 
-exports[`getSearchQueryString turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this%20is%20my%20keyword&color=black&brand=cool,kinda-cool"`;
+exports[`getSearchQueryString turns arrays with multiple values into query string and handles keyword 1`] = `"?keyword=this is my keyword&color=black&brand=cool,kinda-cool"`;
 
 exports[`parseSearchQueryString handles keyword when it has multiple values 1`] = `
 Object {
@@ -15,7 +15,7 @@ Object {
   "IgnoreSpellcheck": undefined,
   "IndexName": undefined,
   "Is100CoverageTurnedOn": undefined,
-  "Keyword": "this%20is%20my%20keyword%2Cwhich%20should%20be%20a%20long%20string",
+  "Keyword": "this is my keyword,which should be a long string",
   "MaxPerPage": undefined,
   "PageId": undefined,
   "PageNo": undefined,
@@ -39,7 +39,7 @@ Object {
   "IgnoreSpellcheck": undefined,
   "IndexName": undefined,
   "Is100CoverageTurnedOn": undefined,
-  "Keyword": "this%2520is%2520my%2520keyword",
+  "Keyword": "this%20is%20my%20keyword",
   "MaxPerPage": undefined,
   "PageId": undefined,
   "PageNo": undefined,

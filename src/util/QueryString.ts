@@ -62,7 +62,11 @@ function parseQueryStringToObject(search: string) {
 			key === 'language'
 		) {
 			// `keyword` is special and should never be turned into an array
-			parsed[key] = encodeURIComponent(value);
+			if (key === 'keyword') {
+				parsed[key] = value;
+			} else {
+				parsed[key] = encodeURIComponent(value);
+			}
 		} else {
 			// everything else should be turned into an array
 
@@ -192,7 +196,11 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				}
 
 				// certain strings are special and are never arrays
-				queryStringValues.push(key + '=' + encodeURIComponent(value));
+				if (key === 'keyword') {
+					queryStringValues.push(key + '=' + value);
+				} else {
+					queryStringValues.push(key + '=' + encodeURIComponent(value));
+				}
 			} else {
 				const values = queryObj[key];
 
