@@ -2704,11 +2704,10 @@ function _iterableToArrayLimit(arr, i) {
   var _arr = [];
   var _n = true;
   var _d = false;
-
-  var _s, _e;
+  var _e = undefined;
 
   try {
-    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -2912,11 +2911,10 @@ function _iterableToArrayLimit(arr, i) {
   var _arr = [];
   var _n = true;
   var _d = false;
-
-  var _s, _e;
+  var _e = undefined;
 
   try {
-    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -5382,55 +5380,6 @@ function PaginationItem(init) {
   Object.assign(this, init);
 };
 
-/** An object that contains the data related to the client making search or autosuggest requests. */
-var ChildResult = /*#__PURE__*/function () {
-  /** Number of total items in the result set. */
-
-  /** The page number returned. */
-
-  /** The number of items returned for the page. */
-
-  /** The total number of pages for the result set - with the current @see MaxPerPage. */
-
-  /** Set of pagination options */
-  function ChildResult(init) {
-    _classCallCheck(this, ChildResult);
-
-    _defineProperty(this, "NofResults", void 0);
-
-    _defineProperty(this, "CurrentPage", void 0);
-
-    _defineProperty(this, "MaxPerPage", void 0);
-
-    _defineProperty(this, "NofPages", void 0);
-
-    _defineProperty(this, "Items", void 0);
-
-    _defineProperty(this, "Sort", void 0);
-
-    Object.assign(this, init);
-  }
-
-  _createClass(ChildResult, [{
-    key: "getHittedChildAttributeValue",
-    value: function getHittedChildAttributeValue(field) {
-      if (!this.Items || this.Items.length === 0) {
-        return undefined;
-      }
-
-      var values = this.Items[0];
-
-      if (values && values[field] && values[field].length > 0) {
-        return values[field][0];
-      }
-
-      return undefined;
-    }
-  }]);
-
-  return ChildResult;
-}();
-
 var Result = /*#__PURE__*/function () {
   function Result(init) {
     _classCallCheck(this, Result);
@@ -5445,15 +5394,9 @@ var Result = /*#__PURE__*/function () {
 
     _defineProperty(this, "IsPin", void 0);
 
-    _defineProperty(this, "ChildResults", void 0);
-
     _defineProperty(this, "BestFragment", void 0);
 
     Object.assign(this, init);
-
-    if (init.ChildResults) {
-      this.ChildResults = new ChildResult(init.ChildResults);
-    }
   }
 
   _createClass(Result, [{
@@ -5481,6 +5424,28 @@ var Result = /*#__PURE__*/function () {
         if (values && values.length > 0) {
           return values[0];
         }
+      }
+
+      return undefined;
+    }
+  }, {
+    key: "getHittedChildAttributeValue",
+    value: function getHittedChildAttributeValue(field) {
+      if (!this.Document) {
+        return undefined;
+      }
+
+      var childAttributesFieldName = 'hawk_child_attributes_hits';
+      var attributes = this.Document[childAttributesFieldName];
+
+      if (!attributes || attributes.length === 0) {
+        return undefined;
+      }
+
+      var values = attributes[0].Items[0];
+
+      if (values && values[field] && values[field].length > 0) {
+        return values[field][0];
       }
 
       return undefined;
@@ -8533,10 +8498,18 @@ function SearchSuggestions(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
+              if (input.trim().length) {
+                _context.next = 2;
+                break;
+              }
+
+              return _context.abrupt("return");
+
+            case 2:
               setIsLoading(true);
               response = null;
-              _context.prev = 2;
-              _context.next = 5;
+              _context.prev = 4;
+              _context.next = 7;
               return client.autocomplete({
                 ClientGuid: config.clientGuid,
                 Keyword: decodeURIComponent(input),
@@ -8553,38 +8526,38 @@ function SearchSuggestions(_ref) {
                 return Object.assign(new Response$1(o));
               });
 
-            case 5:
+            case 7:
               response = _context.sent;
-              _context.next = 13;
+              _context.next = 15;
               break;
 
-            case 8:
-              _context.prev = 8;
-              _context.t0 = _context["catch"](2);
+            case 10:
+              _context.prev = 10;
+              _context.t0 = _context["catch"](4);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 12;
+                _context.next = 14;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 12:
+            case 14:
               console.error('Autocomplete request error:', _context.t0);
 
-            case 13:
+            case 15:
               setIsLoading(false);
 
               if (response) {
                 setResults(response);
               }
 
-            case 15:
+            case 17:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[2, 8]]);
+      }, _callee, null, [[4, 10]]);
     }));
     return _doAutocomplete.apply(this, arguments);
   }
@@ -9467,7 +9440,15 @@ function urlStringToParamEntries(searchQuery) {
     }
 
     return searchQuery.split('&').map(function (i) {
-      return i.split('=');
+      var entries = i.split('=');
+
+      if (entries.length === 2) {
+        return entries;
+      } else if (entries.length > 2) {
+        return [entries[0], entries.slice(0, 1).join('')];
+      } else {
+        return [entries.join(''), ''];
+      }
     });
   } else {
     return searchQuery;
@@ -17605,7 +17586,7 @@ function RecentSearches() {
       onClick: function onClick() {
         return setKeyword(item);
       }
-    }, item, " (", recentSearch[item], ")");
+    }, decodeURIComponent(item), " (", recentSearch[item], ")");
   }), /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick() {
       return clearRecentSearch();
@@ -17928,7 +17909,9 @@ function SearchBox(_ref) {
       actor = _useHawksearch.actor;
 
   function handleSubmit(event, downshift) {
-    if (event.key === 'Enter') {
+    var keywordLength = event.currentTarget.value.trim().length;
+
+    if (event.key === 'Enter' && keywordLength) {
       actor.setSearch({
         Keyword: encodeURIComponent(event.currentTarget.value),
         IgnoreSpellcheck: false
@@ -20364,8 +20347,9 @@ function ResultListing(_ref) {
       searchResults = _useHawksearch$store.searchResults;
 
   var results = searchResults ? searchResults.Results : [];
-  return /*#__PURE__*/React__default.createElement("div", {
-    className: "hawk-results__listing"
+  return /*#__PURE__*/React__default.createElement("ul", {
+    className: "hawk-results__listing",
+    "aria-label": "search result"
   }, /*#__PURE__*/React__default.createElement(Spinner, {
     isVisible: isLoading
   }), results.length ? // if we have results, display them
@@ -31623,5 +31607,5 @@ function RelatedSearch() {
   })) : null;
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map
