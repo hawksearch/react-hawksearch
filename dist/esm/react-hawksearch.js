@@ -9262,7 +9262,11 @@ function parseQueryStringToObject(search) {
   params.forEach(function (value, key) {
     if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck' || key === 'language') {
       // `keyword` is special and should never be turned into an array
-      parsed[key] = encodeURIComponent(value);
+      if (key === 'keyword') {
+        parsed[key] = value;
+      } else {
+        parsed[key] = encodeURIComponent(value);
+      }
     } else {
       // everything else should be turned into an array
       if (!value) {
@@ -9379,7 +9383,11 @@ function convertObjectToQueryString(queryObj) {
         } // certain strings are special and are never arrays
 
 
-        queryStringValues.push(_key + '=' + encodeURIComponent(value));
+        if (_key === 'keyword') {
+          queryStringValues.push(_key + '=' + value);
+        } else {
+          queryStringValues.push(_key + '=' + encodeURIComponent(value));
+        }
       } else {
         var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
 

@@ -831,7 +831,8 @@ input[type='submit'].hawk-btn-block {
       .hawk__searchBox .autosuggest-menu > ul > ul li .p-name {
         font-size: 12px;
         line-height: 15px;
-        margin-top: 5px; }
+        margin-top: 5px;
+        width: 100%; }
     .hawk__searchBox .autosuggest-menu > ul > ul > .view-matches {
       width: 100%;
       text-align: center;
