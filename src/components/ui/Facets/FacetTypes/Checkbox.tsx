@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { useHawksearch } from "components/StoreProvider";
-import { useFacet } from "components/ui/Facets/Facet";
-import { FacetSelectionState } from "store/Store";
-import DashCircleSVG from "components/svg/DashCircleSVG";
-import CheckmarkSVG from "components/svg/CheckmarkSVG";
-import PlusCircleSVG from "components/svg/PlusCircleSVG";
-import { useHawkConfig } from "components/ConfigProvider";
+import { useHawksearch } from 'components/StoreProvider';
+import { useFacet } from 'components/ui/Facets/Facet';
+import { FacetSelectionState } from 'store/Store';
+import DashCircleSVG from 'components/svg/DashCircleSVG';
+import CheckmarkSVG from 'components/svg/CheckmarkSVG';
+import PlusCircleSVG from 'components/svg/PlusCircleSVG';
+import { useHawkConfig } from 'components/ConfigProvider';
 
 enum FacetRangeDisplayType {
 	Text = 1,
