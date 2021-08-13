@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
-import { useHawksearch } from 'components/StoreProvider';
-import { useFacet } from 'components/ui/Facets/Facet';
-import { FacetSelectionState } from 'store/Store';
-import DashCircleSVG from 'components/svg/DashCircleSVG';
-import CheckmarkSVG from 'components/svg/CheckmarkSVG';
-import PlusCircleSVG from 'components/svg/PlusCircleSVG';
-import { useHawkConfig } from 'components/ConfigProvider';
+import { useHawksearch } from "components/StoreProvider";
+import { useFacet } from "components/ui/Facets/Facet";
+import { FacetSelectionState } from "store/Store";
+import DashCircleSVG from "components/svg/DashCircleSVG";
+import CheckmarkSVG from "components/svg/CheckmarkSVG";
+import PlusCircleSVG from "components/svg/PlusCircleSVG";
+import { useHawkConfig } from "components/ConfigProvider";
 
 enum FacetRangeDisplayType {
 	Text = 1,
@@ -26,23 +26,27 @@ function Checkbox() {
 	} = useFacet();
 
 	function renderOptions() {
+
 		if (facet.FieldType === 'range') {
-			return facetValues.map(value => {
-				const correspondingRange = facet.Ranges.find(c => c.Value === value.Value);
-				const rangeValueAssetUrl = correspondingRange
-					? config.dashboardUrl + correspondingRange.AssetFullUrl
+
+			return facet.Ranges.map(value => {
+
+				const correspondingValues = facetValues.find(
+					c => c.Value === value.Value
+				);
+				const rangeValueAssetUrl = value
+					? config.dashboardUrl + value.AssetFullUrl
 					: '';
 
 				// facets can be selected or negated, so explicitly check that the facet is not selected
-				const selectionState = store.isFacetSelected(facet, value).state;
-
+				const selectionState = store.isFacetSelected(facet, value.Value).state;
 				const isSelected = selectionState !== FacetSelectionState.NotSelected;
 				const isNegated = selectionState === FacetSelectionState.Negated;
 
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
-							onClick={e => actor.selectFacet(value)}
+							onClick={(e) => actor.selectFacet(value.Value)}
 							className="hawk-facet-rail__facet-btn"
 							aria-pressed={isSelected}
 						>
@@ -60,7 +64,7 @@ function Checkbox() {
 										style={isNegated ? { textDecoration: 'line-through' } : undefined}
 										className="hawk-facet-rail__facet-name"
 									>
-										{value.Label} {facet.ShowItemsCount ? `(${value.Count})` : ''}
+										{value.Label} {facet.ShowItemsCount && correspondingValues ? `(${correspondingValues.Count})` : ''}
 									</span>
 								</>
 							) : (
@@ -69,7 +73,7 @@ function Checkbox() {
 										style={isNegated ? { textDecoration: 'line-through' } : undefined}
 										className="hawk-facet-rail__facet-name"
 									>
-										{value.Label} {facet.ShowItemsCount ? `(${value.Count})` : ''}
+										{value.Label} {facet.ShowItemsCount && correspondingValues ? `(${correspondingValues.Count})` : ''}
 									</span>
 								</>
 							)}
