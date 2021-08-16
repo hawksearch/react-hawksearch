@@ -2704,10 +2704,11 @@ function _iterableToArrayLimit(arr, i) {
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (_i = _i.call(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -2911,10 +2912,11 @@ function _iterableToArrayLimit(arr, i) {
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (_i = _i.call(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -8905,13 +8907,13 @@ function Checkbox() {
 
   function renderOptions() {
     if (facet.FieldType === 'range') {
-      return facetValues.map(function (value) {
-        var correspondingRange = facet.Ranges.find(function (c) {
+      return facet.Ranges.map(function (value) {
+        var correspondingValues = facetValues.find(function (c) {
           return c.Value === value.Value;
         });
-        var rangeValueAssetUrl = correspondingRange ? config.dashboardUrl + correspondingRange.AssetFullUrl : ''; // facets can be selected or negated, so explicitly check that the facet is not selected
+        var rangeValueAssetUrl = value ? config.dashboardUrl + value.AssetFullUrl : ''; // facets can be selected or negated, so explicitly check that the facet is not selected
 
-        var selectionState = store.isFacetSelected(facet, value).state;
+        var selectionState = store.isFacetSelected(facet, value.Value).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
         return /*#__PURE__*/React__default.createElement("li", {
@@ -8919,7 +8921,7 @@ function Checkbox() {
           className: "hawk-facet-rail__facet-list-item"
         }, /*#__PURE__*/React__default.createElement("button", {
           onClick: function onClick(e) {
-            return actor.selectFacet(value);
+            return actor.selectFacet(value.Value);
           },
           className: "hawk-facet-rail__facet-btn",
           "aria-pressed": isSelected
@@ -8936,12 +8938,12 @@ function Checkbox() {
             textDecoration: 'line-through'
           } : undefined,
           className: "hawk-facet-rail__facet-name"
-        }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Count, ")") : '')) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
+        }, value.Label, " ", facet.ShowItemsCount && correspondingValues ? "(".concat(correspondingValues.Count, ")") : '')) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
           style: isNegated ? {
             textDecoration: 'line-through'
           } : undefined,
           className: "hawk-facet-rail__facet-name"
-        }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Count, ")") : ''))), renderFacetActions(value.Value || '', isNegated));
+        }, value.Label, " ", facet.ShowItemsCount && correspondingValues ? "(".concat(correspondingValues.Count, ")") : ''))), renderFacetActions(value.Value || '', isNegated));
       });
     } else {
       return facetValues.map(function (value) {
@@ -20223,9 +20225,9 @@ function PlaceHolderSVG(props) {
     focusable: "false",
     "aria-hidden": "true"
   }, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("path", {
-    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6\r C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3\r c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2\r c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0\r l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
+    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6 C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3 c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2 c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0 l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
   }), /*#__PURE__*/createElement("path", {
-    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96\r c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
+    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96 c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
   }))));
 }
 
