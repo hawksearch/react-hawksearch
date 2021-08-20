@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
-import { deleteCookie, getCookie, getParsedObject } from 'helpers/utils';
+import { deleteCookie, getCookie, getEnvironment, getParsedObject } from 'helpers/utils';
+import { useHawkConfig } from 'components/ConfigProvider';
 
 function RecentSearches() {
 	const { facet } = useFacet();
@@ -9,13 +10,16 @@ function RecentSearches() {
 		actor,
 		store: { pendingSearch },
 	} = useHawksearch();
+	const { config } = useHawkConfig();
+
 	const cookie = getCookie(facet.FacetType);
-	const dictRecentSearch = getParsedObject(cookie);
+	const env = getEnvironment(config.dashboardUrl);
+	const dictRecentSearch = getParsedObject(cookie, env, config.clientGuid);
 	const [recentSearch, setRecentSearch] = useState(dictRecentSearch);
 
 	// NOTE: If user search with the new keyword it should update the dictionary
 	useEffect(() => {
-		setRecentSearch(getParsedObject(cookie));
+		setRecentSearch(getParsedObject(cookie, env, config.clientGuid));
 	}, [pendingSearch.Keyword]);
 
 	function setKeyword(keyword) {

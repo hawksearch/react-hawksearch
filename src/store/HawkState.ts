@@ -317,7 +317,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
 			} else {
-				setRecentSearch(pendingSearch.Keyword);
+				setRecentSearch(pendingSearch.Keyword || '', config.clientGuid, config.dashboardUrl);
 			}
 			return newState;
 		});

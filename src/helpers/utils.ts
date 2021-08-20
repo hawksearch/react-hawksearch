@@ -74,16 +74,12 @@ function getRecentFacetExpiry() {
 	return d.toUTCString();
 }
 
-export const getParsedObject = facetC => {
+export const getParsedObject = (facetC, env, clientGUID) => {
 	if (!facetC) {
 		return {};
 	}
-	const dict = {};
-	(facetC || '').split(',').forEach(element => {
-		const splitText = element.split('|');
-		dict[splitText[0]] = splitText[1];
-	});
-	return dict;
+	const dict = JSON.parse(facetC || '{}');
+	return dict[env][clientGUID];
 };
 
 function getStringifyObject(obj) {
@@ -97,24 +93,73 @@ function getStringifyObject(obj) {
 	return str;
 }
 
-export const setRecentSearch = val => {
+export const getEnvironment = url => {
+	let environment = '';
+	if (url.indexOf('dev') !== -1) {
+		environment = 'dev';
+	} else if (url.indexOf('test') !== -1) {
+		environment = 'test';
+	} else {
+		environment = 'prod';
+	}
+	return environment;
+};
+
+export const setRecentSearch = (val, clientGuid, url) => {
+	const env = getEnvironment(url || '');
 	const cookie = getCookie(FacetType.RecentSearches);
+	let dict = JSON.parse(cookie || '{}');
+
+	// NOTE: If cookie is null
 	if (!cookie) {
-		setCookie(FacetType.RecentSearches, `${val}|1`, getRecentFacetExpiry());
+		const obj = {
+			[env]: {
+				[clientGuid]: {
+					[val]: 1,
+				},
+			},
+		};
+		setCookie(FacetType.RecentSearches, JSON.stringify(obj), getRecentFacetExpiry());
 		return;
 	}
-	let dict = getParsedObject(cookie);
-	if (dict[val]) {
-		dict[val] = Number(dict[val]) + 1;
-	} else {
-		dict = {
+	// NOTE: If env doesn't exist
+	if (!dict[env]) {
+		const obj = {
 			...dict,
-			[val]: 1,
+			[env]: {
+				[clientGuid]: {
+					[val]: 1,
+				},
+			},
 		};
+		setCookie(FacetType.RecentSearches, JSON.stringify(obj), getRecentFacetExpiry());
+		return;
 	}
-	const str = getStringifyObject(dict);
-
-	setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
+	// NOTE: If client guid doesn't exist
+	if (!dict[env][clientGuid]) {
+		const obj = {
+			...dict,
+			[env]: {
+				...dict[env],
+				[clientGuid]: {
+					[val]: 1,
+				},
+			},
+		};
+		setCookie(FacetType.RecentSearches, JSON.stringify(obj), getRecentFacetExpiry());
+		return;
+	}
+	dict = {
+		...dict,
+		[env]: {
+			...dict[env],
+			[clientGuid]: {
+				...dict[env][clientGuid],
+				[val]: dict[env][clientGuid][val] ? Number(dict[env][clientGuid][val] + 1) : 1,
+			},
+		},
+	};
+	setCookie(FacetType.RecentSearches, JSON.stringify(dict), getRecentFacetExpiry());
 };
 
 export const deleteCookie = name => {
