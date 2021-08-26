@@ -8,10 +8,10 @@ import { useMergableState } from 'util/MergableState';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { Facet, Value } from 'models/Facets';
 import { FacetType } from 'models/Facets/FacetType';
+import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
-import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
@@ -44,7 +44,7 @@ export interface SearchActor {
 	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
 	 * 					not specified, the default is `true`.
 	 */
-	setSearch(search: Partial<Request>, doHistory?: boolean): void;
+	setSearch(search: Partial<Request>, doHistory?: boolean, fromInput?: boolean): void;
 
 	/**
 	 * Toggles a facet value for the next search request that will be executed. If the given facet had previously
@@ -77,12 +77,6 @@ export interface SearchActor {
 	 */
 	clearAllFacets(): void;
 
-	// Pin items
-	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<any>;
-
-	// update sorting order of pinned items
-	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any>;
-
 	// Store items to make comparision via request
 	setItemsToCompare(resultItem: Result, isCheck: boolean): void;
 
@@ -98,14 +92,23 @@ export interface SearchActor {
 	// Get comparision of items from request
 	getComparedItems(request: CompareItemRequest, cancellationToken?: CancelToken): Promise<CompareDataResponse>;
 
-	// Get product details
-	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
+	// Pin items
+	pinItem(payload: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null>;
+
+	// update sorting order of pinned items
+	updatePinOrder(payload: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null>;
 
 	// rebuild Index
 	rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null>;
+
+	// Get product details
+	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
+
 	setStore(store: SearchStore): void;
 
 	setPreviewDate(previewDate: string): void;
+
+	setSmartBar(data: { [key: string]: string }): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -115,9 +118,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	const [store, setStore] = useMergableState(
 		new SearchStore({
-			pendingSearch: initialSearch || {
-				FacetSelections: {},
-			},
+			pendingSearch: initialSearch || {},
 			isLoading: true,
 			itemsToCompare: [],
 			comparedResults: [],
@@ -134,7 +135,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		// when the pending search changes, trigger a search
 
 		const cts = axios.CancelToken.source();
-		search(cts.token);
+
+		if (Object.keys(store.pendingSearch).length) {
+			search(cts.token);
+		}
 
 		return () => {
 			cts.cancel();
@@ -181,7 +185,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		try {
-			searchResults = await client.search(searchParams as any, cancellationToken);
+			searchResults = await client.search(searchParams, cancellationToken);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -200,6 +204,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				setStore({ requestError: true });
 			} else {
 				const selectedFacets = searchParams.FacetSelections ? Object.keys(searchParams.FacetSelections) : [];
+
+				TrackingEvent.setLanguage(store.language);
+
 				if (
 					searchParams.SortBy ||
 					searchParams.PageNo ||
@@ -219,20 +226,15 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 						keyword: searchParams.Keyword,
 					});
 				}
+
 				setStore({
 					searchResults: new Response(searchResults),
 					requestError: false,
 				});
 			}
+		} else {
+			return;
 		}
-	}
-
-	async function pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
-		return await client.pinItem(request, cancellationToken);
-	}
-
-	async function updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
-		return await client.updatePinOrder(request, cancellationToken);
 	}
 
 	/**
@@ -247,6 +249,21 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return await client.getComparedItems(request, cancellationToken);
 	}
 
+	async function pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		return await client.pinItem(request, cancellationToken);
+	}
+
+	async function updatePinOrder(
+		request: SortingOrderRequest,
+		cancellationToken?: CancelToken
+	): Promise<string | null> {
+		return await client.updatePinOrder(request, cancellationToken);
+	}
+
+	async function rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		return await client.rebuildIndex(request);
+	}
+
 	/**
 	 * Get product details by ID
 	 * @returns A promise that resolves when the product details request has been completed.
@@ -258,10 +275,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return await client.getProductDetails(request, cancellationToken);
 	}
 
-	async function rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
-		return await client.rebuildIndex(request);
-	}
-
 	/**
 	 * Configures the next search request that will be executed. This will also execute a search in response to
 	 * the next search request changing.
@@ -269,16 +282,26 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param doHistory Whether or not this search request will push a history entry into the browser. If
 	 * 					not specified, the default is `true`.
 	 */
-	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean): void {
+	function setSearch(pendingSearch: Partial<Request>, doHistory?: boolean, fromInput?: boolean): void {
 		if (doHistory === undefined) {
 			doHistory = true;
 		}
+
+		// Check if any additional parameters, besides the keyword, are required.
+		// If the configuration is set and the search is triggered from user input
+		// only the entered term is used for the request.
+		const removeSearchParams = config.removeSearchParams && fromInput;
 
 		setStore(prevState => {
 			const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
 			const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
 
-			if (tab?.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue?.Value) {
+			if (
+				!removeSearchParams &&
+				tab?.Field &&
+				!(pendingSearch.FacetSelections || {})[tab.Field] &&
+				facetValue?.Value
+			) {
 				pendingSearch = {
 					...pendingSearch,
 					FacetSelections: {
@@ -288,7 +311,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				};
 			}
 			const newState = {
-				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
+				pendingSearch: removeSearchParams ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
 			};
 			if (newState.pendingSearch.Keyword === '') {
@@ -314,6 +337,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			// when we change facet selections, also clear the current page so that we navigate
 			// back to the first page of results
 			PageNo: undefined,
+		});
+	}
+
+	// NOTE: It will return the difference from 1st array
+	// i.e ['a', 'b', 'c'] - ['c', 'd', 'f'] => ['a', 'b']
+	function differenceOfArrays(array1: string[], array2: string[]) {
+		return array1.filter(i => {
+			return array2.indexOf(i) < 0;
 		});
 	}
 
@@ -360,7 +391,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		const { state: selState, selectionIndex } = store.isFacetSelected(facet, facetValue);
-
+		const valuesToRemoved = [] as string[];
+		const items = (store.facetSelections[facetField] || {}).items || [];
+		items.forEach((item: ClientSelectionValue) => {
+			if (((item || {}).path || '').indexOf(valueValue) !== -1) {
+				valuesToRemoved.push(item.value);
+			}
+		});
+		const difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
 		if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
 			// we're selecting this facet, and it's already selected
 
@@ -374,6 +412,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				// if we're toggling from negation to non-negation or vice versa, then push the new selection
 				facetSelections[facetField]!.push(negate ? `-${valueValue}` : valueValue);
 			} else {
+				if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
+					facetSelections[facetField] = difference;
+				}
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
 		} else {
@@ -562,7 +603,6 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					: [],
 		};
 		if (store.pendingSearch.ClientData) {
-			console.log(store.pendingSearch);
 			clientData = {
 				...clientData,
 				PreviewBuckets: store.pendingSearch.ClientData.PreviewBuckets,
@@ -585,6 +625,12 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return language;
 	}
 
+	function setSmartBar(data: { [key: string]: string }): void {
+		setStore({
+			smartBar: data,
+		});
+	}
+
 	const actor: SearchActor = {
 		search,
 		setSearch,
@@ -593,17 +639,18 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		clearFacet,
 		clearFacetValue,
 		clearAllFacets,
-		pinItem,
-		updatePinOrder,
 		setItemsToCompare,
 		setComparedResults,
 		clearItemsToCompare,
 		getComparedItems,
+		pinItem,
+		updatePinOrder,
+		rebuildIndex,
 		getProductDetails,
 		setProductDetailsResults,
-		rebuildIndex,
 		setStore,
 		setPreviewDate,
+		setSmartBar,
 	};
 
 	return [store, actor];

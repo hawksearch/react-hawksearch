@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import SliderDate from './SliderDate';
 import SliderNumeric from './SliderNumeric';

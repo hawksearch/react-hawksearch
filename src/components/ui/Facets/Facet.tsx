@@ -188,11 +188,17 @@ function Facet({ facet, children }: FacetProps) {
 
 	return (
 		<FacetContext.Provider value={{ facet, state, actor, renderer }}>
-			<div className="hawk-facet-rail__facet">
-				<div className="hawk-facet-rail__facet-heading" onClick={event => toggleCollapsible(event)}>
+			<li className="hawk-facet-rail__facet">
+				<button
+					className="hawk-facet-rail__facet-heading"
+					aria-label={facet.Name}
+					tabIndex={0}
+					onClick={event => toggleCollapsible(event)}
+					aria-expanded={!isCollapsed}
+				>
 					<h4>{facet.Name}</h4>
 					{facet.Tooltip && (
-						<div className="custom-tooltip" ref={wrapperRef}>
+						<div className="custom-tooltip" ref={wrapperRef} tabIndex={0}>
 							<QuestionmarkSVG class="hawk-questionmark" />
 							<div className="right">
 								<div dangerouslySetInnerHTML={{ __html: facet.Tooltip }} />
@@ -209,7 +215,7 @@ function Facet({ facet, children }: FacetProps) {
 							<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
 						</>
 					)}
-				</div>
+				</button>
 
 				{!isCollapsed && (
 					<div className="hawk-facet-rail__facet-body">
@@ -228,7 +234,7 @@ function Facet({ facet, children }: FacetProps) {
 						{children}
 					</div>
 				)}
-			</div>
+			</li>
 		</FacetContext.Provider>
 	);
 }

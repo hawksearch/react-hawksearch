@@ -19,12 +19,14 @@ function Sorting() {
 
 	return (
 		<div className="hawk-sorting">
-			<span className="hawk-sorting__label">{t('Sort By')}</span>
+			<span id="sort-label" className="hawk-sorting__label">
+				{t('Sort By')}
+			</span>
 
-			<select value={pendingSearch.SortBy} onChange={onChange}>
+			<select value={pendingSearch.SortBy} onChange={onChange} aria-labelledby="sort-label">
 				{searchResults ? (
 					searchResults.Sorting.Items.map(sortingItem => (
-						<option key={sortingItem.Value} value={sortingItem.Value}>
+						<option key={sortingItem.Value} value={sortingItem.Value} selected={sortingItem.Selected}>
 							{sortingItem.Label}
 						</option>
 					))

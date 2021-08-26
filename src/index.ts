@@ -20,6 +20,7 @@ export { default as CompareItems } from 'components/ui/Compare/CompareItems';
 
 // facets
 export { default as FacetRail } from 'components/ui/Facets/FacetRail';
+export { default as StickyComponent } from 'components/ui/Facets/StickyComponent';
 export { default as FacetList } from 'components/ui/Facets/FacetList';
 export { default as Facet } from 'components/ui/Facets/Facet';
 export { default as Selections } from 'components/ui/Facets/Selections';
@@ -35,7 +36,11 @@ export { default as Pagination } from 'components/ui/Results/Tools/Pagination';
 // results
 export { default as Results } from 'components/ui/Results/Results';
 export { default as ResultListing } from 'components/ui/Results/ResultListing';
+export { default as ResultItem } from 'components/ui/Results/ResultItem';
+export { default as ResultItemProps } from 'components/ui/Results/ResultItem';
 export { default as ResultImage } from 'components/ui/Results/ResultImage';
+export { default as Tabs } from 'components/ui/Results/Tabs';
+export { default as MerchandisingBanner } from 'components/ui/Results/MerchandisingBanner';
 export { default as ToolRow } from 'components/ui/Results/ToolRow';
 export { ContentType } from 'models/Search/ContentType';
 export { RuleType, RuleOperatorType } from 'models/Search/Rule';
@@ -47,6 +52,7 @@ export { default as LanguageSelector } from 'components/ui/LanguageSelector';
 
 // hooks
 export { useHawksearch } from 'components/StoreProvider';
+export { useHawkConfig } from 'components/ConfigProvider';
 export { useFacet } from 'components/ui/Facets/Facet';
 
 // utils
@@ -57,12 +63,13 @@ export { default as RedirectURLListener } from 'components/RedirectURLListener';
 export * from 'util/QueryString';
 
 export { default as AutoCorrectSuggestion } from 'components/ui/AutoCorrect/AutoCorrectSuggestion';
+export { default as RelatedSearch } from 'components/ui/RelatedSearch';
+
+// Tracking Event
+export { default as TrackingEvent } from 'components/TrackingEvent';
 
 // Auth
 export { default as AuthToken } from 'components/AuthToken';
 
 // utils
 export { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from './helpers/utils';
-
-// Tracking Event
-export { default as TrackingEvent } from 'components/TrackingEvent';

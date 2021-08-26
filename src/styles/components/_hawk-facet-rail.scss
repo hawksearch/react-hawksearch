@@ -2,6 +2,7 @@
 	border: 1px solid $primary;
 	background-color: $grey2;
 	width: 100%;
+	z-index: 100;
 
 	@include md {
 		width: auto;
@@ -45,6 +46,26 @@
 	font-size: 1.2em;
 	padding: 10px;
 	font-weight: bold;
+	position: relative;
+}
+
+@media only screen and (max-width: 767px) {
+	.hawk-facet-rail__heading {
+		cursor: pointer;
+	}
+	.hawk-facet-rail__heading:after {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		display: block;
+		content: '';
+		border: 15px solid #35200c;
+		border-bottom: 15px solid #f37624;
+		border-right: 0;
+		border-top: 0;
+		height: 0;
+		width: 0;
+	}
 }
 
 .hawk-facet-rail__selections {
@@ -70,9 +91,11 @@
 }
 
 .hawk-facet-rail__facet-heading {
-	cursor: pointer;
 	display: flex;
-	align-items: center;
+    align-items: center;
+    background: transparent;
+    border: none;
+    width: 100%;
 
 	h4 {
 		margin: 5px 0 5px 0;
@@ -81,6 +104,7 @@
 		padding: 0 5px 0 0;
 		font-size: 1em;
 		font-weight: bold;
+		text-align: left;
 	}
 
 	.icon {
@@ -273,7 +297,7 @@
 
 button.hawk-collapseState {
 	position: absolute;
-	background-color: inherit;
+	background-color: transparent;
 	border: none;
 	display: inline-block;
 	padding: 0;
@@ -295,6 +319,12 @@ button.hawk-collapseState {
 	}
 }
 
+button.hawk-collapseState.ie-fix {
+	z-index: 100;
+	left: 20px;
+	background: transparent;
+}
+
 .hawk-linklist.hawk-collapseState {
 	position: relative;
 
@@ -306,11 +336,12 @@ button.hawk-collapseState {
 
 .hawk-facet-rail__facet-btn-exclude {
 	@include ButtonLink;
+	max-height: 28px;
 }
 
 .hawk-facet-rail__facet-btn-include {
 	@include ButtonLink;
-
+	max-height: 28px;
 	color: $primary;
 }
 

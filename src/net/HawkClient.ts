@@ -27,11 +27,12 @@ class HawkClient {
 		this.dashboardUrl = config.dashboardUrl || 'http://test.hawksearch.net/';
 		this.searchUrl = config.searchUrl || '/api/v2/search';
 		this.autocompleteUrl = config.autocompleteUrl || '/api/autocomplete';
+		this.compareItemsURL = config.compareItemsURL || '/api/compare';
 		this.refreshTokenURL = config.refreshTokenURL || '/api/internal-preview/refresh-token/';
 		this.pinItemURL = config.pinItemURL || '/api/pinning/set-pinning/';
 		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
-		this.productDetailsURL = config.productDetailsURL || '/api/internal-preview/item-detail';
 		this.rebuildIndexURL = config.rebuildIndexURL || '/api/internal-preview/rebuild-percolator';
+		this.productDetailsURL = config.productDetailsURL || '/api/internal-preview/item-detail';
 
 		this.axiosInstance.interceptors.request.use(
 			conf => {
@@ -54,7 +55,7 @@ class HawkClient {
 			error => {
 				const originalRequest = error.config;
 
-				if (error.response.status === 401 && !originalRequest._retry) {
+				if (error.response && error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
 					const token = AuthToken.getTokens();
 					return this.axiosInstance
@@ -75,20 +76,27 @@ class HawkClient {
 				return Promise.reject(error);
 			}
 		);
-		this.compareItemsURL = config.compareItemsURL || '/api/compare';
 	}
 
-	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<any> {
-		const result = await this.axiosInstance.post<any>(new URL(this.pinItemURL, this.baseUrl).href, request, {
-			cancelToken: cancellationToken,
-		});
+	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.pinItemURL, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
 		return result.data;
 	}
 
-	public async updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<any> {
-		const result = await this.axiosInstance.post<any>(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
-			cancelToken: cancellationToken,
-		});
+	public async updatePinOrder(request: SortingOrderRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.updatePinOrderURL, this.baseUrl).href,
+			request,
+			{
+				cancelToken: cancellationToken,
+			}
+		);
 		return result.data;
 	}
 

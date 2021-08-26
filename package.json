@@ -23,7 +23,8 @@
 		"bundle:analyze": "npm run clean && cross-env BUILD_ENV=min webpack -p --profile --json > ./dist/min/bundle.json && webpack-bundle-analyzer ./dist/min/bundle.json",
 		"build:prod": "npm run clean && npm run check:all && npm test && npm run bundle:min:prod && npm run bundle:esm:prod",
 		"build:dev": "npm run clean && npm run check:all && npm test && npm run bundle:min:dev && npm run bundle:esm:dev",
-		"start": "npm run clean && webpack-dev-server --open"
+		"start": "npm run clean && webpack-dev-server --open",
+		"dev": "cross-env BUILD_ENV=esm NODE_ENV=development rollup -c --watch"
 	},
 	"module": "dist/esm/react-hawksearch.js",
 	"devDependencies": {
@@ -43,6 +44,7 @@
 		"@types/node": "^10.17.9",
 		"@types/react-dom": "^16.9.4",
 		"@types/react-hot-loader": "^4.1.1",
+		"@types/react-sticky": "^6.0.3",
 		"@types/react-test-renderer": "^16.9.1",
 		"@types/rheostat": "^2.1.4",
 		"@types/webpack": "^4.41.0",
@@ -89,11 +91,15 @@
 		"downshift": "^3.4.8",
 		"history": "^4.10.1",
 		"i18next": "^19.4.4",
+		"lodash": "^4.17.21",
 		"moment": "^2.29.1",
 		"react": "^16.12.0",
+		"react-cookie": "^4.0.3",
 		"react-dom": "^16.12.0",
 		"react-i18next": "^11.4.0",
 		"react-number-format": "^4.3.1",
+		"react-sticky": "^6.0.3",
+		"reactstrap": "^8.9.0",
 		"rheostat": "^4.1.0",
 		"url-search-params-polyfill": "^5.1.0"
 	},

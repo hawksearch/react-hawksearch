@@ -8,7 +8,17 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
 import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { useHawksearch } from 'components/StoreProvider';
+
+interface ClientData {
+	VisitorId: string;
+	VisitId: string;
+	UserAgent: string;
+	Custom?: {
+		language: string;
+	};
+}
 
 export interface SearchSuggestionsProps {
 	/** The user entered search string in the autocomplete text input. */
@@ -64,8 +74,9 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 						Keyword: decodeURIComponent(input),
 						IndexName: config.indexName,
 						DisplayFullResponse: true,
-						IsInPreview: config.isInPreview,
 						FacetSelections: store.pendingSearch.FacetSelections,
+						ClientData: getClientData(),
+						IsInPreview: config.isInPreview,
 						PreviewDate: store.previewDate || undefined,
 					},
 					cancellationToken
@@ -90,6 +101,35 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 		if (response) {
 			setResults(response);
 		}
+	}
+
+	function getClientData() {
+		let visitId = getCookie('hawk_visit_id');
+		let visitorId = getCookie('hawk_visitor_id');
+
+		if (!visitId) {
+			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+			visitId = getCookie('hawk_visit_id');
+		}
+
+		if (!visitorId) {
+			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
+			visitorId = getCookie('hawk_visitor_id');
+		}
+
+		const clientData: ClientData = {
+			VisitorId: visitorId || '',
+			VisitId: visitId || '',
+			UserAgent: navigator.userAgent,
+		};
+
+		if (store.language) {
+			clientData.Custom = {
+				language: store.language,
+			};
+		}
+
+		return clientData;
 	}
 
 	return (

@@ -19,14 +19,14 @@ function FacetList() {
 	const components = getFacetComponents(config.facetOverrides || []);
 
 	return (
-		<div className="hawk-facet-rail__facet-list">
+		<ul className="hawk-facet-rail__facet-list" tabIndex={0} aria-label="Facet list">
 			{searchResults
 				? // if there are search results, render the facets
 				  searchResults.Facets.map(facet => {
 						if (!facet.IsVisible) {
 							return null;
 						}
-						if (facet.FieldType === 'tab') {
+						if (facet.FieldType === 'tab' || facet.FacetType === 'related') {
 							return null;
 						}
 						const registeredComponent = components.find(
@@ -48,7 +48,7 @@ function FacetList() {
 				  })
 				: // otherwise render a couple placeholders
 				  [...Array(numPlaceholders)].map((_, i) => <PlaceholderFacet key={i} />)}
-		</div>
+		</ul>
 	);
 }
 

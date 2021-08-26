@@ -130,6 +130,7 @@ function Pager({ page, totalPages, onPageChange }: PagerProps) {
 				onBlur={onBlur}
 				min="1"
 				max={totalPages}
+				aria-label={`${getInputValue()} of ${totalPages}`}
 				className={hasError ? 'hawk-pagination__input error' : 'hawk-pagination__input'}
 			/>
 			<span className="hawk-pagination__total-text">&nbsp; of {totalPages}</span>
