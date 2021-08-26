@@ -9,6 +9,6 @@ export enum FacetType {
 	Size = 'size',
 	SearchWithin = 'search',
 	RecentSearches = 'recentsearches',
-	RelatedSearches = 'relatedsearches',
+	RelatedSearches = 'related',
 	OpenRange = 'openRange',
 }

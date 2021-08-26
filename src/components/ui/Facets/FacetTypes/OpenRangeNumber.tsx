@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
+import { addToRangeFacets } from 'util/QueryString';
 
 function OpenRangeNumber() {
 	const { actor: hawkActor } = useHawksearch();
@@ -48,6 +49,10 @@ function OpenRangeNumber() {
 		return null;
 	}
 
+	const paramName = facet.ParamName || facet.Field;
+
+	addToRangeFacets(paramName);
+
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
@@ -58,12 +63,14 @@ function OpenRangeNumber() {
 						data-type="currency"
 						value={minValue}
 						onChange={onRangeStartChange}
+						aria-label="min range"
 					/>
 					<input
 						type="text"
 						className="hawk-text-input value-end"
 						onChange={onRangeEndChange}
 						value={maxValue}
+						aria-label="max range"
 					/>
 				</div>
 			</div>

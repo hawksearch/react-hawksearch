@@ -24,6 +24,7 @@ function RecentSearches() {
 				Keyword: keyword,
 				IgnoreSpellcheck: false,
 			},
+			true,
 			true
 		);
 	}

@@ -98,6 +98,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 				itemToString={(item: Suggestion) => handleToString(item)}
 				onChange={handleItemChange}
 				initialInputValue={decodeURIComponent(initialValue || '')}
+				inputValue={initialInput}
 			>
 				{(options: ControllerStateAndHelpers<Suggestion>) => {
 					const { isOpen, inputValue, getInputProps, openMenu, closeMenu } = options;
@@ -124,6 +125,9 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 										if (inputValue && inputValue.length > 0) {
 											openMenu();
 										}
+									},
+									onChange: event => {
+										setInitialInput(event.target.value);
 									},
 
 									placeholder: t('Enter a search term'),

@@ -4,7 +4,6 @@ exports[`Store performs a search 1`] = `
 <div>
   {
   "pendingSearch": {
-    "FacetSelections": {},
     "Keyword": "this is my keyword"
   },
   "doHistory": true,

@@ -21,24 +21,29 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 	function handleSubmit(event: React.KeyboardEvent<HTMLInputElement>, downshift: ControllerStateAndHelpers<Product>) {
 		const keywordLength = event.currentTarget.value.trim().length;
 		if (event.key === 'Enter' && keywordLength) {
-			actor.setSearch({
-				PageId: undefined,
-				CustomUrl: undefined,
-				Keyword: encodeURIComponent(event.currentTarget.value),
-				FacetSelections: undefined,
-				IgnoreSpellcheck: false,
-			});
+			actor.setSearch(
+				{
+					Keyword: encodeURIComponent(event.currentTarget.value),
+					IgnoreSpellcheck: false,
+				},
+				true,
+				true
+			);
 		}
 	}
 
 	// On Select view all matches from suggestion list
 	function handleViewAllMatches(downshift: ControllerStateAndHelpers<Product>) {
 		const { inputValue, closeMenu } = downshift;
-		actor.setSearch({
-			PageId: undefined,
-			CustomUrl: undefined,
-			Keyword: inputValue || '',
-		});
+		actor.setSearch(
+			{
+				PageId: undefined,
+				CustomUrl: undefined,
+				Keyword: inputValue || '',
+			},
+			true,
+			true
+		);
 		closeMenu();
 	}
 

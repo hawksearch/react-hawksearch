@@ -45,7 +45,7 @@ function QueryStringListener() {
 			doSearch = false;
 
 			history.push({
-				search: getSearchQueryString(store.pendingSearch),
+				search: getSearchQueryString(store.pendingSearch, store),
 			});
 		}
 	}, [store.pendingSearch]);
@@ -53,7 +53,7 @@ function QueryStringListener() {
 	// Extract access token and refresh token from query string on load
 	useEffect(() => {
 		const params = new URLSearchParams(location.search);
-		AuthToken.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(/ /g, '+') || '');
+		AuthToken.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(' ', '+') || '');
 	}, []);
 
 	return null;

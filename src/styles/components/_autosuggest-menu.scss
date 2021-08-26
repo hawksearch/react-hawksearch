@@ -118,6 +118,7 @@
 						font-size: 12px;
 						line-height: 15px;
 						margin-top: 5px;
+						width: 100%;
 					}
 				}
 				& > .view-matches {
@@ -137,3 +138,66 @@
 .hidden-label {
 	display: none;
 }
+
+/*********************************************************/
+
+/*.hawk-autosuggest-menu {
+	position: relative;
+}
+
+.hawk-autosuggest-menu__list {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+	padding: 0;
+	left: auto;
+	top: auto;
+	margin-top: -3px;
+	display: block;
+	overflow-y: scroll;
+	line-height: 35px;
+	border: 1px solid #ccc;
+	position: absolute;
+	width: 100%;
+	z-index: 2;
+	background: white;
+	box-sizing: border-box;
+	cursor: default;
+}
+
+.hawk-autosuggest-menu__item {
+	padding-left: 10px;
+	background-color: $autosuggest-item-bg;
+	cursor: pointer;
+
+	&:hover,
+	&:focus,
+	&--highlighted {
+		background-color: $autosuggest-item-hover-bg;
+		color: #fff;
+	}
+}
+
+.hawk-autosuggest-menu__text--deleted {
+	color: $red;
+
+	.hawk-autosuggest-menu__item:hover &,
+	.hawk-autosuggest-menu__item:focus & {
+		color: #fff;
+	}
+}
+
+.hawk-autosuggest-menu__text--archived {
+	color: $orange;
+
+	.autosuggest-menu__item:hover &,
+	.autosuggest-menu__item:focus & {
+		color: #fff;
+	}
+}
+
+.hidden-label {
+	display: none;
+}*/
+
+/*********************************************************/
+

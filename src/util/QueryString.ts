@@ -1,4 +1,5 @@
 import { Request } from 'models/Search/Request';
+import { SearchStore } from '../store/Store';
 
 /** Represents parts of the browser query string that are fixed and are always single strings. */
 interface ParsedQueryStringFixed {
@@ -13,6 +14,7 @@ interface ParsedQueryStringFixed {
 	is100Coverage?: string;
 	indexName?: string;
 	ignoreSpellcheck?: string;
+	language?: string;
 }
 
 /**
@@ -25,6 +27,14 @@ interface ParsedQueryStringDynamic {
 
 type ParsedQueryString = ParsedQueryStringFixed & ParsedQueryStringDynamic;
 
+const rangeFacets: string[] = [];
+
+export function addToRangeFacets(facetName: string) {
+	if (!rangeFacets.includes(facetName)) {
+		rangeFacets.push(facetName);
+	}
+}
+
 /**
  * Parses the input query string and returns an object that can be used to build a search request.
  * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
@@ -32,7 +42,7 @@ type ParsedQueryString = ParsedQueryStringFixed & ParsedQueryStringDynamic;
  * @param search The input query string.
  */
 function parseQueryStringToObject(search: string) {
-	const params = new URLSearchParams(search);
+	const params = new URLSearchParams(urlStringToParamEntries(search));
 
 	const parsed: ParsedQueryString = {};
 
@@ -48,10 +58,15 @@ function parseQueryStringToObject(search: string) {
 			key === 'searchWithin' ||
 			key === 'is100Coverage' ||
 			key === 'indexName' ||
-			key === 'ignoreSpellcheck'
+			key === 'ignoreSpellcheck' ||
+			key === 'language'
 		) {
 			// `keyword` is special and should never be turned into an array
-			parsed[key] = encodeURIComponent(value);
+			if (key === 'keyword') {
+				parsed[key] = value;
+			} else {
+				parsed[key] = encodeURIComponent(value);
+			}
 		} else {
 			// everything else should be turned into an array
 
@@ -68,12 +83,7 @@ function parseQueryStringToObject(search: string) {
 			// multiple selections are split by commas, so split into an array
 			const multipleValues = value.split(',');
 
-			// and now handle any comma escaping - any single value that contained a comma is escaped to '::'
-			for (let x = 0; x < multipleValues.length; ++x) {
-				multipleValues[x] = multipleValues[x].replace('::', ',');
-			}
-
-			parsed[key] = multipleValues;
+			parsed[key] = multipleValues.map(i => decodeURIComponent(i).replace('::', ','));
 		}
 	});
 
@@ -170,7 +180,8 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				key === 'searchWithin' ||
 				key === 'is100Coverage' ||
 				key === 'indexName' ||
-				key === 'ignoreSpellcheck'
+				key === 'ignoreSpellcheck' ||
+				key === 'language'
 			) {
 				const value = queryObj[key];
 
@@ -185,15 +196,23 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 				}
 
 				// certain strings are special and are never arrays
-				queryStringValues.push(key + '=' + value);
+				if (key === 'keyword') {
+					queryStringValues.push(key + '=' + value);
+				} else {
+					queryStringValues.push(key + '=' + encodeURIComponent(value));
+				}
 			} else {
 				const values = queryObj[key];
 
 				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
 				const escapedValues: string[] = [];
 
-				for (const unescapedValue of values) {
-					escapedValues.push(unescapedValue.replace(',', '::'));
+				for (let unescapedValue of values) {
+					if (rangeFacets.includes(key)) {
+						unescapedValue = unescapedValue.replace(',', '::');
+					}
+
+					escapedValues.push(encodeURIComponent(unescapedValue));
 				}
 
 				queryStringValues.push(key + '=' + escapedValues.join(','));
@@ -208,7 +227,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
  * Converts a partial search request object into a browser query string.
  * @param searchRequest The search request object to convert.
  */
-export function getSearchQueryString(searchRequest: Partial<Request>) {
+export function getSearchQueryString(searchRequest: Partial<Request>, store?: SearchStore) {
 	const searchQuery = {
 		keyword: searchRequest.Keyword,
 
@@ -218,6 +237,7 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
 		searchWithin: searchRequest.SearchWithin,
 		indexName: searchRequest.IndexName,
+		language: store && store.language ? store.language : undefined,
 		ignoreSpellcheck:
 			!searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck
 				? undefined
@@ -226,4 +246,26 @@ export function getSearchQueryString(searchRequest: Partial<Request>) {
 	} as ParsedQueryString;
 
 	return convertObjectToQueryString(searchQuery);
+}
+
+function urlStringToParamEntries(searchQuery: string) {
+	if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
+		if (searchQuery[0] === '?') {
+			searchQuery = searchQuery.slice(1);
+		}
+
+		return searchQuery.split('&').map(i => {
+			const entries = i.split('=');
+
+			if (entries.length === 2) {
+				return entries;
+			} else if (entries.length > 2) {
+				return [entries[0], entries.slice(0, 1).join('')];
+			} else {
+				return [entries.join(''), ''];
+			}
+		});
+	} else {
+		return searchQuery;
+	}
 }

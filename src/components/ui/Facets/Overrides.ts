@@ -6,6 +6,7 @@ import {
 	Slider as DefaultSlider,
 	Swatch as DefaultSwatch,
 	OpenRange as DefaultOpenRange,
+	Size as DefaultSize,
 	NestedLink as DefaultNestedLink,
 } from 'components/ui/Facets/FacetTypes';
 import { FacetComponent } from 'types/FacetComponent';
@@ -23,6 +24,7 @@ const defaultFacetComponents: FacetComponent[] = [
 	{ facetType: FacetType.Slider, component: DefaultSlider },
 	{ facetType: FacetType.Swatch, component: DefaultSwatch },
 	{ facetType: FacetType.OpenRange, component: DefaultOpenRange },
+	{ facetType: FacetType.Size, component: DefaultSize },
 	{ facetType: FacetType.Nestedlink, component: DefaultNestedLink },
 	{ facetType: FacetType.RecentSearches, component: RecentSearches },
 ];

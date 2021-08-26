@@ -6,7 +6,7 @@ export class ClientData {
 	public VisitId: string;
 
 	/** Custom information used for evaluating Visitor Targets. */
-	public Custom?: string;
+	public Custom?: string | object;
 	/** Client IP used for evaluating Visitor Targets. */
 	public HttpTrueClientIp?: string;
 	/** Browser user agent used for evaluating Visitor Targets. */

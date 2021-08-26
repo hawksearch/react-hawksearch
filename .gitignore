@@ -3,8 +3,5 @@
 node_modules/
 jspm_packages/
 
-# build outputs
-dist/
-
 # rollup
 .rpt2_cache
