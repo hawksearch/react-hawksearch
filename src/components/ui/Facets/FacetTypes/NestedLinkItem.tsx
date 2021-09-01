@@ -52,7 +52,7 @@ function NestedLinkItem(item: NestedLinkItemProps) {
 		<li className="hawk-facet-rail__facet-list-item hawkFacet-group">
 			<div className="hawkFacet-group__inline">
 				<button
-					onClick={() => item.onValueSelected(hierarchyValue, false)}
+					onClick={() => hierarchyChildren.length <= 0 ? item.onValueSelected(hierarchyValue, false) : null}
 					className="hawk-facet-rail__facet-btn"
 					aria-pressed={item.isSelected}
 				>
