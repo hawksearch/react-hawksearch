@@ -127,6 +127,8 @@ function _assertThisInitialized(self) {
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof$1(call) === "object" || typeof call === "function")) {
     return call;
+  } else if (call !== void 0) {
+    throw new TypeError("Derived constructors may only return object or undefined");
   }
 
   return _assertThisInitialized(self);
@@ -2562,7 +2564,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 
 var _createClass$1 = unwrapExports(createClass);
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$1(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 var defaultOptions = {
@@ -2570,6 +2572,7 @@ var defaultOptions = {
   bindI18nStore: '',
   transEmptyNodeValue: '',
   transSupportBasicHtmlNodes: true,
+  transWrapTextNodes: '',
   transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p'],
   useSuspense: true
 };
@@ -2698,7 +2701,7 @@ unwrapExports(arrayWithHoles);
 
 var iterableToArrayLimit = createCommonjsModule(function (module) {
 function _iterableToArrayLimit(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
 
   if (_i == null) return;
   var _arr = [];
@@ -2788,7 +2791,7 @@ module.exports["default"] = module.exports, module.exports.__esModule = true;
 
 var _slicedToArray = unwrapExports(slicedToArray);
 
-function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$1(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$2(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$1(Object(source), true).forEach(function (key) { _defineProperty$1(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$1(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useTranslation(ns) {
@@ -2906,7 +2909,7 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArrayLimit(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
 
   if (_i == null) return;
   var _arr = [];
@@ -3141,9 +3144,9 @@ var runtime = (function (exports) {
   // This is a polyfill for %IteratorPrototype% for environments that
   // don't natively support it.
   var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
+  define(IteratorPrototype, iteratorSymbol, function () {
     return this;
-  };
+  });
 
   var getProto = Object.getPrototypeOf;
   var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
@@ -3157,8 +3160,9 @@ var runtime = (function (exports) {
 
   var Gp = GeneratorFunctionPrototype.prototype =
     Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.prototype = GeneratorFunctionPrototype;
+  define(Gp, "constructor", GeneratorFunctionPrototype);
+  define(GeneratorFunctionPrototype, "constructor", GeneratorFunction);
   GeneratorFunction.displayName = define(
     GeneratorFunctionPrototype,
     toStringTagSymbol,
@@ -3272,9 +3276,9 @@ var runtime = (function (exports) {
   }
 
   defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+  define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
     return this;
-  };
+  });
   exports.AsyncIterator = AsyncIterator;
 
   // Note that simple async functions are implemented on top of
@@ -3467,13 +3471,13 @@ var runtime = (function (exports) {
   // iterator prototype chain incorrectly implement this, causing the Generator
   // object to not be returned from this call. This ensures that doesn't happen.
   // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
+  define(Gp, iteratorSymbol, function() {
     return this;
-  };
+  });
 
-  Gp.toString = function() {
+  define(Gp, "toString", function() {
     return "[object Generator]";
-  };
+  });
 
   function pushTryEntry(locs) {
     var entry = { tryLoc: locs[0] };
@@ -3792,14 +3796,19 @@ try {
 } catch (accidentalStrictMode) {
   // This module should not be running in strict mode, so the above
   // assignment should always work unless something is misconfigured. Just
-  // in case runtime.js accidentally runs in strict mode, we can escape
+  // in case runtime.js accidentally runs in strict mode, in modern engines
+  // we can explicitly access globalThis. In older engines we can escape
   // strict mode using a global Function call. This could conceivably fail
   // if a Content Security Policy forbids using Function, but in that case
   // the proper solution is to fix the accidental strict mode problem. If
   // you've misconfigured your bundler to force strict mode and applied a
   // CSP to forbid Function, and you're not willing to fix either of those
   // problems, please detail your unique predicament in a GitHub issue.
-  Function("r", "regeneratorRuntime = r")(runtime);
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
 }
 });
 
@@ -9646,93 +9655,11 @@ function SliderDate() {
 }
 
 /**
- * react-number-format - 4.5.5
+ * react-number-format - 4.7.3
  * Author : Sudhanshu Yadav
  * Copyright (c) 2016, 2021 to Sudhanshu Yadav, released under the MIT license.
  * https://github.com/s-yadav/react-number-format
  */
-
-function createCommonjsModule$1(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
-
-var ReactPropTypesSecret_1 = ReactPropTypesSecret;
-
-function emptyFunction() {}
-function emptyFunctionWithReset() {}
-emptyFunctionWithReset.resetWarningCache = emptyFunction;
-
-var factoryWithThrowingShims = function() {
-  function shim(props, propName, componentName, location, propFullName, secret) {
-    if (secret === ReactPropTypesSecret_1) {
-      // It is still safe when called from React.
-      return;
-    }
-    var err = new Error(
-      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
-      'Use PropTypes.checkPropTypes() to call them. ' +
-      'Read more at http://fb.me/use-check-prop-types'
-    );
-    err.name = 'Invariant Violation';
-    throw err;
-  }  shim.isRequired = shim;
-  function getShim() {
-    return shim;
-  }  // Important!
-  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
-  var ReactPropTypes = {
-    array: shim,
-    bool: shim,
-    func: shim,
-    number: shim,
-    object: shim,
-    string: shim,
-    symbol: shim,
-
-    any: shim,
-    arrayOf: getShim,
-    element: shim,
-    elementType: shim,
-    instanceOf: getShim,
-    node: shim,
-    objectOf: getShim,
-    oneOf: getShim,
-    oneOfType: getShim,
-    shape: getShim,
-    exact: getShim,
-
-    checkPropTypes: emptyFunctionWithReset,
-    resetWarningCache: emptyFunction
-  };
-
-  ReactPropTypes.PropTypes = ReactPropTypes;
-
-  return ReactPropTypes;
-};
-
-var propTypes = createCommonjsModule$1(function (module) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-{
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = factoryWithThrowingShims();
-}
-});
 
 //     
 
@@ -9827,10 +9754,10 @@ function limitToScale(numStr        , scale        , fixedDecimalScale         )
 }
 
 function repeat(str, count) {
-  return Array(count + 1).join(str)
+  return Array(count + 1).join(str);
 }
 
-function toNumericString(num) {  
+function toNumericString(num) {
   num += ''; // typecast number to string
 
   // store the sign and remove it from the number.
@@ -9860,14 +9787,15 @@ function toNumericString(num) {
 
   if (decimalIndex < 0) {
     // if decimal index is less then 0 add preceding 0s
-    // add 1 as join will have 
+    // add 1 as join will have
     coefficient = '0.' + repeat('0', Math.abs(decimalIndex)) + coefficient;
   } else if (decimalIndex >= coffiecientLn) {
     // if decimal index is less then 0 add leading 0s
     coefficient = coefficient + repeat('0', decimalIndex - coffiecientLn);
   } else {
     // else add decimal point at proper index
-    coefficient = (coefficient.substring(0, decimalIndex) || '0') + '.' + coefficient.substring(decimalIndex);
+    coefficient =
+      (coefficient.substring(0, decimalIndex) || '0') + '.' + coefficient.substring(decimalIndex);
   }
 
   return sign + coefficient;
@@ -9888,7 +9816,7 @@ function roundToPrecision(numStr        , scale        , fixedDecimalScale      
   var hasNagation = ref.hasNagation;
   var floatValue = parseFloat(("0." + (afterDecimal || '0')));
   var floatValueStr =
-    afterDecimal.length <= scale ? toNumericString(floatValue) : floatValue.toFixed(scale);
+    afterDecimal.length <= scale ? ("0." + afterDecimal) : floatValue.toFixed(scale);
   var roundedDecimalParts = floatValueStr.split('.');
   var intPart = beforeDecimal
     .split('')
@@ -9911,14 +9839,6 @@ function roundToPrecision(numStr        , scale        , fixedDecimalScale      
   var negation = hasNagation ? '-' : '';
   var decimalSeparator = shoudHaveDecimalSeparator ? '.' : '';
   return ("" + negation + intPart + decimalSeparator + decimalPart);
-}
-
-function omit(obj        , keyMaps        ) {
-  var filteredObj = {};
-  Object.keys(obj).forEach(function (key) {
-    if (!keyMaps[key]) { filteredObj[key] = obj[key]; }
-  });
-  return filteredObj;
 }
 
 /** set the caret positon in an input field **/
@@ -9985,55 +9905,15 @@ function getCurrentCaretPosition(el                  ) {
 }
 
 function addInputMode(format                                   ) {
-  return format || !(navigator.platform && /iPhone|iPod/.test(navigator.platform));
+  return (
+    format ||
+    (typeof navigator !== 'undefined' &&
+      !(navigator.platform && /iPhone|iPod/.test(navigator.platform)))
+  );
 }
 
 //     
-
-
-var propTypes$1 = {
-  thousandSeparator: propTypes.oneOfType([propTypes.string, propTypes.oneOf([true])]),
-  decimalSeparator: propTypes.string,
-  allowedDecimalSeparators: propTypes.arrayOf(propTypes.string),
-  thousandsGroupStyle: propTypes.oneOf(['thousand', 'lakh', 'wan']),
-  decimalScale: propTypes.number,
-  fixedDecimalScale: propTypes.bool,
-  displayType: propTypes.oneOf(['input', 'text']),
-  prefix: propTypes.string,
-  suffix: propTypes.string,
-  format: propTypes.oneOfType([
-    propTypes.string,
-    propTypes.func
-  ]),
-  removeFormatting: propTypes.func,
-  mask: propTypes.oneOfType([propTypes.string, propTypes.arrayOf(propTypes.string)]),
-  value: propTypes.oneOfType([
-    propTypes.number,
-    propTypes.string
-  ]),
-  defaultValue: propTypes.oneOfType([
-    propTypes.number,
-    propTypes.string
-  ]),
-  isNumericString: propTypes.bool,
-  customInput: propTypes.elementType,
-  allowNegative: propTypes.bool,
-  allowEmptyFormatting: propTypes.bool,
-  allowLeadingZeros: propTypes.bool,
-  onValueChange: propTypes.func,
-  onKeyDown: propTypes.func,
-  onMouseUp: propTypes.func,
-  onChange: propTypes.func,
-  onFocus: propTypes.func,
-  onBlur: propTypes.func,
-  type: propTypes.oneOf(['text', 'tel', 'password']),
-  isAllowed: propTypes.func,
-  renderText: propTypes.func,
-  getInputRef: propTypes.oneOfType([
-    propTypes.func, // for legacy refs
-    propTypes.shape({ current: propTypes.any })
-  ])
-};
+function objectWithoutProperties$1 (obj, exclude) { var target = {}; for (var k in obj) if (Object.prototype.hasOwnProperty.call(obj, k) && exclude.indexOf(k) === -1) target[k] = obj[k]; return target; }
 
 var defaultProps = {
   displayType: 'input',
@@ -10053,12 +9933,11 @@ var defaultProps = {
   onMouseUp: noop$1,
   onFocus: noop$1,
   onBlur: noop$1,
-  isAllowed: returnTrue
+  isAllowed: returnTrue,
 };
 var NumberFormat = /*@__PURE__*/(function (superclass) {
   function NumberFormat(props        ) {
     superclass.call(this, props);
-
     var defaultValue = props.defaultValue;
 
     //validate props
@@ -10074,7 +9953,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     this.selectionBeforeInput = {
       selectionStart: 0,
-      selectionEnd: 0
+      selectionEnd: 0,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -10092,7 +9971,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     // set mounted state
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
-      mounted: true
+      mounted: true,
     });
   };
 
@@ -10102,6 +9981,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
   NumberFormat.prototype.componentWillUnmount = function componentWillUnmount () {
     clearTimeout(this.focusTimeout);
+    clearTimeout(this.caretPositionTimeout);
   };
 
   NumberFormat.prototype.updateValueIfRequired = function updateValueIfRequired (prevProps        ) {
@@ -10113,7 +9993,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var lastNumStr = state.numAsString; if ( lastNumStr === void 0 ) lastNumStr = '';
 
     // If only state changed no need to do any thing
-    if(prevProps !== props) {
+    if (prevProps !== props) {
       //validate props
       this.validateProps();
 
@@ -10150,24 +10030,26 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     //remove negation for regex check
     var hasNegation = num[0] === '-';
-    if(hasNegation) { num = num.replace('-', ''); }
+    if (hasNegation) { num = num.replace('-', ''); }
 
     //if decimal scale is zero remove decimal and number after decimalSeparator
     if (decimalSeparator && decimalScale === 0) {
       num = num.split(decimalSeparator)[0];
     }
 
-    num  = (num.match(numRegex) || []).join('').replace(decimalSeparator, '.');
+    num = (num.match(numRegex) || []).join('').replace(decimalSeparator, '.');
 
     //remove extra decimals
     var firstDecimalIndex = num.indexOf('.');
 
     if (firstDecimalIndex !== -1) {
-      num = (num.substring(0, firstDecimalIndex)) + "." + (num.substring(firstDecimalIndex + 1, num.length).replace(new RegExp(escapeRegExp(decimalSeparator), 'g'), ''));
+      num = (num.substring(0, firstDecimalIndex)) + "." + (num
+        .substring(firstDecimalIndex + 1, num.length)
+        .replace(new RegExp(escapeRegExp(decimalSeparator), 'g'), ''));
     }
 
     //add negation back
-    if(hasNegation) { num = '-' + num; }
+    if (hasNegation) { num = '-' + num; }
 
     return num;
   };
@@ -10177,9 +10059,18 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var ref = this.props;
     var format = ref.format;
     var decimalScale = ref.decimalScale;
+    var customNumerals = ref.customNumerals;
     var ref$1 = this.getSeparators();
     var decimalSeparator = ref$1.decimalSeparator;
-    return new RegExp('\\d' + (decimalSeparator && decimalScale !== 0 && !ignoreDecimalSeparator && !format ? '|' + escapeRegExp(decimalSeparator) : ''), g ? 'g' : undefined);
+    return new RegExp(
+      '[0-9' +
+        (customNumerals ? customNumerals.join('') : '') +
+        ']' +
+        (decimalSeparator && decimalScale !== 0 && !ignoreDecimalSeparator && !format
+          ? '|' + escapeRegExp(decimalSeparator)
+          : ''),
+      g ? 'g' : undefined
+    );
   };
 
   NumberFormat.prototype.getSeparators = function getSeparators () {
@@ -10200,7 +10091,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       decimalSeparator: decimalSeparator,
       thousandSeparator: thousandSeparator,
       allowedDecimalSeparators: allowedDecimalSeparators,
-    }
+    };
   };
 
   NumberFormat.prototype.getMaskAtIndex = function getMaskAtIndex (index        ) {
@@ -10219,9 +10110,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return {
       formattedValue: formattedValue,
       value: numAsString,
-      floatValue: isNaN(floatValue) ? undefined : floatValue
+      floatValue: isNaN(floatValue) ? undefined : floatValue,
     };
-
   };
 
   NumberFormat.prototype.validateProps = function validateProps () {
@@ -10241,10 +10131,9 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (mask) {
       var maskAsStr = mask === 'string' ? mask : mask.toString();
       if (maskAsStr.match(/\d/g)) {
-        throw new Error(("\n          Mask " + mask + " should not contain numeric character;\n        "))
+        throw new Error(("\n          Mask " + mask + " should not contain numeric character;\n        "));
       }
     }
-
   };
   /** Misc methods end **/
 
@@ -10254,8 +10143,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     otherwise browser resets the caret position after we set it
     We are also setting it without timeout so that in normal browser we don't see the flickering */
     setCaretPosition(el, caretPos);
-    setTimeout(function () {
-      if(el.value === currentValue) { setCaretPosition(el, caretPos); }
+    this.caretPositionTimeout = setTimeout(function () {
+      if (el.value === currentValue) { setCaretPosition(el, caretPos); }
     }, 0);
   };
 
@@ -10284,10 +10173,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     /* in case format is string find the closest # position from the caret position */
 
     //in case the caretPos have input value on it don't do anything
-    if (format[caretPos] === '#' && charIsNumber(value[caretPos])) { return caretPos; }
+    if (format[caretPos] === '#' && charIsNumber(value[caretPos])) {
+      return caretPos;
+    }
 
     //if caretPos is just after input value don't do anything
-    if (format[caretPos - 1] === '#' && charIsNumber(value[caretPos - 1])) { return caretPos; }
+    if (format[caretPos - 1] === '#' && charIsNumber(value[caretPos - 1])) {
+      return caretPos;
+    }
 
     //find the nearest caret position
     var firstHashPosition = format.indexOf('#');
@@ -10301,13 +10194,17 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var caretRightBound = caretPos + (nextPos === -1 ? 0 : nextPos);
 
     //get the position where the last number is present
-    while (caretLeftBound > firstHashPosition && (format[caretLeftBound] !== '#' || !charIsNumber(value[caretLeftBound]))) {
+    while (
+      caretLeftBound > firstHashPosition &&
+      (format[caretLeftBound] !== '#' || !charIsNumber(value[caretLeftBound]))
+    ) {
       caretLeftBound -= 1;
     }
 
-    var goToLeft = !charIsNumber(value[caretRightBound])
-    || (direction === 'left' && caretPos !== firstHashPosition)
-    || (caretPos - caretLeftBound < caretRightBound - caretPos);
+    var goToLeft =
+      !charIsNumber(value[caretRightBound]) ||
+      (direction === 'left' && caretPos !== firstHashPosition) ||
+      caretPos - caretLeftBound < caretRightBound - caretPos;
 
     if (goToLeft) {
       //check if number should be taken after the bound or after it
@@ -10329,23 +10226,34 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     j = 0;
 
-    for(i=0; i<caretPos; i++){
+    for (i = 0; i < caretPos; i++) {
       var currentInputChar = inputValue[i] || '';
       var currentFormatChar = formattedValue[j] || '';
       //no need to increase new cursor position if formatted value does not have those characters
       //case inputValue = 1a23 and formattedValue =  123
-      if(!currentInputChar.match(numRegex) && currentInputChar !== currentFormatChar) { continue; }
+      if (!currentInputChar.match(numRegex) && currentInputChar !== currentFormatChar) {
+        continue;
+      }
 
       //When we are striping out leading zeros maintain the new cursor position
       //Case inputValue = 00023 and formattedValue = 23;
-      if (currentInputChar === '0' && currentFormatChar.match(numRegex) && currentFormatChar !== '0' && inputNumber.length !== formattedNumber.length) { continue; }
+      if (
+        currentInputChar === '0' &&
+        currentFormatChar.match(numRegex) &&
+        currentFormatChar !== '0' &&
+        inputNumber.length !== formattedNumber.length
+      ) {
+        continue;
+      }
 
       //we are not using currentFormatChar because j can change here
-      while(currentInputChar !== formattedValue[j] && j < formattedValue.length) { j++; }
+      while (currentInputChar !== formattedValue[j] && j < formattedValue.length) {
+        j++;
+      }
       j++;
     }
 
-    if ((typeof format === 'string' && !stateValue)) {
+    if (typeof format === 'string' && !stateValue) {
       //set it to the maximum value so it goes after the last number
       j = formattedValue.length;
     }
@@ -10356,7 +10264,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return j;
   };
   /** caret specific methods ends **/
-
 
   /** methods to remove formattting **/
   NumberFormat.prototype.removePrefixAndSuffix = function removePrefixAndSuffix (val        ) {
@@ -10377,7 +10284,10 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
       //remove suffix
       var suffixLastIndex = val.lastIndexOf(suffix);
-      val = suffix && suffixLastIndex !== -1 && suffixLastIndex === val.length - suffix.length ? val.substring(0, suffixLastIndex) : val;
+      val =
+        suffix && suffixLastIndex !== -1 && suffixLastIndex === val.length - suffix.length
+          ? val.substring(0, suffixLastIndex)
+          : val;
 
       //add negation sign back
       if (isNegative) { val = '-' + val; }
@@ -10393,7 +10303,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var start = 0;
     var numStr = '';
 
-    for (var i=0, ln=formatArray.length; i <= ln; i++) {
+    for (var i = 0, ln = formatArray.length; i <= ln; i++) {
       var part = formatArray[i] || '';
 
       //if i is the last fragment take the index of end of the value
@@ -10426,7 +10336,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       val = this.getFloatString(val);
     } else if (typeof format === 'string') {
       val = this.removePatternFormatting(val);
-    } else if (typeof removeFormatting === 'function') { //condition need to be handled if format method is provide,
+    } else if (typeof removeFormatting === 'function') {
+      //condition need to be handled if format method is provide,
       val = removeFormatting(val);
     } else {
       val = (val.match(/\d/g) || []).join('');
@@ -10434,7 +10345,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return val;
   };
   /** methods to remove formattting end **/
-
 
   /*** format specific methods start ***/
   /**
@@ -10478,20 +10388,22 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var addNegation = ref$2.addNegation; // eslint-disable-line prefer-const
 
     //apply decimal precision if its defined
-    if (decimalScale !== undefined) { afterDecimal = limitToScale(afterDecimal, decimalScale, fixedDecimalScale); }
+    if (decimalScale !== undefined) {
+      afterDecimal = limitToScale(afterDecimal, decimalScale, fixedDecimalScale);
+    }
 
-    if(thousandSeparator) {
+    if (thousandSeparator) {
       beforeDecimal = applyThousandSeparator(beforeDecimal, thousandSeparator, thousandsGroupStyle);
     }
 
     //add prefix and suffix
-    if(prefix) { beforeDecimal = prefix + beforeDecimal; }
-    if(suffix) { afterDecimal = afterDecimal + suffix; }
+    if (prefix) { beforeDecimal = prefix + beforeDecimal; }
+    if (suffix) { afterDecimal = afterDecimal + suffix; }
 
     //restore negation sign
     if (addNegation) { beforeDecimal = '-' + beforeDecimal; }
 
-    numStr = beforeDecimal + (hasDecimalSeparator && decimalSeparator ||  '') + afterDecimal;
+    numStr = beforeDecimal + ((hasDecimalSeparator && decimalSeparator) || '') + afterDecimal;
 
     return numStr;
   };
@@ -10502,7 +10414,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var ref = this.props;
     var format = ref.format;
     var allowEmptyFormatting = ref.allowEmptyFormatting;
+    var customNumerals = ref.customNumerals;
     var formattedValue = numStr;
+
+    if (customNumerals && customNumerals.length === 10) {
+      var customNumeralRegex = new RegExp('[' + customNumerals.join('') + ']', 'g');
+      formattedValue = numStr.replace(customNumeralRegex, function (digit) { return customNumerals.indexOf(digit).toString(); }
+      );
+    }
 
     if (numStr === '' && !allowEmptyFormatting) {
       formattedValue = '';
@@ -10519,7 +10438,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     return formattedValue;
   };
 
-  NumberFormat.prototype.formatValueProp = function formatValueProp (defaultValue               ) {
+  NumberFormat.prototype.formatValueProp = function formatValueProp (defaultValue                 ) {
     var ref = this.props;
     var format = ref.format;
     var decimalScale = ref.decimalScale;
@@ -10619,20 +10538,15 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (typeof format === 'string' && format[caretPos] !== '#') { return true; }
 
     //check in number format
-    if (!format && (caretPos < prefix.length
-      || caretPos >= value.length - suffix.length
-      || (decimalScale && fixedDecimalScale && value[caretPos] === decimalSeparator))
+    if (
+      !format &&
+      (caretPos < prefix.length ||
+        caretPos >= value.length - suffix.length ||
+        (decimalScale && fixedDecimalScale && value[caretPos] === decimalSeparator))
     ) {
       return true;
     }
 
-    return false;
-  };
-
-  NumberFormat.prototype.checkIfFormatGotDeleted = function checkIfFormatGotDeleted (start        , end        , value        ) {
-    for (var i = start; i < end; i++) {
-      if (this.isCharacterAFormat(i, value)) { return true; }
-    }
     return false;
   };
 
@@ -10641,6 +10555,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
    * It will also work as fallback if android chome keyDown handler does not work
    **/
   NumberFormat.prototype.correctInputValue = function correctInputValue (caretPos        , lastValue        , value        ) {
+    var this$1 = this;
+
     var ref = this.props;
     var format = ref.format;
     var allowNegative = ref.allowNegative;
@@ -10659,11 +10575,16 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var end = ref$3.end;
 
     /** Check for any allowed decimal separator is added in the numeric format and replace it with decimal separator */
-    if (!format && start === end && allowedDecimalSeparators.indexOf(value[selectionStart]) !== -1  ) {
+    if (
+      !format &&
+      start === end &&
+      allowedDecimalSeparators.indexOf(value[selectionStart]) !== -1
+    ) {
       var separator = decimalScale === 0 ? '' : decimalSeparator;
-      return value.substr(0, selectionStart) + separator + value.substr(selectionStart + 1, value.length);
+      return (
+        value.substr(0, selectionStart) + separator + value.substr(selectionStart + 1, value.length)
+      );
     }
-
 
     var leftBound = !!format ? 0 : prefix.length;
     var rightBound = lastValue.length - (!!format ? 0 : suffix.length);
@@ -10671,7 +10592,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (
       // don't do anything if something got added
       value.length > lastValue.length ||
-      // or if the new value is an empty string 
+      // or if the new value is an empty string
       !value.length ||
       // or if nothing has changed, in which case start will be same as end
       start === end ||
@@ -10679,30 +10600,62 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       (selectionStart === 0 && selectionEnd === lastValue.length) ||
       // or in case if the whole content is replaced by browser, example (autocomplete)
       (start === 0 && end === lastValue.length) ||
-      // or if charcters between prefix and suffix is selected. 
+      // or if charcters between prefix and suffix is selected.
       // For numeric inputs we apply the format so, prefix and suffix can be ignored
       (selectionStart === leftBound && selectionEnd === rightBound)
     ) {
       return value;
     }
 
-    //if format got deleted reset the value to last value
-    if (this.checkIfFormatGotDeleted(start, end, lastValue)) {
-      value = lastValue;
+    // check whether the deleted portion has a character that is part of a format
+    var deletedValues = lastValue.substr(start, end - start);
+    var formatGotDeleted = !![].concat( deletedValues ).find(function (deletedVal, idx) { return this$1.isCharacterAFormat(idx + start, lastValue); }
+    );
+
+    // if it has, only remove characters that are not part of the format
+    if (formatGotDeleted) {
+      var deletedValuePortion = lastValue.substr(start);
+      var recordIndexOfFormatCharacters = {};
+      var resolvedPortion = [];
+      [].concat( deletedValuePortion ).forEach(function (currentPortion, idx) {
+        if (this$1.isCharacterAFormat(idx + start, lastValue)) {
+          recordIndexOfFormatCharacters[idx] = currentPortion;
+        } else if (idx > deletedValues.length - 1) {
+          resolvedPortion.push(currentPortion);
+        }
+      });
+
+      Object.keys(recordIndexOfFormatCharacters).forEach(function (idx) {
+        if (resolvedPortion.length > idx) {
+          resolvedPortion.splice(idx, 0, recordIndexOfFormatCharacters[idx]);
+        } else {
+          resolvedPortion.push(recordIndexOfFormatCharacters[idx]);
+        }
+      });
+
+      value = lastValue.substr(0, start) + resolvedPortion.join('');
     }
 
     //for numbers check if beforeDecimal got deleted and there is nothing after decimal,
     //clear all numbers in such case while keeping the - sign
     if (!format) {
       var numericString = this.removeFormatting(value);
-      var ref$4 = splitDecimal(numericString, allowNegative);
+      var ref$4 = splitDecimal(
+        numericString,
+        allowNegative
+      );
       var beforeDecimal = ref$4.beforeDecimal;
       var afterDecimal = ref$4.afterDecimal;
       var addNegation = ref$4.addNegation; // eslint-disable-line prefer-const
 
       //clear only if something got deleted
       var isBeforeDecimalPoint = caretPos < value.indexOf(decimalSeparator) + 1;
-      if (numericString.length < lastNumStr.length && isBeforeDecimalPoint && beforeDecimal === '' && !parseFloat(afterDecimal)) {
+      if (
+        numericString.length < lastNumStr.length &&
+        isBeforeDecimalPoint &&
+        beforeDecimal === '' &&
+        !parseFloat(afterDecimal)
+      ) {
         return addNegation ? '-' : '';
       }
     }
@@ -10712,14 +10665,13 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
   /** Update value and caret position */
   NumberFormat.prototype.updateValue = function updateValue (params   
-                             
-                          
-                         
-                              
+                           
+                        
                        
-                                
-     
-  ) {
+                            
+                     
+                              
+   ) {
     var formattedValue = params.formattedValue;
     var input = params.input;
     var setCaretPosition = params.setCaretPosition; if ( setCaretPosition === void 0 ) setCaretPosition = true;
@@ -10733,7 +10685,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (input) {
       //set caret position, and value imperatively when element is provided
       if (setCaretPosition) {
-
         //calculate caret position if not defined
         if (!caretPos) {
           var inputValue = params.inputValue || input.value;
@@ -10762,7 +10713,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       }
     }
 
-
     //calculate numeric string if not passed
     if (numAsString === undefined) {
       numAsString = this.removeFormatting(formattedValue);
@@ -10770,7 +10720,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     //update state if value is changed
     if (formattedValue !== lastValue) {
-      this.setState({ value : formattedValue, numAsString: numAsString });
+      this.setState({ value: formattedValue, numAsString: numAsString });
 
       // trigger onValueChange synchronously, so parent is updated along with the number format. Fix for #277, #287
       onValueChange(this.getValueObject(formattedValue, numAsString));
@@ -10788,7 +10738,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     var currentCaretPosition = getCurrentCaretPosition(el);
 
-    inputValue =  this.correctInputValue(currentCaretPosition, lastValue, inputValue);
+    inputValue = this.correctInputValue(currentCaretPosition, lastValue, inputValue);
 
     var formattedValue = this.formatInput(inputValue) || '';
     var numAsString = this.removeFormatting(formattedValue);
@@ -10802,7 +10752,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, inputValue: inputValue, input: el });
 
-    if(isChangeAllowed) {
+    if (isChangeAllowed) {
       props.onChange(e);
     }
   };
@@ -10819,7 +10769,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     this.focusedElm = null;
 
     clearTimeout(this.focusTimeout);
-
+    clearTimeout(this.caretPositionTimeout);
 
     if (!format) {
       // if the numAsString is not a valid number reset it to empty
@@ -10836,7 +10786,12 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       //change the state
       if (formattedValue !== lastValue) {
         // the event needs to be persisted because its properties can be accessed in an asynchronous way
-        this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, input: e.target, setCaretPosition: false });
+        this.updateValue({
+          formattedValue: formattedValue,
+          numAsString: numAsString,
+          input: e.target,
+          setCaretPosition: false,
+        });
         onBlur(e);
         return;
       }
@@ -10865,7 +10820,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
 
     this.selectionBeforeInput = {
       selectionStart: selectionStart,
-      selectionEnd: selectionEnd
+      selectionEnd: selectionEnd,
     };
 
     //Handle backspace and delete against non numerical/decimal characters or arrow keys
@@ -10891,8 +10846,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     if (key === 'ArrowLeft' || key === 'ArrowRight') {
       var direction = key === 'ArrowLeft' ? 'left' : 'right';
       newCaretPosition = this.correctCaretPosition(value, expectedCaretPosition, direction);
-    } else if (key === 'Delete' && !numRegex.test(value[expectedCaretPosition]) && !negativeRegex.test(value[expectedCaretPosition])) {
-      while (!numRegex.test(value[newCaretPosition]) && newCaretPosition < rightBound) { newCaretPosition++; }
+    } else if (
+      key === 'Delete' &&
+      !numRegex.test(value[expectedCaretPosition]) &&
+      !negativeRegex.test(value[expectedCaretPosition])
+    ) {
+      while (!numRegex.test(value[newCaretPosition]) && newCaretPosition < rightBound) {
+        newCaretPosition++;
+      }
     } else if (key === 'Backspace' && !numRegex.test(value[expectedCaretPosition])) {
       /* NOTE: This is special case when backspace is pressed on a
       negative value while the cursor position is after prefix. We can't handle it on onChange because
@@ -10900,15 +10861,24 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       */
       if (selectionStart <= leftBound + 1 && value[0] === '-' && typeof format === 'undefined') {
         var newValue = value.substring(1);
-        this.updateValue({formattedValue: newValue, caretPos: newCaretPosition, input: el});
+        this.updateValue({
+          formattedValue: newValue,
+          caretPos: newCaretPosition,
+          input: el,
+        });
       } else if (!negativeRegex.test(value[expectedCaretPosition])) {
-        while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound){ newCaretPosition--; }
+        while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound) {
+          newCaretPosition--;
+        }
         newCaretPosition = this.correctCaretPosition(value, newCaretPosition, 'left');
       }
     }
 
-
-    if (newCaretPosition !== expectedCaretPosition || expectedCaretPosition < leftBound || expectedCaretPosition > rightBound) {
+    if (
+      newCaretPosition !== expectedCaretPosition ||
+      expectedCaretPosition < leftBound ||
+      expectedCaretPosition > rightBound
+    ) {
       e.preventDefault();
       this.setPatchedCaretPosition(el, newCaretPosition, value);
     }
@@ -10919,9 +10889,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       this.setPatchedCaretPosition(el, newCaretPosition, value);
     }
 
-
     onKeyDown(e);
-
   };
 
   /** required to handle the caret position when click anywhere within the input **/
@@ -10931,7 +10899,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     /**
      * NOTE: we have to give default value for value as in case when custom input is provided
      * value can come as undefined when nothing is provided on value prop.
-    */
+     */
     var selectionStart = el.selectionStart;
     var selectionEnd = el.selectionEnd;
     var value = el.value; if ( value === void 0 ) value = '';
@@ -10963,7 +10931,10 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       var caretPosition = this$1.correctCaretPosition(value, selectionStart);
 
       //setPatchedCaretPosition only when everything is not selected on focus (while tabbing into the field)
-      if (caretPosition !== selectionStart && !(selectionStart === 0 && selectionEnd === value.length)) {
+      if (
+        caretPosition !== selectionStart &&
+        !(selectionStart === 0 && selectionEnd === value.length)
+      ) {
         this$1.setPatchedCaretPosition(el, caretPosition, value);
       }
 
@@ -10979,13 +10950,37 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
     var renderText = ref.renderText;
     var getInputRef = ref.getInputRef;
     var format = ref.format;
+    var thousandSeparator = ref.thousandSeparator;
+    var decimalSeparator = ref.decimalSeparator;
+    var allowedDecimalSeparators = ref.allowedDecimalSeparators;
+    var thousandsGroupStyle = ref.thousandsGroupStyle;
+    var decimalScale = ref.decimalScale;
+    var fixedDecimalScale = ref.fixedDecimalScale;
+    var prefix = ref.prefix;
+    var suffix = ref.suffix;
+    var removeFormatting = ref.removeFormatting;
+    var mask = ref.mask;
+    var defaultValue = ref.defaultValue;
+    var isNumericString = ref.isNumericString;
+    var allowNegative = ref.allowNegative;
+    var allowEmptyFormatting = ref.allowEmptyFormatting;
+    var allowLeadingZeros = ref.allowLeadingZeros;
+    var onValueChange = ref.onValueChange;
+    var isAllowed = ref.isAllowed;
+    var customNumerals = ref.customNumerals;
+    var onChange = ref.onChange;
+    var onKeyDown = ref.onKeyDown;
+    var onMouseUp = ref.onMouseUp;
+    var onFocus = ref.onFocus;
+    var onBlur = ref.onBlur;
+    var propValue = ref.value;
+    var rest = objectWithoutProperties$1( ref, ["type", "displayType", "customInput", "renderText", "getInputRef", "format", "thousandSeparator", "decimalSeparator", "allowedDecimalSeparators", "thousandsGroupStyle", "decimalScale", "fixedDecimalScale", "prefix", "suffix", "removeFormatting", "mask", "defaultValue", "isNumericString", "allowNegative", "allowEmptyFormatting", "allowLeadingZeros", "onValueChange", "isAllowed", "customNumerals", "onChange", "onKeyDown", "onMouseUp", "onFocus", "onBlur", "value"] );
+    var otherProps = rest;
     var ref$1 = this.state;
     var value = ref$1.value;
     var mounted = ref$1.mounted;
 
-    var otherProps = omit(this.props, propTypes$1);
-
-    // add input mode on element based on format prop and device once the component is mounted 
+    // add input mode on element based on format prop and device once the component is mounted
     var inputMode = mounted && addInputMode(format) ? 'numeric' : undefined;
 
     var inputProps = Object.assign({ inputMode: inputMode }, otherProps, {
@@ -10995,31 +10990,28 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       onKeyDown: this.onKeyDown,
       onMouseUp: this.onMouseUp,
       onFocus: this.onFocus,
-      onBlur: this.onBlur
+      onBlur: this.onBlur,
     });
 
-    if( displayType === 'text'){
-      return renderText ? (renderText(value, otherProps) || null) : React__default.createElement( 'span', Object.assign({}, otherProps, { ref: getInputRef }), value);
-    }
-
-    else if (customInput) {
+    if (displayType === 'text') {
+      return renderText ? (
+        renderText(value, otherProps) || null
+      ) : (
+        React__default.createElement( 'span', Object.assign({}, otherProps, { ref: getInputRef }),
+          value
+        )
+      );
+    } else if (customInput) {
       var CustomInput = customInput;
-      return (
-        React__default.createElement( CustomInput, Object.assign({},
-          inputProps, { ref: getInputRef }))
-      )
+      return React__default.createElement( CustomInput, Object.assign({}, inputProps, { ref: getInputRef }));
     }
 
-    return (
-      React__default.createElement( 'input', Object.assign({},
-        inputProps, { ref: getInputRef }))
-    )
+    return React__default.createElement( 'input', Object.assign({}, inputProps, { ref: getInputRef }));
   };
 
   return NumberFormat;
 }(React__default.Component));
 
-NumberFormat.propTypes = propTypes$1;
 NumberFormat.defaultProps = defaultProps;
 
 function SliderNumericInputs(sliderProps) {
@@ -18535,14 +18527,14 @@ var objectAssign = shouldUseNative() ? Object.assign : function (target, source)
  * LICENSE file in the root directory of this source tree.
  */
 
-var ReactPropTypesSecret$1 = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 
-var ReactPropTypesSecret_1$1 = ReactPropTypesSecret$1;
+var ReactPropTypesSecret_1 = ReactPropTypesSecret;
 
 var printWarning = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactPropTypesSecret$2 = ReactPropTypesSecret_1$1;
+  var ReactPropTypesSecret$1 = ReactPropTypesSecret_1;
   var loggedTypeFailures = {};
   var has = Function.call.bind(Object.prototype.hasOwnProperty);
 
@@ -18590,7 +18582,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
             err.name = 'Invariant Violation';
             throw err;
           }
-          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$2);
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret$1);
         } catch (ex) {
           error = ex;
         }
@@ -18795,7 +18787,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       componentName = componentName || ANONYMOUS;
       propFullName = propFullName || propName;
 
-      if (secret !== ReactPropTypesSecret_1$1) {
+      if (secret !== ReactPropTypesSecret_1) {
         if (throwOnDirectAccess) {
           // New behavior only for users of `prop-types` package
           var err = new Error(
@@ -18876,7 +18868,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
       }
       for (var i = 0; i < propValue.length; i++) {
-        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1$1);
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret_1);
         if (error instanceof Error) {
           return error;
         }
@@ -18969,7 +18961,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
       }
       for (var key in propValue) {
         if (has$1(propValue, key)) {
-          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$1);
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
           if (error instanceof Error) {
             return error;
           }
@@ -19000,7 +18992,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
     function validate(props, propName, componentName, location, propFullName) {
       for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
         var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1$1) == null) {
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret_1) == null) {
           return null;
         }
       }
@@ -19032,7 +19024,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
         if (!checker) {
           continue;
         }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$1);
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
         if (error) {
           return error;
         }
@@ -19061,7 +19053,7 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
             '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
           );
         }
-        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1$1);
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret_1);
         if (error) {
           return error;
         }
@@ -19210,13 +19202,13 @@ var factoryWithTypeCheckers = function(isValidElement, throwOnDirectAccess) {
   return ReactPropTypes;
 };
 
-function emptyFunction$1() {}
-function emptyFunctionWithReset$1() {}
-emptyFunctionWithReset$1.resetWarningCache = emptyFunction$1;
+function emptyFunction() {}
+function emptyFunctionWithReset() {}
+emptyFunctionWithReset.resetWarningCache = emptyFunction;
 
-var factoryWithThrowingShims$1 = function() {
+var factoryWithThrowingShims = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
-    if (secret === ReactPropTypesSecret_1$1) {
+    if (secret === ReactPropTypesSecret_1) {
       // It is still safe when called from React.
       return;
     }
@@ -19253,8 +19245,8 @@ var factoryWithThrowingShims$1 = function() {
     shape: getShim,
     exact: getShim,
 
-    checkPropTypes: emptyFunctionWithReset$1,
-    resetWarningCache: emptyFunction$1
+    checkPropTypes: emptyFunctionWithReset,
+    resetWarningCache: emptyFunction
   };
 
   ReactPropTypes.PropTypes = ReactPropTypes;
@@ -19262,7 +19254,7 @@ var factoryWithThrowingShims$1 = function() {
   return ReactPropTypes;
 };
 
-var propTypes$2 = createCommonjsModule(function (module) {
+var propTypes = createCommonjsModule(function (module) {
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -19280,7 +19272,7 @@ if (process.env.NODE_ENV !== 'production') {
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = factoryWithThrowingShims$1();
+  module.exports = factoryWithThrowingShims();
 }
 });
 
@@ -19302,7 +19294,7 @@ var _reactDom2 = _interopRequireDefault(ReactDOM);
 
 
 
-var _propTypes2 = _interopRequireDefault(propTypes$2);
+var _propTypes2 = _interopRequireDefault(propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19580,7 +19572,7 @@ var _react2 = _interopRequireDefault(React__default);
 
 
 
-var _propTypes2 = _interopRequireDefault(propTypes$2);
+var _propTypes2 = _interopRequireDefault(propTypes);
 
 
 
@@ -20588,7 +20580,7 @@ function mapToCssModules(className, cssModule) {
  * Returns a new object with the key/value pairs from `obj` that are not in the array `omitKeys`.
  */
 
-function omit$1(obj, omitKeys) {
+function omit(obj, omitKeys) {
   var result = {};
   Object.keys(obj).forEach(function (key) {
     if (omitKeys.indexOf(key) === -1) {
@@ -20634,15 +20626,15 @@ function DOMElement(props, propName, componentName) {
     return new Error('Invalid prop `' + propName + '` supplied to `' + componentName + '`. Expected prop to be an instance of Element. Validation failed.');
   }
 }
-var targetPropType = propTypes$2.oneOfType([propTypes$2.string, propTypes$2.func, DOMElement, propTypes$2.shape({
-  current: propTypes$2.any
+var targetPropType = propTypes.oneOfType([propTypes.string, propTypes.func, DOMElement, propTypes.shape({
+  current: propTypes.any
 })]);
-var tagPropType = propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.shape({
-  $$typeof: propTypes$2.symbol,
-  render: propTypes$2.func
-}), propTypes$2.arrayOf(propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.shape({
-  $$typeof: propTypes$2.symbol,
-  render: propTypes$2.func
+var tagPropType = propTypes.oneOfType([propTypes.func, propTypes.string, propTypes.shape({
+  $$typeof: propTypes.symbol,
+  render: propTypes.func
+}), propTypes.arrayOf(propTypes.oneOfType([propTypes.func, propTypes.string, propTypes.shape({
+  $$typeof: propTypes.symbol,
+  render: propTypes.func
 })]))]);
 /* eslint key-spacing: ["error", { afterColon: true, align: "value" }] */
 // These are all setup to match what is in the bootstrap _variables.scss
@@ -20764,20 +20756,20 @@ function getTarget(target, allElements) {
 }
 var focusableElements = ['a[href]', 'area[href]', 'input:not([disabled]):not([type=hidden])', 'select:not([disabled])', 'textarea:not([disabled])', 'button:not([disabled])', 'object', 'embed', '[tabindex]:not(.modal)', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])'];
 
-var propTypes$3 = {
+var propTypes$1 = {
   tag: tagPropType,
-  fluid: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.string]),
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  fluid: propTypes.oneOfType([propTypes.bool, propTypes.string]),
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
-var rowColsPropType = propTypes$2.oneOfType([propTypes$2.number, propTypes$2.string]);
-var propTypes$4 = {
+var rowColsPropType = propTypes.oneOfType([propTypes.number, propTypes.string]);
+var propTypes$2 = {
   tag: tagPropType,
-  noGutters: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  form: propTypes$2.bool,
+  noGutters: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  form: propTypes.bool,
   xs: rowColsPropType,
   sm: rowColsPropType,
   md: rowColsPropType,
@@ -20785,70 +20777,70 @@ var propTypes$4 = {
   xl: rowColsPropType
 };
 
-var stringOrNumberProp = propTypes$2.oneOfType([propTypes$2.number, propTypes$2.string]);
-var columnProps = propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.number, propTypes$2.string, propTypes$2.shape({
-  size: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.number, propTypes$2.string]),
+var stringOrNumberProp = propTypes.oneOfType([propTypes.number, propTypes.string]);
+var columnProps = propTypes.oneOfType([propTypes.bool, propTypes.number, propTypes.string, propTypes.shape({
+  size: propTypes.oneOfType([propTypes.bool, propTypes.number, propTypes.string]),
   order: stringOrNumberProp,
   offset: stringOrNumberProp
 })]);
-var propTypes$5 = {
+var propTypes$3 = {
   tag: tagPropType,
   xs: columnProps,
   sm: columnProps,
   md: columnProps,
   lg: columnProps,
   xl: columnProps,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  widths: propTypes$2.array
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  widths: propTypes.array
+};
+
+var propTypes$4 = {
+  light: propTypes.bool,
+  dark: propTypes.bool,
+  full: propTypes.bool,
+  fixed: propTypes.string,
+  sticky: propTypes.string,
+  color: propTypes.string,
+  role: propTypes.string,
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  expand: propTypes.oneOfType([propTypes.bool, propTypes.string])
+};
+
+var propTypes$5 = {
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$6 = {
-  light: propTypes$2.bool,
-  dark: propTypes$2.bool,
-  full: propTypes$2.bool,
-  fixed: propTypes$2.string,
-  sticky: propTypes$2.string,
-  color: propTypes$2.string,
-  role: propTypes$2.string,
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  expand: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.string])
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$7 = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  type: propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  children: propTypes.node
 };
 
 var propTypes$8 = {
+  tabs: propTypes.bool,
+  pills: propTypes.bool,
+  vertical: propTypes.oneOfType([propTypes.bool, propTypes.string]),
+  horizontal: propTypes.string,
+  justified: propTypes.bool,
+  fill: propTypes.bool,
+  navbar: propTypes.bool,
+  card: propTypes.bool,
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$9 = {
-  tag: tagPropType,
-  type: propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.node
-};
-
-var propTypes$a = {
-  tabs: propTypes$2.bool,
-  pills: propTypes$2.bool,
-  vertical: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.string]),
-  horizontal: propTypes$2.string,
-  justified: propTypes$2.bool,
-  fill: propTypes$2.bool,
-  navbar: propTypes$2.bool,
-  card: propTypes$2.bool,
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 var defaultProps$1 = {
   tag: 'ul',
@@ -20892,14 +20884,14 @@ var Nav = function Nav(props) {
   }));
 };
 
-Nav.propTypes = propTypes$a;
+Nav.propTypes = propTypes$8;
 Nav.defaultProps = defaultProps$1;
 
-var propTypes$b = {
+var propTypes$9 = {
   tag: tagPropType,
-  active: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  active: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 var defaultProps$2 = {
   tag: 'li'
@@ -20918,7 +20910,7 @@ var NavItem = function NavItem(props) {
   }));
 };
 
-NavItem.propTypes = propTypes$b;
+NavItem.propTypes = propTypes$9;
 NavItem.defaultProps = defaultProps$2;
 
 function _inheritsLoose(subClass, superClass) {
@@ -20927,15 +20919,15 @@ function _inheritsLoose(subClass, superClass) {
   _setPrototypeOf(subClass, superClass);
 }
 
-var propTypes$c = {
+var propTypes$a = {
   tag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.func, propTypes$2.string]),
-  disabled: propTypes$2.bool,
-  active: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  onClick: propTypes$2.func,
-  href: propTypes$2.any
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
+  disabled: propTypes.bool,
+  active: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  onClick: propTypes.func,
+  href: propTypes.any
 };
 var defaultProps$3 = {
   tag: 'a'
@@ -20992,41 +20984,41 @@ var NavLink = /*#__PURE__*/function (_React$Component) {
   return NavLink;
 }(React__default.Component);
 
-NavLink.propTypes = propTypes$c;
+NavLink.propTypes = propTypes$a;
 NavLink.defaultProps = defaultProps$3;
 
-var propTypes$d = {
+var propTypes$b = {
   tag: tagPropType,
   listTag: tagPropType,
-  className: propTypes$2.string,
-  listClassName: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.node,
-  'aria-label': propTypes$2.string
+  className: propTypes.string,
+  listClassName: propTypes.string,
+  cssModule: propTypes.object,
+  children: propTypes.node,
+  'aria-label': propTypes.string
 };
 
-var propTypes$e = {
+var propTypes$c = {
   tag: tagPropType,
-  active: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  active: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
-var propTypes$f = {
-  active: propTypes$2.bool,
-  'aria-label': propTypes$2.string,
-  block: propTypes$2.bool,
-  color: propTypes$2.string,
-  disabled: propTypes$2.bool,
-  outline: propTypes$2.bool,
+var propTypes$d = {
+  active: propTypes.bool,
+  'aria-label': propTypes.string,
+  block: propTypes.bool,
+  color: propTypes.string,
+  disabled: propTypes.bool,
+  outline: propTypes.bool,
   tag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.func, propTypes$2.string]),
-  onClick: propTypes$2.func,
-  size: propTypes$2.string,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  close: propTypes$2.bool
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
+  onClick: propTypes.func,
+  size: propTypes.string,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  close: propTypes.bool
 };
 var defaultProps$4 = {
   color: 'secondary',
@@ -21104,14 +21096,14 @@ var Button = /*#__PURE__*/function (_React$Component) {
   return Button;
 }(React__default.Component);
 
-Button.propTypes = propTypes$f;
+Button.propTypes = propTypes$d;
 Button.defaultProps = defaultProps$4;
 
-var propTypes$g = {
-  onClick: propTypes$2.func,
-  onBlur: propTypes$2.func,
-  onFocus: propTypes$2.func,
-  defaultValue: propTypes$2.bool
+var propTypes$e = {
+  onClick: propTypes.func,
+  onBlur: propTypes.func,
+  onFocus: propTypes.func,
+  defaultValue: propTypes.bool
 };
 var defaultProps$5 = {
   defaultValue: false
@@ -21189,7 +21181,7 @@ var ButtonToggle = /*#__PURE__*/function (_React$Component) {
   return ButtonToggle;
 }(React__default.Component);
 
-ButtonToggle.propTypes = propTypes$g;
+ButtonToggle.propTypes = propTypes$e;
 ButtonToggle.defaultProps = defaultProps$5;
 
 var _extends_1 = createCommonjsModule(function (module) {
@@ -21470,6 +21462,10 @@ var shams = function hasSymbols() {
 	}
 
 	return true;
+};
+
+var shams$1 = function hasToStringTagShams() {
+	return shams() && !!Symbol.toStringTag;
 };
 
 var origSymbol = typeof Symbol !== 'undefined' && Symbol;
@@ -21928,7 +21924,7 @@ var callBound = function callBoundIntrinsic(name, allowMissing) {
 	return intrinsic;
 };
 
-var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var hasToStringTag = shams$1();
 
 
 var $toString = callBound('Object.prototype.toString');
@@ -22057,8 +22053,7 @@ defineProperties_1(polyfill$2, {
 
 var objectIs = polyfill$2;
 
-var hasSymbols$3 = hasSymbols();
-var hasToStringTag$1 = hasSymbols$3 && typeof Symbol.toStringTag === 'symbol';
+var hasToStringTag$1 = shams$1();
 var has$3;
 var $exec;
 var isRegexMarker;
@@ -22207,7 +22202,7 @@ var tryDateObject = function tryDateGetDayCall(value) {
 
 var toStr$4 = Object.prototype.toString;
 var dateClass = '[object Date]';
-var hasToStringTag$2 = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var hasToStringTag$2 = shams$1();
 
 var isDateObject = function isDateObject(value) {
 	if (typeof value !== 'object' || value === null) {
@@ -25013,7 +25008,7 @@ var _react2 = _interopRequireDefault(React__default);
 
 
 
-var _propTypes2 = _interopRequireDefault(propTypes$2);
+var _propTypes2 = _interopRequireDefault(propTypes);
 
 
 
@@ -25578,23 +25573,23 @@ function Reference(props) {
 
 var DropdownContext = /*#__PURE__*/React__default.createContext({});
 
-var propTypes$h = {
-  a11y: propTypes$2.bool,
-  disabled: propTypes$2.bool,
-  direction: propTypes$2.oneOf(['up', 'down', 'left', 'right']),
-  group: propTypes$2.bool,
-  isOpen: propTypes$2.bool,
-  nav: propTypes$2.bool,
-  active: propTypes$2.bool,
-  addonType: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.oneOf(['prepend', 'append'])]),
-  size: propTypes$2.string,
+var propTypes$f = {
+  a11y: propTypes.bool,
+  disabled: propTypes.bool,
+  direction: propTypes.oneOf(['up', 'down', 'left', 'right']),
+  group: propTypes.bool,
+  isOpen: propTypes.bool,
+  nav: propTypes.bool,
+  active: propTypes.bool,
+  addonType: propTypes.oneOfType([propTypes.bool, propTypes.oneOf(['prepend', 'append'])]),
+  size: propTypes.string,
   tag: tagPropType,
-  toggle: propTypes$2.func,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  inNavbar: propTypes$2.bool,
-  setActiveFromChild: propTypes$2.bool
+  toggle: propTypes.func,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  inNavbar: propTypes.bool,
+  setActiveFromChild: propTypes.bool
 };
 var defaultProps$6 = {
   a11y: true,
@@ -25812,7 +25807,7 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
   _proto.render = function render() {
     var _classNames, _ref;
 
-    var _omit = omit$1(this.props, ['toggle', 'disabled', 'inNavbar', 'a11y']),
+    var _omit = omit(this.props, ['toggle', 'disabled', 'inNavbar', 'a11y']),
         className = _omit.className,
         cssModule = _omit.cssModule,
         direction = _omit.direction,
@@ -25847,11 +25842,11 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
   return Dropdown;
 }(React__default.Component);
 
-Dropdown.propTypes = propTypes$h;
+Dropdown.propTypes = propTypes$f;
 Dropdown.defaultProps = defaultProps$6;
 
-var propTypes$i = {
-  children: propTypes$2.node
+var propTypes$g = {
+  children: propTypes.node
 };
 
 var ButtonDropdown = function ButtonDropdown(props) {
@@ -25860,38 +25855,38 @@ var ButtonDropdown = function ButtonDropdown(props) {
   }, props));
 };
 
-ButtonDropdown.propTypes = propTypes$i;
+ButtonDropdown.propTypes = propTypes$g;
+
+var propTypes$h = {
+  tag: tagPropType,
+  'aria-label': propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  role: propTypes.string,
+  size: propTypes.string,
+  vertical: propTypes.bool
+};
+
+var propTypes$i = {
+  tag: tagPropType,
+  'aria-label': propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  role: propTypes.string
+};
 
 var propTypes$j = {
+  children: propTypes.node,
+  active: propTypes.bool,
+  disabled: propTypes.bool,
+  divider: propTypes.bool,
   tag: tagPropType,
-  'aria-label': propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  role: propTypes$2.string,
-  size: propTypes$2.string,
-  vertical: propTypes$2.bool
-};
-
-var propTypes$k = {
-  tag: tagPropType,
-  'aria-label': propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  role: propTypes$2.string
-};
-
-var propTypes$l = {
-  children: propTypes$2.node,
-  active: propTypes$2.bool,
-  disabled: propTypes$2.bool,
-  divider: propTypes$2.bool,
-  tag: tagPropType,
-  header: propTypes$2.bool,
-  onClick: propTypes$2.func,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  toggle: propTypes$2.bool,
-  text: propTypes$2.bool
+  header: propTypes.bool,
+  onClick: propTypes.func,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  toggle: propTypes.bool,
+  text: propTypes.bool
 };
 var defaultProps$7 = {
   tag: 'button',
@@ -25951,7 +25946,7 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
     var tabIndex = this.getTabIndex();
     var role = tabIndex > -1 ? 'menuitem' : undefined;
 
-    var _omit = omit$1(this.props, ['toggle']),
+    var _omit = omit(this.props, ['toggle']),
         className = _omit.className,
         cssModule = _omit.cssModule,
         divider = _omit.divider,
@@ -25995,23 +25990,23 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
   return DropdownItem;
 }(React__default.Component);
 
-DropdownItem.propTypes = propTypes$l;
+DropdownItem.propTypes = propTypes$j;
 DropdownItem.defaultProps = defaultProps$7;
 DropdownItem.contextType = DropdownContext;
 
 function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$a(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$9(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$9(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-var propTypes$m = {
+var propTypes$k = {
   tag: tagPropType,
-  children: propTypes$2.node.isRequired,
-  right: propTypes$2.bool,
-  flip: propTypes$2.bool,
-  modifiers: propTypes$2.object,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  persist: propTypes$2.bool,
-  positionFixed: propTypes$2.bool,
+  children: propTypes.node.isRequired,
+  right: propTypes.bool,
+  flip: propTypes.bool,
+  modifiers: propTypes.object,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  persist: propTypes.bool,
+  positionFixed: propTypes.bool,
   container: targetPropType
 };
 var defaultProps$8 = {
@@ -26117,22 +26112,22 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
 
   return DropdownMenu;
 }(React__default.Component);
-DropdownMenu.propTypes = propTypes$m;
+DropdownMenu.propTypes = propTypes$k;
 DropdownMenu.defaultProps = defaultProps$8;
 DropdownMenu.contextType = DropdownContext;
 
-var propTypes$n = {
-  caret: propTypes$2.bool,
-  color: propTypes$2.string,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  disabled: propTypes$2.bool,
-  onClick: propTypes$2.func,
-  'aria-haspopup': propTypes$2.bool,
-  split: propTypes$2.bool,
+var propTypes$l = {
+  caret: propTypes.bool,
+  color: propTypes.string,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  disabled: propTypes.bool,
+  onClick: propTypes.func,
+  'aria-haspopup': propTypes.bool,
+  split: propTypes.bool,
   tag: tagPropType,
-  nav: propTypes$2.bool
+  nav: propTypes.bool
 };
 var defaultProps$9 = {
   'aria-haspopup': true,
@@ -26232,7 +26227,7 @@ var DropdownToggle = /*#__PURE__*/function (_React$Component) {
   return DropdownToggle;
 }(React__default.Component);
 
-DropdownToggle.propTypes = propTypes$n;
+DropdownToggle.propTypes = propTypes$l;
 DropdownToggle.defaultProps = defaultProps$9;
 DropdownToggle.contextType = DropdownContext;
 
@@ -26456,7 +26451,7 @@ var PropTypes = createCommonjsModule(function (module, exports) {
 exports.__esModule = true;
 exports.classNamesShape = exports.timeoutsShape = void 0;
 
-var _propTypes = _interopRequireDefault(propTypes$2);
+var _propTypes = _interopRequireDefault(propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26490,7 +26485,7 @@ var Transition_1 = createCommonjsModule(function (module, exports) {
 exports.__esModule = true;
 exports.default = exports.EXITING = exports.ENTERED = exports.ENTERING = exports.EXITED = exports.UNMOUNTED = void 0;
 
-var PropTypes$1 = _interopRequireWildcard(propTypes$2);
+var PropTypes$1 = _interopRequireWildcard(propTypes);
 
 var _react = _interopRequireDefault(React__default);
 
@@ -27108,7 +27103,7 @@ var CSSTransition_1 = createCommonjsModule(function (module, exports) {
 exports.__esModule = true;
 exports.default = void 0;
 
-var PropTypes$1 = _interopRequireWildcard(propTypes$2);
+var PropTypes$1 = _interopRequireWildcard(propTypes);
 
 var _addClass = _interopRequireDefault(addClass_1);
 
@@ -27634,7 +27629,7 @@ var TransitionGroup_1 = createCommonjsModule(function (module, exports) {
 exports.__esModule = true;
 exports.default = void 0;
 
-var _propTypes = _interopRequireDefault(propTypes$2);
+var _propTypes = _interopRequireDefault(propTypes);
 
 var _react = _interopRequireDefault(React__default);
 
@@ -27846,7 +27841,7 @@ var ReplaceTransition_1 = createCommonjsModule(function (module, exports) {
 exports.__esModule = true;
 exports.default = void 0;
 
-var _propTypes = _interopRequireDefault(propTypes$2);
+var _propTypes = _interopRequireDefault(propTypes);
 
 var _react = _interopRequireDefault(React__default);
 
@@ -28025,14 +28020,14 @@ function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if 
 
 function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var propTypes$o = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.propTypes), {}, {
-  children: propTypes$2.oneOfType([propTypes$2.arrayOf(propTypes$2.node), propTypes$2.node]),
+var propTypes$m = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.propTypes), {}, {
+  children: propTypes.oneOfType([propTypes.arrayOf(propTypes.node), propTypes.node]),
   tag: tagPropType,
-  baseClass: propTypes$2.string,
-  baseClassActive: propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  baseClass: propTypes.string,
+  baseClassActive: propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 });
 
 var defaultProps$a = _objectSpread$b(_objectSpread$b({}, reactTransitionGroup_1.defaultProps), {}, {
@@ -28057,7 +28052,7 @@ function Fade(props) {
       otherProps = _objectWithoutPropertiesLoose$1(props, ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"]);
 
   var transitionProps = pick(otherProps, TransitionPropTypeKeys);
-  var childProps = omit$1(otherProps, TransitionPropTypeKeys);
+  var childProps = omit(otherProps, TransitionPropTypeKeys);
   return /*#__PURE__*/React__default.createElement(reactTransitionGroup_1, transitionProps, function (status) {
     var isActive = status === 'entered';
     var classes = mapToCssModules(classnames(className, baseClass, isActive && baseClassActive), cssModule);
@@ -28069,86 +28064,86 @@ function Fade(props) {
   });
 }
 
-Fade.propTypes = propTypes$o;
+Fade.propTypes = propTypes$m;
 Fade.defaultProps = defaultProps$a;
 
-var propTypes$p = {
-  color: propTypes$2.string,
-  pill: propTypes$2.bool,
+var propTypes$n = {
+  color: propTypes.string,
+  pill: propTypes.bool,
   tag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.func, propTypes$2.string]),
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object
+};
+
+var propTypes$o = {
+  tag: tagPropType,
+  inverse: propTypes.bool,
+  color: propTypes.string,
+  body: propTypes.bool,
+  outline: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
+};
+
+var propTypes$p = {
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$q = {
   tag: tagPropType,
-  inverse: propTypes$2.bool,
-  color: propTypes$2.string,
-  body: propTypes$2.bool,
-  outline: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$r = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$s = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
 
 var propTypes$t = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$u = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$v = {
   tag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.func, propTypes$2.string]),
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$w = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  top: propTypes.bool,
+  bottom: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$x = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$y = {
-  tag: tagPropType,
-  top: propTypes$2.bool,
-  bottom: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$z = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -28250,11 +28245,11 @@ var CarouselItem = /*#__PURE__*/function (_React$Component) {
 
 CarouselItem.propTypes = _objectSpread$c(_objectSpread$c({}, reactTransitionGroup_1.propTypes), {}, {
   tag: tagPropType,
-  in: propTypes$2.bool,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.node,
-  slide: propTypes$2.bool,
-  className: propTypes$2.string
+  in: propTypes.bool,
+  cssModule: propTypes.object,
+  children: propTypes.node,
+  slide: propTypes.bool,
+  className: propTypes.string
 });
 CarouselItem.defaultProps = _objectSpread$c(_objectSpread$c({}, reactTransitionGroup_1.defaultProps), {}, {
   tag: 'div',
@@ -28262,7 +28257,7 @@ CarouselItem.defaultProps = _objectSpread$c(_objectSpread$c({}, reactTransitionG
   slide: true
 });
 CarouselItem.contextTypes = {
-  direction: propTypes$2.string
+  direction: propTypes.string
 };
 
 var SWIPE_THRESHOLD = 40;
@@ -28538,34 +28533,34 @@ var Carousel = /*#__PURE__*/function (_React$Component) {
 
 Carousel.propTypes = {
   // the current active slide of the carousel
-  activeIndex: propTypes$2.number,
+  activeIndex: propTypes.number,
   // a function which should advance the carousel to the next slide (via activeIndex)
-  next: propTypes$2.func.isRequired,
+  next: propTypes.func.isRequired,
   // a function which should advance the carousel to the previous slide (via activeIndex)
-  previous: propTypes$2.func.isRequired,
+  previous: propTypes.func.isRequired,
   // controls if the left and right arrow keys should control the carousel
-  keyboard: propTypes$2.bool,
+  keyboard: propTypes.bool,
 
   /* If set to "hover", pauses the cycling of the carousel on mouseenter and resumes the cycling of the carousel on
    * mouseleave. If set to false, hovering over the carousel won't pause it. (default: "hover")
    */
-  pause: propTypes$2.oneOf(['hover', false]),
+  pause: propTypes.oneOf(['hover', false]),
   // Autoplays the carousel after the user manually cycles the first item. If "carousel", autoplays the carousel on load.
   // This is how bootstrap defines it... I would prefer a bool named autoplay or something...
-  ride: propTypes$2.oneOf(['carousel']),
+  ride: propTypes.oneOf(['carousel']),
   // the interval at which the carousel automatically cycles (default: 5000)
   // eslint-disable-next-line react/no-unused-prop-types
-  interval: propTypes$2.oneOfType([propTypes$2.number, propTypes$2.string, propTypes$2.bool]),
-  children: propTypes$2.array,
+  interval: propTypes.oneOfType([propTypes.number, propTypes.string, propTypes.bool]),
+  children: propTypes.array,
   // called when the mouse enters the Carousel
-  mouseEnter: propTypes$2.func,
+  mouseEnter: propTypes.func,
   // called when the mouse exits the Carousel
-  mouseLeave: propTypes$2.func,
+  mouseLeave: propTypes.func,
   // controls whether the slide animation on the Carousel works or not
-  slide: propTypes$2.bool,
-  cssModule: propTypes$2.object,
-  className: propTypes$2.string,
-  enableTouch: propTypes$2.bool
+  slide: propTypes.bool,
+  cssModule: propTypes.object,
+  className: propTypes.string,
+  enableTouch: propTypes.bool
 };
 Carousel.defaultProps = {
   interval: 5000,
@@ -28575,7 +28570,7 @@ Carousel.defaultProps = {
   enableTouch: true
 };
 Carousel.childContextTypes = {
-  direction: propTypes$2.string
+  direction: propTypes.string
 };
 
 var CarouselControl = function CarouselControl(props) {
@@ -28614,11 +28609,11 @@ var CarouselControl = function CarouselControl(props) {
 };
 
 CarouselControl.propTypes = {
-  direction: propTypes$2.oneOf(['prev', 'next']).isRequired,
-  onClickHandler: propTypes$2.func.isRequired,
-  cssModule: propTypes$2.object,
-  directionText: propTypes$2.string,
-  className: propTypes$2.string
+  direction: propTypes.oneOf(['prev', 'next']).isRequired,
+  onClickHandler: propTypes.func.isRequired,
+  cssModule: propTypes.object,
+  directionText: propTypes.string,
+  className: propTypes.string
 };
 
 var CarouselIndicators = function CarouselIndicators(props) {
@@ -28647,11 +28642,11 @@ var CarouselIndicators = function CarouselIndicators(props) {
 };
 
 CarouselIndicators.propTypes = {
-  items: propTypes$2.array.isRequired,
-  activeIndex: propTypes$2.number.isRequired,
-  cssModule: propTypes$2.object,
-  onClickHandler: propTypes$2.func.isRequired,
-  className: propTypes$2.string
+  items: propTypes.array.isRequired,
+  activeIndex: propTypes.number.isRequired,
+  cssModule: propTypes.object,
+  onClickHandler: propTypes.func.isRequired,
+  className: propTypes.string
 };
 
 var CarouselCaption = function CarouselCaption(props) {
@@ -28666,54 +28661,54 @@ var CarouselCaption = function CarouselCaption(props) {
 };
 
 CarouselCaption.propTypes = {
-  captionHeader: propTypes$2.node,
-  captionText: propTypes$2.node.isRequired,
-  cssModule: propTypes$2.object,
-  className: propTypes$2.string
+  captionHeader: propTypes.node,
+  captionText: propTypes.node.isRequired,
+  cssModule: propTypes.object,
+  className: propTypes.string
+};
+
+var propTypes$y = {
+  items: propTypes.array.isRequired,
+  indicators: propTypes.bool,
+  controls: propTypes.bool,
+  autoPlay: propTypes.bool,
+  defaultActiveIndex: propTypes.number,
+  activeIndex: propTypes.number,
+  next: propTypes.func,
+  previous: propTypes.func,
+  goToIndex: propTypes.func
+};
+
+var propTypes$z = {
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$A = {
-  items: propTypes$2.array.isRequired,
-  indicators: propTypes$2.bool,
-  controls: propTypes$2.bool,
-  autoPlay: propTypes$2.bool,
-  defaultActiveIndex: propTypes$2.number,
-  activeIndex: propTypes$2.number,
-  next: propTypes$2.func,
-  previous: propTypes$2.func,
-  goToIndex: propTypes$2.func
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$B = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$C = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$D = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$E = {
-  className: propTypes$2.string,
-  id: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]).isRequired,
-  label: propTypes$2.node,
-  valid: propTypes$2.bool,
-  invalid: propTypes$2.bool,
-  bsSize: propTypes$2.string,
-  htmlFor: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  onChange: propTypes$2.func,
-  children: propTypes$2.oneOfType([propTypes$2.node, propTypes$2.array, propTypes$2.func]),
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  className: propTypes.string,
+  id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
+  label: propTypes.node,
+  valid: propTypes.bool,
+  invalid: propTypes.bool,
+  bsSize: propTypes.string,
+  htmlFor: propTypes.string,
+  cssModule: propTypes.object,
+  onChange: propTypes.func,
+  children: propTypes.oneOfType([propTypes.node, propTypes.array, propTypes.func]),
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
 
 var CustomFileInput = /*#__PURE__*/function (_React$Component) {
@@ -28805,21 +28800,21 @@ var CustomFileInput = /*#__PURE__*/function (_React$Component) {
   return CustomFileInput;
 }(React__default.Component);
 
-CustomFileInput.propTypes = propTypes$E;
+CustomFileInput.propTypes = propTypes$C;
 
-var propTypes$F = {
-  className: propTypes$2.string,
-  id: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]).isRequired,
-  type: propTypes$2.string.isRequired,
-  label: propTypes$2.node,
-  inline: propTypes$2.bool,
-  valid: propTypes$2.bool,
-  invalid: propTypes$2.bool,
-  bsSize: propTypes$2.string,
-  htmlFor: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.oneOfType([propTypes$2.node, propTypes$2.array, propTypes$2.func]),
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+var propTypes$D = {
+  className: propTypes.string,
+  id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
+  type: propTypes.string.isRequired,
+  label: propTypes.node,
+  inline: propTypes.bool,
+  valid: propTypes.bool,
+  invalid: propTypes.bool,
+  bsSize: propTypes.string,
+  htmlFor: propTypes.string,
+  cssModule: propTypes.object,
+  children: propTypes.oneOfType([propTypes.node, propTypes.array, propTypes.func]),
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
 
 function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -28828,27 +28823,27 @@ function _objectSpread$d(target) { for (var i = 1; i < arguments.length; i++) { 
 
 function noop$2() {}
 
-var propTypes$G = {
-  children: propTypes$2.oneOfType([propTypes$2.node, propTypes$2.func]).isRequired,
-  popperClassName: propTypes$2.string,
-  placement: propTypes$2.string,
-  placementPrefix: propTypes$2.string,
-  arrowClassName: propTypes$2.string,
-  hideArrow: propTypes$2.bool,
+var propTypes$E = {
+  children: propTypes.oneOfType([propTypes.node, propTypes.func]).isRequired,
+  popperClassName: propTypes.string,
+  placement: propTypes.string,
+  placementPrefix: propTypes.string,
+  arrowClassName: propTypes.string,
+  hideArrow: propTypes.bool,
   tag: tagPropType,
-  isOpen: propTypes$2.bool.isRequired,
-  cssModule: propTypes$2.object,
-  offset: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  fallbackPlacement: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.array]),
-  flip: propTypes$2.bool,
+  isOpen: propTypes.bool.isRequired,
+  cssModule: propTypes.object,
+  offset: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  fallbackPlacement: propTypes.oneOfType([propTypes.string, propTypes.array]),
+  flip: propTypes.bool,
   container: targetPropType,
   target: targetPropType.isRequired,
-  modifiers: propTypes$2.object,
-  positionFixed: propTypes$2.bool,
-  boundariesElement: propTypes$2.oneOfType([propTypes$2.string, DOMElement]),
-  onClosed: propTypes$2.func,
-  fade: propTypes$2.bool,
-  transition: propTypes$2.shape(Fade.propTypes)
+  modifiers: propTypes.object,
+  positionFixed: propTypes.bool,
+  boundariesElement: propTypes.oneOfType([propTypes.string, DOMElement]),
+  onClosed: propTypes.func,
+  fade: propTypes.bool,
+  transition: propTypes.shape(Fade.propTypes)
 };
 var defaultProps$b = {
   boundariesElement: 'scrollParent',
@@ -29013,7 +29008,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
   return PopperContent;
 }(React__default.Component);
 
-PopperContent.propTypes = propTypes$G;
+PopperContent.propTypes = propTypes$E;
 PopperContent.defaultProps = defaultProps$b;
 
 var PopperTargetHelper = function PopperTargetHelper(props, context) {
@@ -29022,40 +29017,40 @@ var PopperTargetHelper = function PopperTargetHelper(props, context) {
 };
 
 PopperTargetHelper.contextTypes = {
-  popperManager: propTypes$2.object.isRequired
+  popperManager: propTypes.object.isRequired
 };
 PopperTargetHelper.propTypes = {
   target: targetPropType.isRequired
 };
 
-var propTypes$H = {
-  children: propTypes$2.oneOfType([propTypes$2.node, propTypes$2.func]),
-  placement: propTypes$2.oneOf(PopperPlacements),
+var propTypes$F = {
+  children: propTypes.oneOfType([propTypes.node, propTypes.func]),
+  placement: propTypes.oneOf(PopperPlacements),
   target: targetPropType.isRequired,
   container: targetPropType,
-  isOpen: propTypes$2.bool,
-  disabled: propTypes$2.bool,
-  hideArrow: propTypes$2.bool,
-  boundariesElement: propTypes$2.oneOfType([propTypes$2.string, DOMElement]),
-  className: propTypes$2.string,
-  innerClassName: propTypes$2.string,
-  arrowClassName: propTypes$2.string,
-  popperClassName: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  toggle: propTypes$2.func,
-  autohide: propTypes$2.bool,
-  placementPrefix: propTypes$2.string,
-  delay: propTypes$2.oneOfType([propTypes$2.shape({
-    show: propTypes$2.number,
-    hide: propTypes$2.number
-  }), propTypes$2.number]),
-  modifiers: propTypes$2.object,
-  positionFixed: propTypes$2.bool,
-  offset: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  innerRef: propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.object]),
-  trigger: propTypes$2.string,
-  fade: propTypes$2.bool,
-  flip: propTypes$2.bool
+  isOpen: propTypes.bool,
+  disabled: propTypes.bool,
+  hideArrow: propTypes.bool,
+  boundariesElement: propTypes.oneOfType([propTypes.string, DOMElement]),
+  className: propTypes.string,
+  innerClassName: propTypes.string,
+  arrowClassName: propTypes.string,
+  popperClassName: propTypes.string,
+  cssModule: propTypes.object,
+  toggle: propTypes.func,
+  autohide: propTypes.bool,
+  placementPrefix: propTypes.string,
+  delay: propTypes.oneOfType([propTypes.shape({
+    show: propTypes.number,
+    hide: propTypes.number
+  }), propTypes.number]),
+  modifiers: propTypes.object,
+  positionFixed: propTypes.bool,
+  offset: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  innerRef: propTypes.oneOfType([propTypes.func, propTypes.string, propTypes.object]),
+  trigger: propTypes.string,
+  fade: propTypes.bool,
+  flip: propTypes.bool
 };
 var DEFAULT_DELAYS = {
   show: 0,
@@ -29372,7 +29367,7 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
         fade = _this$props.fade,
         flip = _this$props.flip,
         children = _this$props.children;
-    var attributes = omit$1(this.props, Object.keys(propTypes$H));
+    var attributes = omit(this.props, Object.keys(propTypes$F));
     var popperClasses = mapToCssModules(popperClassName, cssModule);
     var classes = mapToCssModules(innerClassName, cssModule);
     return /*#__PURE__*/React__default.createElement(PopperContent, {
@@ -29410,7 +29405,7 @@ var TooltipPopoverWrapper = /*#__PURE__*/function (_React$Component) {
   return TooltipPopoverWrapper;
 }(React__default.Component);
 
-TooltipPopoverWrapper.propTypes = propTypes$H;
+TooltipPopoverWrapper.propTypes = propTypes$F;
 TooltipPopoverWrapper.defaultProps = defaultProps$c;
 
 var defaultProps$d = {
@@ -29428,7 +29423,7 @@ var Popover = function Popover(props) {
   }));
 };
 
-Popover.propTypes = propTypes$H;
+Popover.propTypes = propTypes$F;
 Popover.defaultProps = defaultProps$d;
 
 function ownKeys$d(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -29462,50 +29457,50 @@ var UncontrolledPopover = /*#__PURE__*/function (_Component) {
     return /*#__PURE__*/React__default.createElement(Popover, _extends({
       isOpen: this.state.isOpen,
       toggle: this.toggle
-    }, omit$1(this.props, omitKeys)));
+    }, omit(this.props, omitKeys)));
   };
 
   return UncontrolledPopover;
 }(Component);
 UncontrolledPopover.propTypes = _objectSpread$e({
-  defaultOpen: propTypes$2.bool
+  defaultOpen: propTypes.bool
 }, Popover.propTypes);
 
-var propTypes$I = {
+var propTypes$G = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
+};
+
+var propTypes$H = {
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object
+};
+
+var propTypes$I = {
+  children: propTypes.node,
+  bar: propTypes.bool,
+  multi: propTypes.bool,
+  tag: tagPropType,
+  value: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  min: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  max: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  animated: propTypes.bool,
+  striped: propTypes.bool,
+  color: propTypes.string,
+  className: propTypes.string,
+  barClassName: propTypes.string,
+  cssModule: propTypes.object,
+  style: propTypes.object,
+  barStyle: propTypes.object,
+  barAriaValueText: propTypes.string,
+  barAriaLabelledBy: propTypes.string
 };
 
 var propTypes$J = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$K = {
-  children: propTypes$2.node,
-  bar: propTypes$2.bool,
-  multi: propTypes$2.bool,
-  tag: tagPropType,
-  value: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  min: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  max: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  animated: propTypes$2.bool,
-  striped: propTypes$2.bool,
-  color: propTypes$2.string,
-  className: propTypes$2.string,
-  barClassName: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  style: propTypes$2.object,
-  barStyle: propTypes$2.object,
-  barAriaValueText: propTypes$2.string,
-  barAriaLabelledBy: propTypes$2.string
-};
-
-var propTypes$L = {
-  children: propTypes$2.node.isRequired,
-  node: propTypes$2.any
+  children: propTypes.node.isRequired,
+  node: propTypes.any
 };
 
 var Portal$1 = /*#__PURE__*/function (_React$Component) {
@@ -29541,7 +29536,7 @@ var Portal$1 = /*#__PURE__*/function (_React$Component) {
   return Portal;
 }(React__default.Component);
 
-Portal$1.propTypes = propTypes$L;
+Portal$1.propTypes = propTypes$J;
 
 function ownKeys$e(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -29549,41 +29544,41 @@ function _objectSpread$f(target) { for (var i = 1; i < arguments.length; i++) { 
 
 function noop$3() {}
 
-var FadePropTypes = propTypes$2.shape(Fade.propTypes);
-var propTypes$M = {
-  isOpen: propTypes$2.bool,
-  autoFocus: propTypes$2.bool,
-  centered: propTypes$2.bool,
-  scrollable: propTypes$2.bool,
-  size: propTypes$2.string,
-  toggle: propTypes$2.func,
-  keyboard: propTypes$2.bool,
-  role: propTypes$2.string,
-  labelledBy: propTypes$2.string,
-  backdrop: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.oneOf(['static'])]),
-  onEnter: propTypes$2.func,
-  onExit: propTypes$2.func,
-  onOpened: propTypes$2.func,
-  onClosed: propTypes$2.func,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  wrapClassName: propTypes$2.string,
-  modalClassName: propTypes$2.string,
-  backdropClassName: propTypes$2.string,
-  contentClassName: propTypes$2.string,
-  external: propTypes$2.node,
-  fade: propTypes$2.bool,
-  cssModule: propTypes$2.object,
-  zIndex: propTypes$2.oneOfType([propTypes$2.number, propTypes$2.string]),
+var FadePropTypes = propTypes.shape(Fade.propTypes);
+var propTypes$K = {
+  isOpen: propTypes.bool,
+  autoFocus: propTypes.bool,
+  centered: propTypes.bool,
+  scrollable: propTypes.bool,
+  size: propTypes.string,
+  toggle: propTypes.func,
+  keyboard: propTypes.bool,
+  role: propTypes.string,
+  labelledBy: propTypes.string,
+  backdrop: propTypes.oneOfType([propTypes.bool, propTypes.oneOf(['static'])]),
+  onEnter: propTypes.func,
+  onExit: propTypes.func,
+  onOpened: propTypes.func,
+  onClosed: propTypes.func,
+  children: propTypes.node,
+  className: propTypes.string,
+  wrapClassName: propTypes.string,
+  modalClassName: propTypes.string,
+  backdropClassName: propTypes.string,
+  contentClassName: propTypes.string,
+  external: propTypes.node,
+  fade: propTypes.bool,
+  cssModule: propTypes.object,
+  zIndex: propTypes.oneOfType([propTypes.number, propTypes.string]),
   backdropTransition: FadePropTypes,
   modalTransition: FadePropTypes,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func]),
-  unmountOnClose: propTypes$2.bool,
-  returnFocusAfterClose: propTypes$2.bool,
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func]),
+  unmountOnClose: propTypes.bool,
+  returnFocusAfterClose: propTypes.bool,
   container: targetPropType,
-  trapFocus: propTypes$2.bool
+  trapFocus: propTypes.bool
 };
-var propsToOmit = Object.keys(propTypes$M);
+var propsToOmit = Object.keys(propTypes$K);
 var defaultProps$e = {
   isOpen: false,
   autoFocus: true,
@@ -29918,7 +29913,7 @@ var Modal = /*#__PURE__*/function (_React$Component) {
     var _classNames,
         _this3 = this;
 
-    var attributes = omit$1(this.props, propsToOmit);
+    var attributes = omit(this.props, propsToOmit);
     var dialogBaseClass = 'modal-dialog';
     return /*#__PURE__*/React__default.createElement("div", _extends({}, attributes, {
       className: mapToCssModules(classnames(dialogBaseClass, this.props.className, (_classNames = {}, _classNames["modal-" + this.props.size] = this.props.size, _classNames[dialogBaseClass + "-centered"] = this.props.centered, _classNames[dialogBaseClass + "-scrollable"] = this.props.scrollable, _classNames)), this.props.cssModule),
@@ -30006,32 +30001,32 @@ var Modal = /*#__PURE__*/function (_React$Component) {
   return Modal;
 }(React__default.Component);
 
-Modal.propTypes = propTypes$M;
+Modal.propTypes = propTypes$K;
 Modal.defaultProps = defaultProps$e;
 Modal.openCount = 0;
 
-var propTypes$N = {
+var propTypes$L = {
   tag: tagPropType,
   wrapTag: tagPropType,
-  toggle: propTypes$2.func,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.node,
-  closeAriaLabel: propTypes$2.string,
-  charCode: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  close: propTypes$2.object
+  toggle: propTypes.func,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  children: propTypes.node,
+  closeAriaLabel: propTypes.string,
+  charCode: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  close: propTypes.object
 };
 
-var propTypes$O = {
+var propTypes$M = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
-var propTypes$P = {
+var propTypes$N = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var defaultProps$f = {
@@ -30050,83 +30045,83 @@ var Tooltip = function Tooltip(props) {
   }));
 };
 
-Tooltip.propTypes = propTypes$H;
+Tooltip.propTypes = propTypes$F;
 Tooltip.defaultProps = defaultProps$f;
 
-var propTypes$Q = {
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  size: propTypes$2.string,
-  bordered: propTypes$2.bool,
-  borderless: propTypes$2.bool,
-  striped: propTypes$2.bool,
-  dark: propTypes$2.bool,
-  hover: propTypes$2.bool,
-  responsive: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.string]),
+var propTypes$O = {
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  size: propTypes.string,
+  bordered: propTypes.bool,
+  borderless: propTypes.bool,
+  striped: propTypes.bool,
+  dark: propTypes.bool,
+  hover: propTypes.bool,
+  responsive: propTypes.oneOfType([propTypes.bool, propTypes.string]),
   tag: tagPropType,
   responsiveTag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.object])
+  innerRef: propTypes.oneOfType([propTypes.func, propTypes.string, propTypes.object])
+};
+
+var propTypes$P = {
+  tag: tagPropType,
+  flush: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  horizontal: propTypes.oneOfType([propTypes.bool, propTypes.string])
+};
+
+var propTypes$Q = {
+  children: propTypes.node,
+  inline: propTypes.bool,
+  tag: tagPropType,
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$R = {
+  children: propTypes.node,
   tag: tagPropType,
-  flush: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  horizontal: propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.string])
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  valid: propTypes.bool,
+  tooltip: propTypes.bool
 };
 
 var propTypes$S = {
-  children: propTypes$2.node,
-  inline: propTypes$2.bool,
+  children: propTypes.node,
+  row: propTypes.bool,
+  check: propTypes.bool,
+  inline: propTypes.bool,
+  disabled: propTypes.bool,
   tag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.func, propTypes$2.string]),
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$T = {
-  children: propTypes$2.node,
+  children: propTypes.node,
+  inline: propTypes.bool,
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  valid: propTypes$2.bool,
-  tooltip: propTypes$2.bool
+  color: propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$U = {
-  children: propTypes$2.node,
-  row: propTypes$2.bool,
-  check: propTypes$2.bool,
-  inline: propTypes$2.bool,
-  disabled: propTypes$2.bool,
+  children: propTypes.node,
+  type: propTypes.string,
+  size: propTypes.oneOfType([propTypes.number, propTypes.string]),
+  bsSize: propTypes.string,
+  valid: propTypes.bool,
+  invalid: propTypes.bool,
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$V = {
-  children: propTypes$2.node,
-  inline: propTypes$2.bool,
-  tag: tagPropType,
-  color: propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$W = {
-  children: propTypes$2.node,
-  type: propTypes$2.string,
-  size: propTypes$2.oneOfType([propTypes$2.number, propTypes$2.string]),
-  bsSize: propTypes$2.string,
-  valid: propTypes$2.bool,
-  invalid: propTypes$2.bool,
-  tag: tagPropType,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.func, propTypes$2.string]),
-  plaintext: propTypes$2.bool,
-  addon: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
+  plaintext: propTypes.bool,
+  addon: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 var defaultProps$g = {
   type: 'text'
@@ -30225,143 +30220,143 @@ var Input = /*#__PURE__*/function (_React$Component) {
   return Input;
 }(React__default.Component);
 
-Input.propTypes = propTypes$W;
+Input.propTypes = propTypes$U;
 Input.defaultProps = defaultProps$g;
+
+var propTypes$V = {
+  tag: tagPropType,
+  size: propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object
+};
+
+var propTypes$W = {
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object
+};
 
 var propTypes$X = {
   tag: tagPropType,
-  size: propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  addonType: propTypes.oneOf(['prepend', 'append']).isRequired,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$Y = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  addonType: propTypes.oneOf(['prepend', 'append']).isRequired,
+  children: propTypes.node
 };
 
-var propTypes$Z = {
-  tag: tagPropType,
-  addonType: propTypes$2.oneOf(['prepend', 'append']).isRequired,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$_ = {
-  addonType: propTypes$2.oneOf(['prepend', 'append']).isRequired,
-  children: propTypes$2.node
-};
-
-var stringOrNumberProp$1 = propTypes$2.oneOfType([propTypes$2.number, propTypes$2.string]);
-var columnProps$1 = propTypes$2.oneOfType([propTypes$2.bool, propTypes$2.string, propTypes$2.number, propTypes$2.shape({
+var stringOrNumberProp$1 = propTypes.oneOfType([propTypes.number, propTypes.string]);
+var columnProps$1 = propTypes.oneOfType([propTypes.bool, propTypes.string, propTypes.number, propTypes.shape({
   size: stringOrNumberProp$1,
   order: stringOrNumberProp$1,
   offset: stringOrNumberProp$1
 })]);
-var propTypes$$ = {
-  children: propTypes$2.node,
-  hidden: propTypes$2.bool,
-  check: propTypes$2.bool,
-  size: propTypes$2.string,
-  for: propTypes$2.string,
+var propTypes$Z = {
+  children: propTypes.node,
+  hidden: propTypes.bool,
+  check: propTypes.bool,
+  size: propTypes.string,
+  for: propTypes.string,
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
+  className: propTypes.string,
+  cssModule: propTypes.object,
   xs: columnProps$1,
   sm: columnProps$1,
   md: columnProps$1,
   lg: columnProps$1,
   xl: columnProps$1,
-  widths: propTypes$2.array
+  widths: propTypes.array
+};
+
+var propTypes$_ = {
+  body: propTypes.bool,
+  bottom: propTypes.bool,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  heading: propTypes.bool,
+  left: propTypes.bool,
+  list: propTypes.bool,
+  middle: propTypes.bool,
+  object: propTypes.bool,
+  right: propTypes.bool,
+  tag: tagPropType,
+  top: propTypes.bool
+};
+
+var propTypes$$ = {
+  children: propTypes.node,
+  className: propTypes.string,
+  listClassName: propTypes.string,
+  cssModule: propTypes.object,
+  size: propTypes.string,
+  tag: tagPropType,
+  listTag: tagPropType,
+  'aria-label': propTypes.string
 };
 
 var propTypes$10 = {
-  body: propTypes$2.bool,
-  bottom: propTypes$2.bool,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  heading: propTypes$2.bool,
-  left: propTypes$2.bool,
-  list: propTypes$2.bool,
-  middle: propTypes$2.bool,
-  object: propTypes$2.bool,
-  right: propTypes$2.bool,
-  tag: tagPropType,
-  top: propTypes$2.bool
+  active: propTypes.bool,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  disabled: propTypes.bool,
+  tag: tagPropType
 };
 
 var propTypes$11 = {
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  listClassName: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  size: propTypes$2.string,
-  tag: tagPropType,
-  listTag: tagPropType,
-  'aria-label': propTypes$2.string
+  'aria-label': propTypes.string,
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  next: propTypes.bool,
+  previous: propTypes.bool,
+  first: propTypes.bool,
+  last: propTypes.bool,
+  tag: tagPropType
 };
 
 var propTypes$12 = {
-  active: propTypes$2.bool,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  disabled: propTypes$2.bool,
-  tag: tagPropType
+  tag: tagPropType,
+  activeTab: propTypes.any,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 var propTypes$13 = {
-  'aria-label': propTypes$2.string,
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  next: propTypes$2.bool,
-  previous: propTypes$2.bool,
-  first: propTypes$2.bool,
-  last: propTypes$2.bool,
-  tag: tagPropType
+  tag: tagPropType,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  tabId: propTypes.any
 };
 
 var propTypes$14 = {
   tag: tagPropType,
-  activeTab: propTypes$2.any,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$15 = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  tabId: propTypes$2.any
-};
-
-var propTypes$16 = {
-  tag: tagPropType,
-  fluid: propTypes$2.bool,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  fluid: propTypes.bool,
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 
 function ownKeys$f(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$g(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$f(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$f(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-var propTypes$17 = {
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  closeClassName: propTypes$2.string,
-  closeAriaLabel: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  color: propTypes$2.string,
-  fade: propTypes$2.bool,
-  isOpen: propTypes$2.bool,
-  toggle: propTypes$2.func,
+var propTypes$15 = {
+  children: propTypes.node,
+  className: propTypes.string,
+  closeClassName: propTypes.string,
+  closeAriaLabel: propTypes.string,
+  cssModule: propTypes.object,
+  color: propTypes.string,
+  fade: propTypes.bool,
+  isOpen: propTypes.bool,
+  toggle: propTypes.func,
   tag: tagPropType,
-  transition: propTypes$2.shape(Fade.propTypes),
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  transition: propTypes.shape(Fade.propTypes),
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
 var defaultProps$h = {
   color: 'success',
@@ -30377,15 +30372,15 @@ var defaultProps$h = {
 function ownKeys$g(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$h(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$g(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$g(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-var propTypes$18 = {
-  children: propTypes$2.node,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  fade: propTypes$2.bool,
-  isOpen: propTypes$2.bool,
+var propTypes$16 = {
+  children: propTypes.node,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  fade: propTypes.bool,
+  isOpen: propTypes.bool,
   tag: tagPropType,
-  transition: propTypes$2.shape(Fade.propTypes),
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  transition: propTypes.shape(Fade.propTypes),
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
 var defaultProps$i = {
   isOpen: true,
@@ -30396,24 +30391,24 @@ var defaultProps$i = {
   })
 };
 
-var propTypes$19 = {
+var propTypes$17 = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  innerRef: propTypes$2.oneOfType([propTypes$2.object, propTypes$2.string, propTypes$2.func])
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
 
-var propTypes$1a = {
+var propTypes$18 = {
   tag: tagPropType,
-  icon: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.node]),
+  icon: propTypes.oneOfType([propTypes.string, propTypes.node]),
   wrapTag: tagPropType,
-  toggle: propTypes$2.func,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.node,
-  closeAriaLabel: propTypes$2.string,
-  charCode: propTypes$2.oneOfType([propTypes$2.string, propTypes$2.number]),
-  close: propTypes$2.object
+  toggle: propTypes.func,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  children: propTypes.node,
+  closeAriaLabel: propTypes.string,
+  charCode: propTypes.oneOfType([propTypes.string, propTypes.number]),
+  close: propTypes.object
 };
 
 var _transitionStatusToCl;
@@ -30422,14 +30417,14 @@ function ownKeys$h(object, enumerableOnly) { var keys = Object.keys(object); if 
 
 function _objectSpread$i(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$h(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$h(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-var propTypes$1b = _objectSpread$i(_objectSpread$i({}, reactTransitionGroup_1.propTypes), {}, {
-  isOpen: propTypes$2.bool,
-  children: propTypes$2.oneOfType([propTypes$2.arrayOf(propTypes$2.node), propTypes$2.node]),
+var propTypes$19 = _objectSpread$i(_objectSpread$i({}, reactTransitionGroup_1.propTypes), {}, {
+  isOpen: propTypes.bool,
+  children: propTypes.oneOfType([propTypes.arrayOf(propTypes.node), propTypes.node]),
   tag: tagPropType,
-  className: propTypes$2.node,
-  navbar: propTypes$2.bool,
-  cssModule: propTypes$2.object,
-  innerRef: propTypes$2.oneOfType([propTypes$2.func, propTypes$2.string, propTypes$2.object])
+  className: propTypes.node,
+  navbar: propTypes.bool,
+  cssModule: propTypes.object,
+  innerRef: propTypes.oneOfType([propTypes.func, propTypes.string, propTypes.object])
 });
 
 var defaultProps$j = _objectSpread$i(_objectSpread$i({}, reactTransitionGroup_1.defaultProps), {}, {
@@ -30443,33 +30438,33 @@ var defaultProps$j = _objectSpread$i(_objectSpread$i({}, reactTransitionGroup_1.
 
 var transitionStatusToClassHash = (_transitionStatusToCl = {}, _transitionStatusToCl[TransitionStatuses.ENTERING] = 'collapsing', _transitionStatusToCl[TransitionStatuses.ENTERED] = 'collapse show', _transitionStatusToCl[TransitionStatuses.EXITING] = 'collapsing', _transitionStatusToCl[TransitionStatuses.EXITED] = 'collapse', _transitionStatusToCl);
 
+var propTypes$1a = {
+  tag: tagPropType,
+  active: propTypes.bool,
+  disabled: propTypes.bool,
+  color: propTypes.string,
+  action: propTypes.bool,
+  className: propTypes.any,
+  cssModule: propTypes.object
+};
+
+var propTypes$1b = {
+  tag: tagPropType,
+  className: propTypes.any,
+  cssModule: propTypes.object
+};
+
 var propTypes$1c = {
   tag: tagPropType,
-  active: propTypes$2.bool,
-  disabled: propTypes$2.bool,
-  color: propTypes$2.string,
-  action: propTypes$2.bool,
-  className: propTypes$2.any,
-  cssModule: propTypes$2.object
+  className: propTypes.any,
+  cssModule: propTypes.object
 };
 
 var propTypes$1d = {
   tag: tagPropType,
-  className: propTypes$2.any,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$1e = {
-  tag: tagPropType,
-  className: propTypes$2.any,
-  cssModule: propTypes$2.object
-};
-
-var propTypes$1f = {
-  tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  type: propTypes$2.string
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  type: propTypes.string
 };
 var defaultProps$k = {
   tag: 'ul'
@@ -30487,13 +30482,13 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
     ref: ref
   }));
 });
-List.propTypes = propTypes$1f;
+List.propTypes = propTypes$1d;
 List.defaultProps = defaultProps$k;
 
-var propTypes$1g = {
+var propTypes$1e = {
   tag: tagPropType,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object
+  className: propTypes.string,
+  cssModule: propTypes.object
 };
 var defaultProps$l = {
   tag: 'li'
@@ -30510,7 +30505,7 @@ var ListInlineItem = /*#__PURE__*/forwardRef(function (props, ref) {
     ref: ref
   }));
 });
-ListInlineItem.propTypes = propTypes$1g;
+ListInlineItem.propTypes = propTypes$1e;
 ListInlineItem.defaultProps = defaultProps$l;
 
 function ownKeys$i(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -30544,19 +30539,19 @@ var UncontrolledButtonDropdown = /*#__PURE__*/function (_Component) {
     return /*#__PURE__*/React__default.createElement(ButtonDropdown, _extends({
       isOpen: this.state.isOpen,
       toggle: this.toggle
-    }, omit$1(this.props, omitKeys$1)));
+    }, omit(this.props, omitKeys$1)));
   };
 
   return UncontrolledButtonDropdown;
 }(Component);
 UncontrolledButtonDropdown.propTypes = _objectSpread$j({
-  defaultOpen: propTypes$2.bool
+  defaultOpen: propTypes.bool
 }, ButtonDropdown.propTypes);
 
-var propTypes$1h = {
-  defaultOpen: propTypes$2.bool,
-  toggler: propTypes$2.string.isRequired,
-  toggleEvents: propTypes$2.arrayOf(propTypes$2.string)
+var propTypes$1f = {
+  defaultOpen: propTypes.bool,
+  toggler: propTypes.string.isRequired,
+  toggleEvents: propTypes.arrayOf(propTypes.string)
 };
 
 function ownKeys$j(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -30594,14 +30589,14 @@ var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
     return /*#__PURE__*/React__default.createElement(Dropdown, _extends({
       isOpen: this.state.isOpen,
       toggle: this.toggle
-    }, omit$1(this.props, omitKeys$2)));
+    }, omit(this.props, omitKeys$2)));
   };
 
   return UncontrolledDropdown;
 }(Component);
 UncontrolledDropdown.propTypes = _objectSpread$k({
-  defaultOpen: propTypes$2.bool,
-  onToggle: propTypes$2.func
+  defaultOpen: propTypes.bool,
+  onToggle: propTypes.func
 }, Dropdown.propTypes);
 
 function ownKeys$k(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -30635,23 +30630,23 @@ var UncontrolledTooltip = /*#__PURE__*/function (_Component) {
     return /*#__PURE__*/React__default.createElement(Tooltip, _extends({
       isOpen: this.state.isOpen,
       toggle: this.toggle
-    }, omit$1(this.props, omitKeys$3)));
+    }, omit(this.props, omitKeys$3)));
   };
 
   return UncontrolledTooltip;
 }(Component);
 UncontrolledTooltip.propTypes = _objectSpread$l({
-  defaultOpen: propTypes$2.bool
+  defaultOpen: propTypes.bool
 }, Tooltip.propTypes);
 
-var propTypes$1i = {
+var propTypes$1g = {
   tag: tagPropType,
-  type: propTypes$2.string,
-  size: propTypes$2.string,
-  color: propTypes$2.string,
-  className: propTypes$2.string,
-  cssModule: propTypes$2.object,
-  children: propTypes$2.string
+  type: propTypes.string,
+  size: propTypes.string,
+  color: propTypes.string,
+  className: propTypes.string,
+  cssModule: propTypes.object,
+  children: propTypes.string
 };
 
 (function () {
