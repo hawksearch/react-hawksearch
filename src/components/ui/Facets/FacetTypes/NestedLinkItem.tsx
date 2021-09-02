@@ -57,6 +57,7 @@ function NestedLinkItem(item: NestedLinkItemProps) {
 					aria-pressed={item.isSelected}
 				>
 					<span
+						onClick = {() => setIsExpanded(!isExpanded)}
 						style={item.isNegated ? { textDecoration: 'line-through' } : undefined}
 						className={
 							item.isSelected ? 'hawk-facet-rail__facet-name checked' : 'hawk-facet-rail__facet-name'
