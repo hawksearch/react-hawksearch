@@ -29,11 +29,16 @@ function Checkbox() {
 
 		if (facet.FieldType === 'range') {
 
-			return facet.Ranges.map(value => {
-
-				const correspondingValues = facetValues.find(
-					c => c.Value === value.Value
+			return facetValues.map(correspondingValues => {
+				
+				const value = facet.Ranges.find(
+					Range => Range.Value === correspondingValues.Value
 				);
+
+				if(!value) {
+					return null
+				}
+
 				const rangeValueAssetUrl = value
 					? config.dashboardUrl + value.AssetFullUrl
 					: '';
