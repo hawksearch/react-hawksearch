@@ -28,7 +28,6 @@ function Checkbox() {
 	function renderOptions() {
 
 		if (facet.FieldType === 'range') {
-
 			return facet.Ranges.map(value => {
 
 				const correspondingValues = facetValues.find(
