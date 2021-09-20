@@ -27,9 +27,20 @@ function Checkbox() {
 
 	function renderOptions() {
 		if (facet.FieldType === 'range') {
-			return facet.Ranges.map(value => {
-				const correspondingValues = facetValues.find(c => c.Value === value.Value);
-				const rangeValueAssetUrl = value ? config.dashboardUrl + value.AssetFullUrl : '';
+
+			return facetValues.map(correspondingValues => {
+				
+				const value = facet.Ranges.find(
+					Range => Range.Value === correspondingValues.Value
+				);
+
+				if(!value) {
+					return null
+				}
+
+				const rangeValueAssetUrl = value
+					? config.dashboardUrl + value.AssetFullUrl
+					: '';
 
 				// facets can be selected or negated, so explicitly check that the facet is not selected
 				const selectionState = store.isFacetSelected(facet, value.Value).state;

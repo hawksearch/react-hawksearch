@@ -88,26 +88,26 @@
 		"@babel/polyfill": "^7.7.0",
 		"@babel/runtime": "^7.7.6",
 		"axios": "^0.18.1",
-		"downshift": "^3.4.8",
+		"downshift": "^3.0.0",
 		"history": "^4.10.1",
 		"i18next": "^19.4.4",
 		"lodash": "^4.17.21",
 		"moment": "^2.29.1",
-		"react": "^16.12.0",
+		"react": ">=16.8.x",
 		"react-cookie": "^4.0.3",
-		"react-dom": "^16.12.0",
+		"react-dom": ">=16.8.x",
 		"react-i18next": "^11.4.0",
 		"react-number-format": "^4.3.1",
 		"react-sticky": "^6.0.3",
 		"reactstrap": "^8.9.0",
-		"rheostat": "^4.1.0",
+		"rheostat": "^4.0.0",
 		"url-search-params-polyfill": "^5.1.0"
 	},
 	"peerDependencies": {
-		"react": ">=16.8.x",
-		"react-dom": ">=16.8.x",
 		"downshift": "^3.0.0",
-		"rheostat": "^4.0.0",
-		"react-cookie": "^4.0.3"
+		"react": ">=16.8.x",
+		"react-cookie": "^4.0.3",
+		"react-dom": ">=16.8.x",
+		"rheostat": "^4.0.0"
 	}
 }
