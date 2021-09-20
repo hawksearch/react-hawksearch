@@ -26,7 +26,6 @@ function Checkbox() {
 	} = useFacet();
 
 	function renderOptions() {
-
 		if (facet.FieldType === 'range') {
 
 			return facetValues.map(correspondingValues => {
@@ -51,7 +50,7 @@ function Checkbox() {
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
-							onClick={(e) => actor.selectFacet(value.Value)}
+							onClick={e => actor.selectFacet(value.Value)}
 							className="hawk-facet-rail__facet-btn"
 							aria-pressed={isSelected}
 						>
@@ -69,7 +68,10 @@ function Checkbox() {
 										style={isNegated ? { textDecoration: 'line-through' } : undefined}
 										className="hawk-facet-rail__facet-name"
 									>
-										{value.Label} {facet.ShowItemsCount && correspondingValues ? `(${correspondingValues.Count})` : ''}
+										{value.Label}{' '}
+										{facet.ShowItemsCount && correspondingValues
+											? `(${correspondingValues.Count})`
+											: ''}
 									</span>
 								</>
 							) : (
@@ -78,7 +80,10 @@ function Checkbox() {
 										style={isNegated ? { textDecoration: 'line-through' } : undefined}
 										className="hawk-facet-rail__facet-name"
 									>
-										{value.Label} {facet.ShowItemsCount && correspondingValues ? `(${correspondingValues.Count})` : ''}
+										{value.Label}{' '}
+										{facet.ShowItemsCount && correspondingValues
+											? `(${correspondingValues.Count})`
+											: ''}
 									</span>
 								</>
 							)}
