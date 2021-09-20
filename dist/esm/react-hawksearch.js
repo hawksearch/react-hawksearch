@@ -25591,8 +25591,12 @@ var propTypes$f = {
   className: propTypes.string,
   cssModule: propTypes.object,
   inNavbar: propTypes.bool,
+<<<<<<< HEAD
   setActiveFromChild: propTypes.bool,
   menuRole: propTypes.oneOf(['listbox', 'menu'])
+=======
+  setActiveFromChild: propTypes.bool
+>>>>>>> da957adb32a62ac4a6326007efc2d8d364002314
 };
 var defaultProps$6 = {
   a11y: true,
