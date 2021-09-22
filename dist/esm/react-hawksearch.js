@@ -8953,12 +8953,12 @@ function Checkbox() {
             textDecoration: 'line-through'
           } : undefined,
           className: "hawk-facet-rail__facet-name"
-        }, value.Label, " ", facet.ShowItemsCount && correspondingValues ? "(".concat(correspondingValues.Count, ")") : '')) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
+        }, value.Label, ' ', facet.ShowItemsCount && correspondingValues ? "(".concat(correspondingValues.Count, ")") : '')) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
           style: isNegated ? {
             textDecoration: 'line-through'
           } : undefined,
           className: "hawk-facet-rail__facet-name"
-        }, value.Label, " ", facet.ShowItemsCount && correspondingValues ? "(".concat(correspondingValues.Count, ")") : ''))), renderFacetActions(value.Value || '', isNegated));
+        }, value.Label, ' ', facet.ShowItemsCount && correspondingValues ? "(".concat(correspondingValues.Count, ")") : ''))), renderFacetActions(value.Value || '', isNegated));
       });
     } else {
       return facetValues.map(function (value) {
@@ -17483,11 +17483,14 @@ function NestedLinkItem(item) {
     className: "hawkFacet-group__inline"
   }, /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick() {
-      return item.onValueSelected(hierarchyValue, false);
+      return hierarchyChildren.length <= 0 ? item.onValueSelected(hierarchyValue, false) : null;
     },
     className: "hawk-facet-rail__facet-btn",
     "aria-pressed": item.isSelected
   }, /*#__PURE__*/React__default.createElement("span", {
+    onClick: function onClick() {
+      return setIsExpanded(!isExpanded);
+    },
     style: item.isNegated ? {
       textDecoration: 'line-through'
     } : undefined,
@@ -19482,7 +19485,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -24936,7 +24939,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -25596,17 +25598,8 @@ var propTypes$f = {
   className: propTypes.string,
   cssModule: propTypes.object,
   inNavbar: propTypes.bool,
-<<<<<<< HEAD
   setActiveFromChild: propTypes.bool,
   menuRole: propTypes.oneOf(['listbox', 'menu'])
-=======
-<<<<<<< HEAD
-  setActiveFromChild: propTypes.bool,
-  menuRole: propTypes.oneOf(['listbox', 'menu'])
-=======
-  setActiveFromChild: propTypes.bool
->>>>>>> da957adb32a62ac4a6326007efc2d8d364002314
->>>>>>> dev
 };
 var defaultProps$6 = {
   a11y: true,
