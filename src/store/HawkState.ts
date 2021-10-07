@@ -11,9 +11,21 @@ import { FacetType } from 'models/Facets/FacetType';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
-import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
-import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
+import TrackingEvent, { SearchType } from 'components/TrackingEvent';
+import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
+import { ClientSelectionValue } from './ClientSelections';
+
+interface ClientData {
+	VisitorId: string;
+	VisitId: string;
+	UserAgent: string;
+	PreviewBuckets?: number[];
+	Custom?: {
+		language: string;
+	};
+}
 
 export interface SearchActor {
 	/**
@@ -88,6 +100,12 @@ export interface SearchActor {
 
 	// Get product details
 	getProductDetails(request: ProductDetailsRequest, cancellationToken?: CancelToken): Promise<ProductDetailsResponse>;
+
+	// rebuild Index
+	rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null>;
+	setStore(store: SearchStore): void;
+
+	setPreviewDate(previewDate: string): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -104,7 +122,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			itemsToCompare: [],
 			comparedResults: [],
 			itemsToCompareIds: [],
+			previewDate: '',
 			productDetails: {},
+			language: getInitialLanguage(),
+			smartBar: {},
 		}),
 		SearchStore
 	);
@@ -138,12 +159,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			IsInPreview: config.isInPreview,
 			// and override some of the request fields with config values
 			ClientGuid: config.clientGuid,
+			ClientData: getClientData(),
 			Keyword: store.pendingSearch.Keyword
 				? decodeURIComponent(store.pendingSearch.Keyword || '')
 				: store.pendingSearch.Keyword,
 			SearchWithin: store.pendingSearch.SearchWithin
 				? decodeURIComponent(store.pendingSearch.SearchWithin || '')
 				: store.pendingSearch.SearchWithin,
+			SmartBar: store.pendingSearch.SmartBar,
 		};
 
 		// The index name in the configuration takes priority over the one supplied from the URL
@@ -156,29 +179,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			setStore({ isLoading: false });
 			return;
 		}
-		// Fill clientdata
-		let visitId = getCookie('hawk_visit_id');
-		let visitorId = getCookie('hawk_visitor_id');
-		if (!visitId) {
-			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
-			visitId = getCookie('hawk_visit_id');
-		}
-		if (!visitorId) {
-			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
-			visitorId = getCookie('hawk_visitor_id');
-		}
-		const updatedRequest = {
-			ClientData: {
-				VisitorId: visitorId || '',
-				VisitId: visitId || '',
-				UserAgent: navigator.userAgent,
-				PreviewBuckets: store.searchResults ? store.searchResults.VisitorTargets.map(v => v.Id) : [],
-			},
-			...searchParams,
-		};
 
 		try {
-			searchResults = await client.search(updatedRequest, cancellationToken);
+			searchResults = await client.search(searchParams as any, cancellationToken);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -255,6 +258,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return await client.getProductDetails(request, cancellationToken);
 	}
 
+	async function rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
+		return await client.rebuildIndex(request);
+	}
+
 	/**
 	 * Configures the next search request that will be executed. This will also execute a search in response to
 	 * the next search request changing.
@@ -268,14 +275,27 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setStore(prevState => {
+			const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
+			const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
+
+			if (tab?.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue?.Value) {
+				pendingSearch = {
+					...pendingSearch,
+					FacetSelections: {
+						...pendingSearch.FacetSelections,
+						[tab.Field]: [facetValue.Value],
+					},
+				};
+			}
 			const newState = {
 				pendingSearch: { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
 			};
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
+			} else {
+				setRecentSearch(pendingSearch.Keyword);
 			}
-
 			return newState;
 		});
 	}
@@ -512,6 +532,59 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		});
 	}
 
+	function setPreviewDate(previewDate: string) {
+		setStore({
+			previewDate,
+		});
+	}
+
+	function getClientData() {
+		let visitId = getCookie('hawk_visit_id');
+		let visitorId = getCookie('hawk_visitor_id');
+
+		if (!visitId) {
+			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
+			visitId = getCookie('hawk_visit_id');
+		}
+
+		if (!visitorId) {
+			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
+			visitorId = getCookie('hawk_visitor_id');
+		}
+
+		let clientData: ClientData = {
+			VisitorId: visitorId || '',
+			VisitId: visitId || '',
+			UserAgent: navigator.userAgent,
+			PreviewBuckets:
+				store.searchResults && !config.disablePreviewBuckets
+					? store.searchResults.VisitorTargets.map(v => v.Id)
+					: [],
+		};
+		if (store.pendingSearch.ClientData) {
+			console.log(store.pendingSearch);
+			clientData = {
+				...clientData,
+				PreviewBuckets: store.pendingSearch.ClientData.PreviewBuckets,
+			};
+		}
+		const language = store.language;
+
+		if (language) {
+			clientData.Custom = {
+				language,
+			};
+		}
+
+		return clientData;
+	}
+
+	function getInitialLanguage() {
+		const urlParams = new URLSearchParams(location.search);
+		const language = urlParams.get('language') || config.language;
+		return language;
+	}
+
 	const actor: SearchActor = {
 		search,
 		setSearch,
@@ -528,6 +601,9 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		getComparedItems,
 		getProductDetails,
 		setProductDetailsResults,
+		rebuildIndex,
+		setStore,
+		setPreviewDate,
 	};
 
 	return [store, actor];
