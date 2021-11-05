@@ -27,20 +27,14 @@ function Checkbox() {
 
 	function renderOptions() {
 		if (facet.FieldType === 'range') {
-
 			return facetValues.map(correspondingValues => {
-				
-				const value = facet.Ranges.find(
-					Range => Range.Value === correspondingValues.Value
-				);
+				const value = facet.Ranges.find(Range => Range.Value === correspondingValues.Value);
 
-				if(!value) {
-					return null
+				if (!value) {
+					return null;
 				}
 
-				const rangeValueAssetUrl = value
-					? config.dashboardUrl + value.AssetFullUrl
-					: '';
+				const rangeValueAssetUrl = value ? config.dashboardUrl + value.AssetFullUrl : '';
 
 				// facets can be selected or negated, so explicitly check that the facet is not selected
 				const selectionState = store.isFacetSelected(facet, value.Value).state;
@@ -100,9 +94,11 @@ function Checkbox() {
 
 				const isSelected = selectionState !== FacetSelectionState.NotSelected;
 				const isNegated = selectionState === FacetSelectionState.Negated;
-				const decodedLabel = `${decodeURI(value.Label || '')} ${
-					facet.ShowItemsCount ? `(${value.Count})` : ''
-				}`;
+				let label = value.Label || '';
+				if (label?.indexOf('%') !== -1) {
+					label = encodeURI(label || '');
+				}
+				const decodedLabel = `${decodeURI(label)} ${facet.ShowItemsCount ? `(${value.Count})` : ''}`;
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
