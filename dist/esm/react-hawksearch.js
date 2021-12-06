@@ -6868,7 +6868,7 @@ var TrackingEvent = /*#__PURE__*/function () {
           TypeId: typeId,
           ViewportHeight: c.clientHeight,
           ViewportWidth: c.clientWidth,
-          keyword: keyword
+          keyword: encodeURIComponent(keyword)
         }))
       };
       this.mr(pl);
@@ -8962,11 +8962,19 @@ function Checkbox() {
       });
     } else {
       return facetValues.map(function (value) {
+        var _label;
+
         // facets can be selected or negated, so explicitly check that the facet is not selected
         var selectionState = store.isFacetSelected(facet, value).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
-        var decodedLabel = "".concat(decodeURI(value.Label || ''), " ").concat(facet.ShowItemsCount ? "(".concat(value.Count, ")") : '');
+        var label = value.Label || '';
+
+        if (((_label = label) === null || _label === void 0 ? void 0 : _label.indexOf('%')) !== -1) {
+          label = encodeURI(label || '');
+        }
+
+        var decodedLabel = "".concat(decodeURI(label), " ").concat(facet.ShowItemsCount ? "(".concat(value.Count, ")") : '');
         return /*#__PURE__*/React__default.createElement("li", {
           key: value.Value,
           className: "hawk-facet-rail__facet-list-item"
@@ -19485,7 +19493,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -24939,6 +24947,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 

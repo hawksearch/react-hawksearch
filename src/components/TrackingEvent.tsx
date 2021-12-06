@@ -206,7 +206,7 @@ class TrackingEvent {
 
 	private writeSearchTracking(trackingId, typeId, keyword) {
 		const guid = this.createGuid();
-
+		
 		if (typeId === SearchType.Initial) {
 			this.setCookie('hawk_query_id', guid);
 		}
@@ -223,7 +223,7 @@ class TrackingEvent {
 					TypeId: typeId,
 					ViewportHeight: c.clientHeight,
 					ViewportWidth: c.clientWidth,
-					keyword,
+					keyword: encodeURIComponent(keyword),
 				})
 			),
 		};
