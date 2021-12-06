@@ -154,20 +154,15 @@ function Facet({ facet, children }: FacetProps) {
 	const actor: FacetActor = {
 		selectFacet,
 		negateFacet,
-
 		setFacets,
-
 		setFilter,
-
 		setTruncated,
 		setCollapsed,
 	};
 
 	const state: FacetState = {
 		facetValues,
-
 		filter,
-
 		isTruncated,
 		isCollapsed,
 		remainingFacets,

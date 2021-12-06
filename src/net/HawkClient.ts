@@ -58,6 +58,7 @@ class HawkClient {
 				if (error.response && error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
 					const token = AuthToken.getTokens();
+					
 					return this.axiosInstance
 						.post(new URL(this.refreshTokenURL, this.baseUrl).href, {
 							ClientGuid: config.clientGuid,
@@ -69,6 +70,7 @@ class HawkClient {
 								AuthToken.setTokens(res.data.Token, res.data.RefreshToken);
 								this.axiosInstance.defaults.headers.common.Authorization = 'Bearer ' + res.data.Token;
 								return this.axiosInstance(originalRequest);
+								
 							}
 							return;
 						});
@@ -97,6 +99,7 @@ class HawkClient {
 				cancelToken: cancellationToken,
 			}
 		);
+
 		return result.data;
 	}
 
@@ -107,8 +110,8 @@ class HawkClient {
 			{
 				cancelToken: cancellationToken,
 			}
-		);
-		return result.data;
+		);		
+		return result.data;	
 	}
 
 	public async rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
@@ -161,6 +164,7 @@ class HawkClient {
 		});
 		return new Result(result.data);
 	}
+	
 }
 
 export default HawkClient;

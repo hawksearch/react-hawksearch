@@ -6,6 +6,7 @@ function AdjustedKeyword() {
 		store: { searchResults },
 		actor,
 	} = useHawksearch();
+
 	if (searchResults && searchResults.AdjustedKeyword) {
 		return (
 			<div className="hawk__adjusted-keyword">
