@@ -71,7 +71,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 				.autocomplete(
 					{
 						ClientGuid: config.clientGuid,
-						Keyword: decodeURIComponent(input),
+						Keyword: input,
 						IndexName: config.indexName,
 						DisplayFullResponse: true,
 						FacetSelections: store.pendingSearch.FacetSelections,
