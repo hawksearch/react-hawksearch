@@ -8524,7 +8524,7 @@ function SearchSuggestions(_ref) {
               _context.next = 7;
               return client.autocomplete({
                 ClientGuid: config.clientGuid,
-                Keyword: decodeURIComponent(input),
+                Keyword: input,
                 IndexName: config.indexName,
                 DisplayFullResponse: true,
                 FacetSelections: store.pendingSearch.FacetSelections,
