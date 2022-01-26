@@ -186,6 +186,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 		try {
 			searchResults = await client.search(searchParams, cancellationToken);
+			console.log(searchResults)
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated

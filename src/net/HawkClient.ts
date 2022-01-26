@@ -70,7 +70,6 @@ class HawkClient {
 								AuthToken.setTokens(res.data.Token, res.data.RefreshToken);
 								this.axiosInstance.defaults.headers.common.Authorization = 'Bearer ' + res.data.Token;
 								return this.axiosInstance(originalRequest);
-								
 							}
 							return;
 						});
@@ -110,8 +109,9 @@ class HawkClient {
 			{
 				cancelToken: cancellationToken,
 			}
-		);		
-		return result.data;	
+		);
+		console.log("Data" ,result)
+		return result.data;
 	}
 
 	public async rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
@@ -164,7 +164,6 @@ class HawkClient {
 		});
 		return new Result(result.data);
 	}
-	
 }
 
 export default HawkClient;
