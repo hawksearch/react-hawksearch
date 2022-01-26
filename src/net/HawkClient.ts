@@ -79,6 +79,16 @@ class HawkClient {
 		);
 	}
 
+	public async getLandingPage(pageId: number) {
+		const result = await this.axiosInstance.get(`https://dev.hawksearch.net/api/v10/LandingPage/${pageId}`, {
+			headers: {
+				'X-HawkSearch-ApiKey': '12B962F6-F90C-4792-9308-CD060DAF5F01',
+				'Access-Control-Allow-Origin': 'http://localhost:8080/elasticdemo',
+			},
+		});
+		return result;
+	}
+
 	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
 		const result = await this.axiosInstance.post<string | null>(
 			new URL(this.pinItemURL, this.baseUrl).href,
@@ -103,6 +113,7 @@ class HawkClient {
 	}
 
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
+		// request.IndexName = "elasticdemo.20220125.144934"
 		const result = await this.axiosInstance.post<SearchResponse>(
 			new URL(this.searchUrl, this.baseUrl).href,
 			request,

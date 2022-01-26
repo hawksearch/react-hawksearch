@@ -29,6 +29,7 @@ function SearchBox({ SuggestionList }: SearchBoxProps) {
 				true,
 				true
 			);
+			actor.getLandingPageData();
 		}
 	}
 
