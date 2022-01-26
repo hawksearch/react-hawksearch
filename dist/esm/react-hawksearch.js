@@ -6353,22 +6353,25 @@ var HawkClient = /*#__PURE__*/function () {
   }
 
   _createClass(HawkClient, [{
-    key: "pinItem",
+    key: "getLandingPage",
     value: function () {
-      var _pinItem = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(request, cancellationToken) {
+      var _getLandingPage = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(pageId) {
         var result;
         return regenerator.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return this.axiosInstance.post(new URL(this.pinItemURL, this.baseUrl).href, request, {
-                  cancelToken: cancellationToken
+                return this.axiosInstance.get("https://dev.hawksearch.net/api/v10/LandingPage/".concat(pageId), {
+                  headers: {
+                    'X-HawkSearch-ApiKey': "12B962F6-F90C-4792-9308-CD060DAF5F01",
+                    'Access-Control-Allow-Origin': "http://localhost:8080/elasticdemo"
+                  }
                 });
 
               case 2:
                 result = _context.sent;
-                return _context.abrupt("return", result.data);
+                return _context.abrupt("return", result);
 
               case 4:
               case "end":
@@ -6378,23 +6381,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee, this);
       }));
 
-      function pinItem(_x, _x2) {
-        return _pinItem.apply(this, arguments);
+      function getLandingPage(_x) {
+        return _getLandingPage.apply(this, arguments);
       }
 
-      return pinItem;
+      return getLandingPage;
     }()
   }, {
-    key: "updatePinOrder",
+    key: "pinItem",
     value: function () {
-      var _updatePinOrder = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(request, cancellationToken) {
+      var _pinItem = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return this.axiosInstance.post(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.pinItemURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6410,23 +6413,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee2, this);
       }));
 
-      function updatePinOrder(_x3, _x4) {
-        return _updatePinOrder.apply(this, arguments);
+      function pinItem(_x2, _x3) {
+        return _pinItem.apply(this, arguments);
       }
 
-      return updatePinOrder;
+      return pinItem;
     }()
   }, {
-    key: "search",
+    key: "updatePinOrder",
     value: function () {
-      var _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(request, cancellationToken) {
+      var _updatePinOrder = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return this.axiosInstance.post(new URL(this.searchUrl, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6442,7 +6445,40 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee3, this);
       }));
 
-      function search(_x5, _x6) {
+      function updatePinOrder(_x4, _x5) {
+        return _updatePinOrder.apply(this, arguments);
+      }
+
+      return updatePinOrder;
+    }()
+  }, {
+    key: "search",
+    value: function () {
+      var _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return this.axiosInstance.post(new URL(this.searchUrl, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
+
+              case 2:
+                result = _context4.sent;
+                console.log("Data", result);
+                return _context4.abrupt("return", result.data);
+
+              case 5:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function search(_x6, _x7) {
         return _search.apply(this, arguments);
       }
 
@@ -6451,46 +6487,14 @@ var HawkClient = /*#__PURE__*/function () {
   }, {
     key: "rebuildIndex",
     value: function () {
-      var _rebuildIndex = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(request, cancellationToken) {
-        var result;
-        return regenerator.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                _context4.next = 2;
-                return this.axiosInstance.post(new URL(this.rebuildIndexURL, this.baseUrl).href, request, {
-                  cancelToken: cancellationToken
-                });
-
-              case 2:
-                result = _context4.sent;
-                return _context4.abrupt("return", result.data);
-
-              case 4:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-
-      function rebuildIndex(_x7, _x8) {
-        return _rebuildIndex.apply(this, arguments);
-      }
-
-      return rebuildIndex;
-    }()
-  }, {
-    key: "autocomplete",
-    value: function () {
-      var _autocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5(request, cancellationToken) {
+      var _rebuildIndex = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 _context5.next = 2;
-                return axios$1.post(new URL(this.autocompleteUrl, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.rebuildIndexURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6506,23 +6510,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee5, this);
       }));
 
-      function autocomplete(_x9, _x10) {
-        return _autocomplete.apply(this, arguments);
+      function rebuildIndex(_x8, _x9) {
+        return _rebuildIndex.apply(this, arguments);
       }
 
-      return autocomplete;
+      return rebuildIndex;
     }()
   }, {
-    key: "getComparedItems",
+    key: "autocomplete",
     value: function () {
-      var _getComparedItems = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
+      var _autocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
                 _context6.next = 2;
-                return axios$1.post(new URL(this.compareItemsURL, this.baseUrl).href, request, {
+                return axios$1.post(new URL(this.autocompleteUrl, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6538,29 +6542,29 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee6, this);
       }));
 
-      function getComparedItems(_x11, _x12) {
-        return _getComparedItems.apply(this, arguments);
+      function autocomplete(_x10, _x11) {
+        return _autocomplete.apply(this, arguments);
       }
 
-      return getComparedItems;
+      return autocomplete;
     }()
   }, {
-    key: "getProductDetails",
+    key: "getComparedItems",
     value: function () {
-      var _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request, cancellationToken) {
+      var _getComparedItems = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
                 _context7.next = 2;
-                return axios$1.post(new URL(this.productDetailsURL, this.baseUrl).href, request, {
+                return axios$1.post(new URL(this.compareItemsURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
               case 2:
                 result = _context7.sent;
-                return _context7.abrupt("return", new Result(result.data));
+                return _context7.abrupt("return", result.data);
 
               case 4:
               case "end":
@@ -6570,7 +6574,39 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee7, this);
       }));
 
-      function getProductDetails(_x13, _x14) {
+      function getComparedItems(_x12, _x13) {
+        return _getComparedItems.apply(this, arguments);
+      }
+
+      return getComparedItems;
+    }()
+  }, {
+    key: "getProductDetails",
+    value: function () {
+      var _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee8(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                _context8.next = 2;
+                return axios$1.post(new URL(this.productDetailsURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
+
+              case 2:
+                result = _context8.sent;
+                return _context8.abrupt("return", new Result(result.data));
+
+              case 4:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+
+      function getProductDetails(_x14, _x15) {
         return _getProductDetails.apply(this, arguments);
       }
 
@@ -6627,6 +6663,7 @@ var FacetType;
   FacetType["RecentSearches"] = "recentsearches";
   FacetType["RelatedSearches"] = "related";
   FacetType["OpenRange"] = "openRange";
+  FacetType["Distance"] = "distance";
 })(FacetType || (FacetType = {}));
 
 var E_T;
@@ -7355,33 +7392,34 @@ function useHawkState(initialSearch) {
 
             case 10:
               searchResults = _context.sent;
-              _context.next = 19;
+              console.log(searchResults);
+              _context.next = 20;
               break;
 
-            case 13:
-              _context.prev = 13;
+            case 14:
+              _context.prev = 14;
               _context.t0 = _context["catch"](7);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 17;
+                _context.next = 18;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 17:
+            case 18:
               console.error('Search request error:', _context.t0);
               setStore({
                 requestError: true
               });
 
-            case 19:
+            case 20:
               setStore({
                 isLoading: false
               });
 
               if (!searchResults) {
-                _context.next = 24;
+                _context.next = 25;
                 break;
               }
 
@@ -7414,18 +7452,18 @@ function useHawkState(initialSearch) {
                 });
               }
 
-              _context.next = 25;
+              _context.next = 26;
               break;
 
-            case 24:
+            case 25:
               return _context.abrupt("return");
 
-            case 25:
+            case 26:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[7, 13]]);
+      }, _callee, null, [[7, 14]]);
     }));
     return _search.apply(this, arguments);
   }
@@ -7542,14 +7580,6 @@ function useHawkState(initialSearch) {
   function getProductDetails(_x10, _x11) {
     return _getProductDetails.apply(this, arguments);
   }
-  /**
-   * Configures the next search request that will be executed. This will also execute a search in response to
-   * the next search request changing.
-   * @param search The partial search request object. This will be merged with previous calls to `setSearch`.
-   * @param doHistory Whether or not this search request will push a history entry into the browser. If
-   * 					not specified, the default is `true`.
-   */
-
 
   function _getProductDetails() {
     _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
@@ -7571,6 +7601,45 @@ function useHawkState(initialSearch) {
       }, _callee6);
     }));
     return _getProductDetails.apply(this, arguments);
+  }
+
+  function getLandingPageData() {
+    return _getLandingPageData.apply(this, arguments);
+  }
+  /**
+   * Configures the next search request that will be executed. This will also execute a search in response to
+   * the next search request changing.
+   * @param search The partial search request object. This will be merged with previous calls to `setSearch`.
+   * @param doHistory Whether or not this search request will push a history entry into the browser. If
+   * 					not specified, the default is `true`.
+   */
+
+
+  function _getLandingPageData() {
+    _getLandingPageData = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7() {
+      var searchParams, pageId, landingPageResults;
+      return regenerator.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              searchParams = new URLSearchParams(window.location.search);
+              pageId = searchParams.get('PageId');
+              console.log("pageId", pageId);
+              _context7.next = 5;
+              return client.getLandingPage(1181184);
+
+            case 5:
+              landingPageResults = _context7.sent;
+              console.log("apiResponse", landingPageResults);
+
+            case 7:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }));
+    return _getLandingPageData.apply(this, arguments);
   }
 
   function setSearch(pendingSearch, doHistory, fromInput) {
@@ -7957,7 +8026,8 @@ function useHawkState(initialSearch) {
     setProductDetailsResults: setProductDetailsResults,
     setStore: setStore,
     setPreviewDate: setPreviewDate,
-    setSmartBar: setSmartBar
+    setSmartBar: setSmartBar,
+    getLandingPageData: getLandingPageData
   };
   return [store, actor];
 }
@@ -9127,6 +9197,7 @@ function Link() {
     }
   }
 
+  console.log("facetValues", facetValues);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -9669,7 +9740,7 @@ function SliderDate() {
 }
 
 /**
- * react-number-format - 4.7.3
+ * react-number-format - 4.8.0
  * Author : Sudhanshu Yadav
  * Copyright (c) 2016, 2021 to Sudhanshu Yadav, released under the MIT license.
  * https://github.com/s-yadav/react-number-format
@@ -10027,7 +10098,13 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
         //set state always when not in focus and formatted value is changed
         (focusedElm === null && formattedValue !== stateValue)
       ) {
-        this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, input: focusedElm });
+        this.updateValue({
+          formattedValue: formattedValue,
+          numAsString: numAsString,
+          input: focusedElm,
+          source: 'prop',
+          event: null,
+        });
       }
     }
   };
@@ -10683,12 +10760,16 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
                         
                        
                             
+                               
+                   
                      
                               
    ) {
     var formattedValue = params.formattedValue;
     var input = params.input;
     var setCaretPosition = params.setCaretPosition; if ( setCaretPosition === void 0 ) setCaretPosition = true;
+    var source = params.source;
+    var event = params.event;
     var numAsString = params.numAsString;
     var caretPos = params.caretPos;
     var ref = this.props;
@@ -10737,7 +10818,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       this.setState({ value: formattedValue, numAsString: numAsString });
 
       // trigger onValueChange synchronously, so parent is updated along with the number format. Fix for #277, #287
-      onValueChange(this.getValueObject(formattedValue, numAsString));
+      onValueChange(this.getValueObject(formattedValue, numAsString), { event: event, source: source });
     }
   };
 
@@ -10764,7 +10845,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       formattedValue = lastValue;
     }
 
-    this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, inputValue: inputValue, input: el });
+    this.updateValue({
+      formattedValue: formattedValue,
+      numAsString: numAsString,
+      inputValue: inputValue,
+      input: el,
+      event: e,
+      source: 'event',
+    });
 
     if (isChangeAllowed) {
       props.onChange(e);
@@ -10805,6 +10893,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
           numAsString: numAsString,
           input: e.target,
           setCaretPosition: false,
+          event: e,
+          source: 'event',
         });
         onBlur(e);
         return;
@@ -10879,6 +10969,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
           formattedValue: newValue,
           caretPos: newCaretPosition,
           input: el,
+          event: e,
+          source: 'event',
         });
       } else if (!negativeRegex.test(value[expectedCaretPosition])) {
         while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound) {
@@ -17562,6 +17654,49 @@ function NestedLink() {
   }))), renderer.renderTruncation());
 }
 
+function Distance() {
+  var _useHawksearch = useHawksearch(),
+      store = _useHawksearch.store;
+
+  var _useFacet = useFacet(),
+      facet = _useFacet.facet,
+      actor = _useFacet.actor;
+
+  function setLinkFacet(value, selectionState) {
+    if (selectionState) {
+      // Deselect the facet
+      actor.selectFacet(value);
+    } else {
+      // Select the facet
+      actor.setFacets([value]);
+    }
+  }
+
+  return /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-facet-rail__facet-values"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-facet-rail__facet-values-link"
+  }, /*#__PURE__*/React__default.createElement("ul", {
+    className: "hawk-facet-rail__facet-list"
+  }, facet.Ranges.map(function (value) {
+    // facets can be selected or negated, so explicitly check that the facet is not selected                            
+    var selectionState = store.isFacetSelected(facet, value.Value).state;
+    var isSelected = selectionState !== FacetSelectionState.NotSelected;
+    return /*#__PURE__*/React__default.createElement("li", {
+      key: value.Value,
+      className: "hawk-facet-rail__facet-list-item"
+    }, /*#__PURE__*/React__default.createElement("button", {
+      onClick: function onClick(e) {
+        return setLinkFacet(value.Value, selectionState);
+      },
+      className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
+      "aria-pressed": isSelected
+    }, /*#__PURE__*/React__default.createElement("span", {
+      className: "hawk-facet-rail__facet-name"
+    }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Value, ")") : '')));
+  }))));
+}
+
 function RecentSearches() {
   var _useFacet = useFacet(),
       facet = _useFacet.facet;
@@ -17643,6 +17778,9 @@ var defaultFacetComponents = [{
 }, {
   facetType: FacetType.RecentSearches,
   component: RecentSearches
+}, {
+  facetType: FacetType.Distance,
+  component: Distance
 }];
 var defaultAutocompleteStrategies = [{
   SuggestionType: SuggestionType.Product,
@@ -17935,6 +18073,7 @@ function SearchBox(_ref) {
         Keyword: encodeURIComponent(event.currentTarget.value),
         IgnoreSpellcheck: false
       }, true, true);
+      actor.getLandingPageData();
     }
   } // On Select view all matches from suggestion list
 
@@ -19493,7 +19632,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -20846,6 +20985,7 @@ var propTypes$7 = {
   children: propTypes.node
 };
 
+var _excluded = ["className", "cssModule", "tabs", "pills", "vertical", "horizontal", "justified", "fill", "navbar", "card", "tag"];
 var propTypes$8 = {
   tabs: propTypes.bool,
   pills: propTypes.bool,
@@ -20886,7 +21026,7 @@ var Nav = function Nav(props) {
       navbar = props.navbar,
       card = props.card,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tabs", "pills", "vertical", "horizontal", "justified", "fill", "navbar", "card", "tag"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded);
 
   var classes = mapToCssModules(classnames(className, navbar ? 'navbar-nav' : 'nav', horizontal ? "justify-content-" + horizontal : false, getVerticalClass(vertical), {
     'nav-tabs': tabs,
@@ -20904,6 +21044,7 @@ var Nav = function Nav(props) {
 Nav.propTypes = propTypes$8;
 Nav.defaultProps = defaultProps$1;
 
+var _excluded$1 = ["className", "cssModule", "active", "tag"];
 var propTypes$9 = {
   tag: tagPropType,
   active: propTypes.bool,
@@ -20919,7 +21060,7 @@ var NavItem = function NavItem(props) {
       cssModule = props.cssModule,
       active = props.active,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "active", "tag"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$1);
 
   var classes = mapToCssModules(classnames(className, 'nav-item', active ? 'active' : false), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -20936,6 +21077,7 @@ function _inheritsLoose(subClass, superClass) {
   _setPrototypeOf(subClass, superClass);
 }
 
+var _excluded$2 = ["className", "cssModule", "active", "tag", "innerRef"];
 var propTypes$a = {
   tag: tagPropType,
   innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
@@ -20985,7 +21127,7 @@ var NavLink = /*#__PURE__*/function (_React$Component) {
         active = _this$props.active,
         Tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "active", "tag", "innerRef"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$2);
 
     var classes = mapToCssModules(classnames(className, 'nav-link', {
       disabled: attributes.disabled,
@@ -21021,6 +21163,7 @@ var propTypes$c = {
   cssModule: propTypes.object
 };
 
+var _excluded$3 = ["active", "aria-label", "block", "className", "close", "cssModule", "color", "outline", "size", "tag", "innerRef"];
 var propTypes$d = {
   active: propTypes.bool,
   'aria-label': propTypes.string,
@@ -21079,7 +21222,7 @@ var Button = /*#__PURE__*/function (_React$Component) {
         size = _this$props.size,
         Tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["active", "aria-label", "block", "className", "close", "cssModule", "color", "outline", "size", "tag", "innerRef"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$3);
 
     if (close && typeof attributes.children === 'undefined') {
       attributes.children = /*#__PURE__*/React__default.createElement("span", {
@@ -21116,6 +21259,7 @@ var Button = /*#__PURE__*/function (_React$Component) {
 Button.propTypes = propTypes$d;
 Button.defaultProps = defaultProps$4;
 
+var _excluded$4 = ["className"];
 var propTypes$e = {
   onClick: propTypes.func,
   onBlur: propTypes.func,
@@ -21181,7 +21325,7 @@ var ButtonToggle = /*#__PURE__*/function (_React$Component) {
   _proto.render = function render() {
     var _this$props = this.props,
         className = _this$props.className,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$4);
 
     var classes = mapToCssModules(classnames(className, {
       focus: this.state.focus
@@ -24947,7 +25091,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -25591,6 +25734,7 @@ function Reference(props) {
 
 var DropdownContext = /*#__PURE__*/React__default.createContext({});
 
+var _excluded$5 = ["className", "cssModule", "direction", "isOpen", "group", "size", "nav", "setActiveFromChild", "active", "addonType", "tag", "menuRole"];
 var propTypes$f = {
   a11y: propTypes.bool,
   disabled: propTypes.bool,
@@ -25847,7 +25991,7 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
         active = _omit.active,
         addonType = _omit.addonType,
         tag = _omit.tag,
-        attrs = _objectWithoutPropertiesLoose$1(_omit, ["className", "cssModule", "direction", "isOpen", "group", "size", "nav", "setActiveFromChild", "active", "addonType", "tag", "menuRole"]);
+        attrs = _objectWithoutPropertiesLoose$1(_omit, _excluded$5);
 
     var Tag = tag || (nav ? 'li' : 'div');
     var subItemIsActive = false;
@@ -25903,6 +26047,7 @@ var propTypes$i = {
   role: propTypes.string
 };
 
+var _excluded$6 = ["className", "cssModule", "divider", "tag", "header", "active", "text"];
 var propTypes$j = {
   children: propTypes.node,
   active: propTypes.bool,
@@ -25990,7 +26135,7 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
         header = _omit.header,
         active = _omit.active,
         text = _omit.text,
-        props = _objectWithoutPropertiesLoose$1(_omit, ["className", "cssModule", "divider", "tag", "header", "active", "text"]);
+        props = _objectWithoutPropertiesLoose$1(_omit, _excluded$6);
 
     var classes = mapToCssModules(classnames(className, {
       disabled: props.disabled,
@@ -26029,6 +26174,8 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
 DropdownItem.propTypes = propTypes$j;
 DropdownItem.defaultProps = defaultProps$7;
 DropdownItem.contextType = DropdownContext;
+
+var _excluded$7 = ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"];
 
 function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -26091,7 +26238,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
         persist = _this$props.persist,
         positionFixed = _this$props.positionFixed,
         container = _this$props.container,
-        attrs = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"]);
+        attrs = _objectWithoutPropertiesLoose$1(_this$props, _excluded$7);
 
     var classes = mapToCssModules(classnames(className, 'dropdown-menu', {
       'dropdown-menu-right': right,
@@ -26160,6 +26307,7 @@ DropdownMenu.propTypes = propTypes$k;
 DropdownMenu.defaultProps = defaultProps$8;
 DropdownMenu.contextType = DropdownContext;
 
+var _excluded$8 = ["className", "color", "cssModule", "caret", "split", "nav", "tag", "innerRef"];
 var propTypes$l = {
   caret: propTypes.bool,
   color: propTypes.string,
@@ -26224,7 +26372,7 @@ var DropdownToggle = /*#__PURE__*/function (_React$Component) {
         nav = _this$props.nav,
         tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        props = _objectWithoutPropertiesLoose$1(_this$props, ["className", "color", "cssModule", "caret", "split", "nav", "tag", "innerRef"]);
+        props = _objectWithoutPropertiesLoose$1(_this$props, _excluded$8);
 
     var ariaLabel = props['aria-label'] || 'Toggle Dropdown';
     var classes = mapToCssModules(classnames(className, {
@@ -26530,6 +26678,23 @@ unwrapExports(PropTypes);
 var PropTypes_1 = PropTypes.classNamesShape;
 var PropTypes_2 = PropTypes.timeoutsShape;
 
+var TransitionGroupContext = createCommonjsModule(function (module, exports) {
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _react = _interopRequireDefault(React__default);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _react.default.createContext(null);
+
+exports.default = _default;
+module.exports = exports["default"];
+});
+
+unwrapExports(TransitionGroupContext);
+
 var Transition_1 = createCommonjsModule(function (module, exports) {
 
 exports.__esModule = true;
@@ -26544,6 +26709,8 @@ var _reactDom = _interopRequireDefault(ReactDOM);
 
 
 
+
+var _TransitionGroupContext = _interopRequireDefault(TransitionGroupContext);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26595,8 +26762,10 @@ var EXITING = 'exiting';
  * }
  *
  * const transitionStyles = {
- *   entering: { opacity: 0 },
+ *   entering: { opacity: 1 },
  *   entered:  { opacity: 1 },
+ *   exiting:  { opacity: 0 },
+ *   exited:  { opacity: 0 },
  * };
  *
  * const Fade = ({ in: inProp }) => (
@@ -26663,7 +26832,7 @@ function (_React$Component) {
     var _this;
 
     _this = _React$Component.call(this, props, context) || this;
-    var parentGroup = context.transitionGroup; // In the context of a TransitionGroup all enters are really appears
+    var parentGroup = context; // In the context of a TransitionGroup all enters are really appears
 
     var appear = parentGroup && !parentGroup.isMounting ? props.enter : props.appear;
     var initialStatus;
@@ -26690,15 +26859,6 @@ function (_React$Component) {
     _this.nextCallback = null;
     return _this;
   }
-
-  var _proto = Transition.prototype;
-
-  _proto.getChildContext = function getChildContext() {
-    return {
-      transitionGroup: null // allows for nested Transitions
-
-    };
-  };
 
   Transition.getDerivedStateFromProps = function getDerivedStateFromProps(_ref, prevState) {
     var nextIn = _ref.in;
@@ -26727,6 +26887,8 @@ function (_React$Component) {
   //   return { nextStatus }
   // }
 
+
+  var _proto = Transition.prototype;
 
   _proto.componentDidMount = function componentDidMount() {
     this.updateStatus(true, this.appearStatus);
@@ -26802,7 +26964,7 @@ function (_React$Component) {
     var _this2 = this;
 
     var enter = this.props.enter;
-    var appearing = this.context.transitionGroup ? this.context.transitionGroup.isMounting : mounting;
+    var appearing = this.context ? this.context.isMounting : mounting;
     var timeouts = this.getTimeouts();
     var enterTimeout = appearing ? timeouts.appear : timeouts.enter; // no enter animation skip right to ENTERED
     // if we are mounting and running this it means appear _must_ be set
@@ -26944,23 +27106,25 @@ function (_React$Component) {
     delete childProps.onExited;
 
     if (typeof children === 'function') {
-      return children(status, childProps);
+      // allows for nested Transitions
+      return _react.default.createElement(_TransitionGroupContext.default.Provider, {
+        value: null
+      }, children(status, childProps));
     }
 
     var child = _react.default.Children.only(children);
 
-    return _react.default.cloneElement(child, childProps);
+    return (// allows for nested Transitions
+      _react.default.createElement(_TransitionGroupContext.default.Provider, {
+        value: null
+      }, _react.default.cloneElement(child, childProps))
+    );
   };
 
   return Transition;
 }(_react.default.Component);
 
-Transition.contextTypes = {
-  transitionGroup: PropTypes$1.object
-};
-Transition.childContextTypes = {
-  transitionGroup: function transitionGroup() {}
-};
+Transition.contextType = _TransitionGroupContext.default;
 Transition.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A `function` child can be used instead of a React element. This function is
@@ -27238,7 +27402,7 @@ var removeClass$1 = function removeClass(node, classes) {
  * }
  * .my-node-exit-active {
  *   opacity: 0;
- *   transition: opacity: 200ms;
+ *   transition: opacity 200ms;
  * }
  * ```
  *
@@ -27685,6 +27849,8 @@ var _react = _interopRequireDefault(React__default);
 
 
 
+var _TransitionGroupContext = _interopRequireDefault(TransitionGroupContext);
+
 
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -27739,6 +27905,9 @@ function (_React$Component) {
 
 
     _this.state = {
+      contextValue: {
+        isMounting: true
+      },
       handleExited: handleExited,
       firstRender: true
     };
@@ -27747,17 +27916,13 @@ function (_React$Component) {
 
   var _proto = TransitionGroup.prototype;
 
-  _proto.getChildContext = function getChildContext() {
-    return {
-      transitionGroup: {
-        isMounting: !this.appeared
-      }
-    };
-  };
-
   _proto.componentDidMount = function componentDidMount() {
-    this.appeared = true;
     this.mounted = true;
+    this.setState({
+      contextValue: {
+        isMounting: false
+      }
+    });
   };
 
   _proto.componentWillUnmount = function componentWillUnmount() {
@@ -27800,24 +27965,26 @@ function (_React$Component) {
         childFactory = _this$props.childFactory,
         props = _objectWithoutPropertiesLoose(_this$props, ["component", "childFactory"]);
 
+    var contextValue = this.state.contextValue;
     var children = values(this.state.children).map(childFactory);
     delete props.appear;
     delete props.enter;
     delete props.exit;
 
     if (Component === null) {
-      return children;
+      return _react.default.createElement(_TransitionGroupContext.default.Provider, {
+        value: contextValue
+      }, children);
     }
 
-    return _react.default.createElement(Component, props, children);
+    return _react.default.createElement(_TransitionGroupContext.default.Provider, {
+      value: contextValue
+    }, _react.default.createElement(Component, props, children));
   };
 
   return TransitionGroup;
 }(_react.default.Component);
 
-TransitionGroup.childContextTypes = {
-  transitionGroup: _propTypes.default.object.isRequired
-};
 TransitionGroup.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * `<TransitionGroup>` renders a `<div>` by default. You can change this
@@ -28066,6 +28233,8 @@ var reactTransitionGroup_2 = reactTransitionGroup.TransitionGroup;
 var reactTransitionGroup_3 = reactTransitionGroup.ReplaceTransition;
 var reactTransitionGroup_4 = reactTransitionGroup.CSSTransition;
 
+var _excluded$9 = ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"];
+
 function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28099,7 +28268,7 @@ function Fade(props) {
       cssModule = props.cssModule,
       children = props.children,
       innerRef = props.innerRef,
-      otherProps = _objectWithoutPropertiesLoose$1(props, ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"]);
+      otherProps = _objectWithoutPropertiesLoose$1(props, _excluded$9);
 
   var transitionProps = pick(otherProps, TransitionPropTypeKeys);
   var childProps = omit(otherProps, TransitionPropTypeKeys);
@@ -28196,6 +28365,8 @@ var propTypes$x = {
   cssModule: propTypes.object
 };
 
+var _excluded$a = ["in", "children", "cssModule", "slide", "tag", "className"];
+
 function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28267,7 +28438,7 @@ var CarouselItem = /*#__PURE__*/function (_React$Component) {
         slide = _this$props.slide,
         Tag = _this$props.tag,
         className = _this$props.className,
-        transitionProps = _objectWithoutPropertiesLoose$1(_this$props, ["in", "children", "cssModule", "slide", "tag", "className"]);
+        transitionProps = _objectWithoutPropertiesLoose$1(_this$props, _excluded$a);
 
     return /*#__PURE__*/React__default.createElement(reactTransitionGroup_1, _extends({}, transitionProps, {
       enter: slide,
@@ -28747,6 +28918,7 @@ var propTypes$B = {
   cssModule: propTypes.object
 };
 
+var _excluded$b = ["className", "label", "valid", "invalid", "cssModule", "children", "bsSize", "innerRef", "htmlFor", "type", "onChange", "dataBrowse", "hidden"];
 var propTypes$C = {
   className: propTypes.string,
   id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
@@ -28824,7 +28996,7 @@ var CustomFileInput = /*#__PURE__*/function (_React$Component) {
         onChange = _this$props.onChange,
         dataBrowse = _this$props.dataBrowse,
         hidden = _this$props.hidden,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "label", "valid", "invalid", "cssModule", "children", "bsSize", "innerRef", "htmlFor", "type", "onChange", "dataBrowse", "hidden"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$b);
 
     var customClass = mapToCssModules(classnames(className, "custom-file"), cssModule);
     var validationClassNames = mapToCssModules(classnames(invalid && "is-invalid", valid && "is-valid"), cssModule);
@@ -28866,6 +29038,8 @@ var propTypes$D = {
   children: propTypes.oneOfType([propTypes.node, propTypes.array, propTypes.func]),
   innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
+
+var _excluded$c = ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"];
 
 function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -28988,7 +29162,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
         fade = _this$props.fade,
         transition = _this$props.transition,
         placement = _this$props.placement,
-        attrs = _objectWithoutPropertiesLoose$1(_this$props, ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"]);
+        attrs = _objectWithoutPropertiesLoose$1(_this$props, _excluded$c);
 
     var arrowClassName = mapToCssModules(classnames('arrow', _arrowClassName), cssModule);
     var popperClassName = mapToCssModules(classnames(_popperClassName, placementPrefix ? placementPrefix + "-auto" : ''), this.props.cssModule);
@@ -30159,6 +30333,7 @@ var propTypes$T = {
   cssModule: propTypes.object
 };
 
+var _excluded$d = ["className", "cssModule", "type", "bsSize", "valid", "invalid", "tag", "addon", "plaintext", "innerRef"];
 var propTypes$U = {
   children: propTypes.node,
   type: propTypes.string,
@@ -30217,7 +30392,7 @@ var Input = /*#__PURE__*/function (_React$Component) {
         addon = _this$props.addon,
         plaintext = _this$props.plaintext,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "type", "bsSize", "valid", "invalid", "tag", "addon", "plaintext", "innerRef"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$d);
 
     var checkInput = ['radio', 'checkbox'].indexOf(type) > -1;
     var isNotaNumber = new RegExp('\\D', 'g');
@@ -30510,6 +30685,7 @@ var propTypes$1c = {
   cssModule: propTypes.object
 };
 
+var _excluded$e = ["className", "cssModule", "tag", "type"];
 var propTypes$1d = {
   tag: tagPropType,
   className: propTypes.string,
@@ -30524,7 +30700,7 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
       cssModule = props.cssModule,
       Tag = props.tag,
       type = props.type,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tag", "type"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$e);
 
   var classes = mapToCssModules(classnames(className, type ? "list-" + type : false), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -30535,6 +30711,7 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
 List.propTypes = propTypes$1d;
 List.defaultProps = defaultProps$k;
 
+var _excluded$f = ["className", "cssModule", "tag"];
 var propTypes$1e = {
   tag: tagPropType,
   className: propTypes.string,
@@ -30547,7 +30724,7 @@ var ListInlineItem = /*#__PURE__*/forwardRef(function (props, ref) {
   var className = props.className,
       cssModule = props.cssModule,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tag"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$f);
 
   var classes = mapToCssModules(classnames(className, 'list-inline-item'), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -30626,13 +30803,16 @@ var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
   var _proto = UncontrolledDropdown.prototype;
 
   _proto.toggle = function toggle(e) {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    var _this2 = this;
 
-    if (this.props.onToggle) {
-      this.props.onToggle(e, !this.state.isOpen);
-    }
+    var isOpen = !this.state.isOpen;
+    this.setState({
+      isOpen: isOpen
+    }, function () {
+      if (_this2.props.onToggle) {
+        _this2.props.onToggle(e, isOpen);
+      }
+    });
   };
 
   _proto.render = function render() {
@@ -30998,7 +31178,9 @@ function invariant(condition, message) {
     if (isProduction$1) {
         throw new Error(prefix);
     }
-    throw new Error(prefix + ": " + (message || ''));
+    var provided = typeof message === 'function' ? message() : message;
+    var value = provided ? prefix + ": " + provided : prefix;
+    throw new Error(value);
 }
 
 function addLeadingSlash(path) {
@@ -31662,5 +31844,5 @@ function RelatedSearch() {
   })) : null;
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Distance, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map

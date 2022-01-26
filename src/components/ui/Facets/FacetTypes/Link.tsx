@@ -23,7 +23,7 @@ function Link() {
 			actor.setFacets([value]);
 		}
 	}
-
+	console.log("facetValues", facetValues);
 	return (
 		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">

@@ -70,7 +70,6 @@ class HawkClient {
 								AuthToken.setTokens(res.data.Token, res.data.RefreshToken);
 								this.axiosInstance.defaults.headers.common.Authorization = 'Bearer ' + res.data.Token;
 								return this.axiosInstance(originalRequest);
-								
 							}
 							return;
 						});
@@ -78,6 +77,15 @@ class HawkClient {
 				return Promise.reject(error);
 			}
 		);
+	}
+
+	public async getLandingPage(pageId: number) {
+		const result = await this.axiosInstance.get(`https://dev.hawksearch.net/api/v10/LandingPage/${pageId}`,{
+			headers: {
+		 		'X-HawkSearch-ApiKey': "12B962F6-F90C-4792-9308-CD060DAF5F01",
+				 'Access-Control-Allow-Origin': "http://localhost:8080/elasticdemo",
+		 	}});
+		return result;
 	}
 
 	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
@@ -110,8 +118,9 @@ class HawkClient {
 			{
 				cancelToken: cancellationToken,
 			}
-		);		
-		return result.data;	
+		);
+		console.log("Data" ,result)
+		return result.data;
 	}
 
 	public async rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
@@ -164,7 +173,6 @@ class HawkClient {
 		});
 		return new Result(result.data);
 	}
-	
 }
 
 export default HawkClient;

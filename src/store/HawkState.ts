@@ -109,6 +109,8 @@ export interface SearchActor {
 	setPreviewDate(previewDate: string): void;
 
 	setSmartBar(data: { [key: string]: string }): void;
+
+	getLandingPageData(): void;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -186,6 +188,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 		try {
 			searchResults = await client.search(searchParams, cancellationToken);
+			console.log(searchResults)
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -273,6 +276,17 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		cancellationToken?: CancelToken
 	): Promise<ProductDetailsResponse> {
 		return await client.getProductDetails(request, cancellationToken);
+	}
+
+	async function getLandingPageData(){
+
+		const searchParams = new URLSearchParams(window.location.search);
+		const pageId = searchParams.get('PageId');
+		console.log("pageId", pageId);
+
+		let landingPageResults = await client.getLandingPage(1181184)
+
+		console.log("apiResponse", landingPageResults);
 	}
 
 	/**
@@ -651,6 +665,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setStore,
 		setPreviewDate,
 		setSmartBar,
+		getLandingPageData,
 	};
 
 	return [store, actor];
