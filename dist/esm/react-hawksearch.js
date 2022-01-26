@@ -6364,8 +6364,8 @@ var HawkClient = /*#__PURE__*/function () {
                 _context.next = 2;
                 return this.axiosInstance.get("https://dev.hawksearch.net/api/v10/LandingPage/".concat(pageId), {
                   headers: {
-                    'X-HawkSearch-ApiKey': "12B962F6-F90C-4792-9308-CD060DAF5F01",
-                    'Access-Control-Allow-Origin': "http://localhost:8080/elasticdemo"
+                    'X-HawkSearch-ApiKey': '12B962F6-F90C-4792-9308-CD060DAF5F01',
+                    'Access-Control-Allow-Origin': 'http://localhost:8080/elasticdemo'
                   }
                 });
 
@@ -6467,7 +6467,7 @@ var HawkClient = /*#__PURE__*/function () {
 
               case 2:
                 result = _context4.sent;
-                console.log("Data", result);
+                console.log('Data', result);
                 return _context4.abrupt("return", result.data);
 
               case 5:
@@ -7624,13 +7624,13 @@ function useHawkState(initialSearch) {
             case 0:
               searchParams = new URLSearchParams(window.location.search);
               pageId = searchParams.get('PageId');
-              console.log("pageId", pageId);
+              console.log('pageId', pageId);
               _context7.next = 5;
               return client.getLandingPage(1181184);
 
             case 5:
               landingPageResults = _context7.sent;
-              console.log("apiResponse", landingPageResults);
+              console.log('apiResponse', landingPageResults);
 
             case 7:
             case "end":
@@ -9197,7 +9197,7 @@ function Link() {
     }
   }
 
-  console.log("facetValues", facetValues);
+  console.log('facetValues', facetValues);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -17679,7 +17679,7 @@ function Distance() {
   }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
   }, facet.Ranges.map(function (value) {
-    // facets can be selected or negated, so explicitly check that the facet is not selected                            
+    // facets can be selected or negated, so explicitly check that the facet is not selected
     var selectionState = store.isFacetSelected(facet, value.Value).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
     return /*#__PURE__*/React__default.createElement("li", {

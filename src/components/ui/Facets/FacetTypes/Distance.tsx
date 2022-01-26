@@ -4,16 +4,11 @@ import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
 import { Value } from 'models/Facets';
 
-function Distance(){
-    const {store} = useHawksearch();
-    const {
-		facet,
-		// state: { facetValues },
-		actor,
-		// renderer,
-	} = useFacet();
+function Distance() {
+	const { store } = useHawksearch();
+	const { facet, actor } = useFacet();
 
-    function setLinkFacet(value: Value | any, selectionState: number) {
+	function setLinkFacet(value: Value | any, selectionState: number) {
 		if (selectionState) {
 			// Deselect the facet
 			actor.selectFacet(value);
@@ -22,13 +17,13 @@ function Distance(){
 			actor.setFacets([value]);
 		}
 	}
-    return (
-        <div className="hawk-facet-rail__facet-values">
+	return (
+		<div className="hawk-facet-rail__facet-values">
 			<div className="hawk-facet-rail__facet-values-link">
 				<ul className="hawk-facet-rail__facet-list">
 					{facet.Ranges.map(value => {
-						// facets can be selected or negated, so explicitly check that the facet is not selected                            
-                        const selectionState = store.isFacetSelected(facet, value.Value).state;
+						// facets can be selected or negated, so explicitly check that the facet is not selected
+						const selectionState = store.isFacetSelected(facet, value.Value).state;
 
 						const isSelected = selectionState !== FacetSelectionState.NotSelected;
 
@@ -49,16 +44,11 @@ function Distance(){
 								</button>
 							</li>
 						);
-
 					})}
 				</ul>
 			</div>
-
-			{/* render the default truncation control as we don't need to customize this
-			{renderer.renderTruncation()} */}
 		</div>
 	);
-
 }
 
 export default Distance;

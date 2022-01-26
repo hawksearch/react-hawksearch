@@ -188,7 +188,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 		try {
 			searchResults = await client.search(searchParams, cancellationToken);
-			console.log(searchResults)
+			console.log(searchResults);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -278,15 +278,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return await client.getProductDetails(request, cancellationToken);
 	}
 
-	async function getLandingPageData(){
-
+	async function getLandingPageData() {
 		const searchParams = new URLSearchParams(window.location.search);
 		const pageId = searchParams.get('PageId');
-		console.log("pageId", pageId);
+		console.log('pageId', pageId);
 
-		let landingPageResults = await client.getLandingPage(1181184)
+		const landingPageResults = await client.getLandingPage(1181184);
 
-		console.log("apiResponse", landingPageResults);
+		console.log('apiResponse', landingPageResults);
 	}
 
 	/**
