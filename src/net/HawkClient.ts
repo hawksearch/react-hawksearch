@@ -121,7 +121,6 @@ class HawkClient {
 				cancelToken: cancellationToken,
 			}
 		);
-		console.log('Data', result);
 		return result.data;
 	}
 

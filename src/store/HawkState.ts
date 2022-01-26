@@ -281,11 +281,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	async function getLandingPageData() {
 		const searchParams = new URLSearchParams(window.location.search);
 		const pageId = searchParams.get('PageId');
-		console.log('pageId', pageId);
 
 		const landingPageResults = await client.getLandingPage(1181184);
-
-		console.log('apiResponse', landingPageResults);
 	}
 
 	/**

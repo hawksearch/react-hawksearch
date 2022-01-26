@@ -6467,10 +6467,9 @@ var HawkClient = /*#__PURE__*/function () {
 
               case 2:
                 result = _context4.sent;
-                console.log('Data', result);
                 return _context4.abrupt("return", result.data);
 
-              case 5:
+              case 4:
               case "end":
                 return _context4.stop();
             }
@@ -7624,15 +7623,13 @@ function useHawkState(initialSearch) {
             case 0:
               searchParams = new URLSearchParams(window.location.search);
               pageId = searchParams.get('PageId');
-              console.log('pageId', pageId);
-              _context7.next = 5;
+              _context7.next = 4;
               return client.getLandingPage(1181184);
 
-            case 5:
+            case 4:
               landingPageResults = _context7.sent;
-              console.log('apiResponse', landingPageResults);
 
-            case 7:
+            case 5:
             case "end":
               return _context7.stop();
           }
@@ -9197,7 +9194,6 @@ function Link() {
     }
   }
 
-  console.log('facetValues', facetValues);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -19632,7 +19628,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25091,6 +25087,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
