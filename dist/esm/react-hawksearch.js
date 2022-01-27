@@ -17689,7 +17689,7 @@ function Distance() {
       "aria-pressed": isSelected
     }, /*#__PURE__*/React__default.createElement("span", {
       className: "hawk-facet-rail__facet-name"
-    }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Value, ")") : '')));
+    }, value.Label)));
   }))));
 }
 
