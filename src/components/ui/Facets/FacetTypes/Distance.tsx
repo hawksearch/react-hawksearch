@@ -39,7 +39,8 @@ function Distance() {
 									aria-pressed={isSelected}
 								>
 									<span className="hawk-facet-rail__facet-name">
-										{value.Label} {facet.ShowItemsCount ? `(${value.Value})` : ''}
+										{value.Label} 
+										{/* {facet.ShowItemsCount ? `(${value.Value})` : ''} */}
 									</span>
 								</button>
 							</li>
