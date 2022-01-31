@@ -17656,7 +17656,8 @@ function Distance() {
 
   var _useFacet = useFacet(),
       facet = _useFacet.facet,
-      actor = _useFacet.actor;
+      actor = _useFacet.actor,
+      facetValues = _useFacet.state.facetValues;
 
   function setLinkFacet(value, selectionState) {
     if (selectionState) {
@@ -17674,22 +17675,25 @@ function Distance() {
     className: "hawk-facet-rail__facet-values-link"
   }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
-  }, facet.Ranges.map(function (value) {
+  }, facet.Ranges.map(function (rangeValue) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
-    var selectionState = store.isFacetSelected(facet, value.Value).state;
+    var selectionState = store.isFacetSelected(facet, rangeValue.Value).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
+    var findValues = facetValues.find(function (v) {
+      return v.Value === rangeValue.Value ? v.Value === rangeValue.Value : '';
+    });
     return /*#__PURE__*/React__default.createElement("li", {
-      key: value.Value,
+      key: rangeValue.Value,
       className: "hawk-facet-rail__facet-list-item"
     }, /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick(e) {
-        return setLinkFacet(value.Value, selectionState);
+        return setLinkFacet(rangeValue.Value, selectionState);
       },
       className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
       "aria-pressed": isSelected
     }, /*#__PURE__*/React__default.createElement("span", {
       className: "hawk-facet-rail__facet-name"
-    }, value.Label)));
+    }, rangeValue.Label, facet.ShowItemsCount && findValues ? " (".concat(findValues === null || findValues === void 0 ? void 0 : findValues.Count, ")") : '')));
   }))));
 }
 
