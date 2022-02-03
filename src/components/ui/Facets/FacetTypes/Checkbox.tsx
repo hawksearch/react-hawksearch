@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { useHawksearch } from 'components/StoreProvider';
 import { useFacet } from 'components/ui/Facets/Facet';
 import { FacetSelectionState } from 'store/Store';
