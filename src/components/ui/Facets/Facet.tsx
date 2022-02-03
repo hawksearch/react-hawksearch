@@ -80,10 +80,10 @@ export interface FacetRenderer {
 
 function getInitialCollapsibleState(facet: FacetModel, cookies: { [key: string]: string }) {
 	const cookieValue = cookies[facet.Field];
-	if (cookieValue !== undefined) {
-		return cookieValue === 'true'; // Convert string to boolean
-	}
-	return facet.IsCollapsible && facet.IsCollapsedDefault;
+	// if (cookieValue !== undefined) {
+	// 	return cookieValue === 'true'; // Convert string to boolean
+	// }
+	return facet.IsCollapsedDefault;
 }
 
 function Facet({ facet, children }: FacetProps) {
@@ -188,7 +188,7 @@ function Facet({ facet, children }: FacetProps) {
 					className="hawk-facet-rail__facet-heading"
 					aria-label={facet.Name}
 					tabIndex={0}
-					onClick={event => toggleCollapsible(event)}
+					onClick={event => facet.IsCollapsible && toggleCollapsible(event)}
 					aria-expanded={!isCollapsed}
 				>
 					<h4>{facet.Name}</h4>
@@ -201,7 +201,7 @@ function Facet({ facet, children }: FacetProps) {
 							</div>
 						</div>
 					)}
-					{isCollapsed ? (
+					{facet.IsCollapsible && (isCollapsed ? (
 						<>
 							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
 						</>
@@ -209,7 +209,7 @@ function Facet({ facet, children }: FacetProps) {
 						<>
 							<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
 						</>
-					)}
+					))}
 				</button>
 
 				{!isCollapsed && (

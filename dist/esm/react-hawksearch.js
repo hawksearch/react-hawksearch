@@ -8736,13 +8736,11 @@ function QuestionmarkSVG(props) {
 var FacetContext = /*#__PURE__*/React__default.createContext({});
 
 function getInitialCollapsibleState(facet, cookies) {
-  var cookieValue = cookies[facet.Field];
+  var cookieValue = cookies[facet.Field]; // if (cookieValue !== undefined) {
+  // 	return cookieValue === 'true'; // Convert string to boolean
+  // }
 
-  if (cookieValue !== undefined) {
-    return cookieValue === 'true'; // Convert string to boolean
-  }
-
-  return facet.IsCollapsible && facet.IsCollapsedDefault;
+  return facet.IsCollapsedDefault;
 }
 
 function Facet$1(_ref) {
@@ -8872,7 +8870,7 @@ function Facet$1(_ref) {
     "aria-label": facet.Name,
     tabIndex: 0,
     onClick: function onClick(event) {
-      return toggleCollapsible(event);
+      return facet.IsCollapsible && toggleCollapsible(event);
     },
     "aria-expanded": !isCollapsed
   }, /*#__PURE__*/React__default.createElement("h4", null, facet.Name), facet.Tooltip && /*#__PURE__*/React__default.createElement("div", {
@@ -8887,11 +8885,11 @@ function Facet$1(_ref) {
     dangerouslySetInnerHTML: {
       __html: facet.Tooltip
     }
-  }), /*#__PURE__*/React__default.createElement("i", null))), isCollapsed ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("i", null))), facet.IsCollapsible && (isCollapsed ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
   }, "Expand facet category"), ' ') : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(MinusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Collapse facet category"))), !isCollapsed && /*#__PURE__*/React__default.createElement("div", {
+  }, "Collapse facet category")))), !isCollapsed && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-body"
   }, facet.shouldSearch && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet__quick-lookup"
@@ -17657,6 +17655,7 @@ function Distance() {
   var _useFacet = useFacet(),
       facet = _useFacet.facet,
       actor = _useFacet.actor,
+      renderer = _useFacet.renderer,
       facetValues = _useFacet.state.facetValues;
 
   function setLinkFacet(value, selectionState) {
@@ -17675,26 +17674,23 @@ function Distance() {
     className: "hawk-facet-rail__facet-values-link"
   }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list"
-  }, facet.Ranges.map(function (rangeValue) {
+  }, facetValues.map(function (values) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
-    var selectionState = store.isFacetSelected(facet, rangeValue.Value).state;
+    var selectionState = store.isFacetSelected(facet, values).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
-    var findValues = facetValues.find(function (v) {
-      return v.Value === rangeValue.Value ? v.Value === rangeValue.Value : '';
-    });
     return /*#__PURE__*/React__default.createElement("li", {
-      key: rangeValue.Value,
+      key: values.Value,
       className: "hawk-facet-rail__facet-list-item"
     }, /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick(e) {
-        return setLinkFacet(rangeValue.Value, selectionState);
+        return setLinkFacet(values.Value, selectionState);
       },
       className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
       "aria-pressed": isSelected
     }, /*#__PURE__*/React__default.createElement("span", {
       className: "hawk-facet-rail__facet-name"
-    }, rangeValue.Label, facet.ShowItemsCount && findValues ? " (".concat(findValues === null || findValues === void 0 ? void 0 : findValues.Count, ")") : '')));
-  }))));
+    }, values.Label, facet.ShowItemsCount ? " (".concat(values === null || values === void 0 ? void 0 : values.Count, ")") : '')));
+  }))), renderer.renderTruncation());
 }
 
 function RecentSearches() {
