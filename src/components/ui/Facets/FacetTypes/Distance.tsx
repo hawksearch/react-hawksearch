@@ -5,11 +5,12 @@ import { FacetSelectionState } from 'store/Store';
 import { Facet as Value } from 'models/Facets';
 
 function Distance() {
-	const { store, } = useHawksearch();
-	const { facet,
+	const { store } = useHawksearch();
+	const {
+		facet,
 		actor,
 		renderer,
-		state: { facetValues }
+		state: { facetValues },
 	} = useFacet();
 
 	function setLinkFacet(value: Value | any, selectionState: number) {
@@ -32,23 +33,24 @@ function Distance() {
 						const isSelected = selectionState !== FacetSelectionState.NotSelected;
 						return (
 							<li key={values.Value} className="hawk-facet-rail__facet-list-item">
-								{<button
-									onClick={e => setLinkFacet(values.Value, selectionState)}
-									className={
-										isSelected
-											? 'hawk-facet-rail__facet-btn selected'
-											: 'hawk-facet-rail__facet-btn'
-									}
-									aria-pressed={isSelected}
-								>
-									<span className="hawk-facet-rail__facet-name">
-										{values.Label}
-										{facet.ShowItemsCount ? ` (${values?.Count})` : ''}
-									</span>
-								</button>}
+								{
+									<button
+										onClick={e => setLinkFacet(values.Value, selectionState)}
+										className={
+											isSelected
+												? 'hawk-facet-rail__facet-btn selected'
+												: 'hawk-facet-rail__facet-btn'
+										}
+										aria-pressed={isSelected}
+									>
+										<span className="hawk-facet-rail__facet-name">
+											{values.Label}
+											{facet.ShowItemsCount ? ` (${values?.Count})` : ''}
+										</span>
+									</button>
+								}
 							</li>
 						);
-
 					})}
 				</ul>
 			</div>

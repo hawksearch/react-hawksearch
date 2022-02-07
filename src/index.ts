@@ -74,6 +74,5 @@ export { default as AuthToken } from 'components/AuthToken';
 // utils
 export { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from './helpers/utils';
 
-//Message boxes
+// Message boxes
 export { default as MessageBox } from 'components/ui/MessageBox/MessageBox';
-

@@ -16,6 +16,7 @@ import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
+import { Request as ClientIdRequest } from 'components/ui/MessageBox/Request';
 
 interface ClientData {
 	VisitorId: string;
@@ -110,7 +111,7 @@ export interface SearchActor {
 
 	setSmartBar(data: { [key: string]: string }): void;
 
-	getLandingPageData(): void;
+	getLandingPageData(request: ClientIdRequest): object;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -122,6 +123,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		new SearchStore({
 			pendingSearch: initialSearch || {},
 			isLoading: true,
+			isLandingPageExpired: false,
 			itemsToCompare: [],
 			comparedResults: [],
 			itemsToCompareIds: [],
@@ -278,11 +280,14 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		return await client.getProductDetails(request, cancellationToken);
 	}
 
-	async function getLandingPageData() {
+	async function getLandingPageData(request: ClientIdRequest) {
 		const searchParams = new URLSearchParams(window.location.search);
 		const pageId = searchParams.get('PageId');
-
-		const landingPageResults = await client.getLandingPage(1181184);
+		const landingPageResults = await client.getLandingPage(pageId, request);
+		const isLandingPageExpired: boolean = landingPageResults?.IsLandingPageExpired;
+		if (isLandingPageExpired !== undefined) {
+			setStore({ isLandingPageExpired });
+		}
 	}
 
 	/**
