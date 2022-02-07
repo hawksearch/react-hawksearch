@@ -88,7 +88,7 @@ class HawkClient {
 				PageId: pageId,
 			}
 		);
-		console.log("Results",result.data);		
+		console.log('Results', result.data);
 		return result.data;
 	}
 
