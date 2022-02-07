@@ -5111,6 +5111,8 @@ var SearchStore = /*#__PURE__*/function () {
 
     _defineProperty(this, "comparedResults", void 0);
 
+    _defineProperty(this, "isLandingPageExpired", void 0);
+
     _defineProperty(this, "productDetails", void 0);
 
     _defineProperty(this, "previewDate", void 0);
@@ -6355,23 +6357,21 @@ var HawkClient = /*#__PURE__*/function () {
   _createClass(HawkClient, [{
     key: "getLandingPage",
     value: function () {
-      var _getLandingPage = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(pageId) {
+      var _getLandingPage = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(pageId, request) {
         var result;
         return regenerator.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return this.axiosInstance.get("https://dev.hawksearch.net/api/v10/LandingPage/".concat(pageId), {
-                  headers: {
-                    'X-HawkSearch-ApiKey': '12B962F6-F90C-4792-9308-CD060DAF5F01',
-                    'Access-Control-Allow-Origin': 'http://localhost:8080/elasticdemo'
-                  }
+                return this.axiosInstance.post("https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data", {
+                  ClientGuid: request.ClientGuid,
+                  PageId: pageId
                 });
 
               case 2:
                 result = _context.sent;
-                return _context.abrupt("return", result);
+                return _context.abrupt("return", result.data);
 
               case 4:
               case "end":
@@ -6381,7 +6381,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee, this);
       }));
 
-      function getLandingPage(_x) {
+      function getLandingPage(_x, _x2) {
         return _getLandingPage.apply(this, arguments);
       }
 
@@ -6413,7 +6413,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee2, this);
       }));
 
-      function pinItem(_x2, _x3) {
+      function pinItem(_x3, _x4) {
         return _pinItem.apply(this, arguments);
       }
 
@@ -6445,7 +6445,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee3, this);
       }));
 
-      function updatePinOrder(_x4, _x5) {
+      function updatePinOrder(_x5, _x6) {
         return _updatePinOrder.apply(this, arguments);
       }
 
@@ -6477,7 +6477,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee4, this);
       }));
 
-      function search(_x6, _x7) {
+      function search(_x7, _x8) {
         return _search.apply(this, arguments);
       }
 
@@ -6509,7 +6509,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee5, this);
       }));
 
-      function rebuildIndex(_x8, _x9) {
+      function rebuildIndex(_x9, _x10) {
         return _rebuildIndex.apply(this, arguments);
       }
 
@@ -6541,7 +6541,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee6, this);
       }));
 
-      function autocomplete(_x10, _x11) {
+      function autocomplete(_x11, _x12) {
         return _autocomplete.apply(this, arguments);
       }
 
@@ -6573,7 +6573,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee7, this);
       }));
 
-      function getComparedItems(_x12, _x13) {
+      function getComparedItems(_x13, _x14) {
         return _getComparedItems.apply(this, arguments);
       }
 
@@ -6605,7 +6605,7 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee8, this);
       }));
 
-      function getProductDetails(_x14, _x15) {
+      function getProductDetails(_x15, _x16) {
         return _getProductDetails.apply(this, arguments);
       }
 
@@ -7303,6 +7303,7 @@ function useHawkState(initialSearch) {
   var _useMergableState = useMergableState(new SearchStore({
     pendingSearch: initialSearch || {},
     isLoading: true,
+    isLandingPageExpired: false,
     itemsToCompare: [],
     comparedResults: [],
     itemsToCompareIds: [],
@@ -7602,7 +7603,7 @@ function useHawkState(initialSearch) {
     return _getProductDetails.apply(this, arguments);
   }
 
-  function getLandingPageData() {
+  function getLandingPageData(_x12) {
     return _getLandingPageData.apply(this, arguments);
   }
   /**
@@ -7615,8 +7616,8 @@ function useHawkState(initialSearch) {
 
 
   function _getLandingPageData() {
-    _getLandingPageData = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7() {
-      var searchParams, pageId, landingPageResults;
+    _getLandingPageData = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request) {
+      var searchParams, pageId, landingPageResults, isLandingPageExpired;
       return regenerator.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
@@ -7624,12 +7625,19 @@ function useHawkState(initialSearch) {
               searchParams = new URLSearchParams(window.location.search);
               pageId = searchParams.get('PageId');
               _context7.next = 4;
-              return client.getLandingPage(1181184);
+              return client.getLandingPage(pageId, request);
 
             case 4:
               landingPageResults = _context7.sent;
+              isLandingPageExpired = landingPageResults === null || landingPageResults === void 0 ? void 0 : landingPageResults.IsLandingPageExpired;
 
-            case 5:
+              if (isLandingPageExpired !== undefined) {
+                setStore({
+                  isLandingPageExpired: isLandingPageExpired
+                });
+              }
+
+            case 7:
             case "end":
               return _context7.stop();
           }
@@ -18069,7 +18077,6 @@ function SearchBox(_ref) {
         Keyword: encodeURIComponent(event.currentTarget.value),
         IgnoreSpellcheck: false
       }, true, true);
-      actor.getLandingPageData();
     }
   } // On Select view all matches from suggestion list
 
@@ -19628,7 +19635,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25087,7 +25094,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -31841,5 +31847,29 @@ function RelatedSearch() {
   })) : null;
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Distance, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+function MessageBox() {
+  var _useHawksearch = useHawksearch(),
+      store = _useHawksearch.store,
+      actor = _useHawksearch.actor;
+
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
+  useEffect(function () {
+    actor.getLandingPageData({
+      ClientGuid: config.clientGuid
+    });
+  }, []);
+
+  if (store.isLandingPageExpired === true) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "hawk__messagebox",
+      role: "alert"
+    }, "Note: This page is currently expired and will not show any results on the frontend. Results you are seeing below are for preview/setup purpose only.");
+  } else {
+    return null;
+  }
+}
+
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Distance, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, MessageBox, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map

@@ -6,6 +6,7 @@ import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
+import { Request as ClientIdRequest } from 'components/ui/MessageBox/Request';
 import { HawksearchConfig } from 'types/HawksearchConfig';
 import AuthToken from 'components/AuthToken';
 
@@ -79,14 +80,15 @@ class HawkClient {
 		);
 	}
 
-	public async getLandingPage(pageId: number) {
-		const result = await this.axiosInstance.get(`https://dev.hawksearch.net/api/v10/LandingPage/${pageId}`, {
-			headers: {
-				'X-HawkSearch-ApiKey': '12B962F6-F90C-4792-9308-CD060DAF5F01',
-				'Access-Control-Allow-Origin': 'http://localhost:8080/elasticdemo',
-			},
-		});
-		return result;
+	public async getLandingPage(pageId: string | number | null, request: ClientIdRequest): Promise<any> {
+		const result = await this.axiosInstance.post(
+			`https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data`,
+			{
+				ClientGuid: request.ClientGuid,
+				PageId: pageId,
+			}
+		);
+		return result.data;
 	}
 
 	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {

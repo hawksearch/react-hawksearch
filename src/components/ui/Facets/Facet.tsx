@@ -201,15 +201,16 @@ function Facet({ facet, children }: FacetProps) {
 							</div>
 						</div>
 					)}
-					{facet.IsCollapsible && (isCollapsed ? (
-						<>
-							<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
-						</>
-					) : (
-						<>
-							<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
-						</>
-					))}
+					{facet.IsCollapsible &&
+						(isCollapsed ? (
+							<>
+								<PlusSVG /> <span className="visually-hidden">Expand facet category</span>{' '}
+							</>
+						) : (
+							<>
+								<MinusSVG /> <span className="visually-hidden">Collapse facet category</span>
+							</>
+						))}
 				</button>
 
 				{!isCollapsed && (
