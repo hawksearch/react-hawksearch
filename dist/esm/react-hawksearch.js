@@ -7624,7 +7624,7 @@ function useHawkState(initialSearch) {
           switch (_context7.prev = _context7.next) {
             case 0:
               searchParams = new URLSearchParams(window.location.search);
-              checkParams = searchParams.has('Ip') ? searchParams.get('Ip') : searchParams.get('PageId');
+              checkParams = searchParams.has('lp') ? searchParams.get('lp') : searchParams.get('PageId');
               _context7.next = 4;
               return client.getLandingPage(checkParams, request);
 

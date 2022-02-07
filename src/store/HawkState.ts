@@ -282,7 +282,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	async function getLandingPageData(request: ClientIdRequest) {
 		const searchParams = new URLSearchParams(window.location.search);
-		const checkParams = searchParams.has('Ip') ? searchParams.get('Ip') : searchParams.get('PageId');
+		const checkParams = searchParams.has('lp') ? searchParams.get('lp') : searchParams.get('PageId');
 		const landingPageResults = await client.getLandingPage(checkParams, request);
 		const isLandingPageExpired: boolean = landingPageResults?.IsLandingPageExpired;
 		if (isLandingPageExpired !== undefined) {
