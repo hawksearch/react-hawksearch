@@ -11,7 +11,7 @@ function MessageBox() {
 			ClientGuid: config.clientGuid,
 		});
 	}, []);
-
+	
 	if (store.isLandingPageExpired === true) {
 		return (
 			<div className="hawk__messagebox" role="alert">

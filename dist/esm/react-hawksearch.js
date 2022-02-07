@@ -6371,9 +6371,10 @@ var HawkClient = /*#__PURE__*/function () {
 
               case 2:
                 result = _context.sent;
+                console.log("Results", result.data);
                 return _context.abrupt("return", result.data);
 
-              case 4:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -7623,7 +7624,7 @@ function useHawkState(initialSearch) {
           switch (_context7.prev = _context7.next) {
             case 0:
               searchParams = new URLSearchParams(window.location.search);
-              pageId = searchParams.get('PageId');
+              pageId = searchParams.get('Ip' );
               _context7.next = 4;
               return client.getLandingPage(pageId, request);
 
