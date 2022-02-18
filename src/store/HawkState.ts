@@ -16,6 +16,7 @@ import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
 import { ClientSelectionValue } from './ClientSelections';
+import { Request as ClientIdRequest } from 'components/ui/MessageBox/Request';
 
 interface ClientData {
 	VisitorId: string;
@@ -109,6 +110,8 @@ export interface SearchActor {
 	setPreviewDate(previewDate: string): void;
 
 	setSmartBar(data: { [key: string]: string }): void;
+
+	getLandingPageData(request: ClientIdRequest): object;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -120,6 +123,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		new SearchStore({
 			pendingSearch: initialSearch || {},
 			isLoading: true,
+			isLandingPageExpired: false,
 			itemsToCompare: [],
 			comparedResults: [],
 			itemsToCompareIds: [],
@@ -186,6 +190,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 		try {
 			searchResults = await client.search(searchParams, cancellationToken);
+			console.log(searchResults);
 		} catch (error) {
 			if (axios.isCancel(error)) {
 				// if the request was cancelled, it's because this component was updated
@@ -273,6 +278,16 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		cancellationToken?: CancelToken
 	): Promise<ProductDetailsResponse> {
 		return await client.getProductDetails(request, cancellationToken);
+	}
+
+	async function getLandingPageData(request: ClientIdRequest) {
+		const searchParams = new URLSearchParams(window.location.search);
+		const checkParams = searchParams.has('lp') ? searchParams.get('lp') : searchParams.get('PageId');
+		const landingPageResults = await client.getLandingPage(checkParams, request);
+		const isLandingPageExpired: boolean = landingPageResults?.IsLandingPageExpired;
+		if (isLandingPageExpired !== undefined) {
+			setStore({ isLandingPageExpired });
+		}
 	}
 
 	/**
@@ -651,6 +666,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setStore,
 		setPreviewDate,
 		setSmartBar,
+		getLandingPageData,
 	};
 
 	return [store, actor];

@@ -5111,6 +5111,8 @@ var SearchStore = /*#__PURE__*/function () {
 
     _defineProperty(this, "comparedResults", void 0);
 
+    _defineProperty(this, "isLandingPageExpired", void 0);
+
     _defineProperty(this, "productDetails", void 0);
 
     _defineProperty(this, "previewDate", void 0);
@@ -6353,24 +6355,26 @@ var HawkClient = /*#__PURE__*/function () {
   }
 
   _createClass(HawkClient, [{
-    key: "pinItem",
+    key: "getLandingPage",
     value: function () {
-      var _pinItem = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(request, cancellationToken) {
+      var _getLandingPage = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(pageId, request) {
         var result;
         return regenerator.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return this.axiosInstance.post(new URL(this.pinItemURL, this.baseUrl).href, request, {
-                  cancelToken: cancellationToken
+                return this.axiosInstance.post("https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data", {
+                  ClientGuid: request.ClientGuid,
+                  PageId: pageId
                 });
 
               case 2:
                 result = _context.sent;
+                console.log('Results', result.data);
                 return _context.abrupt("return", result.data);
 
-              case 4:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -6378,23 +6382,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee, this);
       }));
 
-      function pinItem(_x, _x2) {
-        return _pinItem.apply(this, arguments);
+      function getLandingPage(_x, _x2) {
+        return _getLandingPage.apply(this, arguments);
       }
 
-      return pinItem;
+      return getLandingPage;
     }()
   }, {
-    key: "updatePinOrder",
+    key: "pinItem",
     value: function () {
-      var _updatePinOrder = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(request, cancellationToken) {
+      var _pinItem = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return this.axiosInstance.post(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.pinItemURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6410,23 +6414,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee2, this);
       }));
 
-      function updatePinOrder(_x3, _x4) {
-        return _updatePinOrder.apply(this, arguments);
+      function pinItem(_x3, _x4) {
+        return _pinItem.apply(this, arguments);
       }
 
-      return updatePinOrder;
+      return pinItem;
     }()
   }, {
-    key: "search",
+    key: "updatePinOrder",
     value: function () {
-      var _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(request, cancellationToken) {
+      var _updatePinOrder = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
                 _context3.next = 2;
-                return this.axiosInstance.post(new URL(this.searchUrl, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.updatePinOrderURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6442,23 +6446,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee3, this);
       }));
 
-      function search(_x5, _x6) {
-        return _search.apply(this, arguments);
+      function updatePinOrder(_x5, _x6) {
+        return _updatePinOrder.apply(this, arguments);
       }
 
-      return search;
+      return updatePinOrder;
     }()
   }, {
-    key: "rebuildIndex",
+    key: "search",
     value: function () {
-      var _rebuildIndex = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(request, cancellationToken) {
+      var _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return this.axiosInstance.post(new URL(this.rebuildIndexURL, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.searchUrl, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6474,23 +6478,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee4, this);
       }));
 
-      function rebuildIndex(_x7, _x8) {
-        return _rebuildIndex.apply(this, arguments);
+      function search(_x7, _x8) {
+        return _search.apply(this, arguments);
       }
 
-      return rebuildIndex;
+      return search;
     }()
   }, {
-    key: "autocomplete",
+    key: "rebuildIndex",
     value: function () {
-      var _autocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5(request, cancellationToken) {
+      var _rebuildIndex = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee5(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 _context5.next = 2;
-                return axios$1.post(new URL(this.autocompleteUrl, this.baseUrl).href, request, {
+                return this.axiosInstance.post(new URL(this.rebuildIndexURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6506,23 +6510,23 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee5, this);
       }));
 
-      function autocomplete(_x9, _x10) {
-        return _autocomplete.apply(this, arguments);
+      function rebuildIndex(_x9, _x10) {
+        return _rebuildIndex.apply(this, arguments);
       }
 
-      return autocomplete;
+      return rebuildIndex;
     }()
   }, {
-    key: "getComparedItems",
+    key: "autocomplete",
     value: function () {
-      var _getComparedItems = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
+      var _autocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee6$(_context6) {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
                 _context6.next = 2;
-                return axios$1.post(new URL(this.compareItemsURL, this.baseUrl).href, request, {
+                return axios$1.post(new URL(this.autocompleteUrl, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
@@ -6538,29 +6542,29 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee6, this);
       }));
 
-      function getComparedItems(_x11, _x12) {
-        return _getComparedItems.apply(this, arguments);
+      function autocomplete(_x11, _x12) {
+        return _autocomplete.apply(this, arguments);
       }
 
-      return getComparedItems;
+      return autocomplete;
     }()
   }, {
-    key: "getProductDetails",
+    key: "getComparedItems",
     value: function () {
-      var _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request, cancellationToken) {
+      var _getComparedItems = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request, cancellationToken) {
         var result;
         return regenerator.wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
                 _context7.next = 2;
-                return axios$1.post(new URL(this.productDetailsURL, this.baseUrl).href, request, {
+                return axios$1.post(new URL(this.compareItemsURL, this.baseUrl).href, request, {
                   cancelToken: cancellationToken
                 });
 
               case 2:
                 result = _context7.sent;
-                return _context7.abrupt("return", new Result(result.data));
+                return _context7.abrupt("return", result.data);
 
               case 4:
               case "end":
@@ -6570,7 +6574,39 @@ var HawkClient = /*#__PURE__*/function () {
         }, _callee7, this);
       }));
 
-      function getProductDetails(_x13, _x14) {
+      function getComparedItems(_x13, _x14) {
+        return _getComparedItems.apply(this, arguments);
+      }
+
+      return getComparedItems;
+    }()
+  }, {
+    key: "getProductDetails",
+    value: function () {
+      var _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee8(request, cancellationToken) {
+        var result;
+        return regenerator.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                _context8.next = 2;
+                return axios$1.post(new URL(this.productDetailsURL, this.baseUrl).href, request, {
+                  cancelToken: cancellationToken
+                });
+
+              case 2:
+                result = _context8.sent;
+                return _context8.abrupt("return", new Result(result.data));
+
+              case 4:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+
+      function getProductDetails(_x15, _x16) {
         return _getProductDetails.apply(this, arguments);
       }
 
@@ -6627,6 +6663,7 @@ var FacetType;
   FacetType["RecentSearches"] = "recentsearches";
   FacetType["RelatedSearches"] = "related";
   FacetType["OpenRange"] = "openRange";
+  FacetType["Distance"] = "distance";
 })(FacetType || (FacetType = {}));
 
 function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -7296,6 +7333,7 @@ function useHawkState(initialSearch) {
   var _useMergableState = useMergableState(new SearchStore({
     pendingSearch: initialSearch || {},
     isLoading: true,
+    isLandingPageExpired: false,
     itemsToCompare: [],
     comparedResults: [],
     itemsToCompareIds: [],
@@ -7384,33 +7422,34 @@ function useHawkState(initialSearch) {
 
             case 10:
               searchResults = _context.sent;
-              _context.next = 19;
+              console.log(searchResults);
+              _context.next = 20;
               break;
 
-            case 13:
-              _context.prev = 13;
+            case 14:
+              _context.prev = 14;
               _context.t0 = _context["catch"](7);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 17;
+                _context.next = 18;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 17:
+            case 18:
               console.error('Search request error:', _context.t0);
               setStore({
                 requestError: true
               });
 
-            case 19:
+            case 20:
               setStore({
                 isLoading: false
               });
 
               if (!searchResults) {
-                _context.next = 24;
+                _context.next = 25;
                 break;
               }
 
@@ -7443,18 +7482,18 @@ function useHawkState(initialSearch) {
                 });
               }
 
-              _context.next = 25;
+              _context.next = 26;
               break;
 
-            case 24:
+            case 25:
               return _context.abrupt("return");
 
-            case 25:
+            case 26:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[7, 13]]);
+      }, _callee, null, [[7, 14]]);
     }));
     return _search.apply(this, arguments);
   }
@@ -7571,14 +7610,6 @@ function useHawkState(initialSearch) {
   function getProductDetails(_x10, _x11) {
     return _getProductDetails.apply(this, arguments);
   }
-  /**
-   * Configures the next search request that will be executed. This will also execute a search in response to
-   * the next search request changing.
-   * @param search The partial search request object. This will be merged with previous calls to `setSearch`.
-   * @param doHistory Whether or not this search request will push a history entry into the browser. If
-   * 					not specified, the default is `true`.
-   */
-
 
   function _getProductDetails() {
     _getProductDetails = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6(request, cancellationToken) {
@@ -7600,6 +7631,50 @@ function useHawkState(initialSearch) {
       }, _callee6);
     }));
     return _getProductDetails.apply(this, arguments);
+  }
+
+  function getLandingPageData(_x12) {
+    return _getLandingPageData.apply(this, arguments);
+  }
+  /**
+   * Configures the next search request that will be executed. This will also execute a search in response to
+   * the next search request changing.
+   * @param search The partial search request object. This will be merged with previous calls to `setSearch`.
+   * @param doHistory Whether or not this search request will push a history entry into the browser. If
+   * 					not specified, the default is `true`.
+   */
+
+
+  function _getLandingPageData() {
+    _getLandingPageData = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request) {
+      var searchParams, checkParams, landingPageResults, isLandingPageExpired;
+      return regenerator.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              searchParams = new URLSearchParams(window.location.search);
+              checkParams = searchParams.has('lp') ? searchParams.get('lp') : searchParams.get('PageId');
+              _context7.next = 4;
+              return client.getLandingPage(checkParams, request);
+
+            case 4:
+              landingPageResults = _context7.sent;
+              isLandingPageExpired = landingPageResults === null || landingPageResults === void 0 ? void 0 : landingPageResults.IsLandingPageExpired;
+
+              if (isLandingPageExpired !== undefined) {
+                setStore({
+                  isLandingPageExpired: isLandingPageExpired
+                });
+              }
+
+            case 7:
+            case "end":
+              return _context7.stop();
+          }
+        }
+      }, _callee7);
+    }));
+    return _getLandingPageData.apply(this, arguments);
   }
 
   function setSearch(pendingSearch, doHistory, fromInput) {
@@ -7986,7 +8061,8 @@ function useHawkState(initialSearch) {
     setProductDetailsResults: setProductDetailsResults,
     setStore: setStore,
     setPreviewDate: setPreviewDate,
-    setSmartBar: setSmartBar
+    setSmartBar: setSmartBar,
+    getLandingPageData: getLandingPageData
   };
   return [store, actor];
 }
@@ -8698,13 +8774,11 @@ function QuestionmarkSVG(props) {
 var FacetContext = /*#__PURE__*/React__default.createContext({});
 
 function getInitialCollapsibleState(facet, cookies) {
-  var cookieValue = cookies[facet.Field];
+  var cookieValue = cookies[facet.Field]; // if (cookieValue !== undefined) {
+  // 	return cookieValue === 'true'; // Convert string to boolean
+  // }
 
-  if (cookieValue !== undefined) {
-    return cookieValue === 'true'; // Convert string to boolean
-  }
-
-  return facet.IsCollapsible && facet.IsCollapsedDefault;
+  return facet.IsCollapsedDefault;
 }
 
 function Facet$1(_ref) {
@@ -8834,7 +8908,7 @@ function Facet$1(_ref) {
     "aria-label": facet.Name,
     tabIndex: 0,
     onClick: function onClick(event) {
-      return toggleCollapsible(event);
+      return facet.IsCollapsible && toggleCollapsible(event);
     },
     "aria-expanded": !isCollapsed
   }, /*#__PURE__*/React__default.createElement("h4", null, facet.Name), facet.Tooltip && /*#__PURE__*/React__default.createElement("div", {
@@ -8849,11 +8923,11 @@ function Facet$1(_ref) {
     dangerouslySetInnerHTML: {
       __html: facet.Tooltip
     }
-  }), /*#__PURE__*/React__default.createElement("i", null))), isCollapsed ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
+  }), /*#__PURE__*/React__default.createElement("i", null))), facet.IsCollapsible && (isCollapsed ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
   }, "Expand facet category"), ' ') : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(MinusSVG, null), " ", /*#__PURE__*/React__default.createElement("span", {
     className: "visually-hidden"
-  }, "Collapse facet category"))), !isCollapsed && /*#__PURE__*/React__default.createElement("div", {
+  }, "Collapse facet category")))), !isCollapsed && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-body"
   }, facet.shouldSearch && /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet__quick-lookup"
@@ -17612,6 +17686,51 @@ function NestedLink() {
   }))), renderer.renderTruncation());
 }
 
+function Distance() {
+  var _useHawksearch = useHawksearch(),
+      store = _useHawksearch.store;
+
+  var _useFacet = useFacet(),
+      facet = _useFacet.facet,
+      actor = _useFacet.actor,
+      renderer = _useFacet.renderer,
+      facetValues = _useFacet.state.facetValues;
+
+  function setLinkFacet(value, selectionState) {
+    if (selectionState) {
+      // Deselect the facet
+      actor.selectFacet(value);
+    } else {
+      // Select the facet
+      actor.setFacets([value]);
+    }
+  }
+
+  return /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-facet-rail__facet-values"
+  }, /*#__PURE__*/React__default.createElement("div", {
+    className: "hawk-facet-rail__facet-values-link"
+  }, /*#__PURE__*/React__default.createElement("ul", {
+    className: "hawk-facet-rail__facet-list"
+  }, facetValues.map(function (values) {
+    // facets can be selected or negated, so explicitly check that the facet is not selected
+    var selectionState = store.isFacetSelected(facet, values).state;
+    var isSelected = selectionState !== FacetSelectionState.NotSelected;
+    return /*#__PURE__*/React__default.createElement("li", {
+      key: values.Value,
+      className: "hawk-facet-rail__facet-list-item"
+    }, /*#__PURE__*/React__default.createElement("button", {
+      onClick: function onClick(e) {
+        return setLinkFacet(values.Value, selectionState);
+      },
+      className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
+      "aria-pressed": isSelected
+    }, /*#__PURE__*/React__default.createElement("span", {
+      className: "hawk-facet-rail__facet-name"
+    }, values.Label, facet.ShowItemsCount ? " (".concat(values === null || values === void 0 ? void 0 : values.Count, ")") : '')));
+  }))), renderer.renderTruncation());
+}
+
 function RecentSearches() {
   var _useFacet = useFacet(),
       facet = _useFacet.facet;
@@ -17693,6 +17812,9 @@ var defaultFacetComponents = [{
 }, {
   facetType: FacetType.RecentSearches,
   component: RecentSearches
+}, {
+  facetType: FacetType.Distance,
+  component: Distance
 }];
 var defaultAutocompleteStrategies = [{
   SuggestionType: SuggestionType.Product,
@@ -19543,7 +19665,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25002,7 +25124,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -31756,5 +31877,29 @@ function RelatedSearch() {
   })) : null;
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+function MessageBox() {
+  var _useHawksearch = useHawksearch(),
+      store = _useHawksearch.store,
+      actor = _useHawksearch.actor;
+
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
+  useEffect(function () {
+    actor.getLandingPageData({
+      ClientGuid: config.clientGuid
+    });
+  }, []);
+
+  if (store.isLandingPageExpired === true) {
+    return /*#__PURE__*/React__default.createElement("div", {
+      className: "hawk__messagebox",
+      role: "alert"
+    }, "Note: This page is currently expired and will not show any results on the frontend. Results you are seeing below are for preview/setup purpose only.");
+  } else {
+    return null;
+  }
+}
+
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, Distance, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, MessageBox, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map

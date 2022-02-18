@@ -6,6 +6,7 @@ import { Request as PinItemRequest } from 'models/PinItems';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
+import { Request as ClientIdRequest } from 'components/ui/MessageBox/Request';
 import { HawksearchConfig } from 'types/HawksearchConfig';
 import AuthToken from 'components/AuthToken';
 
@@ -58,7 +59,7 @@ class HawkClient {
 				if (error.response && error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
 					const token = AuthToken.getTokens();
-					
+
 					return this.axiosInstance
 						.post(new URL(this.refreshTokenURL, this.baseUrl).href, {
 							ClientGuid: config.clientGuid,
@@ -70,7 +71,6 @@ class HawkClient {
 								AuthToken.setTokens(res.data.Token, res.data.RefreshToken);
 								this.axiosInstance.defaults.headers.common.Authorization = 'Bearer ' + res.data.Token;
 								return this.axiosInstance(originalRequest);
-								
 							}
 							return;
 						});
@@ -78,6 +78,18 @@ class HawkClient {
 				return Promise.reject(error);
 			}
 		);
+	}
+
+	public async getLandingPage(pageId: string | number | null, request: ClientIdRequest): Promise<any> {
+		const result = await this.axiosInstance.post(
+			`https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data`,
+			{
+				ClientGuid: request.ClientGuid,
+				PageId: pageId,
+			}
+		);
+		console.log('Results', result.data);
+		return result.data;
 	}
 
 	public async pinItem(request: PinItemRequest, cancellationToken?: CancelToken): Promise<string | null> {
@@ -104,14 +116,15 @@ class HawkClient {
 	}
 
 	public async search(request: SearchRequest, cancellationToken?: CancelToken): Promise<SearchResponse> {
+		// request.IndexName = "elasticdemo.20220125.144934"
 		const result = await this.axiosInstance.post<SearchResponse>(
 			new URL(this.searchUrl, this.baseUrl).href,
 			request,
 			{
 				cancelToken: cancellationToken,
 			}
-		);		
-		return result.data;	
+		);
+		return result.data;
 	}
 
 	public async rebuildIndex(request: RebuildIndexRequest, cancellationToken?: CancelToken): Promise<string | null> {
@@ -164,7 +177,6 @@ class HawkClient {
 		});
 		return new Result(result.data);
 	}
-	
 }
 
 export default HawkClient;

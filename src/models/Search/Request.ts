@@ -120,6 +120,7 @@ export class Request {
 	 * IgnoreSpellcheck will disable the autocorrect suggestion for the request
 	 */
 	public IgnoreSpellcheck?: boolean;
+	public isLandingPageExpired?: boolean;
 }
 
 export interface FacetSelections {

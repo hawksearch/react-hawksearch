@@ -42,6 +42,7 @@ export class SearchStore {
 	public itemsToCompare: Result[];
 	public itemsToCompareIds: string[];
 	public comparedResults: Result[];
+	public isLandingPageExpired: boolean;
 	public productDetails: Partial<Result>;
 	public previewDate?: string;
 	public smartBar?: {

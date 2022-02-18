@@ -20,7 +20,7 @@ function GlobalSearchBox({ SuggestionList }: SearchBoxProps) {
 	const { config } = useHawkConfig();
 	const { store, actor } = useHawksearch();
 	const searchUrl = config.searchPageUrl;
-	
+
 	function redirectToPage(inputValue: string | null) {
 		let redirect = `${searchUrl}?keyword=${inputValue}`;
 		if (config.indexName) {
