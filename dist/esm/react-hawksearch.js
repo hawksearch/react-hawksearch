@@ -7185,13 +7185,14 @@ var TrackingEvent = /*#__PURE__*/function () {
     value: function writeAutoCompleteClick(keyword, suggestType, name, url) {
       var binaryKeyword = isBase64(keyword) ? keyword : toBinary(keyword);
       var binaryName = isBase64(name) ? name : toBinary(name);
+      var binaryUrl = isBase64(url) ? url : toBinary(url);
       var pl = {
         EventType: E_T.autoCompleteClick,
         EventData: btoa(JSON.stringify({
           Keyword: binaryKeyword,
           Name: binaryName,
           SuggestType: suggestType,
-          Url: url
+          Url: binaryUrl
         }))
       };
       this.mr(pl);
@@ -19665,7 +19666,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25124,6 +25125,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
