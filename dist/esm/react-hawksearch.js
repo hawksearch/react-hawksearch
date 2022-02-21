@@ -6666,6 +6666,161 @@ var FacetType;
   FacetType["Distance"] = "distance";
 })(FacetType || (FacetType = {}));
 
+function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var getVisitorExpiry = function getVisitorExpiry() {
+  var d = new Date(); // 1 year
+
+  d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
+  return d.toUTCString();
+};
+var getVisitExpiry = function getVisitExpiry() {
+  var d = new Date(); // 4 hours
+
+  d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
+  return d.toUTCString();
+};
+var createGuid = function createGuid() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
+  // tslint:disable-next-line: no-bitwise
+
+  s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+  s[8] = s[13] = s[18] = s[23] = '-';
+  var uuid = s.join('');
+  return uuid;
+};
+var createWidgetId = function createWidgetId() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 16; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  var uuid = s.join('');
+  return uuid;
+};
+var getCookie = function getCookie(name) {
+  var nameEQ = name + '=';
+  var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
+
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1, c.length);
+    }
+
+    if (c.indexOf(nameEQ) === 0) {
+      return c.substring(nameEQ.length, c.length);
+    }
+  }
+
+  return null;
+};
+var setCookie = function setCookie(name, value, expiry) {
+  var expires;
+
+  if (expiry) {
+    expires = '; expires=' + expiry;
+  } else {
+    expires = '';
+  }
+
+  document.cookie = name + '=' + value + expires + '; path=/';
+};
+
+function getRecentFacetExpiry() {
+  var d = new Date(); // 12 hours
+
+  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
+  return d.toUTCString();
+}
+
+var getParsedObject = function getParsedObject(facetC) {
+  if (!facetC) {
+    return {};
+  }
+
+  var dict = {};
+  (facetC || '').split(',').forEach(function (element) {
+    var splitText = element.split('|');
+    dict[splitText[0]] = splitText[1];
+  });
+  return dict;
+};
+
+function getStringifyObject(obj) {
+  var str = '';
+  Object.keys(obj).forEach(function (element, index) {
+    if (index !== 0) {
+      str += ',';
+    }
+
+    str += element + '|' + obj[element];
+  });
+  return str;
+}
+
+var setRecentSearch = function setRecentSearch(val) {
+  var cookie = getCookie(FacetType.RecentSearches);
+
+  if (!cookie) {
+    setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
+    return;
+  }
+
+  var dict = getParsedObject(cookie);
+
+  if (dict[val]) {
+    dict[val] = Number(dict[val]) + 1;
+  } else {
+    dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
+  }
+
+  var str = getStringifyObject(dict);
+  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
+};
+var deleteCookie = function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
+var toBinary = function toBinary(string) {
+  var codeUnits = new Uint16Array(string.length);
+
+  for (var i = 0; i < codeUnits.length; i++) {
+    codeUnits[i] = string.charCodeAt(i);
+  }
+
+  var charCodes = new Uint8Array(codeUnits.buffer);
+  var result = '';
+
+  for (var _i = 0; _i < charCodes.byteLength; _i++) {
+    result += String.fromCharCode(charCodes[_i]);
+  }
+
+  return result;
+};
+var isBase64 = function isBase64(str) {
+  if (str === '' || str.trim() === '') {
+    return false;
+  }
+
+  try {
+    return btoa(atob(str)) == str;
+  } catch (err) {
+    return false;
+  }
+};
+
 var E_T;
 
 (function (E_T) {
@@ -7028,13 +7183,16 @@ var TrackingEvent = /*#__PURE__*/function () {
   }, {
     key: "writeAutoCompleteClick",
     value: function writeAutoCompleteClick(keyword, suggestType, name, url) {
+      var binaryKeyword = isBase64(keyword) ? keyword : toBinary(keyword);
+      var binaryName = isBase64(name) ? name : toBinary(name);
+      var binaryUrl = isBase64(url) ? url : toBinary(url);
       var pl = {
         EventType: E_T.autoCompleteClick,
         EventData: btoa(JSON.stringify({
-          Keyword: keyword,
-          Name: name,
+          Keyword: binaryKeyword,
+          Name: binaryName,
           SuggestType: suggestType,
-          Url: url
+          Url: binaryUrl
         }))
       };
       this.mr(pl);
@@ -7157,134 +7315,6 @@ var TrackingEvent = /*#__PURE__*/function () {
 _defineProperty(TrackingEvent, "instance", void 0);
 
 var TrackingEvent$1 = TrackingEvent.getInstance();
-
-function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-var getVisitorExpiry = function getVisitorExpiry() {
-  var d = new Date(); // 1 year
-
-  d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
-  return d.toUTCString();
-};
-var getVisitExpiry = function getVisitExpiry() {
-  var d = new Date(); // 4 hours
-
-  d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
-  return d.toUTCString();
-};
-var createGuid = function createGuid() {
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-
-  for (var i = 0; i < 36; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-
-  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
-  // tslint:disable-next-line: no-bitwise
-
-  s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-
-  s[8] = s[13] = s[18] = s[23] = '-';
-  var uuid = s.join('');
-  return uuid;
-};
-var createWidgetId = function createWidgetId() {
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-
-  for (var i = 0; i < 16; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-
-  var uuid = s.join('');
-  return uuid;
-};
-var getCookie = function getCookie(name) {
-  var nameEQ = name + '=';
-  var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
-
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1, c.length);
-    }
-
-    if (c.indexOf(nameEQ) === 0) {
-      return c.substring(nameEQ.length, c.length);
-    }
-  }
-
-  return null;
-};
-var setCookie = function setCookie(name, value, expiry) {
-  var expires;
-
-  if (expiry) {
-    expires = '; expires=' + expiry;
-  } else {
-    expires = '';
-  }
-
-  document.cookie = name + '=' + value + expires + '; path=/';
-};
-
-function getRecentFacetExpiry() {
-  var d = new Date(); // 12 hours
-
-  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
-  return d.toUTCString();
-}
-
-var getParsedObject = function getParsedObject(facetC) {
-  if (!facetC) {
-    return {};
-  }
-
-  var dict = {};
-  (facetC || '').split(',').forEach(function (element) {
-    var splitText = element.split('|');
-    dict[splitText[0]] = splitText[1];
-  });
-  return dict;
-};
-
-function getStringifyObject(obj) {
-  var str = '';
-  Object.keys(obj).forEach(function (element, index) {
-    if (index !== 0) {
-      str += ',';
-    }
-
-    str += element + '|' + obj[element];
-  });
-  return str;
-}
-
-var setRecentSearch = function setRecentSearch(val) {
-  var cookie = getCookie(FacetType.RecentSearches);
-
-  if (!cookie) {
-    setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
-    return;
-  }
-
-  var dict = getParsedObject(cookie);
-
-  if (dict[val]) {
-    dict[val] = Number(dict[val]) + 1;
-  } else {
-    dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
-  }
-
-  var str = getStringifyObject(dict);
-  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
-};
-var deleteCookie = function deleteCookie(name) {
-  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-};
 
 function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -9743,7 +9773,7 @@ function SliderDate() {
 }
 
 /**
- * react-number-format - 4.7.3
+ * react-number-format - 4.8.0
  * Author : Sudhanshu Yadav
  * Copyright (c) 2016, 2021 to Sudhanshu Yadav, released under the MIT license.
  * https://github.com/s-yadav/react-number-format
@@ -10101,7 +10131,13 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
         //set state always when not in focus and formatted value is changed
         (focusedElm === null && formattedValue !== stateValue)
       ) {
-        this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, input: focusedElm });
+        this.updateValue({
+          formattedValue: formattedValue,
+          numAsString: numAsString,
+          input: focusedElm,
+          source: 'prop',
+          event: null,
+        });
       }
     }
   };
@@ -10757,12 +10793,16 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
                         
                        
                             
+                               
+                   
                      
                               
    ) {
     var formattedValue = params.formattedValue;
     var input = params.input;
     var setCaretPosition = params.setCaretPosition; if ( setCaretPosition === void 0 ) setCaretPosition = true;
+    var source = params.source;
+    var event = params.event;
     var numAsString = params.numAsString;
     var caretPos = params.caretPos;
     var ref = this.props;
@@ -10811,7 +10851,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       this.setState({ value: formattedValue, numAsString: numAsString });
 
       // trigger onValueChange synchronously, so parent is updated along with the number format. Fix for #277, #287
-      onValueChange(this.getValueObject(formattedValue, numAsString));
+      onValueChange(this.getValueObject(formattedValue, numAsString), { event: event, source: source });
     }
   };
 
@@ -10838,7 +10878,14 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       formattedValue = lastValue;
     }
 
-    this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, inputValue: inputValue, input: el });
+    this.updateValue({
+      formattedValue: formattedValue,
+      numAsString: numAsString,
+      inputValue: inputValue,
+      input: el,
+      event: e,
+      source: 'event',
+    });
 
     if (isChangeAllowed) {
       props.onChange(e);
@@ -10879,6 +10926,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
           numAsString: numAsString,
           input: e.target,
           setCaretPosition: false,
+          event: e,
+          source: 'event',
         });
         onBlur(e);
         return;
@@ -10953,6 +11002,8 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
           formattedValue: newValue,
           caretPos: newCaretPosition,
           input: el,
+          event: e,
+          source: 'event',
         });
       } else if (!negativeRegex.test(value[expectedCaretPosition])) {
         while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound) {
@@ -19615,7 +19666,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -20968,6 +21019,7 @@ var propTypes$7 = {
   children: propTypes.node
 };
 
+var _excluded = ["className", "cssModule", "tabs", "pills", "vertical", "horizontal", "justified", "fill", "navbar", "card", "tag"];
 var propTypes$8 = {
   tabs: propTypes.bool,
   pills: propTypes.bool,
@@ -21008,7 +21060,7 @@ var Nav = function Nav(props) {
       navbar = props.navbar,
       card = props.card,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tabs", "pills", "vertical", "horizontal", "justified", "fill", "navbar", "card", "tag"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded);
 
   var classes = mapToCssModules(classnames(className, navbar ? 'navbar-nav' : 'nav', horizontal ? "justify-content-" + horizontal : false, getVerticalClass(vertical), {
     'nav-tabs': tabs,
@@ -21026,6 +21078,7 @@ var Nav = function Nav(props) {
 Nav.propTypes = propTypes$8;
 Nav.defaultProps = defaultProps$1;
 
+var _excluded$1 = ["className", "cssModule", "active", "tag"];
 var propTypes$9 = {
   tag: tagPropType,
   active: propTypes.bool,
@@ -21041,7 +21094,7 @@ var NavItem = function NavItem(props) {
       cssModule = props.cssModule,
       active = props.active,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "active", "tag"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$1);
 
   var classes = mapToCssModules(classnames(className, 'nav-item', active ? 'active' : false), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -21058,6 +21111,7 @@ function _inheritsLoose(subClass, superClass) {
   _setPrototypeOf(subClass, superClass);
 }
 
+var _excluded$2 = ["className", "cssModule", "active", "tag", "innerRef"];
 var propTypes$a = {
   tag: tagPropType,
   innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
@@ -21107,7 +21161,7 @@ var NavLink = /*#__PURE__*/function (_React$Component) {
         active = _this$props.active,
         Tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "active", "tag", "innerRef"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$2);
 
     var classes = mapToCssModules(classnames(className, 'nav-link', {
       disabled: attributes.disabled,
@@ -21143,6 +21197,7 @@ var propTypes$c = {
   cssModule: propTypes.object
 };
 
+var _excluded$3 = ["active", "aria-label", "block", "className", "close", "cssModule", "color", "outline", "size", "tag", "innerRef"];
 var propTypes$d = {
   active: propTypes.bool,
   'aria-label': propTypes.string,
@@ -21201,7 +21256,7 @@ var Button = /*#__PURE__*/function (_React$Component) {
         size = _this$props.size,
         Tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["active", "aria-label", "block", "className", "close", "cssModule", "color", "outline", "size", "tag", "innerRef"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$3);
 
     if (close && typeof attributes.children === 'undefined') {
       attributes.children = /*#__PURE__*/React__default.createElement("span", {
@@ -21238,6 +21293,7 @@ var Button = /*#__PURE__*/function (_React$Component) {
 Button.propTypes = propTypes$d;
 Button.defaultProps = defaultProps$4;
 
+var _excluded$4 = ["className"];
 var propTypes$e = {
   onClick: propTypes.func,
   onBlur: propTypes.func,
@@ -21303,7 +21359,7 @@ var ButtonToggle = /*#__PURE__*/function (_React$Component) {
   _proto.render = function render() {
     var _this$props = this.props,
         className = _this$props.className,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$4);
 
     var classes = mapToCssModules(classnames(className, {
       focus: this.state.focus
@@ -25069,6 +25125,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -25712,6 +25769,7 @@ function Reference(props) {
 
 var DropdownContext = /*#__PURE__*/React__default.createContext({});
 
+var _excluded$5 = ["className", "cssModule", "direction", "isOpen", "group", "size", "nav", "setActiveFromChild", "active", "addonType", "tag", "menuRole"];
 var propTypes$f = {
   a11y: propTypes.bool,
   disabled: propTypes.bool,
@@ -25968,7 +26026,7 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
         active = _omit.active,
         addonType = _omit.addonType,
         tag = _omit.tag,
-        attrs = _objectWithoutPropertiesLoose$1(_omit, ["className", "cssModule", "direction", "isOpen", "group", "size", "nav", "setActiveFromChild", "active", "addonType", "tag", "menuRole"]);
+        attrs = _objectWithoutPropertiesLoose$1(_omit, _excluded$5);
 
     var Tag = tag || (nav ? 'li' : 'div');
     var subItemIsActive = false;
@@ -26024,6 +26082,7 @@ var propTypes$i = {
   role: propTypes.string
 };
 
+var _excluded$6 = ["className", "cssModule", "divider", "tag", "header", "active", "text"];
 var propTypes$j = {
   children: propTypes.node,
   active: propTypes.bool,
@@ -26111,7 +26170,7 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
         header = _omit.header,
         active = _omit.active,
         text = _omit.text,
-        props = _objectWithoutPropertiesLoose$1(_omit, ["className", "cssModule", "divider", "tag", "header", "active", "text"]);
+        props = _objectWithoutPropertiesLoose$1(_omit, _excluded$6);
 
     var classes = mapToCssModules(classnames(className, {
       disabled: props.disabled,
@@ -26150,6 +26209,8 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
 DropdownItem.propTypes = propTypes$j;
 DropdownItem.defaultProps = defaultProps$7;
 DropdownItem.contextType = DropdownContext;
+
+var _excluded$7 = ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"];
 
 function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -26212,7 +26273,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
         persist = _this$props.persist,
         positionFixed = _this$props.positionFixed,
         container = _this$props.container,
-        attrs = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"]);
+        attrs = _objectWithoutPropertiesLoose$1(_this$props, _excluded$7);
 
     var classes = mapToCssModules(classnames(className, 'dropdown-menu', {
       'dropdown-menu-right': right,
@@ -26281,6 +26342,7 @@ DropdownMenu.propTypes = propTypes$k;
 DropdownMenu.defaultProps = defaultProps$8;
 DropdownMenu.contextType = DropdownContext;
 
+var _excluded$8 = ["className", "color", "cssModule", "caret", "split", "nav", "tag", "innerRef"];
 var propTypes$l = {
   caret: propTypes.bool,
   color: propTypes.string,
@@ -26345,7 +26407,7 @@ var DropdownToggle = /*#__PURE__*/function (_React$Component) {
         nav = _this$props.nav,
         tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        props = _objectWithoutPropertiesLoose$1(_this$props, ["className", "color", "cssModule", "caret", "split", "nav", "tag", "innerRef"]);
+        props = _objectWithoutPropertiesLoose$1(_this$props, _excluded$8);
 
     var ariaLabel = props['aria-label'] || 'Toggle Dropdown';
     var classes = mapToCssModules(classnames(className, {
@@ -26651,6 +26713,23 @@ unwrapExports(PropTypes);
 var PropTypes_1 = PropTypes.classNamesShape;
 var PropTypes_2 = PropTypes.timeoutsShape;
 
+var TransitionGroupContext = createCommonjsModule(function (module, exports) {
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _react = _interopRequireDefault(React__default);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _default = _react.default.createContext(null);
+
+exports.default = _default;
+module.exports = exports["default"];
+});
+
+unwrapExports(TransitionGroupContext);
+
 var Transition_1 = createCommonjsModule(function (module, exports) {
 
 exports.__esModule = true;
@@ -26665,6 +26744,8 @@ var _reactDom = _interopRequireDefault(ReactDOM);
 
 
 
+
+var _TransitionGroupContext = _interopRequireDefault(TransitionGroupContext);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26716,8 +26797,10 @@ var EXITING = 'exiting';
  * }
  *
  * const transitionStyles = {
- *   entering: { opacity: 0 },
+ *   entering: { opacity: 1 },
  *   entered:  { opacity: 1 },
+ *   exiting:  { opacity: 0 },
+ *   exited:  { opacity: 0 },
  * };
  *
  * const Fade = ({ in: inProp }) => (
@@ -26784,7 +26867,7 @@ function (_React$Component) {
     var _this;
 
     _this = _React$Component.call(this, props, context) || this;
-    var parentGroup = context.transitionGroup; // In the context of a TransitionGroup all enters are really appears
+    var parentGroup = context; // In the context of a TransitionGroup all enters are really appears
 
     var appear = parentGroup && !parentGroup.isMounting ? props.enter : props.appear;
     var initialStatus;
@@ -26811,15 +26894,6 @@ function (_React$Component) {
     _this.nextCallback = null;
     return _this;
   }
-
-  var _proto = Transition.prototype;
-
-  _proto.getChildContext = function getChildContext() {
-    return {
-      transitionGroup: null // allows for nested Transitions
-
-    };
-  };
 
   Transition.getDerivedStateFromProps = function getDerivedStateFromProps(_ref, prevState) {
     var nextIn = _ref.in;
@@ -26848,6 +26922,8 @@ function (_React$Component) {
   //   return { nextStatus }
   // }
 
+
+  var _proto = Transition.prototype;
 
   _proto.componentDidMount = function componentDidMount() {
     this.updateStatus(true, this.appearStatus);
@@ -26923,7 +26999,7 @@ function (_React$Component) {
     var _this2 = this;
 
     var enter = this.props.enter;
-    var appearing = this.context.transitionGroup ? this.context.transitionGroup.isMounting : mounting;
+    var appearing = this.context ? this.context.isMounting : mounting;
     var timeouts = this.getTimeouts();
     var enterTimeout = appearing ? timeouts.appear : timeouts.enter; // no enter animation skip right to ENTERED
     // if we are mounting and running this it means appear _must_ be set
@@ -27065,23 +27141,25 @@ function (_React$Component) {
     delete childProps.onExited;
 
     if (typeof children === 'function') {
-      return children(status, childProps);
+      // allows for nested Transitions
+      return _react.default.createElement(_TransitionGroupContext.default.Provider, {
+        value: null
+      }, children(status, childProps));
     }
 
     var child = _react.default.Children.only(children);
 
-    return _react.default.cloneElement(child, childProps);
+    return (// allows for nested Transitions
+      _react.default.createElement(_TransitionGroupContext.default.Provider, {
+        value: null
+      }, _react.default.cloneElement(child, childProps))
+    );
   };
 
   return Transition;
 }(_react.default.Component);
 
-Transition.contextTypes = {
-  transitionGroup: PropTypes$1.object
-};
-Transition.childContextTypes = {
-  transitionGroup: function transitionGroup() {}
-};
+Transition.contextType = _TransitionGroupContext.default;
 Transition.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A `function` child can be used instead of a React element. This function is
@@ -27359,7 +27437,7 @@ var removeClass$1 = function removeClass(node, classes) {
  * }
  * .my-node-exit-active {
  *   opacity: 0;
- *   transition: opacity: 200ms;
+ *   transition: opacity 200ms;
  * }
  * ```
  *
@@ -27806,6 +27884,8 @@ var _react = _interopRequireDefault(React__default);
 
 
 
+var _TransitionGroupContext = _interopRequireDefault(TransitionGroupContext);
+
 
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -27860,6 +27940,9 @@ function (_React$Component) {
 
 
     _this.state = {
+      contextValue: {
+        isMounting: true
+      },
       handleExited: handleExited,
       firstRender: true
     };
@@ -27868,17 +27951,13 @@ function (_React$Component) {
 
   var _proto = TransitionGroup.prototype;
 
-  _proto.getChildContext = function getChildContext() {
-    return {
-      transitionGroup: {
-        isMounting: !this.appeared
-      }
-    };
-  };
-
   _proto.componentDidMount = function componentDidMount() {
-    this.appeared = true;
     this.mounted = true;
+    this.setState({
+      contextValue: {
+        isMounting: false
+      }
+    });
   };
 
   _proto.componentWillUnmount = function componentWillUnmount() {
@@ -27921,24 +28000,26 @@ function (_React$Component) {
         childFactory = _this$props.childFactory,
         props = _objectWithoutPropertiesLoose(_this$props, ["component", "childFactory"]);
 
+    var contextValue = this.state.contextValue;
     var children = values(this.state.children).map(childFactory);
     delete props.appear;
     delete props.enter;
     delete props.exit;
 
     if (Component === null) {
-      return children;
+      return _react.default.createElement(_TransitionGroupContext.default.Provider, {
+        value: contextValue
+      }, children);
     }
 
-    return _react.default.createElement(Component, props, children);
+    return _react.default.createElement(_TransitionGroupContext.default.Provider, {
+      value: contextValue
+    }, _react.default.createElement(Component, props, children));
   };
 
   return TransitionGroup;
 }(_react.default.Component);
 
-TransitionGroup.childContextTypes = {
-  transitionGroup: _propTypes.default.object.isRequired
-};
 TransitionGroup.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * `<TransitionGroup>` renders a `<div>` by default. You can change this
@@ -28187,6 +28268,8 @@ var reactTransitionGroup_2 = reactTransitionGroup.TransitionGroup;
 var reactTransitionGroup_3 = reactTransitionGroup.ReplaceTransition;
 var reactTransitionGroup_4 = reactTransitionGroup.CSSTransition;
 
+var _excluded$9 = ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"];
+
 function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28220,7 +28303,7 @@ function Fade(props) {
       cssModule = props.cssModule,
       children = props.children,
       innerRef = props.innerRef,
-      otherProps = _objectWithoutPropertiesLoose$1(props, ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"]);
+      otherProps = _objectWithoutPropertiesLoose$1(props, _excluded$9);
 
   var transitionProps = pick(otherProps, TransitionPropTypeKeys);
   var childProps = omit(otherProps, TransitionPropTypeKeys);
@@ -28317,6 +28400,8 @@ var propTypes$x = {
   cssModule: propTypes.object
 };
 
+var _excluded$a = ["in", "children", "cssModule", "slide", "tag", "className"];
+
 function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28388,7 +28473,7 @@ var CarouselItem = /*#__PURE__*/function (_React$Component) {
         slide = _this$props.slide,
         Tag = _this$props.tag,
         className = _this$props.className,
-        transitionProps = _objectWithoutPropertiesLoose$1(_this$props, ["in", "children", "cssModule", "slide", "tag", "className"]);
+        transitionProps = _objectWithoutPropertiesLoose$1(_this$props, _excluded$a);
 
     return /*#__PURE__*/React__default.createElement(reactTransitionGroup_1, _extends({}, transitionProps, {
       enter: slide,
@@ -28868,6 +28953,7 @@ var propTypes$B = {
   cssModule: propTypes.object
 };
 
+var _excluded$b = ["className", "label", "valid", "invalid", "cssModule", "children", "bsSize", "innerRef", "htmlFor", "type", "onChange", "dataBrowse", "hidden"];
 var propTypes$C = {
   className: propTypes.string,
   id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
@@ -28945,7 +29031,7 @@ var CustomFileInput = /*#__PURE__*/function (_React$Component) {
         onChange = _this$props.onChange,
         dataBrowse = _this$props.dataBrowse,
         hidden = _this$props.hidden,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "label", "valid", "invalid", "cssModule", "children", "bsSize", "innerRef", "htmlFor", "type", "onChange", "dataBrowse", "hidden"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$b);
 
     var customClass = mapToCssModules(classnames(className, "custom-file"), cssModule);
     var validationClassNames = mapToCssModules(classnames(invalid && "is-invalid", valid && "is-valid"), cssModule);
@@ -28987,6 +29073,8 @@ var propTypes$D = {
   children: propTypes.oneOfType([propTypes.node, propTypes.array, propTypes.func]),
   innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
+
+var _excluded$c = ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"];
 
 function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -29109,7 +29197,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
         fade = _this$props.fade,
         transition = _this$props.transition,
         placement = _this$props.placement,
-        attrs = _objectWithoutPropertiesLoose$1(_this$props, ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"]);
+        attrs = _objectWithoutPropertiesLoose$1(_this$props, _excluded$c);
 
     var arrowClassName = mapToCssModules(classnames('arrow', _arrowClassName), cssModule);
     var popperClassName = mapToCssModules(classnames(_popperClassName, placementPrefix ? placementPrefix + "-auto" : ''), this.props.cssModule);
@@ -30280,6 +30368,7 @@ var propTypes$T = {
   cssModule: propTypes.object
 };
 
+var _excluded$d = ["className", "cssModule", "type", "bsSize", "valid", "invalid", "tag", "addon", "plaintext", "innerRef"];
 var propTypes$U = {
   children: propTypes.node,
   type: propTypes.string,
@@ -30338,7 +30427,7 @@ var Input = /*#__PURE__*/function (_React$Component) {
         addon = _this$props.addon,
         plaintext = _this$props.plaintext,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "type", "bsSize", "valid", "invalid", "tag", "addon", "plaintext", "innerRef"]);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$d);
 
     var checkInput = ['radio', 'checkbox'].indexOf(type) > -1;
     var isNotaNumber = new RegExp('\\D', 'g');
@@ -30631,6 +30720,7 @@ var propTypes$1c = {
   cssModule: propTypes.object
 };
 
+var _excluded$e = ["className", "cssModule", "tag", "type"];
 var propTypes$1d = {
   tag: tagPropType,
   className: propTypes.string,
@@ -30645,7 +30735,7 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
       cssModule = props.cssModule,
       Tag = props.tag,
       type = props.type,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tag", "type"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$e);
 
   var classes = mapToCssModules(classnames(className, type ? "list-" + type : false), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -30656,6 +30746,7 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
 List.propTypes = propTypes$1d;
 List.defaultProps = defaultProps$k;
 
+var _excluded$f = ["className", "cssModule", "tag"];
 var propTypes$1e = {
   tag: tagPropType,
   className: propTypes.string,
@@ -30668,7 +30759,7 @@ var ListInlineItem = /*#__PURE__*/forwardRef(function (props, ref) {
   var className = props.className,
       cssModule = props.cssModule,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tag"]);
+      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$f);
 
   var classes = mapToCssModules(classnames(className, 'list-inline-item'), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -30747,13 +30838,16 @@ var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
   var _proto = UncontrolledDropdown.prototype;
 
   _proto.toggle = function toggle(e) {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    var _this2 = this;
 
-    if (this.props.onToggle) {
-      this.props.onToggle(e, !this.state.isOpen);
-    }
+    var isOpen = !this.state.isOpen;
+    this.setState({
+      isOpen: isOpen
+    }, function () {
+      if (_this2.props.onToggle) {
+        _this2.props.onToggle(e, isOpen);
+      }
+    });
   };
 
   _proto.render = function render() {
@@ -31119,7 +31213,9 @@ function invariant(condition, message) {
     if (isProduction$1) {
         throw new Error(prefix);
     }
-    throw new Error(prefix + ": " + (message || ''));
+    var provided = typeof message === 'function' ? message() : message;
+    var value = provided ? prefix + ": " + provided : prefix;
+    throw new Error(value);
 }
 
 function addLeadingSlash(path) {

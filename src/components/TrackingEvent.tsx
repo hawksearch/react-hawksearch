@@ -1,3 +1,5 @@
+import { toBinary, fromBinary, isBase64 } from "helpers/utils";
+
 enum E_T {
 	pageLoad = 1,
 	search = 2,
@@ -352,14 +354,17 @@ class TrackingEvent {
 	}
 
 	private writeAutoCompleteClick(keyword, suggestType, name, url) {
+		let binaryKeyword = isBase64(keyword) ? keyword : toBinary(keyword);
+		let binaryName = isBase64(name) ? name : toBinary(name);
+		let binaryUrl = isBase64(url) ? url : toBinary(url);
 		const pl = {
 			EventType: E_T.autoCompleteClick,
 			EventData: btoa(
 				JSON.stringify({
-					Keyword: keyword,
-					Name: name,
+					Keyword: binaryKeyword,
+					Name: binaryName,
 					SuggestType: suggestType,
-					Url: url,
+					Url: binaryUrl,
 				})
 			),
 		};
