@@ -15,7 +15,8 @@ function FacetList() {
 
 	// the number of random placeholders to render while we wait for results
 	const [numPlaceholders] = useState(Math.round(Math.random() * (5 - 3) + 3));
-
+	console.log("facetValues====>",searchResults?.Facets);
+	
 	const components = getFacetComponents(config.facetOverrides || []);
 	return (
 		<ul className="hawk-facet-rail__facet-list" tabIndex={0} aria-label="Facet list">
@@ -23,6 +24,9 @@ function FacetList() {
 				? // if there are search results, render the facets
 				  searchResults.Facets.map(facet => {
 						if (!facet.IsVisible) {
+							return null;
+						}
+						if(facet.ScrollThreshold > facet.Values.length) {
 							return null;
 						}
 						if (facet.FieldType === 'tab' || facet.FacetType === 'related') {
@@ -35,7 +39,7 @@ function FacetList() {
 
 						return (
 							<Facet key={facet.FacetId} facet={facet}>
-								{Component ? (
+								{Component   ? (
 									<Component />
 								) : (
 									<div>
