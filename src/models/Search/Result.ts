@@ -2,6 +2,8 @@ import { Explain } from './Explain';
 
 export class Result {
 	/** Unique identifier for this search result item. */
+	public quantity?: number;
+	
 	public DocId: string;
 
 	/** Calculated relevancy score. */

@@ -21,6 +21,7 @@ class HawkClient {
 	private updatePinOrderURL: string;
 	private rebuildIndexURL: string;
 	private productDetailsURL: string;
+	private landingPageExpiry: string;
 	private axiosInstance: AxiosInstance = axios.create();
 
 	constructor(config: HawksearchConfig) {
@@ -34,6 +35,7 @@ class HawkClient {
 		this.updatePinOrderURL = config.updatePinOrderURL || '/api/pinning/update-pin-order/';
 		this.rebuildIndexURL = config.rebuildIndexURL || '/api/internal-preview/rebuild-percolator';
 		this.productDetailsURL = config.productDetailsURL || '/api/internal-preview/item-detail';
+		this.landingPageExpiry = config.landingPageExpiry || '/api/internal-preview/get-preview-data';
 
 		this.axiosInstance.interceptors.request.use(
 			conf => {
@@ -81,14 +83,14 @@ class HawkClient {
 	}
 
 	public async getLandingPage(pageId: string | number | null, request: ClientIdRequest): Promise<any> {
-		const result = await this.axiosInstance.post(
-			`https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data`,
+		const result = await this.axiosInstance.post<string | null>(
+			new URL(this.landingPageExpiry, this.baseUrl).href,
+			// `https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data`,
 			{
 				ClientGuid: request.ClientGuid,
 				PageId: pageId,
 			}
 		);
-		console.log('Results', result.data);
 		return result.data;
 	}
 

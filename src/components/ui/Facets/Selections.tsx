@@ -62,7 +62,7 @@ function Selections() {
 		} else if (selection.facet.FieldType === 'range') {
 			return renderRange(item, selection.facet);
 		} else if (selection.facet.FacetType === 'search') {
-			return decodeURIComponent(item.label);
+			return decodeURIComponent(decodeURIComponent(item.label));
 		}
 		return item.label;
 	}

@@ -192,6 +192,18 @@
 	margin-bottom: 5px;
 }
 
+.hawk-facet-rail__facet__search {
+	input {
+		width: 90%;
+		box-sizing: border-box;
+		border: 1px solid $grey;
+
+		padding: 5px;
+	}
+
+	margin-bottom: 5px;
+}
+
 .hawk-facet-rail__facet-values {
 	background-color: $white;
 	border: 1px solid $grey;
