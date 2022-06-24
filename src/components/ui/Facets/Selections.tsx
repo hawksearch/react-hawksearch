@@ -73,8 +73,6 @@ function Selections() {
 			<ul className="hawk-selections">
 				{keys.map(key => {
 					const selection = facetSelections[key];
-					console.log("selection =========>", selection);
-
 					return (
 						<li key={key} className="hawk-selections__category">
 							<div className="hawk-selections__category-wrapper">

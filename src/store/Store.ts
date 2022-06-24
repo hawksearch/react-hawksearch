@@ -127,7 +127,6 @@ export class SearchStore {
 			negativeFacetValuePrefix
 		} = this;
 		const selections: ClientSelections = {};
-		console.log("negativeFacetValuePrefix =========>", negativeFacetValuePrefix);
 		
 		if (!clientSelections && !SearchWithin) {
 			return selections;
@@ -224,7 +223,6 @@ export class SearchStore {
 				label: facet.Name,
 				items,
 			};
-			console.log("facetSelections ==========>", items);
 		});
 
 		return selections;

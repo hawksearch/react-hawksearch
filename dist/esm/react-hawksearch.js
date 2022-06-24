@@ -5209,7 +5209,6 @@ var SearchStore = /*#__PURE__*/function () {
           searchResults = this.searchResults,
           negativeFacetValuePrefix = this.negativeFacetValuePrefix;
       var selections = {};
-      console.log("negativeFacetValuePrefix =========>", negativeFacetValuePrefix);
 
       if (!clientSelections && !SearchWithin) {
         return selections;
@@ -5305,7 +5304,6 @@ var SearchStore = /*#__PURE__*/function () {
           label: facet.Name,
           items: items
         };
-        console.log("facetSelections ==========>", items);
       });
       return selections;
     }
@@ -17757,8 +17755,6 @@ function Distance() {
   }
 
   function getScrollHeight(scrollHeight) {
-    console.log("facetResults====>", facet.ScrollThreshold);
-
     if (scrollHeight === 0) {
       return {
         height: 'inherit'
@@ -20106,7 +20102,6 @@ function Selections$1() {
     className: "hawk-selections"
   }, keys.map(function (key) {
     var selection = facetSelections[key];
-    console.log("selection =========>", selection);
     return /*#__PURE__*/React__default.createElement("li", {
       key: key,
       className: "hawk-selections__category"

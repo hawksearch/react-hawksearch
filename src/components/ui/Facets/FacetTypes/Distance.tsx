@@ -62,7 +62,6 @@ function Distance() {
 
 	}
 	function getScrollHeight(scrollHeight: number) {
-		console.log("facetResults====>", facet.ScrollThreshold);
 		
 		if (scrollHeight === 0) {
 			return { height: 'inherit' };
