@@ -1,10 +1,12 @@
-import React, { useContext, useState, useRef, MouseEvent } from 'react';
+import React, { useContext, useState, useRef, MouseEvent, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { Facet as FacetModel, Value } from 'models/Facets';
 import { useHawksearch } from 'components/StoreProvider';
 import PlusSVG from 'components/svg/PlusSVG';
 import MinusSVG from 'components/svg/MinusSVG';
 import QuestionmarkSVG from 'components/svg/QuestionmarkSVG';
+import { useHawkConfig } from 'components/ConfigProvider';
+
 
 const FacetContext = React.createContext({} as FacetContextValue);
 
@@ -87,17 +89,19 @@ function getInitialCollapsibleState(facet: FacetModel, cookies: { [key: string]:
 }
 
 function Facet({ facet, children }: FacetProps) {
-	const { actor: searchActor } = useHawksearch();
+	const { actor: searchActor, store } = useHawksearch();
 	const wrapperRef = useRef<HTMLInputElement>(null);
 	const [filter, setFilter] = useState('');
 	const [isTruncated, setTruncated] = useState(facet.shouldTruncate);
 	const [cookies, setCookie] = useCookies([facet.Field]);
 	const [isCollapsed, setCollapsed] = useState(getInitialCollapsibleState(facet, cookies));
 	const { t, i18n } = useTranslation();
+	const { config } = useHawkConfig();
+	
 
 	function selectFacet(facetValue: Value | string): void {
 		setFilter('');
-		searchActor.toggleFacetValue(facet, facetValue);
+		searchActor.toggleFacetValue(facet, facetValue, undefined, undefined, store.negativeFacetValuePrefix);
 	}
 
 	function setFacets(values: Value[] | string[]): void {
@@ -105,9 +109,11 @@ function Facet({ facet, children }: FacetProps) {
 		searchActor.setFacetValues(facet, values);
 	}
 
-	function negateFacet(facetValue: Value | string): void {
-		setFilter('');
-		searchActor.toggleFacetValue(facet, facetValue, /* negate */ true);
+	 function negateFacet(facetValue: Value | string): void {
+		setFilter('');		
+		searchActor.toggleFacetValue(facet, facetValue, /* negate */ true, {
+			ClientGuid: config.clientGuid,
+		}, store.negativeFacetValuePrefix);
 	}
 
 	function renderTruncation() {

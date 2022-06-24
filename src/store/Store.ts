@@ -1,6 +1,7 @@
 import { Response, Request, Result } from 'models/Search';
 import { Value, Facet } from 'models/Facets';
 import { ClientSelections, ClientSelectionValue } from 'store/ClientSelections';
+import Selections from 'components/ui/Facets/Selections';
 
 export enum FacetSelectionState {
 	/** The facet value is not selected. */
@@ -43,6 +44,7 @@ export class SearchStore {
 	public itemsToCompareIds: string[];
 	public comparedResults: Result[];
 	public isLandingPageExpired: boolean;
+	public negativeFacetValuePrefix: string;
 	public productDetails: Partial<Result>;
 	public previewDate?: string;
 	public smartBar?: {
@@ -72,7 +74,7 @@ export class SearchStore {
 	 * @param facet The facet for which the facet value will be checked for selection.
 	 * @param facetValue The facet value that will be checked for selection.
 	 */
-	public isFacetSelected(facet: Facet | string, facetValue: Value | string): SelectionInfo {
+	public isFacetSelected(facet: Facet | string, facetValue: Value | string, symbolForNegate?: string): SelectionInfo {
 		const facetName = typeof facet === 'string' ? facet : facet.Name;
 		const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 
@@ -91,7 +93,7 @@ export class SearchStore {
 		}
 
 		const selectionIdx = facetSelections[facetField]!.indexOf(valueValue);
-		const negationIdx = facetSelections[facetField]!.indexOf(`-${valueValue}`);
+		const negationIdx = facetSelections[facetField]!.indexOf(`${symbolForNegate}${valueValue}`);
 
 		if (selectionIdx !== -1) {
 			// if the exact facet value exists, then we're normally selected
@@ -104,7 +106,7 @@ export class SearchStore {
 			// if the facet value is selected but prefixed with a -, then we're negated
 			return {
 				state: FacetSelectionState.Negated,
-				selectedValue: `-${valueValue}`,
+				selectedValue: `${symbolForNegate}${valueValue}`,
 				selectionIndex: negationIdx,
 			};
 		}
@@ -122,9 +124,10 @@ export class SearchStore {
 		const {
 			pendingSearch: { FacetSelections: clientSelections, SearchWithin },
 			searchResults,
+			negativeFacetValuePrefix
 		} = this;
 		const selections: ClientSelections = {};
-
+		
 		if (!clientSelections && !SearchWithin) {
 			return selections;
 		}
@@ -157,7 +160,7 @@ export class SearchStore {
 							value: SearchWithin,
 						},
 					],
-				};
+				};				
 			}
 		}
 
@@ -199,7 +202,7 @@ export class SearchStore {
 				// for other types of facets, try to find a matching value
 
 				selectionValues.forEach(selectionValue => {
-					const matchingVal = this.findMatchingValue(selectionValue, facet.Values);
+					const matchingVal = this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
 
 					if (!matchingVal || !matchingVal.Label) {
 						// if there's no matching value from the server, we cannot display because there would
@@ -225,17 +228,17 @@ export class SearchStore {
 		return selections;
 	}
 
-	private findMatchingValue(selectionValue: string, facetValues: Value[]): Value | null {
+	private findMatchingValue(selectionValue: string, facetValues: Value[], symbolForNegate?: string): Value | null {
 		let matchingValue: Value | null = null;
 		if (!facetValues || facetValues.length === 0) {
 			return null;
 		}
 
 		for (const facetValue of facetValues) {
-			const isMatchingVal = facetValue.Value === selectionValue || `-${facetValue.Value}` === selectionValue;
+			const isMatchingVal = facetValue.Value === selectionValue || `${symbolForNegate}${facetValue.Value}` === selectionValue;
 			// loop through children
 			if (!isMatchingVal) {
-				matchingValue = this.findMatchingValue(selectionValue, facetValue.Children);
+				matchingValue = this.findMatchingValue(selectionValue, facetValue.Children, symbolForNegate);
 			} else {
 				matchingValue = facetValue;
 			}

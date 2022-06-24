@@ -14,9 +14,7 @@ function FacetList() {
 	const { config } = useHawkConfig();
 
 	// the number of random placeholders to render while we wait for results
-	const [numPlaceholders] = useState(Math.round(Math.random() * (5 - 3) + 3));
-	console.log("facetValues====>",searchResults?.Facets);
-	
+	const [numPlaceholders] = useState(Math.round(Math.random() * (5 - 3) + 3));	
 	const components = getFacetComponents(config.facetOverrides || []);
 	return (
 		<ul className="hawk-facet-rail__facet-list" tabIndex={0} aria-label="Facet list">
