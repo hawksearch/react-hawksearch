@@ -23,7 +23,7 @@ function Checkbox() {
 		actor,
 		renderer,
 	} = useFacet();
-
+	
 	function renderOptions() {
 		if (facet.FieldType === 'range') {
 			return facetValues.map(correspondingValues => {
@@ -34,9 +34,9 @@ function Checkbox() {
 				}
 
 				const rangeValueAssetUrl = value ? config.dashboardUrl + value.AssetFullUrl : '';
-
+				
 				// facets can be selected or negated, so explicitly check that the facet is not selected
-				const selectionState = store.isFacetSelected(facet, value.Value).state;
+				const selectionState = store.isFacetSelected(facet, value.Value, store.negativeFacetValuePrefix).state;
 				const isSelected = selectionState !== FacetSelectionState.NotSelected;
 				const isNegated = selectionState === FacetSelectionState.Negated;
 
@@ -89,15 +89,16 @@ function Checkbox() {
 		} else {
 			return facetValues.map(value => {
 				// facets can be selected or negated, so explicitly check that the facet is not selected
-				const selectionState = store.isFacetSelected(facet, value).state;
-
+				const selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
+				
 				const isSelected = selectionState !== FacetSelectionState.NotSelected;
 				const isNegated = selectionState === FacetSelectionState.Negated;
 				let label = value.Label || '';
 				if (label?.indexOf('%') !== -1) {
 					label = encodeURI(label || '');
 				}
-				const decodedLabel = `${decodeURI(label)} ${facet.ShowItemsCount ? `(${value.Count})` : ''}`;
+				const decodedLabel = `${decodeURI(label)} ${facet.ShowItemsCount ? `(${value.Count})` : ''}`;				
+				
 				return (
 					<li key={value.Value} className="hawk-facet-rail__facet-list-item">
 						<button
@@ -176,7 +177,7 @@ function Checkbox() {
 				</ul>
 			</div>
 
-			{/* render the default truncation control as we don't need to customize this */}
+			{/* /* render the default truncation control as we don't need to customize this */}
 			{renderer.renderTruncation()}
 		</div>
 	);

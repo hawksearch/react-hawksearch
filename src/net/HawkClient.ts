@@ -85,7 +85,6 @@ class HawkClient {
 	public async getLandingPage(pageId: string | number | null, request: ClientIdRequest): Promise<any> {
 		const result = await this.axiosInstance.post<string | null>(
 			new URL(this.landingPageExpiry, this.baseUrl).href,
-			// `https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data`,
 			{
 				ClientGuid: request.ClientGuid,
 				PageId: pageId,

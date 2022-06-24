@@ -4,17 +4,16 @@ import { useHawksearch } from 'components/StoreProvider';
 import XCircleSVG from 'components/svg/XCircleSVG';
 import { ClientSelectionValue, ClientSelection } from 'store/ClientSelections';
 import { Facet, Range } from 'models/Facets';
-
 import { useTranslation } from 'react-i18next';
 
 function Selections() {
 	const {
-		store: { facetSelections, pendingSearch },
+		store: { facetSelections, pendingSearch, negativeFacetValuePrefix },
 		actor,
 	} = useHawksearch();
-
+	
 	const { t, i18n } = useTranslation();
-
+	
 	// Added filter to hide selection for Tabs
 	const keys = Object.keys(facetSelections).filter(key => key !== 'it');
 	if (keys.length === 0) {
@@ -32,7 +31,7 @@ function Selections() {
 
 	function clearAll() {
 		actor.clearAllFacets();
-	}
+	}	
 
 	function renderRange(value: ClientSelectionValue, facet: Facet) {
 		const displayValue = value.value;
@@ -54,6 +53,7 @@ function Selections() {
 	}
 
 	function renderLabel(selection, item) {
+
 		if (selection.facet.FacetType === 'openRange' && selection.facet.DataType === 'datetime') {
 			let [startDate, endDate] = (item.label || ',').split(',');
 			startDate = moment(startDate.replace(/\//g, '-')).format('LLLL');
@@ -73,6 +73,7 @@ function Selections() {
 			<ul className="hawk-selections">
 				{keys.map(key => {
 					const selection = facetSelections[key];
+					console.log("selection =========>", selection);
 
 					return (
 						<li key={key} className="hawk-selections__category">
@@ -80,9 +81,8 @@ function Selections() {
 								<span className="hawk-selections__category-name">{selection.label}:</span>
 
 								<ul className="hawk-selections__item-list">
-									{selection.items.map(item => {
-										const negation = item.value.startsWith('-');
-
+									{selection.items.map(item => {										
+										const negation = item.value.startsWith(negativeFacetValuePrefix);
 										return (
 											<li key={item.value} className="hawk-selections__item">
 												<button

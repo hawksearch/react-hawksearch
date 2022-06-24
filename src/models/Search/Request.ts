@@ -121,6 +121,7 @@ export class Request {
 	 */
 	public IgnoreSpellcheck?: boolean;
 	public isLandingPageExpired?: boolean;
+	public negativeFacetValuePrefix?: string
 }
 
 export interface FacetSelections {

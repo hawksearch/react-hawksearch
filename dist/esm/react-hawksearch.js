@@ -5113,6 +5113,8 @@ var SearchStore = /*#__PURE__*/function () {
 
     _defineProperty(this, "isLandingPageExpired", void 0);
 
+    _defineProperty(this, "negativeFacetValuePrefix", void 0);
+
     _defineProperty(this, "productDetails", void 0);
 
     _defineProperty(this, "previewDate", void 0);
@@ -5145,7 +5147,7 @@ var SearchStore = /*#__PURE__*/function () {
 
   }, {
     key: "isFacetSelected",
-    value: function isFacetSelected(facet, facetValue) {
+    value: function isFacetSelected(facet, facetValue, symbolForNegate) {
       var facetName = typeof facet === 'string' ? facet : facet.Name;
       var facetField = typeof facet === 'string' ? facet : facet.selectionField;
       var valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
@@ -5167,7 +5169,7 @@ var SearchStore = /*#__PURE__*/function () {
       }
 
       var selectionIdx = facetSelections[facetField].indexOf(valueValue);
-      var negationIdx = facetSelections[facetField].indexOf("-".concat(valueValue));
+      var negationIdx = facetSelections[facetField].indexOf("".concat(symbolForNegate).concat(valueValue));
 
       if (selectionIdx !== -1) {
         // if the exact facet value exists, then we're normally selected
@@ -5180,7 +5182,7 @@ var SearchStore = /*#__PURE__*/function () {
         // if the facet value is selected but prefixed with a -, then we're negated
         return {
           state: FacetSelectionState.Negated,
-          selectedValue: "-".concat(valueValue),
+          selectedValue: "".concat(symbolForNegate).concat(valueValue),
           selectionIndex: negationIdx
         };
       }
@@ -5204,8 +5206,10 @@ var SearchStore = /*#__PURE__*/function () {
       var _this$pendingSearch = this.pendingSearch,
           clientSelections = _this$pendingSearch.FacetSelections,
           SearchWithin = _this$pendingSearch.SearchWithin,
-          searchResults = this.searchResults;
+          searchResults = this.searchResults,
+          negativeFacetValuePrefix = this.negativeFacetValuePrefix;
       var selections = {};
+      console.log("negativeFacetValuePrefix =========>", negativeFacetValuePrefix);
 
       if (!clientSelections && !SearchWithin) {
         return selections;
@@ -5280,7 +5284,7 @@ var SearchStore = /*#__PURE__*/function () {
         } else {
           // for other types of facets, try to find a matching value
           selectionValues.forEach(function (selectionValue) {
-            var matchingVal = _this.findMatchingValue(selectionValue, facet.Values);
+            var matchingVal = _this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
 
             if (!matchingVal || !matchingVal.Label) {
               // if there's no matching value from the server, we cannot display because there would
@@ -5301,12 +5305,13 @@ var SearchStore = /*#__PURE__*/function () {
           label: facet.Name,
           items: items
         };
+        console.log("facetSelections ==========>", items);
       });
       return selections;
     }
   }, {
     key: "findMatchingValue",
-    value: function findMatchingValue(selectionValue, facetValues) {
+    value: function findMatchingValue(selectionValue, facetValues, symbolForNegate) {
       var matchingValue = null;
 
       if (!facetValues || facetValues.length === 0) {
@@ -5319,10 +5324,10 @@ var SearchStore = /*#__PURE__*/function () {
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var facetValue = _step.value;
-          var isMatchingVal = facetValue.Value === selectionValue || "-".concat(facetValue.Value) === selectionValue; // loop through children
+          var isMatchingVal = facetValue.Value === selectionValue || "".concat(symbolForNegate).concat(facetValue.Value) === selectionValue; // loop through children
 
           if (!isMatchingVal) {
-            matchingValue = this.findMatchingValue(selectionValue, facetValue.Children);
+            matchingValue = this.findMatchingValue(selectionValue, facetValue.Children, symbolForNegate);
           } else {
             matchingValue = facetValue;
           }
@@ -6369,8 +6374,7 @@ var HawkClient = /*#__PURE__*/function () {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return this.axiosInstance.post(new URL(this.landingPageExpiry, this.baseUrl).href, // `https://searchapi-dev.hawksearch.net/api/internal-preview/get-preview-data`,
-                {
+                return this.axiosInstance.post(new URL(this.landingPageExpiry, this.baseUrl).href, {
                   ClientGuid: request.ClientGuid,
                   PageId: pageId
                 });
@@ -7340,6 +7344,7 @@ function useHawkState(initialSearch) {
     pendingSearch: initialSearch || {},
     isLoading: true,
     isLandingPageExpired: false,
+    negativeFacetValuePrefix: '',
     itemsToCompare: [],
     comparedResults: [],
     itemsToCompareIds: [],
@@ -7652,7 +7657,7 @@ function useHawkState(initialSearch) {
 
   function _getLandingPageData() {
     _getLandingPageData = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request) {
-      var searchParams, checkParams, landingPageResults, isLandingPageExpired;
+      var searchParams, checkParams, landingPageResults, isLandingPageExpired, negativeFacetValuePrefix;
       return regenerator.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
@@ -7672,7 +7677,15 @@ function useHawkState(initialSearch) {
                 });
               }
 
-            case 7:
+              negativeFacetValuePrefix = landingPageResults === null || landingPageResults === void 0 ? void 0 : landingPageResults.NegativeFacetValuePrefix;
+
+              if (negativeFacetValuePrefix !== undefined) {
+                setStore({
+                  negativeFacetValuePrefix: negativeFacetValuePrefix
+                });
+              }
+
+            case 9:
             case "end":
               return _context7.stop();
           }
@@ -7755,7 +7768,7 @@ function useHawkState(initialSearch) {
    */
 
 
-  function toggleFacetValue(facet, facetValue, negate) {
+  function toggleFacetValue(facet, facetValue, negate, request, symbolForNegate) {
     if (negate === undefined) {
       negate = false;
     }
@@ -7789,7 +7802,7 @@ function useHawkState(initialSearch) {
       facetSelections[facetField] = [];
     }
 
-    var _store$isFacetSelecte = store.isFacetSelected(facet, facetValue),
+    var _store$isFacetSelecte = store.isFacetSelected(facet, facetValue, symbolForNegate),
         selState = _store$isFacetSelecte.state,
         selectionIndex = _store$isFacetSelecte.selectionIndex;
 
@@ -7809,7 +7822,7 @@ function useHawkState(initialSearch) {
 
       if (selState === FacetSelectionState.Selected && negate || selState === FacetSelectionState.Negated && !negate) {
         // if we're toggling from negation to non-negation or vice versa, then push the new selection
-        facetSelections[facetField].push(negate ? "-".concat(valueValue) : valueValue);
+        facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
       } else {
         if (facet.FacetType === FacetType.NestedCheckbox) {
           facetSelections[facetField] = difference;
@@ -7818,7 +7831,7 @@ function useHawkState(initialSearch) {
       }
     } else {
       // not selected, so we want to select it
-      facetSelections[facetField].push(negate ? "-".concat(valueValue) : valueValue);
+      facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
     }
 
     if (facetSelections[facetField].length === 0) {
@@ -8791,7 +8804,8 @@ function Facet$1(_ref) {
       children = _ref.children;
 
   var _useHawksearch = useHawksearch(),
-      searchActor = _useHawksearch.actor;
+      searchActor = _useHawksearch.actor,
+      store = _useHawksearch.store;
 
   var wrapperRef = useRef(null);
 
@@ -8819,9 +8833,12 @@ function Facet$1(_ref) {
       t = _useTranslation.t,
       i18n = _useTranslation.i18n;
 
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
   function selectFacet(facetValue) {
     setFilter('');
-    searchActor.toggleFacetValue(facet, facetValue);
+    searchActor.toggleFacetValue(facet, facetValue, undefined, undefined, store.negativeFacetValuePrefix);
   }
 
   function setFacets(values) {
@@ -8833,7 +8850,9 @@ function Facet$1(_ref) {
     setFilter('');
     searchActor.toggleFacetValue(facet, facetValue,
     /* negate */
-    true);
+    true, {
+      ClientGuid: config.clientGuid
+    }, store.negativeFacetValuePrefix);
   }
 
   function renderTruncation() {
@@ -9036,7 +9055,7 @@ function Checkbox() {
 
         var rangeValueAssetUrl = value ? config.dashboardUrl + value.AssetFullUrl : ''; // facets can be selected or negated, so explicitly check that the facet is not selected
 
-        var selectionState = store.isFacetSelected(facet, value.Value).state;
+        var selectionState = store.isFacetSelected(facet, value.Value, store.negativeFacetValuePrefix).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
         return /*#__PURE__*/React__default.createElement("li", {
@@ -9073,7 +9092,7 @@ function Checkbox() {
         var _label;
 
         // facets can be selected or negated, so explicitly check that the facet is not selected
-        var selectionState = store.isFacetSelected(facet, value).state;
+        var selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
         var isSelected = selectionState !== FacetSelectionState.NotSelected;
         var isNegated = selectionState === FacetSelectionState.Negated;
         var label = value.Label || '';
@@ -11623,7 +11642,7 @@ function NestedItem(item) {
   }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawkFacet-group-inside"
   }, hierarchyChildren.map(function (value) {
-    var selectionState = store.isFacetSelected(facet, value).state;
+    var selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
     var isNegated = selectionState === FacetSelectionState.Negated;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
     return /*#__PURE__*/React__default.createElement(NestedItem, {
@@ -11658,7 +11677,7 @@ function Nested() {
     className: "hawk-facet-rail__facet-list"
   }, facetValues.map(function (value) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
-    var selectionState = store.isFacetSelected(facet, value).state;
+    var selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
     var isNegated = selectionState === FacetSelectionState.Negated;
     return /*#__PURE__*/React__default.createElement(NestedItem, {
@@ -17720,7 +17739,7 @@ function Distance() {
       className: "hawk-facet-rail__facet-list"
     }, facetValues.map(function (values) {
       // facets can be selected or negated, so explicitly check that the facet is not selected
-      var selectionState = store.isFacetSelected(facet, values).state;
+      var selectionState = store.isFacetSelected(facet, values, store.negativeFacetValuePrefix).state;
       var isSelected = selectionState !== FacetSelectionState.NotSelected;
       return /*#__PURE__*/React__default.createElement("li", {
         key: values.Value,
@@ -18342,7 +18361,6 @@ function FacetList() {
       _useState2 = _slicedToArray$1(_useState, 1),
       numPlaceholders = _useState2[0];
 
-  console.log("facetValues====>", searchResults === null || searchResults === void 0 ? void 0 : searchResults.Facets);
   var components = getFacetComponents(config.facetOverrides || []);
   return /*#__PURE__*/React__default.createElement("ul", {
     className: "hawk-facet-rail__facet-list",
@@ -18389,6 +18407,18 @@ function FacetRail() {
       setCollapsed = _useState2[1];
 
   var size = useWindowSize();
+
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
+  var _useHawksearch = useHawksearch(),
+      actor = _useHawksearch.actor;
+
+  useEffect(function () {
+    actor.getLandingPageData({
+      ClientGuid: config.clientGuid
+    });
+  }, []);
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail"
   }, /*#__PURE__*/React__default.createElement("div", _extends({
@@ -19701,7 +19731,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -20000,6 +20030,7 @@ function Selections$1() {
       _useHawksearch$store = _useHawksearch.store,
       facetSelections = _useHawksearch$store.facetSelections,
       pendingSearch = _useHawksearch$store.pendingSearch,
+      negativeFacetValuePrefix = _useHawksearch$store.negativeFacetValuePrefix,
       actor = _useHawksearch.actor;
 
   var _useTranslation = useTranslation(),
@@ -20075,6 +20106,7 @@ function Selections$1() {
     className: "hawk-selections"
   }, keys.map(function (key) {
     var selection = facetSelections[key];
+    console.log("selection =========>", selection);
     return /*#__PURE__*/React__default.createElement("li", {
       key: key,
       className: "hawk-selections__category"
@@ -20085,7 +20117,7 @@ function Selections$1() {
     }, selection.label, ":"), /*#__PURE__*/React__default.createElement("ul", {
       className: "hawk-selections__item-list"
     }, selection.items.map(function (item) {
-      var negation = item.value.startsWith('-');
+      var negation = item.value.startsWith(negativeFacetValuePrefix);
       return /*#__PURE__*/React__default.createElement("li", {
         key: item.value,
         className: "hawk-selections__item"
@@ -25160,6 +25192,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
