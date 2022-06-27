@@ -7675,7 +7675,7 @@ function useHawkState(initialSearch) {
                 });
               }
 
-              negativeFacetValuePrefix = landingPageResults === null || landingPageResults === void 0 ? void 0 : landingPageResults.NegativeFacetValuePrefix;
+              negativeFacetValuePrefix = landingPageResults !== null && landingPageResults !== void 0 && landingPageResults.NegativeFacetValuePrefix ? landingPageResults.NegativeFacetValuePrefix : '-';
 
               if (negativeFacetValuePrefix !== undefined) {
                 setStore({

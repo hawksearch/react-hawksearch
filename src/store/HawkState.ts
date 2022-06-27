@@ -288,10 +288,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		if (isLandingPageExpired !== undefined) {
 			setStore({ isLandingPageExpired });
 		}
-		const negativeFacetValuePrefix: string = landingPageResults?.NegativeFacetValuePrefix;
+		const negativeFacetValuePrefix: string = landingPageResults?.NegativeFacetValuePrefix ? landingPageResults.NegativeFacetValuePrefix : '-';
 		if(negativeFacetValuePrefix !== undefined){
 			setStore({negativeFacetValuePrefix})
-		}		
+		}
 	}
 
 	/**
