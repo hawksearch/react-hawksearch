@@ -8564,11 +8564,9 @@ function SearchSuggestionsList(_ref) {
       categories = searchResults.Categories,
       products = searchResults.Products,
       content = searchResults.Content;
-  var isRecordEmpty = hasAllEmpty(popular, categories, products, content);
-
-  if (isRecordEmpty) {
-    return null;
-  }
+  var isRecordEmpty = hasAllEmpty(popular, categories, products, content); // if (isRecordEmpty) {
+  // 	return null;
+  // }
 
   return SuggestionList ? /*#__PURE__*/React__default.createElement(SuggestionList, {
     isLoading: isLoading,
