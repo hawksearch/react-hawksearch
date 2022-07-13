@@ -64,7 +64,7 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 		}
 		setIsLoading(true);
 
-		let response: Response | null = null;
+		let response: Response | null = null
 
 		try {
 			response = await client
@@ -98,7 +98,8 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 
 		setIsLoading(false);
 
-		if (response) {
+		if (response) {	
+					
 			setResults(response);
 		}
 	}

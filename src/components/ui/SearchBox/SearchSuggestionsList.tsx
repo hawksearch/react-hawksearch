@@ -32,9 +32,9 @@ function SearchSuggestionsList({
 
 	const isRecordEmpty = hasAllEmpty(popular, categories, products, content);
 
-	if (isRecordEmpty) {
-		return null;
-	}
+	// if (isRecordEmpty) {
+	// 	return null;
+	// }
 	return SuggestionList ? (
 		<SuggestionList
 			isLoading={isLoading}

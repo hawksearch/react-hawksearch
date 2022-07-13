@@ -289,8 +289,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			setStore({ isLandingPageExpired });
 		}
 		const negativeFacetValuePrefix: string = landingPageResults?.NegativeFacetValuePrefix ? landingPageResults.NegativeFacetValuePrefix : '-';
-		if(negativeFacetValuePrefix !== undefined){
-			setStore({negativeFacetValuePrefix})
+		if (negativeFacetValuePrefix !== undefined) {
+			setStore({ negativeFacetValuePrefix })
 		}
 	}
 
@@ -374,8 +374,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param facetValue The facet value being selected.
 	 * @param negate  Whether or not this selection is considered a negation.
 	 */
-	function toggleFacetValue(facet: Facet | string, facetValue: Value | string, negate?: boolean, request?:ClientIdRequest, symbolForNegate?: string): void {
-		
+	function toggleFacetValue(facet: Facet | string, facetValue: Value | string, negate?: boolean, request?: ClientIdRequest, symbolForNegate?: string): void {
+
 		if (negate === undefined) {
 			negate = false;
 		}
@@ -413,7 +413,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		const { state: selState, selectionIndex } = store.isFacetSelected(facet, facetValue, symbolForNegate);
 		const valuesToRemoved = [] as string[];
 		const items = (store.facetSelections[facetField] || {}).items || [];
-		
+
 		items.forEach((item: ClientSelectionValue) => {
 			if (((item || {}).path || '').indexOf(valueValue) !== -1) {
 				valuesToRemoved.push(item.value);
@@ -438,10 +438,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				}
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
-		} else {			
+		} else {
 			// not selected, so we want to select it
 			facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
-			
+
 		}
 
 		if (facetSelections[facetField]!.length === 0) {
