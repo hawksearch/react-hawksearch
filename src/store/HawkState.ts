@@ -439,9 +439,22 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				// if we're not toggling the negation, nothing to do because we already removed the selection above
 			}
 		} else {
-			// not selected, so we want to select it
-			facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
+			if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
 
+				if (Object(facetValue)?.Children?.length > 0) {
+					facetSelections[facetField]?.splice(0)
+					facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
+				} else {
+					// not selected, so we want to select it
+					handleSelectionOfNestedFacet(facet, facetValue, facetSelections)
+					facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
+				}
+
+			} else {
+
+				facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
+
+			}
 		}
 
 		if (facetSelections[facetField]!.length === 0) {
@@ -450,6 +463,39 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
+	}
+
+	function handleSelectionOfNestedFacet(facet: Facet | string, facetValue: Value | string, facetSelections: FacetSelections | []) {
+
+		const selectedFacetValues = Object(facet).Values;
+
+		if (facet) {
+			function children(selectedFacetValues) {
+				selectedFacetValues.forEach((values) => {
+					if (values.Children.length > 0) {
+						var findSelectedValue = values.Children.find(findChild => findChild.Value === Object(facetValue).Value)
+						if (findSelectedValue === undefined) {
+							children(values.Children)
+						} else {
+							const facetField = typeof facet === 'string' ? facet : facet.selectionField;
+							facetSelections[facetField].forEach(element => {
+								var findIndex = facetSelections[facetField].indexOf(element)
+								var parentInChildren = values.Children.find(findChild => findChild.Value === element)
+								if (parentInChildren === undefined) {
+									facetSelections[facetField]?.splice(findIndex)
+								}
+							});
+
+							return;
+						}
+
+					}
+				}
+				)
+			}
+
+			children(selectedFacetValues)
+		}
 	}
 
 	function setFacetValues(facet: Facet | string, facetValues: Value[] | string[]): void {
