@@ -5281,7 +5281,7 @@ var SearchStore = /*#__PURE__*/function () {
           // do not return the selection value for tab facet
           return;
         } else {
-          // for other types of facets, try to find a matching value
+          // for other types of facets, try to find a matching value				
           selectionValues.forEach(function (selectionValue) {
             var matchingVal = _this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
 
@@ -7828,8 +7828,22 @@ function useHawkState(initialSearch) {
 
       }
     } else {
-      // not selected, so we want to select it
-      facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
+      if (facet.FacetType === FacetType.NestedCheckbox) {
+        var _Object, _Object$Children;
+
+        if (((_Object = Object(facetValue)) === null || _Object === void 0 ? void 0 : (_Object$Children = _Object.Children) === null || _Object$Children === void 0 ? void 0 : _Object$Children.length) > 0) {
+          var _facetSelections$face;
+
+          (_facetSelections$face = facetSelections[facetField]) === null || _facetSelections$face === void 0 ? void 0 : _facetSelections$face.splice(0);
+          facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
+        } else {
+          // not selected, so we want to select it
+          handleSelectionOfNestedFacet(facet, facetValue, facetSelections);
+          facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
+        }
+      } else {
+        facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
+      }
     }
 
     if (facetSelections[facetField].length === 0) {
@@ -7838,6 +7852,43 @@ function useHawkState(initialSearch) {
     }
 
     setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
+  }
+
+  function handleSelectionOfNestedFacet(facet, facetValue, facetSelections) {
+    var selectedFacetValues = Object(facet).Values;
+
+    if (facet) {
+      var children = function children(selectedFacetValues) {
+        selectedFacetValues.forEach(function (values) {
+          if (values.Children.length > 0) {
+            var findSelectedValue = values.Children.find(function (findChild) {
+              return findChild.Value === Object(facetValue).Value;
+            });
+
+            if (findSelectedValue === undefined) {
+              children(values.Children);
+            } else {
+              var facetField = typeof facet === 'string' ? facet : facet.selectionField;
+              facetSelections[facetField].forEach(function (element) {
+                var findIndex = facetSelections[facetField].indexOf(element);
+                var parentInChildren = values.Children.find(function (findChild) {
+                  return findChild.Value === element;
+                });
+
+                if (parentInChildren === undefined) {
+                  var _facetSelections$face2;
+
+                  (_facetSelections$face2 = facetSelections[facetField]) === null || _facetSelections$face2 === void 0 ? void 0 : _facetSelections$face2.splice(findIndex);
+                }
+              });
+              return;
+            }
+          }
+        });
+      };
+
+      children(selectedFacetValues);
+    }
   }
 
   function setFacetValues(facet, facetValues) {
@@ -19725,7 +19776,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25185,7 +25236,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 

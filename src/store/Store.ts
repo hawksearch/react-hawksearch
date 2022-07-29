@@ -167,7 +167,7 @@ export class SearchStore {
 		if (!clientSelections) {
 			return selections;
 		}
-
+		
 		Object.keys(clientSelections).forEach(fieldName => {
 			const selectionValues = clientSelections[fieldName];
 
@@ -183,7 +183,7 @@ export class SearchStore {
 				return;
 			}
 
-			const items: ClientSelectionValue[] = [];
+			const items: ClientSelectionValue[] = [];			
 
 			if (facet.FieldType === 'range') {
 				// if the facet this selection is for is a range, there won't be a matching value and thus there won't be a label.
@@ -199,9 +199,10 @@ export class SearchStore {
 				// do not return the selection value for tab facet
 				return;
 			} else {
-				// for other types of facets, try to find a matching value
+				// for other types of facets, try to find a matching value				
 
 				selectionValues.forEach(selectionValue => {
+					
 					const matchingVal = this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
 
 					if (!matchingVal || !matchingVal.Label) {

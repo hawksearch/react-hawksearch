@@ -16,6 +16,7 @@ function NestedLink() {
 	} = useFacet();
 
 	function onValueSelected(facetValue: Value, isNegated: boolean) {
+
 		isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
 	}
 
@@ -26,7 +27,6 @@ function NestedLink() {
 					{facetValues.map(value => {
 						// facets can be selected or negated, so explicitly check that the facet is not selected
 						const selectionState = store.isFacetSelected(facet, value).state;
-
 						const isSelected = selectionState !== FacetSelectionState.NotSelected;
 						const isNegated = selectionState === FacetSelectionState.Negated;
 
