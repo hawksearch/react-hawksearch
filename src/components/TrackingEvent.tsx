@@ -354,17 +354,15 @@ class TrackingEvent {
 	}
 
 	private writeAutoCompleteClick(keyword, suggestType, name, url) {
-		let binaryKeyword = isBase64(keyword) ? keyword : toBinary(keyword);
-		let binaryName = isBase64(name) ? name : toBinary(name);
-		let binaryUrl = isBase64(url) ? url : toBinary(url);
+
 		const pl = {
 			EventType: E_T.autoCompleteClick,
 			EventData: btoa(
 				JSON.stringify({
-					Keyword: binaryKeyword,
-					Name: binaryName,
+					Keyword: keyword,
+					Name: name,
 					SuggestType: suggestType,
-					Url: binaryUrl,
+					Url: url,
 				})
 			),
 		};

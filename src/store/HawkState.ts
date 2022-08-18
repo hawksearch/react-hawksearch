@@ -467,7 +467,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	function handleSelectionOfNestedFacet(facet: Facet | string, facetValue: Value | string, facetSelections: FacetSelections | []) {
 
-		const selectedFacetValues = Object(facet).Values;
+		const selectedFacetValues = Object(facet).Values;		
 
 		if (facet) {
 			function children(selectedFacetValues) {
