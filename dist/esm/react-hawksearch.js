@@ -6673,161 +6673,6 @@ var FacetType;
   FacetType["Distance"] = "distance";
 })(FacetType || (FacetType = {}));
 
-function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-var getVisitorExpiry = function getVisitorExpiry() {
-  var d = new Date(); // 1 year
-
-  d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
-  return d.toUTCString();
-};
-var getVisitExpiry = function getVisitExpiry() {
-  var d = new Date(); // 4 hours
-
-  d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
-  return d.toUTCString();
-};
-var createGuid = function createGuid() {
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-
-  for (var i = 0; i < 36; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-
-  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
-  // tslint:disable-next-line: no-bitwise
-
-  s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-
-  s[8] = s[13] = s[18] = s[23] = '-';
-  var uuid = s.join('');
-  return uuid;
-};
-var createWidgetId = function createWidgetId() {
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-
-  for (var i = 0; i < 16; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-
-  var uuid = s.join('');
-  return uuid;
-};
-var getCookie = function getCookie(name) {
-  var nameEQ = name + '=';
-  var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
-
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1, c.length);
-    }
-
-    if (c.indexOf(nameEQ) === 0) {
-      return c.substring(nameEQ.length, c.length);
-    }
-  }
-
-  return null;
-};
-var setCookie = function setCookie(name, value, expiry) {
-  var expires;
-
-  if (expiry) {
-    expires = '; expires=' + expiry;
-  } else {
-    expires = '';
-  }
-
-  document.cookie = name + '=' + value + expires + '; path=/';
-};
-
-function getRecentFacetExpiry() {
-  var d = new Date(); // 12 hours
-
-  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
-  return d.toUTCString();
-}
-
-var getParsedObject = function getParsedObject(facetC) {
-  if (!facetC) {
-    return {};
-  }
-
-  var dict = {};
-  (facetC || '').split(',').forEach(function (element) {
-    var splitText = element.split('|');
-    dict[splitText[0]] = splitText[1];
-  });
-  return dict;
-};
-
-function getStringifyObject(obj) {
-  var str = '';
-  Object.keys(obj).forEach(function (element, index) {
-    if (index !== 0) {
-      str += ',';
-    }
-
-    str += element + '|' + obj[element];
-  });
-  return str;
-}
-
-var setRecentSearch = function setRecentSearch(val) {
-  var cookie = getCookie(FacetType.RecentSearches);
-
-  if (!cookie) {
-    setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
-    return;
-  }
-
-  var dict = getParsedObject(cookie);
-
-  if (dict[val]) {
-    dict[val] = Number(dict[val]) + 1;
-  } else {
-    dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
-  }
-
-  var str = getStringifyObject(dict);
-  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
-};
-var deleteCookie = function deleteCookie(name) {
-  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-};
-var toBinary = function toBinary(string) {
-  var codeUnits = new Uint16Array(string.length);
-
-  for (var i = 0; i < codeUnits.length; i++) {
-    codeUnits[i] = string.charCodeAt(i);
-  }
-
-  var charCodes = new Uint8Array(codeUnits.buffer);
-  var result = '';
-
-  for (var _i = 0; _i < charCodes.byteLength; _i++) {
-    result += String.fromCharCode(charCodes[_i]);
-  }
-
-  return result;
-};
-var isBase64 = function isBase64(str) {
-  if (str === '' || str.trim() === '') {
-    return false;
-  }
-
-  try {
-    return btoa(atob(str)) == str;
-  } catch (err) {
-    return false;
-  }
-};
-
 var E_T;
 
 (function (E_T) {
@@ -7190,16 +7035,13 @@ var TrackingEvent = /*#__PURE__*/function () {
   }, {
     key: "writeAutoCompleteClick",
     value: function writeAutoCompleteClick(keyword, suggestType, name, url) {
-      var binaryKeyword = isBase64(keyword) ? keyword : toBinary(keyword);
-      var binaryName = isBase64(name) ? name : toBinary(name);
-      var binaryUrl = isBase64(url) ? url : toBinary(url);
       var pl = {
         EventType: E_T.autoCompleteClick,
         EventData: btoa(JSON.stringify({
-          Keyword: binaryKeyword,
-          Name: binaryName,
+          Keyword: keyword,
+          Name: name,
           SuggestType: suggestType,
-          Url: binaryUrl
+          Url: url
         }))
       };
       this.mr(pl);
@@ -7322,6 +7164,134 @@ var TrackingEvent = /*#__PURE__*/function () {
 _defineProperty(TrackingEvent, "instance", void 0);
 
 var TrackingEvent$1 = TrackingEvent.getInstance();
+
+function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var getVisitorExpiry = function getVisitorExpiry() {
+  var d = new Date(); // 1 year
+
+  d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
+  return d.toUTCString();
+};
+var getVisitExpiry = function getVisitExpiry() {
+  var d = new Date(); // 4 hours
+
+  d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
+  return d.toUTCString();
+};
+var createGuid = function createGuid() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
+  // tslint:disable-next-line: no-bitwise
+
+  s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+  s[8] = s[13] = s[18] = s[23] = '-';
+  var uuid = s.join('');
+  return uuid;
+};
+var createWidgetId = function createWidgetId() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 16; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  var uuid = s.join('');
+  return uuid;
+};
+var getCookie = function getCookie(name) {
+  var nameEQ = name + '=';
+  var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
+
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1, c.length);
+    }
+
+    if (c.indexOf(nameEQ) === 0) {
+      return c.substring(nameEQ.length, c.length);
+    }
+  }
+
+  return null;
+};
+var setCookie = function setCookie(name, value, expiry) {
+  var expires;
+
+  if (expiry) {
+    expires = '; expires=' + expiry;
+  } else {
+    expires = '';
+  }
+
+  document.cookie = name + '=' + value + expires + '; path=/';
+};
+
+function getRecentFacetExpiry() {
+  var d = new Date(); // 12 hours
+
+  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
+  return d.toUTCString();
+}
+
+var getParsedObject = function getParsedObject(facetC) {
+  if (!facetC) {
+    return {};
+  }
+
+  var dict = {};
+  (facetC || '').split(',').forEach(function (element) {
+    var splitText = element.split('|');
+    dict[splitText[0]] = splitText[1];
+  });
+  return dict;
+};
+
+function getStringifyObject(obj) {
+  var str = '';
+  Object.keys(obj).forEach(function (element, index) {
+    if (index !== 0) {
+      str += ',';
+    }
+
+    str += element + '|' + obj[element];
+  });
+  return str;
+}
+
+var setRecentSearch = function setRecentSearch(val) {
+  var cookie = getCookie(FacetType.RecentSearches);
+
+  if (!cookie) {
+    setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
+    return;
+  }
+
+  var dict = getParsedObject(cookie);
+
+  if (dict[val]) {
+    dict[val] = Number(dict[val]) + 1;
+  } else {
+    dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
+  }
+
+  var str = getStringifyObject(dict);
+  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
+};
+var deleteCookie = function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
 
 function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -19776,7 +19746,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25236,6 +25206,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
