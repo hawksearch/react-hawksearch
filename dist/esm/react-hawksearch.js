@@ -20419,6 +20419,8 @@ function ItemsPerPage() {
       pendingSearch = _useHawksearch$store.pendingSearch,
       actor = _useHawksearch.actor;
 
+  console.log('searchResults -=========>', searchResults);
+
   function onChange(event) {
     actor.setSearch({
       MaxPerPage: Number(event.currentTarget.value),
@@ -20435,7 +20437,8 @@ function ItemsPerPage() {
   }, searchResults ? searchResults.Pagination.Items.map(function (paginationItem) {
     return /*#__PURE__*/React__default.createElement("option", {
       key: paginationItem.PageSize,
-      value: paginationItem.PageSize
+      value: paginationItem.PageSize,
+      selected: paginationItem.Selected
     }, paginationItem.Label);
   }) : /*#__PURE__*/React__default.createElement("option", null, "12 Items Per Page")));
 }
