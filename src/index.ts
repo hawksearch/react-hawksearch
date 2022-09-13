@@ -76,3 +76,6 @@ export { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } fr
 
 // Message boxes
 export { default as MessageBox } from 'components/ui/MessageBox/MessageBox';
+
+// CustomHtmlForLandingPages
+export { default as CustomPageHtml } from 'components/ui/CustomPage/CustomPageHtml';
