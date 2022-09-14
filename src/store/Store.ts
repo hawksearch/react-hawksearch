@@ -44,6 +44,7 @@ export class SearchStore {
 	public itemsToCompareIds: string[];
 	public comparedResults: Result[];
 	public isLandingPageExpired: boolean;
+	public IsAutocompleteRecommendationEnabled: boolean;
 	public negativeFacetValuePrefix: string;
 	public productDetails: Partial<Result>;
 	public previewDate?: string;

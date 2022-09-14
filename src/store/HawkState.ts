@@ -132,6 +132,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			productDetails: {},
 			language: getInitialLanguage(),
 			smartBar: {},
+			IsAutocompleteRecommendationEnabled: false,
 		}),
 		SearchStore
 	);
@@ -291,6 +292,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		const negativeFacetValuePrefix: string = landingPageResults?.NegativeFacetValuePrefix ? landingPageResults.NegativeFacetValuePrefix : '-';
 		if (negativeFacetValuePrefix !== undefined) {
 			setStore({ negativeFacetValuePrefix })
+		}
+		const IsAutocompleteRecommendationEnabled: boolean = landingPageResults?.IsAutocompleteRecommendationEnabled;
+		if(IsAutocompleteRecommendationEnabled !== undefined){
+			setStore({ IsAutocompleteRecommendationEnabled })
 		}
 	}
 
