@@ -5113,6 +5113,8 @@ var SearchStore = /*#__PURE__*/function () {
 
     _defineProperty(this, "isLandingPageExpired", void 0);
 
+    _defineProperty(this, "IsAutocompleteRecommendationEnabled", void 0);
+
     _defineProperty(this, "negativeFacetValuePrefix", void 0);
 
     _defineProperty(this, "productDetails", void 0);
@@ -7319,7 +7321,8 @@ function useHawkState(initialSearch) {
     previewDate: '',
     productDetails: {},
     language: getInitialLanguage(),
-    smartBar: {}
+    smartBar: {},
+    IsAutocompleteRecommendationEnabled: false
   }), SearchStore),
       _useMergableState2 = _slicedToArray$1(_useMergableState, 2),
       store = _useMergableState2[0],
@@ -7625,7 +7628,7 @@ function useHawkState(initialSearch) {
 
   function _getLandingPageData() {
     _getLandingPageData = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee7(request) {
-      var searchParams, checkParams, landingPageResults, isLandingPageExpired, negativeFacetValuePrefix;
+      var searchParams, checkParams, landingPageResults, isLandingPageExpired, negativeFacetValuePrefix, IsAutocompleteRecommendationEnabled;
       return regenerator.wrap(function _callee7$(_context7) {
         while (1) {
           switch (_context7.prev = _context7.next) {
@@ -7653,7 +7656,15 @@ function useHawkState(initialSearch) {
                 });
               }
 
-            case 9:
+              IsAutocompleteRecommendationEnabled = landingPageResults === null || landingPageResults === void 0 ? void 0 : landingPageResults.IsAutocompleteRecommendationEnabled;
+
+              if (IsAutocompleteRecommendationEnabled !== undefined) {
+                setStore({
+                  IsAutocompleteRecommendationEnabled: IsAutocompleteRecommendationEnabled
+                });
+              }
+
+            case 11:
             case "end":
               return _context7.stop();
           }
@@ -8650,18 +8661,13 @@ function SearchSuggestions(_ref) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              if (input.trim().length) {
-                _context.next = 2;
-                break;
-              }
-
-              return _context.abrupt("return");
-
-            case 2:
+              // if (!input.trim().length) {
+              // 	return;
+              // }
               setIsLoading(true);
               response = null;
-              _context.prev = 4;
-              _context.next = 7;
+              _context.prev = 2;
+              _context.next = 5;
               return client.autocomplete({
                 ClientGuid: config.clientGuid,
                 Keyword: input,
@@ -8678,38 +8684,38 @@ function SearchSuggestions(_ref) {
                 return Object.assign(new Response$1(o));
               });
 
-            case 7:
+            case 5:
               response = _context.sent;
-              _context.next = 15;
+              _context.next = 13;
               break;
 
-            case 10:
-              _context.prev = 10;
-              _context.t0 = _context["catch"](4);
+            case 8:
+              _context.prev = 8;
+              _context.t0 = _context["catch"](2);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 14;
+                _context.next = 12;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 14:
+            case 12:
               console.error('Autocomplete request error:', _context.t0);
 
-            case 15:
+            case 13:
               setIsLoading(false);
 
               if (response) {
                 setResults(response);
               }
 
-            case 17:
+            case 15:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[4, 10]]);
+      }, _callee, null, [[2, 8]]);
     }));
     return _doAutocomplete.apply(this, arguments);
   }
@@ -17973,7 +17979,8 @@ function SearchBoxBase(_ref) {
   var _useHawksearch = useHawksearch(),
       _useHawksearch$store = _useHawksearch.store,
       pendingSearch = _useHawksearch$store.pendingSearch,
-      searchResults = _useHawksearch$store.searchResults;
+      searchResults = _useHawksearch$store.searchResults,
+      IsAutocompleteRecommendationEnabled = _useHawksearch$store.IsAutocompleteRecommendationEnabled;
 
   var _useState = useState(''),
       _useState2 = _slicedToArray$1(_useState, 2),
@@ -18062,7 +18069,7 @@ function SearchBoxBase(_ref) {
         getInputProps = options.getInputProps,
         openMenu = options.openMenu,
         closeMenu = options.closeMenu;
-    var showSuggestions = isOpen && inputValue && inputValue.length > 0;
+    var showSuggestions = isOpen && (inputValue && inputValue.length > 0 || IsAutocompleteRecommendationEnabled);
     return /*#__PURE__*/React__default.createElement("div", {
       className: "hawk__searchBox__searchInput",
       "aria-labelledby": "autocomplete-search-box"
@@ -18085,10 +18092,21 @@ function SearchBoxBase(_ref) {
       onFocus: function onFocus() {
         if (inputValue && inputValue.length > 0) {
           openMenu();
+        } else {
+          if (IsAutocompleteRecommendationEnabled === true) {
+            openMenu();
+          } else {
+            closeMenu();
+          }
         }
       },
+      onBlur: function onBlur() {
+        closeMenu();
+      },
       onChange: function onChange(event) {
-        setInitialInput(event.target.value);
+        setInitialInput(event.target.value); // if(event.target.value.length > 0){
+        // 	openMenu();
+        // }
       },
       placeholder: t('Enter a search term'),
       'aria-labelledby': 'autocomplete-search-box'
