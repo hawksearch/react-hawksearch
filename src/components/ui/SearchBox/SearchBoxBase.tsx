@@ -133,9 +133,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 											}
 										}
 									},
-									onBlur: () => {
-										closeMenu()										
-									},
+
 									onChange: event => {
 										setInitialInput(event.target.value);
 										// if(event.target.value.length > 0){
