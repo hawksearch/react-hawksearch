@@ -7,7 +7,7 @@ import { Response, Product, Category } from 'models/Autocomplete';
 import { useHawkConfig } from 'components/ConfigProvider';
 import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
-import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
 import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
 import { useHawksearch } from 'components/StoreProvider';
 

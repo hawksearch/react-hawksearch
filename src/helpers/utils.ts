@@ -1,4 +1,5 @@
 import { FacetType } from 'models/Facets/FacetType';
+import { useHawkConfig } from 'components/ConfigProvider';
 
 export const getVisitorExpiry = () => {
 	const d = new Date();
@@ -74,43 +75,75 @@ function getRecentFacetExpiry() {
 	return d.toUTCString();
 }
 
-export const getParsedObject = facetC => {
+export const getParsedObject = (facetC: string | null, siteDirectory?: string) => {
 	if (!facetC) {
 		return {};
 	}
 	const dict = {};
 	(facetC || '').split(',').forEach(element => {
 		const splitText = element.split('|');
-		dict[splitText[0]] = splitText[1];
+		if (siteDirectory) {
+			if (splitText.length > 2) {
+				dict[splitText[0]] = dict[splitText[0]] || {};
+				dict[splitText[0]][splitText[1]] = splitText[2];
+			}
+		} else {
+			dict[splitText[0]] = splitText[1];
+		}
 	});
 	return dict;
 };
 
 function getStringifyObject(obj) {
 	let str = '';
-	Object.keys(obj).forEach((element, index) => {
-		if (index !== 0) {
-			str += ',';
+	const items: string[] = [];
+	Object.keys(obj).forEach((element) => {
+		if (typeof obj[element] === 'object') {
+			Object.keys(obj[element]).forEach((key, index) => {
+				const item = element + '|' + key + '|' + obj[element][key]
+				items.push(item)
+			})
+		} else {
+			const item = element + '|' + obj[element]
+			items.push(item)
 		}
-		str += element + '|' + obj[element];
 	});
-	return str;
+	return items.join(',');
 }
 
 export const setRecentSearch = val => {
+	const {
+		config: { siteDirectory },
+	} = useHawkConfig();
 	const cookie = getCookie(FacetType.RecentSearches);
 	if (!cookie) {
-		setCookie(FacetType.RecentSearches, `${val}|1`, getRecentFacetExpiry());
+		if (siteDirectory) {
+			setCookie(FacetType.RecentSearches, `${siteDirectory}|${val}|1`, getRecentFacetExpiry());
+		} else {
+			setCookie(FacetType.RecentSearches, `${val}|1`, getRecentFacetExpiry());
+		}
 		return;
 	}
-	let dict = getParsedObject(cookie);
-	if (dict[val]) {
-		dict[val] = Number(dict[val]) + 1;
+	let dict = getParsedObject(cookie, siteDirectory);
+	if (siteDirectory) {
+		dict[siteDirectory] = dict[siteDirectory] && typeof dict[siteDirectory] === 'object' ? dict[siteDirectory] : {}
+		if (dict[siteDirectory][val]) {
+			dict[siteDirectory][val] = Number(dict[siteDirectory][val]) + 1;
+		} else {
+			dict[siteDirectory] = {
+				...dict[siteDirectory],
+				[val]: 1,
+			};
+		}
 	} else {
-		dict = {
-			...dict,
-			[val]: 1,
-		};
+		if (dict[val]) {
+			dict[val] = Number(dict[val]) + 1;
+		} else {
+			dict = {
+				...dict,
+				[val]: 1,
+			};
+		}
 	}
 	const str = getStringifyObject(dict);
 

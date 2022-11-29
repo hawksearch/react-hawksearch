@@ -146,4 +146,8 @@ export interface HawksearchConfig {
 	disablePreviewBuckets?: boolean | false;
 
 	removeSearchParams?: boolean | false;
+
+	siteDirectory?: string;
+
+	isSuggestionChangeEnabled: boolean;
 }

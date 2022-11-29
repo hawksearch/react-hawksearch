@@ -7247,7 +7247,7 @@ function getRecentFacetExpiry() {
   return d.toUTCString();
 }
 
-var getParsedObject = function getParsedObject(facetC) {
+var getParsedObject = function getParsedObject(facetC, siteDirectory) {
   if (!facetC) {
     return {};
   }
@@ -7255,37 +7255,67 @@ var getParsedObject = function getParsedObject(facetC) {
   var dict = {};
   (facetC || '').split(',').forEach(function (element) {
     var splitText = element.split('|');
-    dict[splitText[0]] = splitText[1];
+
+    if (siteDirectory) {
+      if (splitText.length > 2) {
+        dict[splitText[0]] = dict[splitText[0]] || {};
+        dict[splitText[0]][splitText[1]] = splitText[2];
+      }
+    } else {
+      dict[splitText[0]] = splitText[1];
+    }
   });
   return dict;
 };
 
 function getStringifyObject(obj) {
-  var str = '';
-  Object.keys(obj).forEach(function (element, index) {
-    if (index !== 0) {
-      str += ',';
+  var items = [];
+  Object.keys(obj).forEach(function (element) {
+    if (_typeof(obj[element]) === 'object') {
+      Object.keys(obj[element]).forEach(function (key, index) {
+        var item = element + '|' + key + '|' + obj[element][key];
+        items.push(item);
+      });
+    } else {
+      var item = element + '|' + obj[element];
+      items.push(item);
     }
-
-    str += element + '|' + obj[element];
   });
-  return str;
+  return items.join(',');
 }
 
 var setRecentSearch = function setRecentSearch(val) {
+  var _useHawkConfig = useHawkConfig(),
+      siteDirectory = _useHawkConfig.config.siteDirectory;
+
   var cookie = getCookie(FacetType.RecentSearches);
 
   if (!cookie) {
-    setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
+    if (siteDirectory) {
+      setCookie(FacetType.RecentSearches, "".concat(siteDirectory, "|").concat(val, "|1"), getRecentFacetExpiry());
+    } else {
+      setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
+    }
+
     return;
   }
 
-  var dict = getParsedObject(cookie);
+  var dict = getParsedObject(cookie, siteDirectory);
 
-  if (dict[val]) {
-    dict[val] = Number(dict[val]) + 1;
+  if (siteDirectory) {
+    dict[siteDirectory] = dict[siteDirectory] && _typeof(dict[siteDirectory]) === 'object' ? dict[siteDirectory] : {};
+
+    if (dict[siteDirectory][val]) {
+      dict[siteDirectory][val] = Number(dict[siteDirectory][val]) + 1;
+    } else {
+      dict[siteDirectory] = _objectSpread$4(_objectSpread$4({}, dict[siteDirectory]), {}, _defineProperty({}, val, 1));
+    }
   } else {
-    dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
+    if (dict[val]) {
+      dict[val] = Number(dict[val]) + 1;
+    } else {
+      dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
+    }
   }
 
   var str = getStringifyObject(dict);
@@ -9553,7 +9583,7 @@ function convertObjectToQueryString(queryObj) {
           continue;
         }
 
-        if (typeof value !== 'string') {
+        if (typeof _key !== 'string') {
           throw new Error("".concat(_key, " must be a string"));
         } // certain strings are special and are never arrays
 
@@ -11189,6 +11219,16 @@ function SliderNumericInputs(sliderProps) {
       maxValue = _useState4[0],
       setMaxValue = _useState4[1];
 
+  var _useState5 = useState(''),
+      _useState6 = _slicedToArray$1(_useState5, 2),
+      previousMinValue = _useState6[0],
+      setPreviousMinValue = _useState6[1];
+
+  var _useState7 = useState(''),
+      _useState8 = _slicedToArray$1(_useState7, 2),
+      previousMaxValue = _useState8[0],
+      setPreviousMaxValue = _useState8[1];
+
   function onMinUpdate(values) {
     var formattedValue = values.formattedValue,
         value = values.value;
@@ -11213,8 +11253,18 @@ function SliderNumericInputs(sliderProps) {
     setMaxValue(value);
   }
 
-  function reloadFacets(event) {
-    sliderProps.onValueChange(Number(minValue), Number(maxValue));
+  function reloadFacets() {
+    if (minValue !== previousMinValue || maxValue !== previousMaxValue) {
+      sliderProps.onValueChange(Number(minValue), Number(maxValue));
+      setPreviousMinValue(minValue);
+      setPreviousMaxValue(maxValue);
+    }
+  }
+
+  function onKeyDown(event) {
+    if (event.key === 'Enter') {
+      reloadFacets();
+    }
   }
 
   useEffect(function () {
@@ -11232,6 +11282,7 @@ function SliderNumericInputs(sliderProps) {
     max: sliderProps.max,
     onValueChange: onMinUpdate,
     onBlur: reloadFacets,
+    onKeyDown: onKeyDown,
     decimalScale: sliderProps.decimalPrecision,
     "aria-label": "min range"
   }), /*#__PURE__*/React__default.createElement(NumberFormat, {
@@ -11243,6 +11294,7 @@ function SliderNumericInputs(sliderProps) {
     max: sliderProps.max,
     onValueChange: onMaxUpdate,
     onBlur: reloadFacets,
+    onKeyDown: onKeyDown,
     decimalScale: sliderProps.decimalPrecision,
     "aria-label": "max range"
   }));
@@ -17789,10 +17841,12 @@ function RecentSearches() {
       actor = _useHawksearch.actor,
       pendingSearch = _useHawksearch.store.pendingSearch;
 
-  var cookie = getCookie(facet.FacetType);
-  var dictRecentSearch = getParsedObject(cookie);
+  var _useHawkConfig = useHawkConfig(),
+      siteDirectory = _useHawkConfig.config.siteDirectory;
 
-  var _useState = useState(dictRecentSearch),
+  var cookie = getCookie(facet.FacetType);
+
+  var _useState = useState(parseSearchDict(getParsedObject(cookie, siteDirectory), siteDirectory)),
       _useState2 = _slicedToArray$1(_useState, 2),
       recentSearch = _useState2[0],
       setRecentSearch = _useState2[1]; // NOTE: If user search with the new keyword it should update the dictionary
@@ -17801,6 +17855,14 @@ function RecentSearches() {
   useEffect(function () {
     setRecentSearch(getParsedObject(cookie));
   }, [pendingSearch.Keyword]);
+
+  function parseSearchDict(dict, siteDirectory) {
+    if (siteDirectory) {
+      return dict[siteDirectory] || {};
+    }
+
+    return dict;
+  }
 
   function setKeyword(keyword) {
     actor.setSearch({
@@ -31720,7 +31782,7 @@ function createBrowserHistory(props) {
   return history;
 }
 
-var history = createBrowserHistory();
+var history = window.browserHistory || createBrowserHistory();
 
 var doSearch = true;
 
@@ -31952,5 +32014,338 @@ function CustomPageHtml() {
   }
 }
 
-export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, CustomPageHtml, Distance, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, MessageBox, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
+var SuggestType$1;
+
+(function (SuggestType) {
+  SuggestType[SuggestType["PopularSearches"] = 1] = "PopularSearches";
+  SuggestType[SuggestType["TopCategories"] = 2] = "TopCategories";
+  SuggestType[SuggestType["TopProductMatches"] = 3] = "TopProductMatches";
+  SuggestType[SuggestType["TopContentMatches"] = 4] = "TopContentMatches";
+})(SuggestType$1 || (SuggestType$1 = {}));
+
+function getAtLeastOneExist(popular, categories, products, content) {
+  var hasPopular = popular && popular.length > 0;
+  var hasCategories = categories && categories.length > 0;
+  var hasProducts = products && products.length > 0;
+  var hasContent = content && content.length > 0;
+  return hasPopular || hasCategories || hasProducts || hasContent;
+}
+
+function strip_html_tags(str) {
+  if (str === null || str === '') {
+    return '';
+  } else {
+    str = str.toString();
+    str = str.replace(/&raquo;/g, '');
+  }
+
+  return str.replace(/<[^>]*>/g, '');
+}
+
+function ProductsComponent(_ref) {
+  var products = _ref.products,
+      ProductHeading = _ref.ProductHeading,
+      getItemProps = _ref.getItemProps,
+      redirectItemDetails = _ref.redirectItemDetails,
+      isAtleastOneExist = _ref.isAtleastOneExist,
+      onViewMatches = _ref.onViewMatches,
+      downshift = _ref.downshift,
+      searchedKeyword = _ref.searchedKeyword;
+  return /*#__PURE__*/React__default.createElement(React__default.Fragment, null, products && products.length ? /*#__PURE__*/React__default.createElement("ul", null, /*#__PURE__*/React__default.createElement("h3", null, ProductHeading), products.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", getItemProps({
+      item: item,
+      index: "Product_".concat(index),
+      key: "Product_".concat(index),
+      onClick: function onClick() {
+        redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+        TrackingEvent$1.track('autocompleteclick', {
+          keyword: downshift.inputValue,
+          suggestType: SuggestType$1.TopProductMatches,
+          name: item.ProductName,
+          url: item.Url
+        });
+      }
+    }), item.Thumb && item.Thumb.Url && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
+      className: "hawk-sqItemImage-thumb",
+      src: item.Thumb.Url
+    })), /*#__PURE__*/React__default.createElement("span", {
+      className: "p-name"
+    }, item.ProductName));
+  }), isAtleastOneExist && (products[0].IsRecommended === false || !products[0].IsRecommended) ? /*#__PURE__*/React__default.createElement("div", {
+    className: "view-matches",
+    onClick: function onClick() {
+      return onViewMatches(downshift);
+    }
+  }, "View all matches") : null) : null);
+}
+
+function CustomSuggestionList(_ref2) {
+  var downshift = _ref2.downshift,
+      searchResults = _ref2.searchResults,
+      onViewMatches = _ref2.onViewMatches,
+      isLoading = _ref2.isLoading;
+  var popular = searchResults.Popular,
+      categories = searchResults.Categories,
+      products = searchResults.Products,
+      content = searchResults.Content,
+      dymContentSearch = searchResults.DymContentSearch,
+      dymProductSearch = searchResults.DymProductsSearch,
+      PopularHeading = searchResults.PopularHeading,
+      CategoryHeading = searchResults.CategoryHeading,
+      ProductHeading = searchResults.ProductHeading,
+      ContentHeading = searchResults.ContentHeading,
+      DYMContentHeading = searchResults.DYMContentHeading,
+      DYMProductHeading = searchResults.DYMProductHeading;
+
+  var _useHawksearch = useHawksearch(),
+      actor = _useHawksearch.actor,
+      store = _useHawksearch.store;
+
+  var _useState = useState(''),
+      _useState2 = _slicedToArray$1(_useState, 2),
+      hoverKeyword = _useState2[0],
+      setHoverKeyword = _useState2[1];
+
+  var _useState3 = useState(''),
+      _useState4 = _slicedToArray$1(_useState3, 2),
+      searchedKeyword = _useState4[0],
+      setSearchedKeyword = _useState4[1];
+
+  var _useState5 = useState([]),
+      _useState6 = _slicedToArray$1(_useState5, 2),
+      hoverProducts = _useState6[0],
+      setHoverProducts = _useState6[1];
+
+  var _useHawkConfig = useHawkConfig(),
+      config = _useHawkConfig.config;
+
+  var getItemProps = downshift.getItemProps,
+      getMenuProps = downshift.getMenuProps,
+      highlightedIndex = downshift.highlightedIndex,
+      getInputProps = downshift.getInputProps;
+  var isAtleastOneExist = getAtLeastOneExist(popular, categories, products, content);
+  var isSuggestionChangeEnabled = config.isSuggestionChangeEnabled;
+  useEffect(function () {
+    var cts = axios$1.CancelToken.source();
+
+    if (hoverKeyword) {
+      doAutocomplete(hoverKeyword, cts.token);
+    }
+
+    return function () {
+      cts.cancel();
+    };
+  }, [hoverKeyword]);
+
+  function doAutocomplete(_x, _x2) {
+    return _doAutocomplete.apply(this, arguments);
+  }
+
+  function _doAutocomplete() {
+    _doAutocomplete = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(input, cancellationToken) {
+      var client, response;
+      return regenerator.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              setSearchedKeyword(input);
+              client = new HawkClient(config);
+              _context.prev = 2;
+              _context.next = 5;
+              return client.autocomplete({
+                ClientGuid: config.clientGuid ? config.clientGuid : '',
+                Keyword: decodeURIComponent(input),
+                IndexName: config.indexName,
+                DisplayFullResponse: true,
+                FacetSelections: store.pendingSearch.FacetSelections,
+                IsInPreview: config.isInPreview,
+                PreviewDate: store.previewDate || undefined
+              }, cancellationToken);
+
+            case 5:
+              response = _context.sent;
+              _context.next = 13;
+              break;
+
+            case 8:
+              _context.prev = 8;
+              _context.t0 = _context["catch"](2);
+
+              if (!axios$1.isCancel(_context.t0)) {
+                _context.next = 12;
+                break;
+              }
+
+              return _context.abrupt("return");
+
+            case 12:
+              console.error('Autocomplete request error:', _context.t0);
+
+            case 13:
+              if (response) {
+                setHoverProducts(response.Products);
+              }
+
+            case 14:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[2, 8]]);
+    }));
+    return _doAutocomplete.apply(this, arguments);
+  }
+
+  function setKeyword(keyword) {
+    setHoverKeyword(keyword);
+  }
+
+  function redirectItemDetails(id, url) {
+    var getProducts = products.find(function (productItem) {
+      return productItem.Results.DocId === id;
+    });
+    var getContent = content.find(function (productItem) {
+      return productItem.Results.DocId === id;
+    });
+    var getUrl = getProducts === undefined ? getContent.Url : getProducts.Url;
+
+    if (getProducts === undefined) {
+      history.push({
+        pathname: "".concat(history.location.pathname, "/article"),
+        search: "?id=".concat(id)
+      });
+    } else if (url) {
+      window.location.assign(url);
+    }
+  }
+
+  function redirectDYMitems(searchKeyword, typeId, item) {
+    var getDYMproductSearch = dymProductSearch ? dymProductSearch.find(function (dymProductItem) {
+      return dymProductItem.Value === item;
+    }) : undefined;
+    getDYMproductSearch === undefined ? searchProduct(searchKeyword, typeId, getDYMproductSearch) : window.location.assign(getDYMproductSearch.Url);
+    downshift.toggleMenu();
+  }
+
+  function searchProduct(keyword, typeId, item) {
+    TrackingEvent$1.track('autocompleteclick', {
+      keyword: keyword,
+      suggestType: typeId,
+      name: item.Value,
+      url: item.Url
+    });
+    item.FieldQSName ? actor.setSearch({
+      PageId: undefined,
+      CustomUrl: undefined,
+      FacetSelections: _defineProperty({}, item.FieldQSName, [decodeURI(item.FieldQSValue)]),
+      Keyword: item.RawValue
+    }) : actor.setSearch({
+      PageId: undefined,
+      CustomUrl: undefined,
+      Keyword: item.RawValue
+    });
+    downshift.toggleMenu();
+  }
+
+  return /*#__PURE__*/React__default.createElement("ul", _extends({
+    className: "dropdown-menu autosuggest-menu__list"
+  }, getMenuProps()), isLoading && /*#__PURE__*/React__default.createElement("li", {
+    className: "autosuggest-menu__item loading-label"
+  }, "Loading..."), hoverProducts && hoverProducts.length ? /*#__PURE__*/React__default.createElement(ProductsComponent, {
+    products: hoverProducts,
+    ProductHeading: ProductHeading,
+    getItemProps: getItemProps,
+    redirectItemDetails: redirectItemDetails,
+    isAtleastOneExist: isAtleastOneExist,
+    onViewMatches: onViewMatches,
+    downshift: downshift,
+    searchedKeyword: searchedKeyword
+  }) : /*#__PURE__*/React__default.createElement(ProductsComponent, {
+    products: products,
+    ProductHeading: ProductHeading,
+    getItemProps: getItemProps,
+    redirectItemDetails: redirectItemDetails,
+    isAtleastOneExist: isAtleastOneExist,
+    onViewMatches: onViewMatches,
+    downshift: downshift,
+    searchedKeyword: searchedKeyword
+  }), /*#__PURE__*/React__default.createElement("div", null, categories && categories.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, CategoryHeading), categories.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", _extends({
+      key: "Category_".concat(index),
+      className: highlightedIndex === "Category_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item',
+      onClick: function onClick() {
+        return searchProduct(searchedKeyword, SuggestType$1.TopCategories, item);
+      }
+    }, getInputProps({
+      onMouseOver: function onMouseOver() {
+        if (isSuggestionChangeEnabled) {
+          setKeyword(strip_html_tags(item.Value));
+        }
+      }
+    })), /*#__PURE__*/React__default.createElement("div", {
+      dangerouslySetInnerHTML: {
+        __html: item.Value
+      }
+    }));
+  })) : null, popular && popular.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, PopularHeading), popular.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", _extends({
+      key: "Popular_".concat(index),
+      onClick: function onClick() {
+        return searchProduct(searchedKeyword, SuggestType$1.PopularSearches, item);
+      },
+      className: highlightedIndex === "Popular_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item'
+    }, getInputProps({
+      onMouseOver: function onMouseOver() {
+        if (isSuggestionChangeEnabled) {
+          setKeyword(strip_html_tags(item.Value));
+        }
+      }
+    })), /*#__PURE__*/React__default.createElement("div", {
+      dangerouslySetInnerHTML: {
+        __html: item.Value
+      }
+    }));
+  })) : null, content && content.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, ContentHeading), content.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", _extends({
+      key: "Content_".concat(index),
+      onClick: function onClick() {
+        return redirectItemDetails(item.Results.DocId, null);
+      } // searchProduct(searchedKeyword, SuggestType.TopContentMatches, item);
+      ,
+      className: highlightedIndex === "Content_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item'
+    }, getInputProps({
+      onMouseOver: function onMouseOver() {
+        setKeyword(strip_html_tags(item.Value));
+      }
+    })), item.Value);
+  })) : null, dymProductSearch && dymProductSearch.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, DYMProductHeading), dymProductSearch.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", {
+      key: "Content_".concat(index),
+      onClick: function onClick() {
+        return redirectDYMitems(searchedKeyword, null, item.Value);
+      },
+      className: highlightedIndex === "Content_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item' // {...getInputProps({
+      // 	onMouseOver: () => {
+      // 		setKeyword(strip_html_tags(item.Value));
+      // 	},
+      // })}
+
+    }, item.Value);
+  })) : dymContentSearch && dymContentSearch.length ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("h3", null, DYMContentHeading), dymContentSearch.map(function (item, index) {
+    return /*#__PURE__*/React__default.createElement("li", {
+      key: "Content_".concat(index),
+      onClick: function onClick() {
+        return redirectDYMitems(searchedKeyword, null, item.Value);
+      },
+      className: highlightedIndex === "Content_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item' // {...getInputProps({
+      // 	onMouseOver: () => {
+      // 		setKeyword(strip_html_tags(item.Value));
+      // 	},
+      // })}
+
+    }, item.Value);
+  })) : null));
+}
+
+export { AdjustedKeyword, AuthToken$1 as AuthToken, AutoCorrectSuggestion, Checkbox, CompareItems, ConfigProvider, ContentType, CustomPageHtml, CustomSuggestionList, Distance, Facet$1 as Facet, FacetList, FacetRail, FacetSelectionState, FacetType, GlobalSearchBox, Hawksearch, LanguageSelector, Link, MerchandisingBanner, MessageBox, Nested as NestedCheckbox, NestedLink, OpenRange, Pagination$1 as Pagination, PlaceholderItem, QueryStringListener, QueryStringListenerSF, RedirectURLListener, RelatedSearch, ResultImage, ResultItem, ResultItem as ResultItemProps, ResultListing, Results, RuleOperatorType, RuleType, Search, SearchBox, SearchResultsLabel, Selections$1 as Selections, Size, Slider, Sorting$1 as Sorting, Spinner, StickyComponent, StoreProvider, Suggestion, SuggestionType, Swatch$1 as Swatch, SwatchItem, Tabs, ToolRow, TrackingEvent$1 as TrackingEvent, addToRangeFacets, checkIfUrlRefsLandingPage, createGuid, getCookie, getSearchQueryString, getVisitExpiry, getVisitorExpiry, parseLocation, parseSearchQueryString, setCookie, i18next as tConfig, useFacet, useHawkConfig, useHawksearch };
 //# sourceMappingURL=react-hawksearch.js.map

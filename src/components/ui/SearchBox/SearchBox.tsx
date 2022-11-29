@@ -4,7 +4,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 import { useHawksearch } from 'components/StoreProvider';
 import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
 import { Product } from 'models/Autocomplete';
-import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
 
 /**
  * This component is the search input box (with autosuggest) that should be utilized on search pages. For a simple

@@ -1,3 +1,4 @@
 import { createBrowserHistory } from 'history';
 
-export const history = createBrowserHistory();
+export const history = (window as any).browserHistory || createBrowserHistory();
+

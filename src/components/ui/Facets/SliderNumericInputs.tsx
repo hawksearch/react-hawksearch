@@ -11,8 +11,10 @@ export interface SliderNumericInputsProps {
 	onValueChange(minValue: number, maxValue: number): void;
 }
 function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
-	const [minValue, setMinValue] = useState('' as string);
-	const [maxValue, setMaxValue] = useState('' as string);
+	const [minValue, setMinValue] = useState('');
+	const [maxValue, setMaxValue] = useState('');
+	const [previousMinValue, setPreviousMinValue] = useState('');
+	const [previousMaxValue, setPreviousMaxValue] = useState('');
 
 	function onMinUpdate(values: any) {
 		const { formattedValue, value } = values;
@@ -34,8 +36,19 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 		}
 		setMaxValue(value);
 	}
-	function reloadFacets(event: React.FormEvent<HTMLInputElement>) {
-		sliderProps.onValueChange(Number(minValue), Number(maxValue));
+
+	function reloadFacets() {
+		if (minValue !== previousMinValue || maxValue !== previousMaxValue) {
+			sliderProps.onValueChange(Number(minValue), Number(maxValue));
+			setPreviousMinValue(minValue);
+			setPreviousMaxValue(maxValue);
+		}
+	}
+
+	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+		if (event.key === 'Enter') {
+			reloadFacets();
+		}
 	}
 
 	useEffect(() => {
@@ -54,6 +67,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				max={sliderProps.max}
 				onValueChange={onMinUpdate}
 				onBlur={reloadFacets}
+				onKeyDown={onKeyDown}
 				decimalScale={sliderProps.decimalPrecision}
 				aria-label="min range"
 			/>
@@ -67,6 +81,7 @@ function SliderNumericInputs(sliderProps: SliderNumericInputsProps) {
 				max={sliderProps.max}
 				onValueChange={onMaxUpdate}
 				onBlur={reloadFacets}
+				onKeyDown={onKeyDown}
 				decimalScale={sliderProps.decimalPrecision}
 				aria-label="max range"
 			/>

@@ -8,7 +8,7 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
 import { useHawksearch } from 'components/StoreProvider';
 import { useTranslation } from 'react-i18next';
-import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
 
 import Downshift from 'downshift';
 

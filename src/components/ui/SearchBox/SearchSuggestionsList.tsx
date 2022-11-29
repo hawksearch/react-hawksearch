@@ -3,7 +3,7 @@ import { ControllerStateAndHelpers } from 'downshift';
 
 import { Response, Product, Popular, Category, Content } from 'models/Autocomplete';
 import { Suggestion } from '../../../models/Autocomplete/Suggestion';
-import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
 
 export interface SearchSuggestionsListProps {
 	isLoading: boolean;

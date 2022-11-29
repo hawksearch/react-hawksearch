@@ -5,7 +5,7 @@ import { useHawkConfig } from 'components/ConfigProvider';
 import { Product } from 'models/Autocomplete';
 import SearchBoxBase from 'components/ui/SearchBox/SearchBoxBase';
 import { useHawksearch } from 'components/StoreProvider';
-import { CustomSuggestionListProps } from 'models/Autocomplete/CustomSuggestionList';
+import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
 
 interface SearchBoxProps {
 	SuggestionList?: React.ComponentType<CustomSuggestionListProps>;

@@ -191,7 +191,7 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 					continue;
 				}
 
-				if (typeof value !== 'string') {
+				if (typeof key !== 'string') {
 					throw new Error(`${key} must be a string`);
 				}
 

@@ -79,3 +79,6 @@ export { default as MessageBox } from 'components/ui/MessageBox/MessageBox';
 
 // CustomHtmlForLandingPages
 export { default as CustomPageHtml } from 'components/ui/CustomPage/CustomPageHtml';
+
+// CustomSuggestionList
+export {default as CustomSuggestionList} from './components/ui/AutoComplete/CustomSuggestionList'
