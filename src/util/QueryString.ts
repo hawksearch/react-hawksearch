@@ -94,7 +94,8 @@ function parseQueryStringToObject(search: string) {
  * Parses the abosulte url into a `HawkClient` client search request object.
  * @param location The input location
  */
-export function parseLocation(location: Location, searchUrl: string = '/search'): Partial<Request> {
+export function parseLocation(location: Location, searchUrl: string): Partial<Request> {
+	console.log(location, searchUrl);
 	const searchRequest = parseSearchQueryString(location.search);
 
 	// customUrl have priority over keywords
