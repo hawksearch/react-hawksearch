@@ -8237,6 +8237,276 @@ function useHawksearch() {
   return useContext(HawkContext);
 }
 
+function _objectWithoutPropertiesLoose$1(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose$1(source, excluded);
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
+
+function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+/** Represents parts of the browser query string that are fixed and are always single strings. */
+
+/**
+ * Represents the parts of the browser query string that are dynamic (the selected facets). Facets
+ * can have multiple values, so the value of these is always an array of strings.
+ */
+var rangeFacets = [];
+function addToRangeFacets(facetName) {
+  if (!rangeFacets.includes(facetName)) {
+    rangeFacets.push(facetName);
+  }
+}
+/**
+ * Parses the input query string and returns an object that can be used to build a search request.
+ * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
+ * for every selected facet.
+ * @param search The input query string.
+ */
+
+function parseQueryStringToObject(search) {
+  var params = new URLSearchParams(urlStringToParamEntries(search));
+  var parsed = {};
+  params.forEach(function (value, key) {
+    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck' || key === 'language') {
+      // `keyword` is special and should never be turned into an array
+      if (key === 'keyword') {
+        parsed[key] = value;
+      } else {
+        parsed[key] = encodeURIComponent(value);
+      }
+    } else {
+      // everything else should be turned into an array
+      if (!value) {
+        // no useful value for this query param, so skip it
+        return;
+      } // NOTE: Don't pass these values as facet selection
+
+
+      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
+        return;
+      } // multiple selections are split by commas, so split into an array
+
+
+      var multipleValues = value.split(',');
+      parsed[key] = multipleValues.map(function (i) {
+        return decodeURIComponent(i).replace('::', ',');
+      });
+    }
+  });
+  return parsed;
+}
+/**
+ * Parses the abosulte url into a `HawkClient` client search request object.
+ * @param location The input location
+ */
+
+
+function parseLocation(location, searchUrl) {
+  console.log(location, searchUrl);
+  var searchRequest = parseSearchQueryString(location.search); // customUrl have priority over keywords
+
+  if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
+    searchRequest.Keyword = undefined;
+    searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
+  }
+
+  return searchRequest;
+}
+/**
+ * Parses the input query string into a `HawkClient` client search request object.
+ * @param search The input query string.
+ */
+
+function parseSearchQueryString(search) {
+  var queryObj = parseQueryStringToObject(search); // extract out components, including facet selections
+
+  var keyword = queryObj.keyword,
+      sort = queryObj.sort,
+      pg = queryObj.pg,
+      mpp = queryObj.mpp,
+      lp = queryObj.lp,
+      PageId = queryObj.PageId,
+      lpurl = queryObj.lpurl,
+      searchWithin = queryObj.searchWithin,
+      is100Coverage = queryObj.is100Coverage,
+      indexName = queryObj.indexName,
+      ignoreSpellcheck = queryObj.ignoreSpellcheck,
+      facetSelections = _objectWithoutProperties(queryObj, ["keyword", "sort", "pg", "mpp", "lp", "PageId", "lpurl", "searchWithin", "is100Coverage", "indexName", "ignoreSpellcheck"]); // ignore landing pages if keyword is passed
+
+
+  var pageId = lp || PageId;
+  return {
+    Keyword: lpurl || pageId ? '' : keyword,
+    SortBy: sort,
+    PageNo: pg ? Number(pg) : undefined,
+    MaxPerPage: mpp ? Number(mpp) : undefined,
+    PageId: pageId ? Number(pageId) : undefined,
+    CustomUrl: lpurl,
+    SearchWithin: searchWithin,
+    Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
+    FacetSelections: facetSelections,
+    IndexName: indexName,
+    IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
+  };
+}
+function checkIfUrlRefsLandingPage(path, searchUrl) {
+  if (!path) {
+    // if there's no path, this request can't be for a landing page
+    return false;
+  }
+
+  if (!path.endsWith('/')) {
+    path = path + '/';
+  }
+
+  if (!searchUrl.endsWith('/')) {
+    searchUrl = searchUrl + '/';
+  }
+
+  return path !== searchUrl;
+}
+/**
+ * Converts a search query object (such as one returned from `parseSearchQueryString`) and converts
+ * it into a browser query string
+ * @param queryObj The query object to convert to a query string.
+ */
+
+function convertObjectToQueryString(queryObj) {
+  var queryStringValues = [];
+
+  for (var _key in queryObj) {
+    if (queryObj.hasOwnProperty(_key)) {
+      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck' || _key === 'language') {
+        var value = queryObj[_key];
+
+        if (value === undefined || value === null) {
+          // if any of the special keys just aren't defined or are null, don't include them in
+          // the query string
+          continue;
+        }
+
+        if (typeof _key !== 'string') {
+          throw new Error("".concat(_key, " must be a string"));
+        } // certain strings are special and are never arrays
+
+
+        if (_key === 'keyword') {
+          queryStringValues.push(_key + '=' + value);
+        } else {
+          queryStringValues.push(_key + '=' + encodeURIComponent(value));
+        }
+      } else {
+        var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
+
+        var escapedValues = [];
+
+        var _iterator = _createForOfIteratorHelper$2(values),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var unescapedValue = _step.value;
+
+            if (rangeFacets.includes(_key)) {
+              unescapedValue = unescapedValue.replace(',', '::');
+            }
+
+            escapedValues.push(encodeURIComponent(unescapedValue));
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        queryStringValues.push(_key + '=' + escapedValues.join(','));
+      }
+    }
+  }
+
+  return '?' + queryStringValues.join('&');
+}
+/**
+ * Converts a partial search request object into a browser query string.
+ * @param searchRequest The search request object to convert.
+ */
+
+
+function getSearchQueryString(searchRequest, store) {
+  var searchQuery = _objectSpread$6({
+    keyword: searchRequest.Keyword,
+    sort: searchRequest.SortBy,
+    pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
+    mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
+    is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
+    searchWithin: searchRequest.SearchWithin,
+    indexName: searchRequest.IndexName,
+    language: store && store.language ? store.language : undefined,
+    ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
+  }, searchRequest.FacetSelections);
+
+  return convertObjectToQueryString(searchQuery);
+}
+
+function urlStringToParamEntries(searchQuery) {
+  if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
+    if (searchQuery[0] === '?') {
+      searchQuery = searchQuery.slice(1);
+    }
+
+    return searchQuery.split('&').map(function (i) {
+      var entries = i.split('=');
+
+      if (entries.length === 2) {
+        return entries;
+      } else if (entries.length > 2) {
+        return [entries[0], entries.slice(0, 1).join('')];
+      } else {
+        return [entries.join(''), ''];
+      }
+    });
+  } else {
+    return searchQuery;
+  }
+}
+
 function Hawksearch(props) {
   var id = createWidgetId();
 
@@ -8253,10 +8523,11 @@ function Hawksearch(props) {
     TrackingEvent$1.setLanguage(props.config.language);
   }
 
+  var searchRequest = parseLocation(location, props.config.siteDirectory ? props.config.siteDirectory : "");
   return /*#__PURE__*/React__default.createElement(ConfigProvider, {
     config: props.config
   }, /*#__PURE__*/React__default.createElement(StoreProvider, {
-    initialSearch: props.initialSearch,
+    initialSearch: props.initialSearch || searchRequest,
     widgetId: widgetId
   }, props.children));
 }
@@ -9396,276 +9667,6 @@ function SliderCalendarInputs(sliderProps) {
     max: formatDate(sliderProps.max),
     onChange: onMaxUpdate
   }));
-}
-
-function _objectWithoutPropertiesLoose$1(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$1(source, excluded);
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-
-function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
-
-function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-/** Represents parts of the browser query string that are fixed and are always single strings. */
-
-/**
- * Represents the parts of the browser query string that are dynamic (the selected facets). Facets
- * can have multiple values, so the value of these is always an array of strings.
- */
-var rangeFacets = [];
-function addToRangeFacets(facetName) {
-  if (!rangeFacets.includes(facetName)) {
-    rangeFacets.push(facetName);
-  }
-}
-/**
- * Parses the input query string and returns an object that can be used to build a search request.
- * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
- * for every selected facet.
- * @param search The input query string.
- */
-
-function parseQueryStringToObject(search) {
-  var params = new URLSearchParams(urlStringToParamEntries(search));
-  var parsed = {};
-  params.forEach(function (value, key) {
-    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck' || key === 'language') {
-      // `keyword` is special and should never be turned into an array
-      if (key === 'keyword') {
-        parsed[key] = value;
-      } else {
-        parsed[key] = encodeURIComponent(value);
-      }
-    } else {
-      // everything else should be turned into an array
-      if (!value) {
-        // no useful value for this query param, so skip it
-        return;
-      } // NOTE: Don't pass these values as facet selection
-
-
-      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
-        return;
-      } // multiple selections are split by commas, so split into an array
-
-
-      var multipleValues = value.split(',');
-      parsed[key] = multipleValues.map(function (i) {
-        return decodeURIComponent(i).replace('::', ',');
-      });
-    }
-  });
-  return parsed;
-}
-/**
- * Parses the abosulte url into a `HawkClient` client search request object.
- * @param location The input location
- */
-
-
-function parseLocation(location) {
-  var searchUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/search';
-  var searchRequest = parseSearchQueryString(location.search); // customUrl have priority over keywords
-
-  if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
-    searchRequest.Keyword = undefined;
-    searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
-  }
-
-  return searchRequest;
-}
-/**
- * Parses the input query string into a `HawkClient` client search request object.
- * @param search The input query string.
- */
-
-function parseSearchQueryString(search) {
-  var queryObj = parseQueryStringToObject(search); // extract out components, including facet selections
-
-  var keyword = queryObj.keyword,
-      sort = queryObj.sort,
-      pg = queryObj.pg,
-      mpp = queryObj.mpp,
-      lp = queryObj.lp,
-      PageId = queryObj.PageId,
-      lpurl = queryObj.lpurl,
-      searchWithin = queryObj.searchWithin,
-      is100Coverage = queryObj.is100Coverage,
-      indexName = queryObj.indexName,
-      ignoreSpellcheck = queryObj.ignoreSpellcheck,
-      facetSelections = _objectWithoutProperties(queryObj, ["keyword", "sort", "pg", "mpp", "lp", "PageId", "lpurl", "searchWithin", "is100Coverage", "indexName", "ignoreSpellcheck"]); // ignore landing pages if keyword is passed
-
-
-  var pageId = lp || PageId;
-  return {
-    Keyword: lpurl || pageId ? '' : keyword,
-    SortBy: sort,
-    PageNo: pg ? Number(pg) : undefined,
-    MaxPerPage: mpp ? Number(mpp) : undefined,
-    PageId: pageId ? Number(pageId) : undefined,
-    CustomUrl: lpurl,
-    SearchWithin: searchWithin,
-    Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-    FacetSelections: facetSelections,
-    IndexName: indexName,
-    IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
-  };
-}
-function checkIfUrlRefsLandingPage(path, searchUrl) {
-  if (!path) {
-    // if there's no path, this request can't be for a landing page
-    return false;
-  }
-
-  if (!path.endsWith('/')) {
-    path = path + '/';
-  }
-
-  if (!searchUrl.endsWith('/')) {
-    searchUrl = searchUrl + '/';
-  }
-
-  return path !== searchUrl;
-}
-/**
- * Converts a search query object (such as one returned from `parseSearchQueryString`) and converts
- * it into a browser query string
- * @param queryObj The query object to convert to a query string.
- */
-
-function convertObjectToQueryString(queryObj) {
-  var queryStringValues = [];
-
-  for (var _key in queryObj) {
-    if (queryObj.hasOwnProperty(_key)) {
-      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck' || _key === 'language') {
-        var value = queryObj[_key];
-
-        if (value === undefined || value === null) {
-          // if any of the special keys just aren't defined or are null, don't include them in
-          // the query string
-          continue;
-        }
-
-        if (typeof _key !== 'string') {
-          throw new Error("".concat(_key, " must be a string"));
-        } // certain strings are special and are never arrays
-
-
-        if (_key === 'keyword') {
-          queryStringValues.push(_key + '=' + value);
-        } else {
-          queryStringValues.push(_key + '=' + encodeURIComponent(value));
-        }
-      } else {
-        var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
-
-        var escapedValues = [];
-
-        var _iterator = _createForOfIteratorHelper$2(values),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var unescapedValue = _step.value;
-
-            if (rangeFacets.includes(_key)) {
-              unescapedValue = unescapedValue.replace(',', '::');
-            }
-
-            escapedValues.push(encodeURIComponent(unescapedValue));
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        queryStringValues.push(_key + '=' + escapedValues.join(','));
-      }
-    }
-  }
-
-  return '?' + queryStringValues.join('&');
-}
-/**
- * Converts a partial search request object into a browser query string.
- * @param searchRequest The search request object to convert.
- */
-
-
-function getSearchQueryString(searchRequest, store) {
-  var searchQuery = _objectSpread$6({
-    keyword: searchRequest.Keyword,
-    sort: searchRequest.SortBy,
-    pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
-    mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-    is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
-    searchWithin: searchRequest.SearchWithin,
-    indexName: searchRequest.IndexName,
-    language: store && store.language ? store.language : undefined,
-    ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
-  }, searchRequest.FacetSelections);
-
-  return convertObjectToQueryString(searchQuery);
-}
-
-function urlStringToParamEntries(searchQuery) {
-  if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
-    if (searchQuery[0] === '?') {
-      searchQuery = searchQuery.slice(1);
-    }
-
-    return searchQuery.split('&').map(function (i) {
-      var entries = i.split('=');
-
-      if (entries.length === 2) {
-        return entries;
-      } else if (entries.length > 2) {
-        return [entries[0], entries.slice(0, 1).join('')];
-      } else {
-        return [entries.join(''), ''];
-      }
-    });
-  } else {
-    return searchQuery;
-  }
 }
 
 var Rheostat = /*#__PURE__*/React__default.lazy(function () {
@@ -19802,7 +19803,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25260,6 +25261,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 

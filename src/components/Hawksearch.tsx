@@ -6,6 +6,7 @@ import { HawksearchConfig } from 'types/HawksearchConfig';
 import { Request } from 'models/Search';
 import TrackingEvent from './TrackingEvent';
 import { createWidgetId } from 'helpers/utils';
+import { parseLocation } from 'util/QueryString';
 
 export interface HawksearchProps {
 	/** Global configuration. */
@@ -27,9 +28,11 @@ function Hawksearch(props: HawksearchProps) {
 		TrackingEvent.setLanguage(props.config.language);
 	}
 
+	const searchRequest = parseLocation(location, (props.config.siteDirectory ? props.config.siteDirectory : ""))
+
 	return (
 		<ConfigProvider config={props.config}>
-			<StoreProvider initialSearch={props.initialSearch} widgetId={widgetId}>
+			<StoreProvider initialSearch={props.initialSearch || searchRequest} widgetId={widgetId}>
 				{props.children}
 			</StoreProvider>
 		</ConfigProvider>
