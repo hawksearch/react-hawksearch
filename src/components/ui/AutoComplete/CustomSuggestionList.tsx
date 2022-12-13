@@ -168,17 +168,20 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 
 	function redirectItemDetails(id: string, url: string | null) {
 		const getProducts = products.find(productItem => productItem.Results.DocId === id);
-		const getContent = content.find(productItem => productItem.Results.DocId === id);
+		// const getContent = content.find(productItem => productItem.Results.DocId === id);
+		// const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
+		let getUrlParams = window.location.pathname.split("/");
+		let findUrlIndex = getUrlParams.find(param => param === 'article');
 
-		const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
 		if (getProducts === undefined) {
-			history.push({
-				pathname: `${history.location.pathname}/article`,
+			history.replace({
+				pathname: findUrlIndex === undefined ? `${window.location.pathname}/article` : `${window.location.pathname}`,
 				search: `?id=${id}`,
 			});
 		} else if (url) {
 			window.location.assign(url);
 		}
+
 	}
 
 	function redirectDYMitems(
@@ -307,7 +310,17 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 						{content.map((item, index) => (
 							<li
 								key={`Content_${index}`}
-								onClick={() => redirectItemDetails(item.Results.DocId, null)}
+								onClick={() => {
+									redirectItemDetails(item.Results.DocId, null) ;
+									console.log('item =====>', item)
+									TrackingEvent.track('autocompleteclick', {
+										keyword: downshift.inputValue,
+										suggestType: SuggestType.TopContentMatches,
+										name: item.Value,
+										url: item.Url,
+									});
+								}
+								}
 								// searchProduct(searchedKeyword, SuggestType.TopContentMatches, item);
 								className={
 									highlightedIndex === `Content_${index}`
