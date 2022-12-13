@@ -19803,7 +19803,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25261,7 +25261,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -32205,15 +32204,17 @@ function CustomSuggestionList(_ref2) {
   function redirectItemDetails(id, url) {
     var getProducts = products.find(function (productItem) {
       return productItem.Results.DocId === id;
+    }); // const getContent = content.find(productItem => productItem.Results.DocId === id);
+    // const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
+
+    var getUrlParams = window.location.pathname.split("/");
+    var findUrlIndex = getUrlParams.find(function (param) {
+      return param === 'article';
     });
-    var getContent = content.find(function (productItem) {
-      return productItem.Results.DocId === id;
-    });
-    var getUrl = getProducts === undefined ? getContent.Url : getProducts.Url;
 
     if (getProducts === undefined) {
-      history.push({
-        pathname: "".concat(history.location.pathname, "/article"),
+      history.replace({
+        pathname: findUrlIndex === undefined ? "".concat(window.location.pathname, "/article") : "".concat(window.location.pathname),
         search: "?id=".concat(id)
       });
     } else if (url) {
@@ -32311,7 +32312,14 @@ function CustomSuggestionList(_ref2) {
     return /*#__PURE__*/React__default.createElement("li", _extends({
       key: "Content_".concat(index),
       onClick: function onClick() {
-        return redirectItemDetails(item.Results.DocId, null);
+        redirectItemDetails(item.Results.DocId, null);
+        console.log('item =====>', item);
+        TrackingEvent$1.track('autocompleteclick', {
+          keyword: downshift.inputValue,
+          suggestType: SuggestType$1.TopContentMatches,
+          name: item.Value,
+          url: item.Url
+        });
       } // searchProduct(searchedKeyword, SuggestType.TopContentMatches, item);
       ,
       className: highlightedIndex === "Content_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item'
