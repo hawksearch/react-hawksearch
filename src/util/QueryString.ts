@@ -100,10 +100,11 @@ export function parseLocation(location: Location, searchUrl: string): Partial<Re
 	// customUrl have priority over keywords
 	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
 		searchRequest.Keyword = undefined;
-
-		const pathname = location.pathname.replace('/', '');
-		searchUrl = searchUrl.replace('/', '');
-		searchRequest.CustomUrl = pathname.replace(searchUrl, '');
+		console.log("location.pathname before ==>", location.pathname);
+		const pathname = location.pathname;
+		searchRequest.CustomUrl = pathname.split("/").filter(path => path !== searchUrl && path !== "").join("/");
+		searchRequest.CustomUrl = searchRequest.CustomUrl ? "/" + searchRequest.CustomUrl : undefined;
+		console.log("searchRequest.CustomUrl ==>", searchRequest.CustomUrl);
 	}
 	return searchRequest;
 }
