@@ -95,13 +95,15 @@ function parseQueryStringToObject(search: string) {
  * @param location The input location
  */
 export function parseLocation(location: Location, searchUrl: string): Partial<Request> {
-	console.log(location, searchUrl);
 	const searchRequest = parseSearchQueryString(location.search);
 
 	// customUrl have priority over keywords
 	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
 		searchRequest.Keyword = undefined;
-		searchRequest.CustomUrl = location.pathname.replace(searchUrl, '');
+
+		const pathname = location.pathname.replace('/', '');
+		searchUrl = searchUrl.replace('/', '');
+		searchRequest.CustomUrl = pathname.replace(searchUrl, '');
 	}
 	return searchRequest;
 }

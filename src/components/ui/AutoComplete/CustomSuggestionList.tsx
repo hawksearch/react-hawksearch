@@ -170,13 +170,14 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		const getProducts = products.find(productItem => productItem.Results.DocId === id);
 		// const getContent = content.find(productItem => productItem.Results.DocId === id);
 		// const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-		let getUrlParams = window.location.pathname.split("/");
-		let findUrlIndex = getUrlParams.find(param => param === 'article');
-
+		let path = id.split("?");
+		let getUrlParam = window.location.pathname.split('/');
+		let findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
+		
 		if (getProducts === undefined) {
-			history.replace({
-				pathname: findUrlIndex === undefined ? `${window.location.pathname}/article` : `${window.location.pathname}`,
-				search: `?id=${id}`,
+			history.push({
+				pathname: findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
+				search: `${path[1]}`
 			});
 		} else if (url) {
 			window.location.assign(url);
@@ -311,7 +312,7 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 							<li
 								key={`Content_${index}`}
 								onClick={() => {
-									redirectItemDetails(item.Results.DocId, null) ;
+									redirectItemDetails(item.Results.Document.url[0], item.Url) ;
 									console.log('item =====>', item)
 									TrackingEvent.track('autocompleteclick', {
 										keyword: downshift.inputValue,
