@@ -20,7 +20,7 @@ function RecentSearches() {
 
 	// NOTE: If user search with the new keyword it should update the dictionary
 	useEffect(() => {
-		setRecentSearch(getParsedObject(cookie));
+		setRecentSearch(parseSearchDict(getParsedObject(cookie, siteDirectory), siteDirectory));
 	}, [pendingSearch.Keyword]);
 
 	function parseSearchDict(dict, siteDirectory) {
