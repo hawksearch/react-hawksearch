@@ -7,7 +7,6 @@ function ItemsPerPage() {
 		store: { searchResults, pendingSearch },
 		actor,
 	} = useHawksearch();
-	console.log('searchResults -=========>', searchResults)
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		actor.setSearch({

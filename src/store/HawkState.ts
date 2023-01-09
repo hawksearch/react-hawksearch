@@ -294,7 +294,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			setStore({ negativeFacetValuePrefix })
 		}
 		const IsAutocompleteRecommendationEnabled: boolean = landingPageResults?.IsAutocompleteRecommendationEnabled;
-		if(IsAutocompleteRecommendationEnabled !== undefined){
+		if (IsAutocompleteRecommendationEnabled !== undefined) {
 			setStore({ IsAutocompleteRecommendationEnabled })
 		}
 	}
@@ -340,8 +340,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			};
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
-			} else {
-				setRecentSearch(pendingSearch.Keyword);
+			} else if (pendingSearch.Keyword !== undefined) {
+				setRecentSearch(config.siteDirectory, pendingSearch.Keyword);
 			}
 			return newState;
 		});
@@ -472,20 +472,20 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 
 	function handleSelectionOfNestedFacet(facet: Facet | string, facetValue: Value | string, facetSelections: FacetSelections | []) {
 
-		const selectedFacetValues = Object(facet).Values;		
+		const values: Value[] = Object(facet).Values;
 
 		if (facet) {
-			function children(selectedFacetValues) {
-				selectedFacetValues.forEach((values) => {
-					if (values.Children.length > 0) {
-						var findSelectedValue = values.Children.find(findChild => findChild.Value === Object(facetValue).Value)
+			function children(selectedFacetValues: Value[]) {
+				selectedFacetValues.forEach((value) => {
+					if (value.Children.length > 0) {
+						const findSelectedValue = value.Children.find(findChild => findChild.Value === Object(facetValue).Value)
 						if (findSelectedValue === undefined) {
-							children(values.Children)
+							children(value.Children)
 						} else {
 							const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 							facetSelections[facetField].forEach(element => {
-								var findIndex = facetSelections[facetField].indexOf(element)
-								var parentInChildren = values.Children.find(findChild => findChild.Value === element)
+								const findIndex = facetSelections[facetField].indexOf(element)
+								const parentInChildren = value.Children.find(findChild => findChild.Value === element)
 								if (parentInChildren === undefined) {
 									facetSelections[facetField]?.splice(findIndex)
 								}
@@ -499,7 +499,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				)
 			}
 
-			children(selectedFacetValues)
+			children(values)
 		}
 	}
 

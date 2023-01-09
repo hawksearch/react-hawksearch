@@ -95,7 +95,6 @@ export const getParsedObject = (facetC: string | null, siteDirectory?: string) =
 };
 
 function getStringifyObject(obj) {
-	let str = '';
 	const items: string[] = [];
 	Object.keys(obj).forEach((element) => {
 		if (typeof obj[element] === 'object') {
@@ -111,10 +110,7 @@ function getStringifyObject(obj) {
 	return items.join(',');
 }
 
-export const setRecentSearch = val => {
-	const {
-		config: { siteDirectory },
-	} = useHawkConfig();
+export const setRecentSearch = (siteDirectory: string | undefined, val: string) => {
 	const cookie = getCookie(FacetType.RecentSearches);
 	if (!cookie) {
 		if (siteDirectory) {
@@ -154,10 +150,10 @@ export const deleteCookie = name => {
 	document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
 
-export const toBinary = (string) => {
-	const codeUnits = new Uint16Array(string.length);
+export const toBinary = (str: string) => {
+	const codeUnits = new Uint16Array(str.length);
 	for (let i = 0; i < codeUnits.length; i++) {
-		codeUnits[i] = string.charCodeAt(i);
+		codeUnits[i] = str.charCodeAt(i);
 	}
 	const charCodes = new Uint8Array(codeUnits.buffer);
 	let result = '';
@@ -174,17 +170,17 @@ export const fromBinary = (binary) => {
 	}
 	const charCodes = new Uint16Array(bytes.buffer);
 	let result = '';
-	for (let i = 0; i < charCodes.length; i++) {
-		result += String.fromCharCode(charCodes[i]);
-	}
+	charCodes.forEach((charCode) => {
+		result += String.fromCharCode(charCode);
+	})
 	return result;
 }
 
 export const isBase64 = (str) => {
-    if (str ==='' || str.trim() ===''){ return false; }
-    try {
-        return btoa(atob(str)) == str;
-    } catch (err) {
-        return false;
-    }
+	if (str === '' || str.trim() === '') { return false; }
+	try {
+		return btoa(atob(str)) === str;
+	} catch (err) {
+		return false;
+	}
 }
