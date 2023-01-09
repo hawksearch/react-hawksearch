@@ -7284,10 +7284,7 @@ function getStringifyObject(obj) {
   return items.join(',');
 }
 
-var setRecentSearch = function setRecentSearch(val) {
-  var _useHawkConfig = useHawkConfig(),
-      siteDirectory = _useHawkConfig.config.siteDirectory;
-
+var setRecentSearch = function setRecentSearch(siteDirectory, val) {
   var cookie = getCookie(FacetType.RecentSearches);
 
   if (!cookie) {
@@ -7736,8 +7733,8 @@ function useHawkState(initialSearch) {
 
       if (newState.pendingSearch.Keyword === '') {
         newState.pendingSearch.Keyword = undefined;
-      } else {
-        setRecentSearch(pendingSearch.Keyword);
+      } else if (pendingSearch.Keyword !== undefined) {
+        setRecentSearch(config.siteDirectory, pendingSearch.Keyword);
       }
 
       return newState;
@@ -7866,23 +7863,23 @@ function useHawkState(initialSearch) {
   }
 
   function handleSelectionOfNestedFacet(facet, facetValue, facetSelections) {
-    var selectedFacetValues = Object(facet).Values;
+    var values = Object(facet).Values;
 
     if (facet) {
       var children = function children(selectedFacetValues) {
-        selectedFacetValues.forEach(function (values) {
-          if (values.Children.length > 0) {
-            var findSelectedValue = values.Children.find(function (findChild) {
+        selectedFacetValues.forEach(function (value) {
+          if (value.Children.length > 0) {
+            var findSelectedValue = value.Children.find(function (findChild) {
               return findChild.Value === Object(facetValue).Value;
             });
 
             if (findSelectedValue === undefined) {
-              children(values.Children);
+              children(value.Children);
             } else {
               var facetField = typeof facet === 'string' ? facet : facet.selectionField;
               facetSelections[facetField].forEach(function (element) {
                 var findIndex = facetSelections[facetField].indexOf(element);
-                var parentInChildren = values.Children.find(function (findChild) {
+                var parentInChildren = value.Children.find(function (findChild) {
                   return findChild.Value === element;
                 });
 
@@ -7898,7 +7895,7 @@ function useHawkState(initialSearch) {
         });
       };
 
-      children(selectedFacetValues);
+      children(values);
     }
   }
 
@@ -20500,8 +20497,6 @@ function ItemsPerPage() {
       pendingSearch = _useHawksearch$store.pendingSearch,
       actor = _useHawksearch.actor;
 
-  console.log('searchResults -=========>', searchResults);
-
   function onChange(event) {
     actor.setSearch({
       MaxPerPage: Number(event.currentTarget.value),
@@ -20572,9 +20567,9 @@ function PlaceHolderSVG(props) {
     focusable: "false",
     "aria-hidden": "true"
   }, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("path", {
-    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6\r C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3\r c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2\r c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0\r l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
+    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6 C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3 c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2 c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0 l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
   }), /*#__PURE__*/createElement("path", {
-    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96\r c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
+    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96 c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
   }))));
 }
 
@@ -32072,7 +32067,7 @@ function CustomPageHtml() {
   var _useHawksearch = useHawksearch(),
       searchResults = _useHawksearch.store.searchResults;
 
-  if (searchResults && searchResults.CustomHtml != undefined) {
+  if (searchResults && searchResults.CustomHtml !== undefined) {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "hawkpagecustomhtml",
       dangerouslySetInnerHTML: {

@@ -170,9 +170,9 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		const getProducts = products.find(productItem => productItem.Results.DocId === id);
 		// const getContent = content.find(productItem => productItem.Results.DocId === id);
 		// const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-		let path = id.split("?");
-		let getUrlParam = window.location.pathname.split('/');
-		let findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
+		const path = id.split("?");
+		const getUrlParam = window.location.pathname.split('/');
+		const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
 		
 		if (getProducts === undefined) {
 			history.push({
