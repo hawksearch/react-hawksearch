@@ -1,4 +1,4 @@
-import React,{useEffect, useState}  from 'react';
+import React, { useEffect, useState } from 'react';
 import { DownshiftProps, ControllerStateAndHelpers } from 'downshift';
 import { ResponseProps } from '../../../models/Autocomplete/Response';
 import { Suggestion } from '../../../models/Autocomplete/Suggestion';
@@ -9,7 +9,6 @@ import { useHawksearch } from 'components/StoreProvider';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { history } from '../../../util/History';
 import HawkClient from 'net/HawkClient';
-
 
 export interface CustomSuggestionListProps {
 	downshift: any;
@@ -110,7 +109,7 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		DYMProductHeading,
 	} = searchResults;
 
-	const { actor, store} = useHawksearch();
+	const { actor, store } = useHawksearch();
 	const [hoverKeyword, setHoverKeyword] = useState('');
 	const [searchedKeyword, setSearchedKeyword] = useState('');
 	const [hoverProducts, setHoverProducts] = useState([] as Array<{ Value: string; Url: string }>);
@@ -118,14 +117,13 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 	const { getItemProps, getMenuProps, highlightedIndex, getInputProps } = downshift;
 	const isAtleastOneExist = getAtLeastOneExist(popular, categories, products, content);
 	const isSuggestionChangeEnabled = config.isSuggestionChangeEnabled;
-	
+
 	useEffect(() => {
 		const cts = axios.CancelToken.source();
 		if (hoverKeyword) {
 			doAutocomplete(hoverKeyword, cts.token);
-			
 		}
-		
+
 		return () => {
 			cts.cancel();
 		};
@@ -170,19 +168,19 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		const getProducts = products.find(productItem => productItem.Results.DocId === id);
 		// const getContent = content.find(productItem => productItem.Results.DocId === id);
 		// const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-		const path = id.split("?");
+		const path = id.split('?');
 		const getUrlParam = window.location.pathname.split('/');
 		const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
-		
+
 		if (getProducts === undefined) {
 			history.push({
-				pathname: findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
-				search: `${path[1]}`
+				pathname:
+					findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
+				search: `${path[1]}`,
 			});
 		} else if (url) {
 			window.location.assign(url);
 		}
-
 	}
 
 	function redirectDYMitems(
@@ -190,7 +188,9 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		typeId: number | null,
 		item: { Value: string; Url: string; RawValue: string } | {}
 	) {
-		const getDYMproductSearch = dymProductSearch ?  dymProductSearch.find(dymProductItem => dymProductItem.Value === item) : undefined;
+		const getDYMproductSearch = dymProductSearch
+			? dymProductSearch.find(dymProductItem => dymProductItem.Value === item)
+			: undefined;
 		getDYMproductSearch === undefined
 			? searchProduct(searchKeyword, typeId, getDYMproductSearch)
 			: window.location.assign(getDYMproductSearch.Url);
@@ -200,9 +200,10 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 	function searchProduct(
 		keyword: string,
 		typeId: number | null,
-		item: { Value?: string | undefined; Url?: string; FieldQSValue?: any ; FieldQSName?: string; RawValue?: string } | undefined
+		item:
+			| { Value?: string | undefined; Url?: string; FieldQSValue?: any; FieldQSName?: string; RawValue?: string }
+			| undefined
 	) {
-		
 		TrackingEvent.track('autocompleteclick', {
 			keyword,
 			suggestType: typeId,
@@ -270,7 +271,6 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 									onMouseOver: () => {
 										if (isSuggestionChangeEnabled) {
 											setKeyword(strip_html_tags(item.Value));
-											
 										}
 									},
 								})}
@@ -312,16 +312,15 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 							<li
 								key={`Content_${index}`}
 								onClick={() => {
-									redirectItemDetails(item.Results.Document.url[0], item.Url) ;
-									console.log('item =====>', item)
+									redirectItemDetails(item.Results.Document.url[0], item.Url);
+									console.log('item =====>', item);
 									TrackingEvent.track('autocompleteclick', {
 										keyword: downshift.inputValue,
 										suggestType: SuggestType.TopContentMatches,
 										name: item.Value,
 										url: item.Url,
 									});
-								}
-								}
+								}}
 								// searchProduct(searchedKeyword, SuggestType.TopContentMatches, item);
 								className={
 									highlightedIndex === `Content_${index}`

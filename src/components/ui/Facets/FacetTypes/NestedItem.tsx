@@ -92,7 +92,6 @@ function NestedItem(item: NestedItemProps) {
 	}, [item]);
 
 	function setSelection() {
-		
 		item.onValueSelected(hierarchyValue, false);
 		if (!isExpanded) {
 			setIsExpanded(true);
@@ -160,7 +159,8 @@ function NestedItem(item: NestedItemProps) {
 				<div className="hawk-facet-rail__w-100">
 					<ul className="hawkFacet-group-inside">
 						{hierarchyChildren.map(value => {
-							const selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;							
+							const selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix)
+								.state;
 							const isNegated = selectionState === FacetSelectionState.Negated;
 							const isSelected = selectionState !== FacetSelectionState.NotSelected;
 							return (

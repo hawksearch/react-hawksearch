@@ -23,9 +23,9 @@ function RecentSearches() {
 		setRecentSearch(parseSearchDict(getParsedObject(cookie, siteDirectory), siteDirectory));
 	}, [pendingSearch.Keyword]);
 
-	function parseSearchDict(dict, siteDirectory) {
-		if (siteDirectory) {
-			return dict[siteDirectory] || {};
+	function parseSearchDict(dict, directory: string | undefined) {
+		if (directory) {
+			return dict[directory] || {};
 		}
 		return dict;
 	}

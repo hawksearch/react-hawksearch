@@ -16,7 +16,6 @@ function NestedLink() {
 	} = useFacet();
 
 	function onValueSelected(facetValue: Value, isNegated: boolean) {
-
 		isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
 	}
 

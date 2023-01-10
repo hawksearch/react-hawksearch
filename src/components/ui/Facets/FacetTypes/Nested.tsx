@@ -25,7 +25,8 @@ function Nested() {
 				<ul className="hawk-facet-rail__facet-list">
 					{facetValues.map(value => {
 						// facets can be selected or negated, so explicitly check that the facet is not selected
-						const selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
+						const selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix)
+							.state;
 
 						const isSelected = selectionState !== FacetSelectionState.NotSelected;
 						const isNegated = selectionState === FacetSelectionState.Negated;

@@ -101,8 +101,11 @@ export function parseLocation(location: Location, searchUrl: string): Partial<Re
 	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
 		searchRequest.Keyword = undefined;
 		const pathname = location.pathname;
-		searchRequest.CustomUrl = pathname.split("/").filter(path => path !== searchUrl && path !== "").join("/");
-		searchRequest.CustomUrl = searchRequest.CustomUrl ? "/" + searchRequest.CustomUrl : undefined;
+		searchRequest.CustomUrl = pathname
+			.split('/')
+			.filter(path => path !== searchUrl && path !== '')
+			.join('/');
+		searchRequest.CustomUrl = searchRequest.CustomUrl ? '/' + searchRequest.CustomUrl : undefined;
 	}
 	return searchRequest;
 }

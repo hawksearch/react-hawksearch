@@ -81,4 +81,4 @@ export { default as MessageBox } from 'components/ui/MessageBox/MessageBox';
 export { default as CustomPageHtml } from 'components/ui/CustomPage/CustomPageHtml';
 
 // CustomSuggestionList
-export {default as CustomSuggestionList} from './components/ui/AutoComplete/CustomSuggestionList'
+export { default as CustomSuggestionList } from './components/ui/AutoComplete/CustomSuggestionList';

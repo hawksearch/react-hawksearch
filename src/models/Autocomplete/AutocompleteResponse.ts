@@ -23,19 +23,23 @@ export interface AutocompleteResponse {
 		Url: string;
 	}>;
 
-	Products: Array<{
-		Value: string;
-		Url: string;
-	}> | any;
+	Products:
+		| Array<{
+				Value: string;
+				Url: string;
+		  }>
+		| any;
 
 	/**
 	 * A set of objects for each content item returned. The number returned is configured in the
 	 * Hawksearch Workbench > Keyword Search > Auto-complete > Update Top Content.
 	 */
-	Content: Array<{
-		Value: string;
-		Url: string;
-	}>| any;
+	Content:
+		| Array<{
+				Value: string;
+				Url: string;
+		  }>
+		| any;
 
 	/**
 	 * A set of Value and Url for each popular search term. The definition of Popular can be defined in

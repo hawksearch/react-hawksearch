@@ -30,7 +30,8 @@ function Distance() {
 					<ul className="hawk-facet-rail__facet-list">
 						{facetValues.map(values => {
 							// facets can be selected or negated, so explicitly check that the facet is not selected
-							const selectionState = store.isFacetSelected(facet, values, store.negativeFacetValuePrefix).state;
+							const selectionState = store.isFacetSelected(facet, values, store.negativeFacetValuePrefix)
+								.state;
 							const isSelected = selectionState !== FacetSelectionState.NotSelected;
 							return (
 								<li key={values.Value} className="hawk-facet-rail__facet-list-item">
@@ -59,10 +60,8 @@ function Distance() {
 				{/* {renderer.renderTruncation()} */}
 			</div>
 		);
-
 	}
 	function getScrollHeight(scrollHeight: number) {
-		
 		if (scrollHeight === 0) {
 			return { height: 'inherit' };
 		}

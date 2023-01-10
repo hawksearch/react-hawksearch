@@ -5283,7 +5283,7 @@ var SearchStore = /*#__PURE__*/function () {
           // do not return the selection value for tab facet
           return;
         } else {
-          // for other types of facets, try to find a matching value				
+          // for other types of facets, try to find a matching value
           selectionValues.forEach(function (selectionValue) {
             var matchingVal = _this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
 
@@ -8341,10 +8341,10 @@ function parseLocation(location, searchUrl) {
   if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
     searchRequest.Keyword = undefined;
     var pathname = location.pathname;
-    searchRequest.CustomUrl = pathname.split("/").filter(function (path) {
-      return path !== searchUrl && path !== "";
-    }).join("/");
-    searchRequest.CustomUrl = searchRequest.CustomUrl ? "/" + searchRequest.CustomUrl : undefined;
+    searchRequest.CustomUrl = pathname.split('/').filter(function (path) {
+      return path !== searchUrl && path !== '';
+    }).join('/');
+    searchRequest.CustomUrl = searchRequest.CustomUrl ? '/' + searchRequest.CustomUrl : undefined;
   }
 
   return searchRequest;
@@ -8523,7 +8523,7 @@ function Hawksearch(props) {
     TrackingEvent$1.setLanguage(props.config.language);
   }
 
-  var searchRequest = parseLocation(location, props.config.siteDirectory ? props.config.siteDirectory : "");
+  var searchRequest = parseLocation(location, props.config.siteDirectory ? props.config.siteDirectory : '');
   return /*#__PURE__*/React__default.createElement(ConfigProvider, {
     config: props.config
   }, /*#__PURE__*/React__default.createElement(StoreProvider, {
@@ -17878,9 +17878,9 @@ function RecentSearches() {
     setRecentSearch(parseSearchDict(getParsedObject(cookie, siteDirectory), siteDirectory));
   }, [pendingSearch.Keyword]);
 
-  function parseSearchDict(dict, siteDirectory) {
-    if (siteDirectory) {
-      return dict[siteDirectory] || {};
+  function parseSearchDict(dict, directory) {
+    if (directory) {
+      return dict[directory] || {};
     }
 
     return dict;
@@ -19824,7 +19824,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25285,7 +25285,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -32271,7 +32270,7 @@ function CustomSuggestionList(_ref2) {
     }); // const getContent = content.find(productItem => productItem.Results.DocId === id);
     // const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
 
-    var path = id.split("?");
+    var path = id.split('?');
     var getUrlParam = window.location.pathname.split('/');
     var findUrlIndex = getUrlParam.find(function (param) {
       return param === path[0].slice(1);

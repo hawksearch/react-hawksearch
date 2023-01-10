@@ -20,8 +20,11 @@ function ItemsPerPage() {
 			<select value={pendingSearch.MaxPerPage} onChange={onChange}>
 				{searchResults ? (
 					searchResults.Pagination.Items.map(paginationItem => (
-						
-						<option key={paginationItem.PageSize} value={paginationItem.PageSize} selected={paginationItem.Selected}>
+						<option
+							key={paginationItem.PageSize}
+							value={paginationItem.PageSize}
+							selected={paginationItem.Selected}
+						>
 							{paginationItem.Label}
 						</option>
 					))

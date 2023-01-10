@@ -1,4 +1,4 @@
-import { toBinary, fromBinary, isBase64 } from "helpers/utils";
+import { toBinary, fromBinary, isBase64 } from 'helpers/utils';
 
 enum E_T {
 	pageLoad = 1,
@@ -354,7 +354,6 @@ class TrackingEvent {
 	}
 
 	private writeAutoCompleteClick(keyword, suggestType, name, url) {
-
 		const pl = {
 			EventType: E_T.autoCompleteClick,
 			EventData: btoa(

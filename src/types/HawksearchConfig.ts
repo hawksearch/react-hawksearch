@@ -149,5 +149,7 @@ export interface HawksearchConfig {
 
 	siteDirectory?: string;
 
-	isSuggestionChangeEnabled: boolean;
+	isSuggestionChangeEnabled?: boolean;
+
+	landingPageExpiry?: string;
 }
