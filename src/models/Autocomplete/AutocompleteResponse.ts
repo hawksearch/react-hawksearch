@@ -21,6 +21,7 @@ export interface AutocompleteResponse {
 	Categories: Array<{
 		Value: string;
 		Url: string;
+		FieldQSValue: string;
 	}>;
 
 	Products: Array<{
