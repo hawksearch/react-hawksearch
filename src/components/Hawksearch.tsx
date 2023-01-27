@@ -28,7 +28,7 @@ function Hawksearch(props: HawksearchProps) {
 		TrackingEvent.setLanguage(props.config.language);
 	}
 
-	const searchRequest = parseLocation(location, (props.config.siteDirectory ? props.config.siteDirectory : ""))
+	const searchRequest = parseLocation(location, props.config.siteDirectory ? props.config.siteDirectory : '');
 
 	return (
 		<ConfigProvider config={props.config}>

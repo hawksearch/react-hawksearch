@@ -30,7 +30,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 
 	// Will update the suggested selected keyword in the autocomplete input box
 	useEffect(() => {
-		setInitialInput(decodeURIComponent(pendingSearch.Keyword || ''));		
+		setInitialInput(decodeURIComponent(pendingSearch.Keyword || ''));
 	}, [pendingSearch.Keyword, initialValue, pendingSearch.IgnoreSpellcheck]);
 
 	// Will update the Adjusted keyword in the autocomplete input box
@@ -39,7 +39,7 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 			setInitialInput(decodeURIComponent(searchResults.AdjustedKeyword));
 		}
 	}, [searchResults]);
-	
+
 	/** Called when the internal state of downshift changes - we're handling a couple custom behaviors here */
 	function handleStateChange(
 		state: DownshiftState<Suggestion>,
@@ -102,7 +102,8 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 			>
 				{(options: ControllerStateAndHelpers<Suggestion>) => {
 					const { isOpen, inputValue, getInputProps, openMenu, closeMenu } = options;
-					var showSuggestions = isOpen && (inputValue && inputValue.length > 0 || IsAutocompleteRecommendationEnabled);
+					const showSuggestions =
+						isOpen && ((inputValue && inputValue.length > 0) || IsAutocompleteRecommendationEnabled);
 
 					return (
 						<div className="hawk__searchBox__searchInput" aria-labelledby="autocomplete-search-box">
@@ -122,14 +123,13 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 
 									// when the input is focused again, reopen the downshift menu
 									onFocus: () => {
-										if(inputValue && inputValue.length > 0){
-											openMenu()
-
-										}else{
-											if(IsAutocompleteRecommendationEnabled === true){
-												openMenu()
-											}else {
-												closeMenu()
+										if (inputValue && inputValue.length > 0) {
+											openMenu();
+										} else {
+											if (IsAutocompleteRecommendationEnabled === true) {
+												openMenu();
+											} else {
+												closeMenu();
 											}
 										}
 									},
@@ -139,7 +139,6 @@ function SearchBoxBase({ initialValue, onSubmit, onViewMatches, SuggestionList }
 										// if(event.target.value.length > 0){
 										// 	openMenu();
 										// }
-
 									},
 
 									placeholder: t('Enter a search term'),

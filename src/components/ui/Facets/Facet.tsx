@@ -7,7 +7,6 @@ import MinusSVG from 'components/svg/MinusSVG';
 import QuestionmarkSVG from 'components/svg/QuestionmarkSVG';
 import { useHawkConfig } from 'components/ConfigProvider';
 
-
 const FacetContext = React.createContext({} as FacetContextValue);
 
 import { useTranslation } from 'react-i18next';
@@ -97,7 +96,6 @@ function Facet({ facet, children }: FacetProps) {
 	const [isCollapsed, setCollapsed] = useState(getInitialCollapsibleState(facet, cookies));
 	const { t, i18n } = useTranslation();
 	const { config } = useHawkConfig();
-	
 
 	function selectFacet(facetValue: Value | string): void {
 		setFilter('');
@@ -109,11 +107,17 @@ function Facet({ facet, children }: FacetProps) {
 		searchActor.setFacetValues(facet, values);
 	}
 
-	 function negateFacet(facetValue: Value | string): void {
-		setFilter('');		
-		searchActor.toggleFacetValue(facet, facetValue, /* negate */ true, {
-			ClientGuid: config.clientGuid,
-		}, store.negativeFacetValuePrefix);
+	function negateFacet(facetValue: Value | string): void {
+		setFilter('');
+		searchActor.toggleFacetValue(
+			facet,
+			facetValue,
+			/* negate */ true,
+			{
+				ClientGuid: config.clientGuid,
+			},
+			store.negativeFacetValuePrefix
+		);
 	}
 
 	function renderTruncation() {

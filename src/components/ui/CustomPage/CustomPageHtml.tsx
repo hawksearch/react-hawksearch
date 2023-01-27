@@ -1,17 +1,15 @@
-import React from "react";
+import React from 'react';
 import { useHawksearch } from 'components/StoreProvider';
 
 function CustomPageHtml() {
+	const {
+		store: { searchResults },
+	} = useHawksearch();
 
-    const { store: { searchResults } } = useHawksearch();
-
-    if (searchResults && searchResults.CustomHtml != undefined) {
-        return (
-            <div className="hawkpagecustomhtml" dangerouslySetInnerHTML={{ __html: searchResults?.CustomHtml }} />
-        );
-    } else {
-
-        return <></>
-    }
+	if (searchResults && searchResults.CustomHtml !== undefined) {
+		return <div className="hawkpagecustomhtml" dangerouslySetInnerHTML={{ __html: searchResults?.CustomHtml }} />;
+	} else {
+		return <></>;
+	}
 }
 export default CustomPageHtml;

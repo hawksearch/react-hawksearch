@@ -95,26 +95,22 @@ export const getParsedObject = (facetC: string | null, siteDirectory?: string) =
 };
 
 function getStringifyObject(obj) {
-	let str = '';
 	const items: string[] = [];
-	Object.keys(obj).forEach((element) => {
+	Object.keys(obj).forEach(element => {
 		if (typeof obj[element] === 'object') {
 			Object.keys(obj[element]).forEach((key, index) => {
-				const item = element + '|' + key + '|' + obj[element][key]
-				items.push(item)
-			})
+				const item = element + '|' + key + '|' + obj[element][key];
+				items.push(item);
+			});
 		} else {
-			const item = element + '|' + obj[element]
-			items.push(item)
+			const item = element + '|' + obj[element];
+			items.push(item);
 		}
 	});
 	return items.join(',');
 }
 
-export const setRecentSearch = val => {
-	const {
-		config: { siteDirectory },
-	} = useHawkConfig();
+export const setRecentSearch = (siteDirectory: string | undefined, val: string) => {
 	const cookie = getCookie(FacetType.RecentSearches);
 	if (!cookie) {
 		if (siteDirectory) {
@@ -126,7 +122,7 @@ export const setRecentSearch = val => {
 	}
 	let dict = getParsedObject(cookie, siteDirectory);
 	if (siteDirectory) {
-		dict[siteDirectory] = dict[siteDirectory] && typeof dict[siteDirectory] === 'object' ? dict[siteDirectory] : {}
+		dict[siteDirectory] = dict[siteDirectory] && typeof dict[siteDirectory] === 'object' ? dict[siteDirectory] : {};
 		if (dict[siteDirectory][val]) {
 			dict[siteDirectory][val] = Number(dict[siteDirectory][val]) + 1;
 		} else {
@@ -154,10 +150,10 @@ export const deleteCookie = name => {
 	document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
 
-export const toBinary = (string) => {
-	const codeUnits = new Uint16Array(string.length);
+export const toBinary = (str: string) => {
+	const codeUnits = new Uint16Array(str.length);
 	for (let i = 0; i < codeUnits.length; i++) {
-		codeUnits[i] = string.charCodeAt(i);
+		codeUnits[i] = str.charCodeAt(i);
 	}
 	const charCodes = new Uint8Array(codeUnits.buffer);
 	let result = '';
@@ -165,26 +161,28 @@ export const toBinary = (string) => {
 		result += String.fromCharCode(charCodes[i]);
 	}
 	return result;
-}
+};
 
-export const fromBinary = (binary) => {
+export const fromBinary = binary => {
 	const bytes = new Uint8Array(binary.length);
 	for (let i = 0; i < bytes.length; i++) {
 		bytes[i] = binary.charCodeAt(i);
 	}
 	const charCodes = new Uint16Array(bytes.buffer);
 	let result = '';
-	for (let i = 0; i < charCodes.length; i++) {
-		result += String.fromCharCode(charCodes[i]);
-	}
+	charCodes.forEach(charCode => {
+		result += String.fromCharCode(charCode);
+	});
 	return result;
-}
+};
 
-export const isBase64 = (str) => {
-    if (str ==='' || str.trim() ===''){ return false; }
-    try {
-        return btoa(atob(str)) == str;
-    } catch (err) {
-        return false;
-    }
-}
+export const isBase64 = str => {
+	if (str === '' || str.trim() === '') {
+		return false;
+	}
+	try {
+		return btoa(atob(str)) === str;
+	} catch (err) {
+		return false;
+	}
+};

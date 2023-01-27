@@ -7,7 +7,6 @@ function ItemsPerPage() {
 		store: { searchResults, pendingSearch },
 		actor,
 	} = useHawksearch();
-	console.log('searchResults -=========>', searchResults)
 
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		actor.setSearch({
@@ -21,8 +20,11 @@ function ItemsPerPage() {
 			<select value={pendingSearch.MaxPerPage} onChange={onChange}>
 				{searchResults ? (
 					searchResults.Pagination.Items.map(paginationItem => (
-						
-						<option key={paginationItem.PageSize} value={paginationItem.PageSize} selected={paginationItem.Selected}>
+						<option
+							key={paginationItem.PageSize}
+							value={paginationItem.PageSize}
+							selected={paginationItem.Selected}
+						>
 							{paginationItem.Label}
 						</option>
 					))

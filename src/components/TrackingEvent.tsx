@@ -1,4 +1,5 @@
-import { toBinary, fromBinary, isBase64 } from "helpers/utils";
+import { Console } from 'console';
+import { toBinary, fromBinary, isBase64 } from 'helpers/utils';
 
 enum E_T {
 	pageLoad = 1,
@@ -55,8 +56,8 @@ const TrackEventNameMapping = {
 	AutocompleteClick: 'autocompleteclick',
 	Add2CartMultiple: 'add2cartmultiple',
 	Add2Cart: 'add2cart',
-	AutoCompleteItemClick: 'autoCompleteItemClick',
-	AutoCompleteCategoryClick: 'autoCompleteCategoryClick'
+	AutoCompleteItemClick: 'autocompleteitemclick',
+	AutoCompleteCategoryClick: 'autocompletecategoryclick'
 };
 
 const AvailableEvents = [
@@ -68,8 +69,8 @@ const AvailableEvents = [
 	'bannerimpression',
 	'sale',
 	'add2cart',
-	'autoCompleteItemClick',
-	'autoCompleteCategoryClick'
+	'autocompleteitemclick',
+	'autocompletecategoryclick'
 ];
 
 class TrackingEvent {
@@ -363,7 +364,6 @@ class TrackingEvent {
 	}
 
 	private writeAutoCompleteClick(keyword, suggestType, name, url) {
-		
 		const pl = {
 			EventType: E_T.autoCompleteClick,
 			EventData: btoa(
@@ -389,7 +389,6 @@ class TrackingEvent {
 				})
 			),
 		};
-		console.log('pl ==>', pl);
 		this.mr(pl);
 	}
 
@@ -447,7 +446,7 @@ class TrackingEvent {
 		if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
 			return;
 		}
-
+		
 		switch (eventName.toLowerCase()) {
 			case 'pageload':
 				// HawkSearch.Context.add("uniqueid", "123456789");
@@ -483,9 +482,9 @@ class TrackingEvent {
 			case 'autocompleteclick':
 				// HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
 				return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url); // CHANGED
-			case 'autoCompleteItemClick':
+			case 'autocompleteitemclick':
 				return this.writeAutoCompleteItemClick(args.itemId, args.url);
-			case 'autoCompleteCategoryClick':
+			case 'autocompletecategoryclick':				
 				return this.writeAutoCompleteCategoryClick(args.field, args.value, args.url);
 		}
 	}

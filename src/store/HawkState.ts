@@ -56,7 +56,13 @@ export interface SearchActor {
 	 * @param facetValue The facet value being selected.
 	 * @param negate  Whether or not this selection is considered a negation.
 	 */
-	toggleFacetValue(facet: Facet | string, facetValue: Value | string, negate?: boolean, request?: ClientIdRequest, symbolForNegate?: string): void;
+	toggleFacetValue(
+		facet: Facet | string,
+		facetValue: Value | string,
+		negate?: boolean,
+		request?: ClientIdRequest,
+		symbolForNegate?: string
+	): void;
 
 	setFacetValues(facet: Facet | string, facetValues: Value[] | string[]): void;
 
@@ -289,13 +295,15 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		if (isLandingPageExpired !== undefined) {
 			setStore({ isLandingPageExpired });
 		}
-		const negativeFacetValuePrefix: string = landingPageResults?.NegativeFacetValuePrefix ? landingPageResults.NegativeFacetValuePrefix : '-';
+		const negativeFacetValuePrefix: string = landingPageResults?.NegativeFacetValuePrefix
+			? landingPageResults.NegativeFacetValuePrefix
+			: '-';
 		if (negativeFacetValuePrefix !== undefined) {
-			setStore({ negativeFacetValuePrefix })
+			setStore({ negativeFacetValuePrefix });
 		}
 		const IsAutocompleteRecommendationEnabled: boolean = landingPageResults?.IsAutocompleteRecommendationEnabled;
-		if(IsAutocompleteRecommendationEnabled !== undefined){
-			setStore({ IsAutocompleteRecommendationEnabled })
+		if (IsAutocompleteRecommendationEnabled !== undefined) {
+			setStore({ IsAutocompleteRecommendationEnabled });
 		}
 	}
 
@@ -340,8 +348,8 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			};
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
-			} else {
-				setRecentSearch(pendingSearch.Keyword);
+			} else if (pendingSearch.Keyword !== undefined) {
+				setRecentSearch(config.siteDirectory, pendingSearch.Keyword);
 			}
 			return newState;
 		});
@@ -379,8 +387,13 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 	 * @param facetValue The facet value being selected.
 	 * @param negate  Whether or not this selection is considered a negation.
 	 */
-	function toggleFacetValue(facet: Facet | string, facetValue: Value | string, negate?: boolean, request?: ClientIdRequest, symbolForNegate?: string): void {
-
+	function toggleFacetValue(
+		facet: Facet | string,
+		facetValue: Value | string,
+		negate?: boolean,
+		request?: ClientIdRequest,
+		symbolForNegate?: string
+	): void {
 		if (negate === undefined) {
 			negate = false;
 		}
@@ -445,20 +458,16 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			}
 		} else {
 			if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
-
 				if (Object(facetValue)?.Children?.length > 0) {
-					facetSelections[facetField]?.splice(0)
+					facetSelections[facetField]?.splice(0);
 					facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
 				} else {
 					// not selected, so we want to select it
-					handleSelectionOfNestedFacet(facet, facetValue, facetSelections)
+					handleSelectionOfNestedFacet(facet, facetValue, facetSelections);
 					facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
 				}
-
 			} else {
-
 				facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
-
 			}
 		}
 
@@ -470,36 +479,39 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
 	}
 
-	function handleSelectionOfNestedFacet(facet: Facet | string, facetValue: Value | string, facetSelections: FacetSelections | []) {
-
-		const selectedFacetValues = Object(facet).Values;		
+	function handleSelectionOfNestedFacet(
+		facet: Facet | string,
+		facetValue: Value | string,
+		facetSelections: FacetSelections | []
+	) {
+		const values: Value[] = Object(facet).Values;
 
 		if (facet) {
-			function children(selectedFacetValues) {
-				selectedFacetValues.forEach((values) => {
-					if (values.Children.length > 0) {
-						var findSelectedValue = values.Children.find(findChild => findChild.Value === Object(facetValue).Value)
+			function children(selectedFacetValues: Value[]) {
+				selectedFacetValues.forEach(value => {
+					if (value.Children.length > 0) {
+						const findSelectedValue = value.Children.find(
+							findChild => findChild.Value === Object(facetValue).Value
+						);
 						if (findSelectedValue === undefined) {
-							children(values.Children)
+							children(value.Children);
 						} else {
 							const facetField = typeof facet === 'string' ? facet : facet.selectionField;
 							facetSelections[facetField].forEach(element => {
-								var findIndex = facetSelections[facetField].indexOf(element)
-								var parentInChildren = values.Children.find(findChild => findChild.Value === element)
+								const findIndex = facetSelections[facetField].indexOf(element);
+								const parentInChildren = value.Children.find(findChild => findChild.Value === element);
 								if (parentInChildren === undefined) {
-									facetSelections[facetField]?.splice(findIndex)
+									facetSelections[facetField]?.splice(findIndex);
 								}
 							});
 
 							return;
 						}
-
 					}
-				}
-				)
+				});
 			}
 
-			children(selectedFacetValues)
+			children(values);
 		}
 	}
 

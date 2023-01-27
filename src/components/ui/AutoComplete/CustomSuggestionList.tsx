@@ -1,4 +1,4 @@
-import React,{useEffect, useState}  from 'react';
+import React, { useEffect, useState } from 'react';
 import { DownshiftProps, ControllerStateAndHelpers } from 'downshift';
 import { ResponseProps } from '../../../models/Autocomplete/Response';
 import { Suggestion } from '../../../models/Autocomplete/Suggestion';
@@ -9,7 +9,6 @@ import { useHawksearch } from 'components/StoreProvider';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { history } from '../../../util/History';
 import HawkClient from 'net/HawkClient';
-
 
 export interface CustomSuggestionListProps {
 	downshift: any;
@@ -66,10 +65,13 @@ function ProductsComponent({
 								index: `Product_${index}`,
 								key: `Product_${index}`,
 								onClick: () => {
-									TrackingEvent.track('autoCompleteItemClick', {
-										itemId: item.Results.DocId,
-										url: item.Url
-									})
+									if(item.IsRecommended){
+										TrackingEvent.track('autocompleteitemclick', {
+											itemId: item.Results.DocId,
+											url: item.Url
+										})
+									}
+								
 									TrackingEvent.track('autocompleteclick', {
 										keyword: downshift.inputValue,
 										suggestType: SuggestType.TopProductMatches,
@@ -77,7 +79,7 @@ function ProductsComponent({
 										url: item.Url,
 									});
 
-									// redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+									redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
 								},
 							})}
 						>
@@ -116,7 +118,7 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		DYMProductHeading,
 	} = searchResults;
 
-	const { actor, store} = useHawksearch();
+	const { actor, store } = useHawksearch();
 	const [hoverKeyword, setHoverKeyword] = useState('');
 	const [searchedKeyword, setSearchedKeyword] = useState('');
 	const [hoverProducts, setHoverProducts] = useState([] as Array<{ Value: string; Url: string }>);
@@ -124,14 +126,13 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 	const { getItemProps, getMenuProps, highlightedIndex, getInputProps } = downshift;
 	const isAtleastOneExist = getAtLeastOneExist(popular, categories, products, content);
 	const isSuggestionChangeEnabled = config.isSuggestionChangeEnabled;
-	
+
 	useEffect(() => {
 		const cts = axios.CancelToken.source();
 		if (hoverKeyword) {
 			doAutocomplete(hoverKeyword, cts.token);
-			
 		}
-		
+
 		return () => {
 			cts.cancel();
 		};
@@ -189,7 +190,6 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		} else if (url) {
 			window.location.assign(url);
 		}
-
 	}
 
 	function redirectDYMitems(
@@ -197,7 +197,9 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 		typeId: number | null,
 		item: { Value: string; Url: string; RawValue: string } | {}
 	) {
-		const getDYMproductSearch = dymProductSearch ?  dymProductSearch.find(dymProductItem => dymProductItem.Value === item) : undefined;
+		const getDYMproductSearch = dymProductSearch
+			? dymProductSearch.find(dymProductItem => dymProductItem.Value === item)
+			: undefined;
 		getDYMproductSearch === undefined
 			? searchProduct(searchKeyword, typeId, getDYMproductSearch)
 			: window.location.assign(getDYMproductSearch.Url); 
@@ -207,9 +209,10 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 	function searchProduct(
 		keyword: string,
 		typeId: number | null,
-		item: { Value?: string | undefined; Url?: string; FieldQSValue?: any ; FieldQSName?: string; RawValue?: string } | undefined
+		item:
+			| { Value?: string | undefined; Url?: string; FieldQSValue?: any; FieldQSName?: string; RawValue?: string }
+			| undefined
 	) {
-		
 		TrackingEvent.track('autocompleteclick', {
 			keyword,
 			suggestType: typeId,
@@ -273,18 +276,19 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 										: 'autosuggest-menu__item'
 								}
 								onClick={() => {searchProduct(searchedKeyword, SuggestType.TopCategories, item);
-									TrackingEvent.track('autoCompleteCategoryClick', {
-										field: item.FieldQSValue,
-										value: item.Value,
-										url: item.Url
-									})
+									if(item.IsRecommended === true){
+										TrackingEvent.track('autocompletecategoryclick', {
+											field: item.FieldQSValue,
+											value: item.Value,
+											url: item.Url
+										})
+									}
 								}
 								}
 								{...getInputProps({
 									onMouseOver: () => {
 										if (isSuggestionChangeEnabled) {
 											setKeyword(strip_html_tags(item.Value));
-											
 										}
 									},
 								})}
@@ -333,8 +337,7 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 										name: item.Value,
 										url: item.Url,
 									});
-								}
-								}
+								}}
 								// searchProduct(searchedKeyword, SuggestType.TopContentMatches, item);
 								className={
 									highlightedIndex === `Content_${index}`

@@ -18,7 +18,6 @@ function FacetRail() {
 		});
 	}, []);
 
-	
 	return (
 		<div className="hawk-facet-rail">
 			<div

@@ -5283,7 +5283,7 @@ var SearchStore = /*#__PURE__*/function () {
           // do not return the selection value for tab facet
           return;
         } else {
-          // for other types of facets, try to find a matching value				
+          // for other types of facets, try to find a matching value
           selectionValues.forEach(function (selectionValue) {
             var matchingVal = _this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
 
@@ -6737,10 +6737,10 @@ var TrackEventNameMapping = {
   AutocompleteClick: 'autocompleteclick',
   Add2CartMultiple: 'add2cartmultiple',
   Add2Cart: 'add2cart',
-  AutoCompleteItemClick: 'autoCompleteItemClick',
-  AutoCompleteCategoryClick: 'autoCompleteCategoryClick'
+  AutoCompleteItemClick: 'autocompleteitemclick',
+  AutoCompleteCategoryClick: 'autocompletecategoryclick'
 };
-var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart', 'autoCompleteItemClick', 'autoCompleteCategoryClick'];
+var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart', 'autocompleteitemclick', 'autocompletecategoryclick'];
 
 var TrackingEvent = /*#__PURE__*/function () {
   /**
@@ -7064,7 +7064,6 @@ var TrackingEvent = /*#__PURE__*/function () {
           Url: url
         }))
       };
-      console.log('pl ==>', pl);
       this.mr(pl);
     }
   }, {
@@ -7192,10 +7191,10 @@ var TrackingEvent = /*#__PURE__*/function () {
           return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
         // CHANGED
 
-        case 'autoCompleteItemClick':
+        case 'autocompleteitemclick':
           return this.writeAutoCompleteItemClick(args.itemId, args.url);
 
-        case 'autoCompleteCategoryClick':
+        case 'autocompletecategoryclick':
           return this.writeAutoCompleteCategoryClick(args.field, args.value, args.url);
       }
     }
@@ -7342,10 +7341,7 @@ function getStringifyObject(obj) {
   return items.join(',');
 }
 
-var setRecentSearch = function setRecentSearch(val) {
-  var _useHawkConfig = useHawkConfig(),
-      siteDirectory = _useHawkConfig.config.siteDirectory;
-
+var setRecentSearch = function setRecentSearch(siteDirectory, val) {
   var cookie = getCookie(FacetType.RecentSearches);
 
   if (!cookie) {
@@ -7794,8 +7790,8 @@ function useHawkState(initialSearch) {
 
       if (newState.pendingSearch.Keyword === '') {
         newState.pendingSearch.Keyword = undefined;
-      } else {
-        setRecentSearch(pendingSearch.Keyword);
+      } else if (pendingSearch.Keyword !== undefined) {
+        setRecentSearch(config.siteDirectory, pendingSearch.Keyword);
       }
 
       return newState;
@@ -7924,23 +7920,23 @@ function useHawkState(initialSearch) {
   }
 
   function handleSelectionOfNestedFacet(facet, facetValue, facetSelections) {
-    var selectedFacetValues = Object(facet).Values;
+    var values = Object(facet).Values;
 
     if (facet) {
       var children = function children(selectedFacetValues) {
-        selectedFacetValues.forEach(function (values) {
-          if (values.Children.length > 0) {
-            var findSelectedValue = values.Children.find(function (findChild) {
+        selectedFacetValues.forEach(function (value) {
+          if (value.Children.length > 0) {
+            var findSelectedValue = value.Children.find(function (findChild) {
               return findChild.Value === Object(facetValue).Value;
             });
 
             if (findSelectedValue === undefined) {
-              children(values.Children);
+              children(value.Children);
             } else {
               var facetField = typeof facet === 'string' ? facet : facet.selectionField;
               facetSelections[facetField].forEach(function (element) {
                 var findIndex = facetSelections[facetField].indexOf(element);
-                var parentInChildren = values.Children.find(function (findChild) {
+                var parentInChildren = value.Children.find(function (findChild) {
                   return findChild.Value === element;
                 });
 
@@ -7956,7 +7952,7 @@ function useHawkState(initialSearch) {
         });
       };
 
-      children(selectedFacetValues);
+      children(values);
     }
   }
 
@@ -8402,10 +8398,10 @@ function parseLocation(location, searchUrl) {
   if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
     searchRequest.Keyword = undefined;
     var pathname = location.pathname;
-    searchRequest.CustomUrl = pathname.split("/").filter(function (path) {
-      return path !== searchUrl && path !== "";
-    }).join("/");
-    searchRequest.CustomUrl = searchRequest.CustomUrl ? "/" + searchRequest.CustomUrl : undefined;
+    searchRequest.CustomUrl = pathname.split('/').filter(function (path) {
+      return path !== searchUrl && path !== '';
+    }).join('/');
+    searchRequest.CustomUrl = searchRequest.CustomUrl ? '/' + searchRequest.CustomUrl : undefined;
   }
 
   return searchRequest;
@@ -8584,7 +8580,7 @@ function Hawksearch(props) {
     TrackingEvent$1.setLanguage(props.config.language);
   }
 
-  var searchRequest = parseLocation(location, props.config.siteDirectory ? props.config.siteDirectory : "");
+  var searchRequest = parseLocation(location, props.config.siteDirectory ? props.config.siteDirectory : '');
   return /*#__PURE__*/React__default.createElement(ConfigProvider, {
     config: props.config
   }, /*#__PURE__*/React__default.createElement(StoreProvider, {
@@ -17918,9 +17914,9 @@ function RecentSearches() {
     setRecentSearch(parseSearchDict(getParsedObject(cookie, siteDirectory), siteDirectory));
   }, [pendingSearch.Keyword]);
 
-  function parseSearchDict(dict, siteDirectory) {
-    if (siteDirectory) {
-      return dict[siteDirectory] || {};
+  function parseSearchDict(dict, directory) {
+    if (directory) {
+      return dict[directory] || {};
     }
 
     return dict;
@@ -20536,8 +20532,6 @@ function ItemsPerPage() {
       searchResults = _useHawksearch$store.searchResults,
       pendingSearch = _useHawksearch$store.pendingSearch,
       actor = _useHawksearch.actor;
-
-  console.log('searchResults -=========>', searchResults);
 
   function onChange(event) {
     actor.setSearch({
@@ -32065,7 +32059,7 @@ function CustomPageHtml() {
   var _useHawksearch = useHawksearch(),
       searchResults = _useHawksearch.store.searchResults;
 
-  if (searchResults && searchResults.CustomHtml != undefined) {
+  if (searchResults && searchResults.CustomHtml !== undefined) {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "hawkpagecustomhtml",
       dangerouslySetInnerHTML: {
@@ -32121,16 +32115,20 @@ function ProductsComponent(_ref) {
       index: "Product_".concat(index),
       key: "Product_".concat(index),
       onClick: function onClick() {
-        TrackingEvent$1.track('autoCompleteItemClick', {
-          itemId: item.Results.DocId,
-          url: item.Url
-        });
+        if (item.IsRecommended) {
+          TrackingEvent$1.track('autocompleteitemclick', {
+            itemId: item.Results.DocId,
+            url: item.Url
+          });
+        }
+
         TrackingEvent$1.track('autocompleteclick', {
           keyword: downshift.inputValue,
           suggestType: SuggestType$1.TopProductMatches,
           name: item.ProductName,
           url: item.Url
-        }); // redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+        });
+        redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
       }
     }), item.Thumb && item.Thumb.Url && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
       className: "hawk-sqItemImage-thumb",
@@ -32345,11 +32343,14 @@ function CustomSuggestionList(_ref2) {
       className: highlightedIndex === "Category_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item',
       onClick: function onClick() {
         searchProduct(searchedKeyword, SuggestType$1.TopCategories, item);
-        TrackingEvent$1.track('autoCompleteCategoryClick', {
-          field: item.FieldQSValue,
-          value: item.Value,
-          url: item.Url
-        });
+
+        if (item.IsRecommended === true) {
+          TrackingEvent$1.track('autocompletecategoryclick', {
+            field: item.FieldQSValue,
+            value: item.Value,
+            url: item.Url
+          });
+        }
       }
     }, getInputProps({
       onMouseOver: function onMouseOver() {

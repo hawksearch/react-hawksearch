@@ -104,5 +104,4 @@ export interface ResponseProps {
 		Url: string;
 		Value: string;
 	}>;
-
 }

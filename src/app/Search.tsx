@@ -35,7 +35,7 @@ export function initializeSearch(config: HawksearchConfig) {
 		typeof config.searchElement === 'string' ? document.getElementById(config.searchElement) : config.searchElement;
 
 	// pull the initial search from location
-	const searchRequest = parseLocation(location);
+	const searchRequest = parseLocation(location, '');
 
 	ReactDOM.render(
 		<Hawksearch config={config} initialSearch={searchRequest}>
