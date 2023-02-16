@@ -8234,40 +8234,6 @@ function useHawksearch() {
   return useContext(HawkContext);
 }
 
-function _objectWithoutPropertiesLoose$1(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose$1(source, excluded);
-  var key, i;
-
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-
-  return target;
-}
-
 function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -8279,11 +8245,22 @@ function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o
 function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 /** Represents parts of the browser query string that are fixed and are always single strings. */
+var DefaultParams;
 
-/**
- * Represents the parts of the browser query string that are dynamic (the selected facets). Facets
- * can have multiple values, so the value of these is always an array of strings.
- */
+(function (DefaultParams) {
+  DefaultParams["keyword"] = "keyword";
+  DefaultParams["sort"] = "sort";
+  DefaultParams["pg"] = "pg";
+  DefaultParams["lp"] = "lp";
+  DefaultParams["PageId"] = "PageId";
+  DefaultParams["lpurl"] = "lpurl";
+  DefaultParams["mpp"] = "mpp";
+  DefaultParams["searchWithin"] = "searchWithin";
+  DefaultParams["is100Coverage"] = "is100Coverage";
+  DefaultParams["indexName"] = "indexName";
+  DefaultParams["ignoreSpellcheck"] = "ignoreSpellcheck";
+  DefaultParams["language"] = "language";
+})(DefaultParams || (DefaultParams = {}));
 var rangeFacets = [];
 function addToRangeFacets(facetName) {
   if (!rangeFacets.includes(facetName)) {
@@ -8299,14 +8276,15 @@ function addToRangeFacets(facetName) {
 
 function parseQueryStringToObject(search) {
   var params = new URLSearchParams(urlStringToParamEntries(search));
-  var parsed = {};
+  var defaul = {};
+  var facet = {};
   params.forEach(function (value, key) {
-    if (key === 'keyword' || key === 'sort' || key === 'pg' || key === 'lp' || key === 'PageId' || key === 'lpurl' || key === 'mpp' || key === 'searchWithin' || key === 'is100Coverage' || key === 'indexName' || key === 'ignoreSpellcheck' || key === 'language') {
+    if (DefaultParams[key]) {
       // `keyword` is special and should never be turned into an array
       if (key === 'keyword') {
-        parsed[key] = value;
+        defaul[key] = value;
       } else {
-        parsed[key] = encodeURIComponent(value);
+        defaul[key] = encodeURIComponent(value);
       }
     } else {
       // everything else should be turned into an array
@@ -8322,12 +8300,22 @@ function parseQueryStringToObject(search) {
 
 
       var multipleValues = value.split(',');
-      parsed[key] = multipleValues.map(function (i) {
-        return decodeURIComponent(i).replace('::', ',');
-      });
+
+      if (DefaultParams[key.split("-")[0]]) {
+        facet[key.split("-")[0]] = multipleValues.map(function (i) {
+          return decodeURIComponent(i).replace('::', ',');
+        });
+      } else {
+        facet[key] = multipleValues.map(function (i) {
+          return decodeURIComponent(i).replace('::', ',');
+        });
+      }
     }
   });
-  return parsed;
+  return {
+    defaul: defaul,
+    facet: facet
+  };
 }
 /**
  * Parses the abosulte url into a `HawkClient` client search request object.
@@ -8355,21 +8343,22 @@ function parseLocation(location, searchUrl) {
  */
 
 function parseSearchQueryString(search) {
-  var queryObj = parseQueryStringToObject(search); // extract out components, including facet selections
+  var _parseQueryStringToOb = parseQueryStringToObject(search),
+      defaul = _parseQueryStringToOb.defaul,
+      facet = _parseQueryStringToOb.facet; // extract out components, including facet selections
 
-  var keyword = queryObj.keyword,
-      sort = queryObj.sort,
-      pg = queryObj.pg,
-      mpp = queryObj.mpp,
-      lp = queryObj.lp,
-      PageId = queryObj.PageId,
-      lpurl = queryObj.lpurl,
-      searchWithin = queryObj.searchWithin,
-      is100Coverage = queryObj.is100Coverage,
-      indexName = queryObj.indexName,
-      ignoreSpellcheck = queryObj.ignoreSpellcheck,
-      facetSelections = _objectWithoutProperties(queryObj, ["keyword", "sort", "pg", "mpp", "lp", "PageId", "lpurl", "searchWithin", "is100Coverage", "indexName", "ignoreSpellcheck"]); // ignore landing pages if keyword is passed
 
+  var keyword = defaul.keyword,
+      sort = defaul.sort,
+      pg = defaul.pg,
+      mpp = defaul.mpp,
+      lp = defaul.lp,
+      PageId = defaul.PageId,
+      lpurl = defaul.lpurl,
+      searchWithin = defaul.searchWithin,
+      is100Coverage = defaul.is100Coverage,
+      indexName = defaul.indexName,
+      ignoreSpellcheck = defaul.ignoreSpellcheck; // ignore landing pages if keyword is passed
 
   var pageId = lp || PageId;
   return {
@@ -8381,7 +8370,7 @@ function parseSearchQueryString(search) {
     CustomUrl: lpurl,
     SearchWithin: searchWithin,
     Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-    FacetSelections: facetSelections,
+    FacetSelections: facet,
     IndexName: indexName,
     IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
   };
@@ -8411,30 +8400,35 @@ function checkIfUrlRefsLandingPage(path, searchUrl) {
 function convertObjectToQueryString(queryObj) {
   var queryStringValues = [];
 
-  for (var _key in queryObj) {
-    if (queryObj.hasOwnProperty(_key)) {
-      if (_key === 'keyword' || _key === 'sort' || _key === 'pg' || _key === 'mpp' || _key === 'searchWithin' || _key === 'is100Coverage' || _key === 'indexName' || _key === 'ignoreSpellcheck' || _key === 'language') {
-        var value = queryObj[_key];
+  for (var key in queryObj["default"]) {
+    if (queryObj["default"].hasOwnProperty(key)) {
+      var value = queryObj["default"][key];
 
-        if (value === undefined || value === null) {
-          // if any of the special keys just aren't defined or are null, don't include them in
-          // the query string
-          continue;
-        }
+      if (value === undefined || value === null) {
+        // if any of the special keys just aren't defined or are null, don't include them in
+        // the query string
+        continue;
+      }
 
-        if (typeof _key !== 'string') {
-          throw new Error("".concat(_key, " must be a string"));
-        } // certain strings are special and are never arrays
+      if (typeof key !== 'string') {
+        throw new Error("".concat(key, " must be a string"));
+      } // certain strings are special and are never arrays
 
 
-        if (_key === 'keyword') {
-          queryStringValues.push(_key + '=' + value);
-        } else {
-          queryStringValues.push(_key + '=' + encodeURIComponent(value));
-        }
+      if (key === 'keyword') {
+        queryStringValues.push(key + '=' + value);
       } else {
-        var values = queryObj[_key]; // handle comma escaping - if any of the values contains a comma, they need to be escaped first
+        queryStringValues.push(key + '=' + encodeURIComponent(value));
+      }
+    }
+  }
 
+  for (var _key in queryObj.facet) {
+    if (queryObj.facet.hasOwnProperty(_key)) {
+      var values = queryObj.facet[_key];
+
+      if (values) {
+        // handle comma escaping - if any of the values contains a comma, they need to be escaped first
         var escapedValues = [];
 
         var _iterator = _createForOfIteratorHelper$2(values),
@@ -8456,7 +8450,11 @@ function convertObjectToQueryString(queryObj) {
           _iterator.f();
         }
 
-        queryStringValues.push(_key + '=' + escapedValues.join(','));
+        if (DefaultParams[_key]) {
+          queryStringValues.push(_key + "-facet" + '=' + escapedValues.join(','));
+        } else {
+          queryStringValues.push(_key + '=' + escapedValues.join(','));
+        }
       }
     }
   }
@@ -8470,18 +8468,20 @@ function convertObjectToQueryString(queryObj) {
 
 
 function getSearchQueryString(searchRequest, store) {
-  var searchQuery = _objectSpread$6({
-    keyword: searchRequest.Keyword,
-    sort: searchRequest.SortBy,
-    pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
-    mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-    is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
-    searchWithin: searchRequest.SearchWithin,
-    indexName: searchRequest.IndexName,
-    language: store && store.language ? store.language : undefined,
-    ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
-  }, searchRequest.FacetSelections);
-
+  var searchQuery = {
+    "default": {
+      keyword: searchRequest.Keyword,
+      sort: searchRequest.SortBy,
+      pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
+      mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
+      is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
+      searchWithin: searchRequest.SearchWithin,
+      indexName: searchRequest.IndexName,
+      language: searchRequest.Language,
+      ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
+    },
+    facet: _objectSpread$6({}, searchRequest.FacetSelections)
+  };
   return convertObjectToQueryString(searchQuery);
 }
 
@@ -19824,7 +19824,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -20821,6 +20821,21 @@ function MerchandisingBanner(_ref) {
   } else {
     return null;
   }
+}
+
+function _objectWithoutPropertiesLoose$1(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
 }
 
 var classnames = createCommonjsModule(function (module) {
@@ -25285,6 +25300,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -31245,7 +31261,7 @@ function LanguageSelector(_ref) {
   function onChange(event) {
     if (facetName) {
       actor.setSearch({
-        FacetSelections: _defineProperty({}, facetName, [event.currentTarget.value])
+        Language: event.currentTarget.value
       });
     }
   }
@@ -31884,7 +31900,7 @@ function QueryStringListener() {
       // change
       doSearch = false;
       history.push({
-        search: getSearchQueryString(store.pendingSearch, store)
+        search: getSearchQueryString(store.pendingSearch)
       });
     }
   }, [store.pendingSearch]); // Extract access token and refresh token from query string on load

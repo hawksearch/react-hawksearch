@@ -123,6 +123,7 @@ export class Request {
 	public isLandingPageExpired?: boolean;
 	public negativeFacetValuePrefix?: string;
 	public IsAutocompleteRecommendationEnabled?: boolean;
+	public Language?: string;
 }
 
 export interface FacetSelections {
