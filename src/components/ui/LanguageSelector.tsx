@@ -27,7 +27,7 @@ function LanguageSelector({ title, languages, facetName }: LanguageSelectorProps
 	function onChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		if (facetName) {
 			actor.setSearch({
-				FacetSelections: { [facetName]: [event.currentTarget.value] },
+				Language: event.currentTarget.value,
 			});
 		}
 	}
