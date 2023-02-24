@@ -1,31 +1,36 @@
-import { Request } from 'models/Search/Request';
+import { FacetSelections, Request } from 'models/Search/Request';
 import { SearchStore } from '../store/Store';
 
 /** Represents parts of the browser query string that are fixed and are always single strings. */
-interface ParsedQueryStringFixed {
-	keyword?: string;
-	sort?: string;
-	pg?: string;
-	lp?: string;
-	PageId?: string;
-	lpurl?: string;
-	mpp?: string;
-	searchWithin?: string;
-	is100Coverage?: string;
-	indexName?: string;
-	ignoreSpellcheck?: string;
-	language?: string;
+
+enum DefaultParams {
+	keyword = "keyword",
+	sort = "sort",
+	pg = "pg",
+	lp = "lp",
+	PageId = "PageId",
+	lpurl = "lpurl",
+	mpp = "mpp",
+	searchWithin = "searchWithin",
+	is100Coverage = "is100Coverage",
+	indexName = "indexName",
+	ignoreSpellcheck = "ignoreSpellcheck",
+	language = "language"
+}
+
+type DefaultParsed = {
+	[key in DefaultParams]?: string
 }
 
 /**
  * Represents the parts of the browser query string that are dynamic (the selected facets). Facets
  * can have multiple values, so the value of these is always an array of strings.
  */
-interface ParsedQueryStringDynamic {
-	[key: string]: string[];
-}
 
-type ParsedQueryString = ParsedQueryStringFixed & ParsedQueryStringDynamic;
+interface Parsed {
+	default: DefaultParsed;
+	facet: FacetSelections;
+};
 
 const rangeFacets: string[] = [];
 
@@ -44,28 +49,16 @@ export function addToRangeFacets(facetName: string) {
 function parseQueryStringToObject(search: string) {
 	const params = new URLSearchParams(urlStringToParamEntries(search));
 
-	const parsed: ParsedQueryString = {};
+	const defaul: DefaultParsed = {};
+	const facet: FacetSelections = {};
 
 	params.forEach((value, key) => {
-		if (
-			key === 'keyword' ||
-			key === 'sort' ||
-			key === 'pg' ||
-			key === 'lp' ||
-			key === 'PageId' ||
-			key === 'lpurl' ||
-			key === 'mpp' ||
-			key === 'searchWithin' ||
-			key === 'is100Coverage' ||
-			key === 'indexName' ||
-			key === 'ignoreSpellcheck' ||
-			key === 'language'
-		) {
+		if (DefaultParams[key]) {
 			// `keyword` is special and should never be turned into an array
 			if (key === 'keyword') {
-				parsed[key] = value;
+				defaul[key] = value;
 			} else {
-				parsed[key] = encodeURIComponent(value);
+				defaul[key] = encodeURIComponent(value);
 			}
 		} else {
 			// everything else should be turned into an array
@@ -83,11 +76,19 @@ function parseQueryStringToObject(search: string) {
 			// multiple selections are split by commas, so split into an array
 			const multipleValues = value.split(',');
 
-			parsed[key] = multipleValues.map(i => decodeURIComponent(i).replace('::', ','));
+			if(DefaultParams[key.split("-")[0]]) {
+				facet[key.split("-")[0]] = multipleValues.map(i => decodeURIComponent(i).replace('::', ','));
+			}
+			else {
+				facet[key] = multipleValues.map(i => decodeURIComponent(i).replace('::', ','));
+			}
 		}
 	});
 
-	return parsed;
+	return {
+		defaul,
+		facet
+	};
 }
 
 /**
@@ -114,7 +115,7 @@ export function parseLocation(location: Location, searchUrl: string): Partial<Re
  * @param search The input query string.
  */
 export function parseSearchQueryString(search: string): Partial<Request> {
-	const queryObj = parseQueryStringToObject(search);
+	const { defaul, facet } = parseQueryStringToObject(search);
 
 	// extract out components, including facet selections
 	const {
@@ -129,14 +130,12 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		is100Coverage,
 		indexName,
 		ignoreSpellcheck,
-		...facetSelections
-	} = queryObj;
+	} = defaul;
 
 	// ignore landing pages if keyword is passed
 	const pageId = lp || PageId;
 	return {
 		Keyword: lpurl || pageId ? '' : keyword,
-
 		SortBy: sort,
 		PageNo: pg ? Number(pg) : undefined,
 		MaxPerPage: mpp ? Number(mpp) : undefined,
@@ -144,7 +143,7 @@ export function parseSearchQueryString(search: string): Partial<Request> {
 		CustomUrl: lpurl,
 		SearchWithin: searchWithin,
 		Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-		FacetSelections: facetSelections,
+		FacetSelections: facet,
 		IndexName: indexName,
 		IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined,
 	};
@@ -172,43 +171,36 @@ export function checkIfUrlRefsLandingPage(path: string, searchUrl: string): bool
  * it into a browser query string
  * @param queryObj The query object to convert to a query string.
  */
-function convertObjectToQueryString(queryObj: ParsedQueryString) {
+function convertObjectToQueryString(queryObj: Parsed) {
 	const queryStringValues: string[] = [];
 
-	for (const key in queryObj) {
-		if (queryObj.hasOwnProperty(key)) {
-			if (
-				key === 'keyword' ||
-				key === 'sort' ||
-				key === 'pg' ||
-				key === 'mpp' ||
-				key === 'searchWithin' ||
-				key === 'is100Coverage' ||
-				key === 'indexName' ||
-				key === 'ignoreSpellcheck' ||
-				key === 'language'
-			) {
-				const value = queryObj[key];
+	for (const key in queryObj.default) {
+		if (queryObj.default.hasOwnProperty(key)) {
+			const value = queryObj.default[key];
 
-				if (value === undefined || value === null) {
-					// if any of the special keys just aren't defined or are null, don't include them in
-					// the query string
-					continue;
-				}
+			if (value === undefined || value === null) {
+				// if any of the special keys just aren't defined or are null, don't include them in
+				// the query string
+				continue;
+			}
 
-				if (typeof key !== 'string') {
-					throw new Error(`${key} must be a string`);
-				}
+			if (typeof key !== 'string') {
+				throw new Error(`${key} must be a string`);
+			}
 
-				// certain strings are special and are never arrays
-				if (key === 'keyword') {
-					queryStringValues.push(key + '=' + value);
-				} else {
-					queryStringValues.push(key + '=' + encodeURIComponent(value));
-				}
+			// certain strings are special and are never arrays
+			if (key === 'keyword') {
+				queryStringValues.push(key + '=' + value);
 			} else {
-				const values = queryObj[key];
+				queryStringValues.push(key + '=' + encodeURIComponent(value));
+			}
+		}
+	}
 
+	for (const key in queryObj.facet) {
+		if (queryObj.facet.hasOwnProperty(key)) {
+			const values = queryObj.facet[key];
+			if (values) {
 				// handle comma escaping - if any of the values contains a comma, they need to be escaped first
 				const escapedValues: string[] = [];
 
@@ -219,8 +211,12 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
 
 					escapedValues.push(encodeURIComponent(unescapedValue));
 				}
-
-				queryStringValues.push(key + '=' + escapedValues.join(','));
+				if(DefaultParams[key]) {
+					queryStringValues.push(key + "-facet" + '=' + escapedValues.join(','));
+				}
+				else {
+					queryStringValues.push(key + '=' + escapedValues.join(','));
+				}
 			}
 		}
 	}
@@ -234,21 +230,24 @@ function convertObjectToQueryString(queryObj: ParsedQueryString) {
  */
 export function getSearchQueryString(searchRequest: Partial<Request>, store?: SearchStore) {
 	const searchQuery = {
-		keyword: searchRequest.Keyword,
-
-		sort: searchRequest.SortBy,
-		pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
-		mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-		is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
-		searchWithin: searchRequest.SearchWithin,
-		indexName: searchRequest.IndexName,
-		language: store && store.language ? store.language : undefined,
-		ignoreSpellcheck:
-			!searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck
-				? undefined
-				: String(searchRequest.IgnoreSpellcheck),
-		...searchRequest.FacetSelections,
-	} as ParsedQueryString;
+		default: {
+			keyword: searchRequest.Keyword,
+			sort: searchRequest.SortBy,
+			pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
+			mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
+			is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
+			searchWithin: searchRequest.SearchWithin,
+			indexName: searchRequest.IndexName,
+			language: searchRequest.Language,
+			ignoreSpellcheck:
+				!searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck
+					? undefined
+					: String(searchRequest.IgnoreSpellcheck),
+		},
+		facet: {
+			...searchRequest.FacetSelections
+		}
+	} as Parsed;
 
 	return convertObjectToQueryString(searchQuery);
 }

@@ -342,15 +342,18 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 					},
 				};
 			}
+
 			const newState = {
 				pendingSearch: removeSearchParams ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
 			};
+
 			if (newState.pendingSearch.Keyword === '') {
 				newState.pendingSearch.Keyword = undefined;
 			} else if (pendingSearch.Keyword !== undefined) {
 				setRecentSearch(config.siteDirectory, pendingSearch.Keyword);
 			}
+			
 			return newState;
 		});
 	}
