@@ -6689,6 +6689,8 @@ var E_T;
   E_T[E_T["recommendationClick"] = 10] = "recommendationClick";
   E_T[E_T["autoCompleteClick"] = 11] = "autoCompleteClick";
   E_T[E_T["add2CartMultiple"] = 14] = "add2CartMultiple";
+  E_T[E_T["autoCompleteItemClick"] = 18] = "autoCompleteItemClick";
+  E_T[E_T["autoCompleteCategoryClick"] = 17] = "autoCompleteCategoryClick";
 })(E_T || (E_T = {}));
 
 var P_T;
@@ -6708,6 +6710,7 @@ var SuggestType;
   SuggestType[SuggestType["TopCategories"] = 2] = "TopCategories";
   SuggestType[SuggestType["TopProductMatches"] = 3] = "TopProductMatches";
   SuggestType[SuggestType["TopContentMatches"] = 4] = "TopContentMatches";
+  SuggestType[SuggestType["TrendingProducts"] = 5] = "TrendingProducts";
 })(SuggestType || (SuggestType = {}));
 
 var SearchType;
@@ -6733,9 +6736,11 @@ var TrackEventNameMapping = {
   BannerClick: 'bannerclick',
   AutocompleteClick: 'autocompleteclick',
   Add2CartMultiple: 'add2cartmultiple',
-  Add2Cart: 'add2cart'
+  Add2Cart: 'add2cart',
+  AutoCompleteItemClick: 'autocompleteitemclick',
+  AutoCompleteCategoryClick: 'autocompletecategoryclick'
 };
-var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart'];
+var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart', 'autocompleteitemclick', 'autocompletecategoryclick'];
 
 var TrackingEvent = /*#__PURE__*/function () {
   /**
@@ -7049,39 +7054,85 @@ var TrackingEvent = /*#__PURE__*/function () {
       this.mr(pl);
     }
   }, {
-    key: "mr",
-    value: function mr(data) {
-      var visitId = this.getCookie('hawk_visit_id');
-      var visitorId = this.getCookie('hawk_visitor_id');
-      var languageParams = this.getLanguageParams();
-
-      if (!visitId) {
-        this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
-        visitId = this.getCookie('hawk_visit_id');
-      }
-
-      if (!visitorId) {
-        this.setCookie('hawk_visitor_id', this.createGuid(), this.getVisitorExpiry());
-        visitorId = this.getCookie('hawk_visitor_id');
-      }
-
-      var pl = Object.assign({
-        ClientGuid: this.clientGUID,
-        VisitId: visitId,
-        VisitorId: visitorId // TrackingProperties: hs.Context,
-        // CustomDictionary: hs.Context.Custom,
-
-      }, languageParams, data);
-      fetch(this.trackingURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(pl)
-      })["catch"](function (error) {
-        console.error('Error:', error);
-      });
+    key: "writeAutoCompleteCategoryClick",
+    value: function writeAutoCompleteCategoryClick(field, value, url) {
+      var pl = {
+        EventType: E_T.autoCompleteCategoryClick,
+        EventData: btoa(JSON.stringify({
+          Field: field,
+          Value: value,
+          Url: url
+        }))
+      };
+      this.mr(pl);
     }
+  }, {
+    key: "writeAutoCompleteItemClick",
+    value: function writeAutoCompleteItemClick(itemId, url) {
+      var pl = {
+        EventType: E_T.autoCompleteItemClick,
+        EventData: btoa(JSON.stringify({
+          ItemId: itemId,
+          Url: url
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "mr",
+    value: function () {
+      var _mr = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(data) {
+        var visitId, visitorId, languageParams, pl;
+        return regenerator.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                visitId = this.getCookie('hawk_visit_id');
+                visitorId = this.getCookie('hawk_visitor_id');
+                languageParams = this.getLanguageParams();
+
+                if (!visitId) {
+                  this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
+                  visitId = this.getCookie('hawk_visit_id');
+                }
+
+                if (!visitorId) {
+                  this.setCookie('hawk_visitor_id', this.createGuid(), this.getVisitorExpiry());
+                  visitorId = this.getCookie('hawk_visitor_id');
+                }
+
+                pl = Object.assign({
+                  ClientGuid: this.clientGUID,
+                  VisitId: visitId,
+                  VisitorId: visitorId // TrackingProperties: hs.Context,
+                  // CustomDictionary: hs.Context.Custom,
+
+                }, languageParams, data);
+                _context.next = 8;
+                return fetch(this.trackingURL, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(pl)
+                })["catch"](function (error) {
+                  console.error('Error:', error);
+                });
+
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function mr(_x) {
+        return _mr.apply(this, arguments);
+      }
+
+      return mr;
+    }()
   }, {
     key: "track",
     value: function track(eventName, args) {
@@ -7139,6 +7190,12 @@ var TrackingEvent = /*#__PURE__*/function () {
           // HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
           return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
         // CHANGED
+
+        case 'autocompleteitemclick':
+          return this.writeAutoCompleteItemClick(args.itemId, args.url);
+
+        case 'autocompletecategoryclick':
+          return this.writeAutoCompleteCategoryClick(args.field, args.value, args.url);
       }
     }
   }, {
@@ -9850,7 +9907,7 @@ function SliderDate() {
 }
 
 /**
- * react-number-format - 4.8.0
+ * react-number-format - 4.7.3
  * Author : Sudhanshu Yadav
  * Copyright (c) 2016, 2021 to Sudhanshu Yadav, released under the MIT license.
  * https://github.com/s-yadav/react-number-format
@@ -10208,13 +10265,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
         //set state always when not in focus and formatted value is changed
         (focusedElm === null && formattedValue !== stateValue)
       ) {
-        this.updateValue({
-          formattedValue: formattedValue,
-          numAsString: numAsString,
-          input: focusedElm,
-          source: 'prop',
-          event: null,
-        });
+        this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, input: focusedElm });
       }
     }
   };
@@ -10870,16 +10921,12 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
                         
                        
                             
-                               
-                   
                      
                               
    ) {
     var formattedValue = params.formattedValue;
     var input = params.input;
     var setCaretPosition = params.setCaretPosition; if ( setCaretPosition === void 0 ) setCaretPosition = true;
-    var source = params.source;
-    var event = params.event;
     var numAsString = params.numAsString;
     var caretPos = params.caretPos;
     var ref = this.props;
@@ -10928,7 +10975,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       this.setState({ value: formattedValue, numAsString: numAsString });
 
       // trigger onValueChange synchronously, so parent is updated along with the number format. Fix for #277, #287
-      onValueChange(this.getValueObject(formattedValue, numAsString), { event: event, source: source });
+      onValueChange(this.getValueObject(formattedValue, numAsString));
     }
   };
 
@@ -10955,14 +11002,7 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
       formattedValue = lastValue;
     }
 
-    this.updateValue({
-      formattedValue: formattedValue,
-      numAsString: numAsString,
-      inputValue: inputValue,
-      input: el,
-      event: e,
-      source: 'event',
-    });
+    this.updateValue({ formattedValue: formattedValue, numAsString: numAsString, inputValue: inputValue, input: el });
 
     if (isChangeAllowed) {
       props.onChange(e);
@@ -11003,8 +11043,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
           numAsString: numAsString,
           input: e.target,
           setCaretPosition: false,
-          event: e,
-          source: 'event',
         });
         onBlur(e);
         return;
@@ -11079,8 +11117,6 @@ var NumberFormat = /*@__PURE__*/(function (superclass) {
           formattedValue: newValue,
           caretPos: newCaretPosition,
           input: el,
-          event: e,
-          source: 'event',
         });
       } else if (!negativeRegex.test(value[expectedCaretPosition])) {
         while (!numRegex.test(value[newCaretPosition - 1]) && newCaretPosition > leftBound) {
@@ -20567,9 +20603,9 @@ function PlaceHolderSVG(props) {
     focusable: "false",
     "aria-hidden": "true"
   }, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("path", {
-    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6 C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3 c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2 c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0 l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
+    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6\r C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3\r c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2\r c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0\r l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
   }), /*#__PURE__*/createElement("path", {
-    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96 c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
+    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96\r c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
   }))));
 }
 
@@ -21194,7 +21230,6 @@ var propTypes$7 = {
   children: propTypes.node
 };
 
-var _excluded = ["className", "cssModule", "tabs", "pills", "vertical", "horizontal", "justified", "fill", "navbar", "card", "tag"];
 var propTypes$8 = {
   tabs: propTypes.bool,
   pills: propTypes.bool,
@@ -21235,7 +21270,7 @@ var Nav = function Nav(props) {
       navbar = props.navbar,
       card = props.card,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, _excluded);
+      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tabs", "pills", "vertical", "horizontal", "justified", "fill", "navbar", "card", "tag"]);
 
   var classes = mapToCssModules(classnames(className, navbar ? 'navbar-nav' : 'nav', horizontal ? "justify-content-" + horizontal : false, getVerticalClass(vertical), {
     'nav-tabs': tabs,
@@ -21253,7 +21288,6 @@ var Nav = function Nav(props) {
 Nav.propTypes = propTypes$8;
 Nav.defaultProps = defaultProps$1;
 
-var _excluded$1 = ["className", "cssModule", "active", "tag"];
 var propTypes$9 = {
   tag: tagPropType,
   active: propTypes.bool,
@@ -21269,7 +21303,7 @@ var NavItem = function NavItem(props) {
       cssModule = props.cssModule,
       active = props.active,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$1);
+      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "active", "tag"]);
 
   var classes = mapToCssModules(classnames(className, 'nav-item', active ? 'active' : false), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -21286,7 +21320,6 @@ function _inheritsLoose(subClass, superClass) {
   _setPrototypeOf(subClass, superClass);
 }
 
-var _excluded$2 = ["className", "cssModule", "active", "tag", "innerRef"];
 var propTypes$a = {
   tag: tagPropType,
   innerRef: propTypes.oneOfType([propTypes.object, propTypes.func, propTypes.string]),
@@ -21336,7 +21369,7 @@ var NavLink = /*#__PURE__*/function (_React$Component) {
         active = _this$props.active,
         Tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$2);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "active", "tag", "innerRef"]);
 
     var classes = mapToCssModules(classnames(className, 'nav-link', {
       disabled: attributes.disabled,
@@ -21372,7 +21405,6 @@ var propTypes$c = {
   cssModule: propTypes.object
 };
 
-var _excluded$3 = ["active", "aria-label", "block", "className", "close", "cssModule", "color", "outline", "size", "tag", "innerRef"];
 var propTypes$d = {
   active: propTypes.bool,
   'aria-label': propTypes.string,
@@ -21431,7 +21463,7 @@ var Button = /*#__PURE__*/function (_React$Component) {
         size = _this$props.size,
         Tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$3);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["active", "aria-label", "block", "className", "close", "cssModule", "color", "outline", "size", "tag", "innerRef"]);
 
     if (close && typeof attributes.children === 'undefined') {
       attributes.children = /*#__PURE__*/React__default.createElement("span", {
@@ -21468,7 +21500,6 @@ var Button = /*#__PURE__*/function (_React$Component) {
 Button.propTypes = propTypes$d;
 Button.defaultProps = defaultProps$4;
 
-var _excluded$4 = ["className"];
 var propTypes$e = {
   onClick: propTypes.func,
   onBlur: propTypes.func,
@@ -21534,7 +21565,7 @@ var ButtonToggle = /*#__PURE__*/function (_React$Component) {
   _proto.render = function render() {
     var _this$props = this.props,
         className = _this$props.className,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$4);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className"]);
 
     var classes = mapToCssModules(classnames(className, {
       focus: this.state.focus
@@ -25944,7 +25975,6 @@ function Reference(props) {
 
 var DropdownContext = /*#__PURE__*/React__default.createContext({});
 
-var _excluded$5 = ["className", "cssModule", "direction", "isOpen", "group", "size", "nav", "setActiveFromChild", "active", "addonType", "tag", "menuRole"];
 var propTypes$f = {
   a11y: propTypes.bool,
   disabled: propTypes.bool,
@@ -26201,7 +26231,7 @@ var Dropdown = /*#__PURE__*/function (_React$Component) {
         active = _omit.active,
         addonType = _omit.addonType,
         tag = _omit.tag,
-        attrs = _objectWithoutPropertiesLoose$1(_omit, _excluded$5);
+        attrs = _objectWithoutPropertiesLoose$1(_omit, ["className", "cssModule", "direction", "isOpen", "group", "size", "nav", "setActiveFromChild", "active", "addonType", "tag", "menuRole"]);
 
     var Tag = tag || (nav ? 'li' : 'div');
     var subItemIsActive = false;
@@ -26257,7 +26287,6 @@ var propTypes$i = {
   role: propTypes.string
 };
 
-var _excluded$6 = ["className", "cssModule", "divider", "tag", "header", "active", "text"];
 var propTypes$j = {
   children: propTypes.node,
   active: propTypes.bool,
@@ -26345,7 +26374,7 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
         header = _omit.header,
         active = _omit.active,
         text = _omit.text,
-        props = _objectWithoutPropertiesLoose$1(_omit, _excluded$6);
+        props = _objectWithoutPropertiesLoose$1(_omit, ["className", "cssModule", "divider", "tag", "header", "active", "text"]);
 
     var classes = mapToCssModules(classnames(className, {
       disabled: props.disabled,
@@ -26384,8 +26413,6 @@ var DropdownItem = /*#__PURE__*/function (_React$Component) {
 DropdownItem.propTypes = propTypes$j;
 DropdownItem.defaultProps = defaultProps$7;
 DropdownItem.contextType = DropdownContext;
-
-var _excluded$7 = ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"];
 
 function ownKeys$9(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -26448,7 +26475,7 @@ var DropdownMenu = /*#__PURE__*/function (_React$Component) {
         persist = _this$props.persist,
         positionFixed = _this$props.positionFixed,
         container = _this$props.container,
-        attrs = _objectWithoutPropertiesLoose$1(_this$props, _excluded$7);
+        attrs = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "right", "tag", "flip", "modifiers", "persist", "positionFixed", "container"]);
 
     var classes = mapToCssModules(classnames(className, 'dropdown-menu', {
       'dropdown-menu-right': right,
@@ -26517,7 +26544,6 @@ DropdownMenu.propTypes = propTypes$k;
 DropdownMenu.defaultProps = defaultProps$8;
 DropdownMenu.contextType = DropdownContext;
 
-var _excluded$8 = ["className", "color", "cssModule", "caret", "split", "nav", "tag", "innerRef"];
 var propTypes$l = {
   caret: propTypes.bool,
   color: propTypes.string,
@@ -26582,7 +26608,7 @@ var DropdownToggle = /*#__PURE__*/function (_React$Component) {
         nav = _this$props.nav,
         tag = _this$props.tag,
         innerRef = _this$props.innerRef,
-        props = _objectWithoutPropertiesLoose$1(_this$props, _excluded$8);
+        props = _objectWithoutPropertiesLoose$1(_this$props, ["className", "color", "cssModule", "caret", "split", "nav", "tag", "innerRef"]);
 
     var ariaLabel = props['aria-label'] || 'Toggle Dropdown';
     var classes = mapToCssModules(classnames(className, {
@@ -26888,23 +26914,6 @@ unwrapExports(PropTypes);
 var PropTypes_1 = PropTypes.classNamesShape;
 var PropTypes_2 = PropTypes.timeoutsShape;
 
-var TransitionGroupContext = createCommonjsModule(function (module, exports) {
-
-exports.__esModule = true;
-exports.default = void 0;
-
-var _react = _interopRequireDefault(React__default);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _default = _react.default.createContext(null);
-
-exports.default = _default;
-module.exports = exports["default"];
-});
-
-unwrapExports(TransitionGroupContext);
-
 var Transition_1 = createCommonjsModule(function (module, exports) {
 
 exports.__esModule = true;
@@ -26919,8 +26928,6 @@ var _reactDom = _interopRequireDefault(ReactDOM);
 
 
 
-
-var _TransitionGroupContext = _interopRequireDefault(TransitionGroupContext);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26972,10 +26979,8 @@ var EXITING = 'exiting';
  * }
  *
  * const transitionStyles = {
- *   entering: { opacity: 1 },
+ *   entering: { opacity: 0 },
  *   entered:  { opacity: 1 },
- *   exiting:  { opacity: 0 },
- *   exited:  { opacity: 0 },
  * };
  *
  * const Fade = ({ in: inProp }) => (
@@ -27042,7 +27047,7 @@ function (_React$Component) {
     var _this;
 
     _this = _React$Component.call(this, props, context) || this;
-    var parentGroup = context; // In the context of a TransitionGroup all enters are really appears
+    var parentGroup = context.transitionGroup; // In the context of a TransitionGroup all enters are really appears
 
     var appear = parentGroup && !parentGroup.isMounting ? props.enter : props.appear;
     var initialStatus;
@@ -27069,6 +27074,15 @@ function (_React$Component) {
     _this.nextCallback = null;
     return _this;
   }
+
+  var _proto = Transition.prototype;
+
+  _proto.getChildContext = function getChildContext() {
+    return {
+      transitionGroup: null // allows for nested Transitions
+
+    };
+  };
 
   Transition.getDerivedStateFromProps = function getDerivedStateFromProps(_ref, prevState) {
     var nextIn = _ref.in;
@@ -27097,8 +27111,6 @@ function (_React$Component) {
   //   return { nextStatus }
   // }
 
-
-  var _proto = Transition.prototype;
 
   _proto.componentDidMount = function componentDidMount() {
     this.updateStatus(true, this.appearStatus);
@@ -27174,7 +27186,7 @@ function (_React$Component) {
     var _this2 = this;
 
     var enter = this.props.enter;
-    var appearing = this.context ? this.context.isMounting : mounting;
+    var appearing = this.context.transitionGroup ? this.context.transitionGroup.isMounting : mounting;
     var timeouts = this.getTimeouts();
     var enterTimeout = appearing ? timeouts.appear : timeouts.enter; // no enter animation skip right to ENTERED
     // if we are mounting and running this it means appear _must_ be set
@@ -27316,25 +27328,23 @@ function (_React$Component) {
     delete childProps.onExited;
 
     if (typeof children === 'function') {
-      // allows for nested Transitions
-      return _react.default.createElement(_TransitionGroupContext.default.Provider, {
-        value: null
-      }, children(status, childProps));
+      return children(status, childProps);
     }
 
     var child = _react.default.Children.only(children);
 
-    return (// allows for nested Transitions
-      _react.default.createElement(_TransitionGroupContext.default.Provider, {
-        value: null
-      }, _react.default.cloneElement(child, childProps))
-    );
+    return _react.default.cloneElement(child, childProps);
   };
 
   return Transition;
 }(_react.default.Component);
 
-Transition.contextType = _TransitionGroupContext.default;
+Transition.contextTypes = {
+  transitionGroup: PropTypes$1.object
+};
+Transition.childContextTypes = {
+  transitionGroup: function transitionGroup() {}
+};
 Transition.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * A `function` child can be used instead of a React element. This function is
@@ -27612,7 +27622,7 @@ var removeClass$1 = function removeClass(node, classes) {
  * }
  * .my-node-exit-active {
  *   opacity: 0;
- *   transition: opacity 200ms;
+ *   transition: opacity: 200ms;
  * }
  * ```
  *
@@ -28059,8 +28069,6 @@ var _react = _interopRequireDefault(React__default);
 
 
 
-var _TransitionGroupContext = _interopRequireDefault(TransitionGroupContext);
-
 
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -28115,9 +28123,6 @@ function (_React$Component) {
 
 
     _this.state = {
-      contextValue: {
-        isMounting: true
-      },
       handleExited: handleExited,
       firstRender: true
     };
@@ -28126,13 +28131,17 @@ function (_React$Component) {
 
   var _proto = TransitionGroup.prototype;
 
-  _proto.componentDidMount = function componentDidMount() {
-    this.mounted = true;
-    this.setState({
-      contextValue: {
-        isMounting: false
+  _proto.getChildContext = function getChildContext() {
+    return {
+      transitionGroup: {
+        isMounting: !this.appeared
       }
-    });
+    };
+  };
+
+  _proto.componentDidMount = function componentDidMount() {
+    this.appeared = true;
+    this.mounted = true;
   };
 
   _proto.componentWillUnmount = function componentWillUnmount() {
@@ -28175,26 +28184,24 @@ function (_React$Component) {
         childFactory = _this$props.childFactory,
         props = _objectWithoutPropertiesLoose(_this$props, ["component", "childFactory"]);
 
-    var contextValue = this.state.contextValue;
     var children = values(this.state.children).map(childFactory);
     delete props.appear;
     delete props.enter;
     delete props.exit;
 
     if (Component === null) {
-      return _react.default.createElement(_TransitionGroupContext.default.Provider, {
-        value: contextValue
-      }, children);
+      return children;
     }
 
-    return _react.default.createElement(_TransitionGroupContext.default.Provider, {
-      value: contextValue
-    }, _react.default.createElement(Component, props, children));
+    return _react.default.createElement(Component, props, children);
   };
 
   return TransitionGroup;
 }(_react.default.Component);
 
+TransitionGroup.childContextTypes = {
+  transitionGroup: _propTypes.default.object.isRequired
+};
 TransitionGroup.propTypes = process.env.NODE_ENV !== "production" ? {
   /**
    * `<TransitionGroup>` renders a `<div>` by default. You can change this
@@ -28443,8 +28450,6 @@ var reactTransitionGroup_2 = reactTransitionGroup.TransitionGroup;
 var reactTransitionGroup_3 = reactTransitionGroup.ReplaceTransition;
 var reactTransitionGroup_4 = reactTransitionGroup.CSSTransition;
 
-var _excluded$9 = ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"];
-
 function ownKeys$a(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$b(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$a(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$a(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28478,7 +28483,7 @@ function Fade(props) {
       cssModule = props.cssModule,
       children = props.children,
       innerRef = props.innerRef,
-      otherProps = _objectWithoutPropertiesLoose$1(props, _excluded$9);
+      otherProps = _objectWithoutPropertiesLoose$1(props, ["tag", "baseClass", "baseClassActive", "className", "cssModule", "children", "innerRef"]);
 
   var transitionProps = pick(otherProps, TransitionPropTypeKeys);
   var childProps = omit(otherProps, TransitionPropTypeKeys);
@@ -28575,8 +28580,6 @@ var propTypes$x = {
   cssModule: propTypes.object
 };
 
-var _excluded$a = ["in", "children", "cssModule", "slide", "tag", "className"];
-
 function ownKeys$b(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$c(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$b(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$b(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28648,7 +28651,7 @@ var CarouselItem = /*#__PURE__*/function (_React$Component) {
         slide = _this$props.slide,
         Tag = _this$props.tag,
         className = _this$props.className,
-        transitionProps = _objectWithoutPropertiesLoose$1(_this$props, _excluded$a);
+        transitionProps = _objectWithoutPropertiesLoose$1(_this$props, ["in", "children", "cssModule", "slide", "tag", "className"]);
 
     return /*#__PURE__*/React__default.createElement(reactTransitionGroup_1, _extends({}, transitionProps, {
       enter: slide,
@@ -29128,7 +29131,6 @@ var propTypes$B = {
   cssModule: propTypes.object
 };
 
-var _excluded$b = ["className", "label", "valid", "invalid", "cssModule", "children", "bsSize", "innerRef", "htmlFor", "type", "onChange", "dataBrowse", "hidden"];
 var propTypes$C = {
   className: propTypes.string,
   id: propTypes.oneOfType([propTypes.string, propTypes.number]).isRequired,
@@ -29206,7 +29208,7 @@ var CustomFileInput = /*#__PURE__*/function (_React$Component) {
         onChange = _this$props.onChange,
         dataBrowse = _this$props.dataBrowse,
         hidden = _this$props.hidden,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$b);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "label", "valid", "invalid", "cssModule", "children", "bsSize", "innerRef", "htmlFor", "type", "onChange", "dataBrowse", "hidden"]);
 
     var customClass = mapToCssModules(classnames(className, "custom-file"), cssModule);
     var validationClassNames = mapToCssModules(classnames(invalid && "is-invalid", valid && "is-valid"), cssModule);
@@ -29248,8 +29250,6 @@ var propTypes$D = {
   children: propTypes.oneOfType([propTypes.node, propTypes.array, propTypes.func]),
   innerRef: propTypes.oneOfType([propTypes.object, propTypes.string, propTypes.func])
 };
-
-var _excluded$c = ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"];
 
 function ownKeys$c(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
@@ -29372,7 +29372,7 @@ var PopperContent = /*#__PURE__*/function (_React$Component) {
         fade = _this$props.fade,
         transition = _this$props.transition,
         placement = _this$props.placement,
-        attrs = _objectWithoutPropertiesLoose$1(_this$props, _excluded$c);
+        attrs = _objectWithoutPropertiesLoose$1(_this$props, ["cssModule", "children", "isOpen", "flip", "target", "offset", "fallbackPlacement", "placementPrefix", "arrowClassName", "hideArrow", "popperClassName", "tag", "container", "modifiers", "positionFixed", "boundariesElement", "onClosed", "fade", "transition", "placement"]);
 
     var arrowClassName = mapToCssModules(classnames('arrow', _arrowClassName), cssModule);
     var popperClassName = mapToCssModules(classnames(_popperClassName, placementPrefix ? placementPrefix + "-auto" : ''), this.props.cssModule);
@@ -30543,7 +30543,6 @@ var propTypes$T = {
   cssModule: propTypes.object
 };
 
-var _excluded$d = ["className", "cssModule", "type", "bsSize", "valid", "invalid", "tag", "addon", "plaintext", "innerRef"];
 var propTypes$U = {
   children: propTypes.node,
   type: propTypes.string,
@@ -30602,7 +30601,7 @@ var Input = /*#__PURE__*/function (_React$Component) {
         addon = _this$props.addon,
         plaintext = _this$props.plaintext,
         innerRef = _this$props.innerRef,
-        attributes = _objectWithoutPropertiesLoose$1(_this$props, _excluded$d);
+        attributes = _objectWithoutPropertiesLoose$1(_this$props, ["className", "cssModule", "type", "bsSize", "valid", "invalid", "tag", "addon", "plaintext", "innerRef"]);
 
     var checkInput = ['radio', 'checkbox'].indexOf(type) > -1;
     var isNotaNumber = new RegExp('\\D', 'g');
@@ -30895,7 +30894,6 @@ var propTypes$1c = {
   cssModule: propTypes.object
 };
 
-var _excluded$e = ["className", "cssModule", "tag", "type"];
 var propTypes$1d = {
   tag: tagPropType,
   className: propTypes.string,
@@ -30910,7 +30908,7 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
       cssModule = props.cssModule,
       Tag = props.tag,
       type = props.type,
-      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$e);
+      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tag", "type"]);
 
   var classes = mapToCssModules(classnames(className, type ? "list-" + type : false), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -30921,7 +30919,6 @@ var List = /*#__PURE__*/forwardRef(function (props, ref) {
 List.propTypes = propTypes$1d;
 List.defaultProps = defaultProps$k;
 
-var _excluded$f = ["className", "cssModule", "tag"];
 var propTypes$1e = {
   tag: tagPropType,
   className: propTypes.string,
@@ -30934,7 +30931,7 @@ var ListInlineItem = /*#__PURE__*/forwardRef(function (props, ref) {
   var className = props.className,
       cssModule = props.cssModule,
       Tag = props.tag,
-      attributes = _objectWithoutPropertiesLoose$1(props, _excluded$f);
+      attributes = _objectWithoutPropertiesLoose$1(props, ["className", "cssModule", "tag"]);
 
   var classes = mapToCssModules(classnames(className, 'list-inline-item'), cssModule);
   return /*#__PURE__*/React__default.createElement(Tag, _extends({}, attributes, {
@@ -31013,16 +31010,13 @@ var UncontrolledDropdown = /*#__PURE__*/function (_Component) {
   var _proto = UncontrolledDropdown.prototype;
 
   _proto.toggle = function toggle(e) {
-    var _this2 = this;
-
-    var isOpen = !this.state.isOpen;
     this.setState({
-      isOpen: isOpen
-    }, function () {
-      if (_this2.props.onToggle) {
-        _this2.props.onToggle(e, isOpen);
-      }
+      isOpen: !this.state.isOpen
     });
+
+    if (this.props.onToggle) {
+      this.props.onToggle(e, !this.state.isOpen);
+    }
   };
 
   _proto.render = function render() {
@@ -31388,9 +31382,7 @@ function invariant(condition, message) {
     if (isProduction$1) {
         throw new Error(prefix);
     }
-    var provided = typeof message === 'function' ? message() : message;
-    var value = provided ? prefix + ": " + provided : prefix;
-    throw new Error(value);
+    throw new Error(prefix + ": " + (message || ''));
 }
 
 function addLeadingSlash(path) {
@@ -32082,6 +32074,8 @@ function CustomPageHtml() {
   var _useHawksearch = useHawksearch(),
       searchResults = _useHawksearch.store.searchResults;
 
+  console.log('customHtml ===>', searchResults === null || searchResults === void 0 ? void 0 : searchResults.CustomHtml);
+
   if (searchResults && searchResults.CustomHtml !== undefined) {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "hawkpagecustomhtml",
@@ -32101,6 +32095,7 @@ var SuggestType$1;
   SuggestType[SuggestType["TopCategories"] = 2] = "TopCategories";
   SuggestType[SuggestType["TopProductMatches"] = 3] = "TopProductMatches";
   SuggestType[SuggestType["TopContentMatches"] = 4] = "TopContentMatches";
+  SuggestType[SuggestType["AutoCompleteItemClick"] = 5] = "AutoCompleteItemClick";
 })(SuggestType$1 || (SuggestType$1 = {}));
 
 function getAtLeastOneExist(popular, categories, products, content) {
@@ -32137,13 +32132,21 @@ function ProductsComponent(_ref) {
       index: "Product_".concat(index),
       key: "Product_".concat(index),
       onClick: function onClick() {
-        redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+        if (item.IsRecommended) {
+          TrackingEvent$1.track('autocompleteitemclick', {
+            itemId: item.Results.DocId,
+            url: item.Url
+          });
+        }
+
         TrackingEvent$1.track('autocompleteclick', {
           keyword: downshift.inputValue,
           suggestType: SuggestType$1.TopProductMatches,
           name: item.ProductName,
           url: item.Url
         });
+        console.log(item);
+        redirectItemDetails(item.Results.DocId, item.Url);
       }
     }), item.Thumb && item.Thumb.Url && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
       className: "hawk-sqItemImage-thumb",
@@ -32281,25 +32284,22 @@ function CustomSuggestionList(_ref2) {
   }
 
   function redirectItemDetails(id, url) {
-    var getProducts = products.find(function (productItem) {
-      return productItem.Results.DocId === id;
-    }); // const getContent = content.find(productItem => productItem.Results.DocId === id);
-    // const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-
-    var path = id.split('?');
-    var getUrlParam = window.location.pathname.split('/');
-    var findUrlIndex = getUrlParam.find(function (param) {
-      return param === path[0].slice(1);
-    });
-
-    if (getProducts === undefined) {
-      history.push({
-        pathname: findUrlIndex === undefined ? "".concat(window.location.pathname).concat(path[0]) : window.location.pathname,
-        search: "".concat(path[1])
-      });
-    } else if (url) {
+    if (url) {
       window.location.assign(url);
-    }
+    } // const getProducts = products.find(productItem => productItem.Results.DocId === id);
+    // const path = id.split('?');
+    // const getUrlParam = window.location.pathname.split('/');
+    // const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
+    // if (getProducts === undefined) {
+    // 	history.push({
+    // 		pathname:
+    // 			findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
+    // 		search: `${path[1]}`,
+    // 	});
+    // } else if (url) {
+    // 	window.location.assign(url);
+    // }
+
   }
 
   function redirectDYMitems(searchKeyword, typeId, item) {
@@ -32357,7 +32357,15 @@ function CustomSuggestionList(_ref2) {
       key: "Category_".concat(index),
       className: highlightedIndex === "Category_".concat(index) ? 'autosuggest-menu__item autosuggest-menu__item--highlighted' : 'autosuggest-menu__item',
       onClick: function onClick() {
-        return searchProduct(searchedKeyword, SuggestType$1.TopCategories, item);
+        searchProduct(searchedKeyword, SuggestType$1.TopCategories, item);
+
+        if (item.IsRecommended === true) {
+          TrackingEvent$1.track('autocompletecategoryclick', {
+            field: item.FieldQSValue,
+            value: item.Value,
+            url: item.Url
+          });
+        }
       }
     }, getInputProps({
       onMouseOver: function onMouseOver() {
@@ -32393,7 +32401,6 @@ function CustomSuggestionList(_ref2) {
       key: "Content_".concat(index),
       onClick: function onClick() {
         redirectItemDetails(item.Results.Document.url[0], item.Url);
-        console.log('item =====>', item);
         TrackingEvent$1.track('autocompleteclick', {
           keyword: downshift.inputValue,
           suggestType: SuggestType$1.TopContentMatches,

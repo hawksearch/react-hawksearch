@@ -19,8 +19,11 @@ export interface AutocompleteResponse {
 	 * is configured in the Hawksearch Workbench unless overridden by the request parameters.
 	 */
 	Categories: Array<{
-		Value: string;
-		Url: string;
+		Value: string | '';
+		Url: string | '';
+		FieldQSValue: string | '';
+		FieldQSName: string | '';
+		IsRecommended: boolean | null;
 	}>;
 
 	Products:

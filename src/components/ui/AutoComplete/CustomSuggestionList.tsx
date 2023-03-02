@@ -22,6 +22,7 @@ enum SuggestType {
 	TopCategories = 2,
 	TopProductMatches = 3,
 	TopContentMatches = 4,
+	AutoCompleteItemClick = 5,
 }
 
 function getAtLeastOneExist(popular, categories, products, content) {
@@ -64,13 +65,21 @@ function ProductsComponent({
 								index: `Product_${index}`,
 								key: `Product_${index}`,
 								onClick: () => {
-									redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+									if(item.IsRecommended){
+										TrackingEvent.track('autocompleteitemclick', {
+											itemId: item.Results.DocId,
+											url: item.Url
+										})
+									}
+								
 									TrackingEvent.track('autocompleteclick', {
 										keyword: downshift.inputValue,
 										suggestType: SuggestType.TopProductMatches,
 										name: item.ProductName,
 										url: item.Url,
 									});
+									console.log(item);
+									redirectItemDetails(item.Results.DocId, item.Url);
 								},
 							})}
 						>
@@ -165,22 +174,25 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 	}
 
 	function redirectItemDetails(id: string, url: string | null) {
-		const getProducts = products.find(productItem => productItem.Results.DocId === id);
-		// const getContent = content.find(productItem => productItem.Results.DocId === id);
-		// const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-		const path = id.split('?');
-		const getUrlParam = window.location.pathname.split('/');
-		const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
 
-		if (getProducts === undefined) {
-			history.push({
-				pathname:
-					findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
-				search: `${path[1]}`,
-			});
-		} else if (url) {
-			window.location.assign(url);
+		if(url){
+			window.location.assign(url)
 		}
+
+		// const getProducts = products.find(productItem => productItem.Results.DocId === id);
+		// const path = id.split('?');
+		// const getUrlParam = window.location.pathname.split('/');
+		// const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
+
+		// if (getProducts === undefined) {
+		// 	history.push({
+		// 		pathname:
+		// 			findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
+		// 		search: `${path[1]}`,
+		// 	});
+		// } else if (url) {
+		// 	window.location.assign(url);
+		// }
 	}
 
 	function redirectDYMitems(
@@ -193,7 +205,7 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 			: undefined;
 		getDYMproductSearch === undefined
 			? searchProduct(searchKeyword, typeId, getDYMproductSearch)
-			: window.location.assign(getDYMproductSearch.Url);
+			: window.location.assign(getDYMproductSearch.Url); 
 		downshift.toggleMenu();
 	}
 
@@ -266,7 +278,16 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 										? 'autosuggest-menu__item autosuggest-menu__item--highlighted'
 										: 'autosuggest-menu__item'
 								}
-								onClick={() => searchProduct(searchedKeyword, SuggestType.TopCategories, item)}
+								onClick={() => {searchProduct(searchedKeyword, SuggestType.TopCategories, item);
+									if(item.IsRecommended === true){
+										TrackingEvent.track('autocompletecategoryclick', {
+											field: item.FieldQSValue,
+											value: item.Value,
+											url: item.Url
+										})
+									}
+								}
+								}
 								{...getInputProps({
 									onMouseOver: () => {
 										if (isSuggestionChangeEnabled) {
@@ -313,7 +334,6 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 								key={`Content_${index}`}
 								onClick={() => {
 									redirectItemDetails(item.Results.Document.url[0], item.Url);
-									console.log('item =====>', item);
 									TrackingEvent.track('autocompleteclick', {
 										keyword: downshift.inputValue,
 										suggestType: SuggestType.TopContentMatches,

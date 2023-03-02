@@ -1,3 +1,4 @@
+import { Console } from 'console';
 import { toBinary, fromBinary, isBase64 } from 'helpers/utils';
 
 enum E_T {
@@ -12,6 +13,9 @@ enum E_T {
 	recommendationClick = 10,
 	autoCompleteClick = 11,
 	add2CartMultiple = 14,
+	autoCompleteItemClick = 18,
+	autoCompleteCategoryClick = 17,
+
 }
 
 enum P_T {
@@ -27,6 +31,7 @@ export enum SuggestType {
 	TopCategories = 2,
 	TopProductMatches = 3,
 	TopContentMatches = 4,
+	TrendingProducts = 5,
 }
 
 export enum SearchType {
@@ -51,6 +56,8 @@ const TrackEventNameMapping = {
 	AutocompleteClick: 'autocompleteclick',
 	Add2CartMultiple: 'add2cartmultiple',
 	Add2Cart: 'add2cart',
+	AutoCompleteItemClick: 'autocompleteitemclick',
+	AutoCompleteCategoryClick: 'autocompletecategoryclick'
 };
 
 const AvailableEvents = [
@@ -62,6 +69,8 @@ const AvailableEvents = [
 	'bannerimpression',
 	'sale',
 	'add2cart',
+	'autocompleteitemclick',
+	'autocompletecategoryclick'
 ];
 
 class TrackingEvent {
@@ -351,6 +360,7 @@ class TrackingEvent {
 			),
 		};
 		this.mr(pl);
+		
 	}
 
 	private writeAutoCompleteClick(keyword, suggestType, name, url) {
@@ -368,7 +378,34 @@ class TrackingEvent {
 		this.mr(pl);
 	}
 
-	private mr(data) {
+	private writeAutoCompleteCategoryClick(field, value, url){		
+		const pl = {
+			EventType: E_T.autoCompleteCategoryClick,
+			EventData: btoa(
+				JSON.stringify({
+					Field: field,
+					Value: value,
+					Url: url,
+				})
+			),
+		};
+		this.mr(pl);
+	}
+
+	private writeAutoCompleteItemClick(itemId, url){
+		const pl = {
+			EventType: E_T.autoCompleteItemClick,
+			EventData: btoa(
+				JSON.stringify({
+					ItemId: itemId,
+					Url: url
+				})
+			)
+		}
+		this.mr(pl);
+	}
+
+	private async mr(data) {
 		let visitId = this.getCookie('hawk_visit_id');
 		let visitorId = this.getCookie('hawk_visitor_id');
 		const languageParams = this.getLanguageParams();
@@ -395,19 +432,21 @@ class TrackingEvent {
 			data
 		);
 
-		fetch(this.trackingURL, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(pl),
+		await fetch(this.trackingURL, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(pl),
 		}).catch(error => {
 			console.error('Error:', error);
 		});
 	}
 
 	public track(eventName, args) {
+
 		if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
 			return;
 		}
+		
 		switch (eventName.toLowerCase()) {
 			case 'pageload':
 				// HawkSearch.Context.add("uniqueid", "123456789");
@@ -443,6 +482,10 @@ class TrackingEvent {
 			case 'autocompleteclick':
 				// HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
 				return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url); // CHANGED
+			case 'autocompleteitemclick':
+				return this.writeAutoCompleteItemClick(args.itemId, args.url);
+			case 'autocompletecategoryclick':				
+				return this.writeAutoCompleteCategoryClick(args.field, args.value, args.url);
 		}
 	}
 
