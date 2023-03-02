@@ -13,8 +13,8 @@ enum E_T {
 	recommendationClick = 10,
 	autoCompleteClick = 11,
 	add2CartMultiple = 14,
-	autoCompleteItemClick = 15,
-	autoCompleteCategoryClick = 16,
+	autoCompleteItemClick = 18,
+	autoCompleteCategoryClick = 17,
 
 }
 

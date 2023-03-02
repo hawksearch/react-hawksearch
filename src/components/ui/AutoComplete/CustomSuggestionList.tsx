@@ -78,8 +78,8 @@ function ProductsComponent({
 										name: item.ProductName,
 										url: item.Url,
 									});
-
-									redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+									console.log(item);
+									redirectItemDetails(item.Results.DocId, item.Url);
 								},
 							})}
 						>
@@ -174,22 +174,25 @@ function CustomSuggestionList({ downshift, searchResults, onViewMatches, isLoadi
 	}
 
 	function redirectItemDetails(id: string, url: string | null) {
-		const getProducts = products.find(productItem => productItem.Results.DocId === id);
-		// const getContent = content.find(productItem => productItem.Results.DocId === id);
-		// const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-		const path = id.split('?');
-		const getUrlParam = window.location.pathname.split('/');
-		const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
 
-		if (getProducts === undefined) {
-			history.push({
-				pathname:
-					findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
-				search: `${path[1]}`,
-			});
-		} else if (url) {
-			window.location.assign(url);
+		if(url){
+			window.location.assign(url)
 		}
+
+		// const getProducts = products.find(productItem => productItem.Results.DocId === id);
+		// const path = id.split('?');
+		// const getUrlParam = window.location.pathname.split('/');
+		// const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
+
+		// if (getProducts === undefined) {
+		// 	history.push({
+		// 		pathname:
+		// 			findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
+		// 		search: `${path[1]}`,
+		// 	});
+		// } else if (url) {
+		// 	window.location.assign(url);
+		// }
 	}
 
 	function redirectDYMitems(

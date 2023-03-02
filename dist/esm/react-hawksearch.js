@@ -6689,8 +6689,8 @@ var E_T;
   E_T[E_T["recommendationClick"] = 10] = "recommendationClick";
   E_T[E_T["autoCompleteClick"] = 11] = "autoCompleteClick";
   E_T[E_T["add2CartMultiple"] = 14] = "add2CartMultiple";
-  E_T[E_T["autoCompleteItemClick"] = 15] = "autoCompleteItemClick";
-  E_T[E_T["autoCompleteCategoryClick"] = 16] = "autoCompleteCategoryClick";
+  E_T[E_T["autoCompleteItemClick"] = 18] = "autoCompleteItemClick";
+  E_T[E_T["autoCompleteCategoryClick"] = 17] = "autoCompleteCategoryClick";
 })(E_T || (E_T = {}));
 
 var P_T;
@@ -32074,6 +32074,8 @@ function CustomPageHtml() {
   var _useHawksearch = useHawksearch(),
       searchResults = _useHawksearch.store.searchResults;
 
+  console.log('customHtml ===>', searchResults === null || searchResults === void 0 ? void 0 : searchResults.CustomHtml);
+
   if (searchResults && searchResults.CustomHtml !== undefined) {
     return /*#__PURE__*/React__default.createElement("div", {
       className: "hawkpagecustomhtml",
@@ -32143,7 +32145,8 @@ function ProductsComponent(_ref) {
           name: item.ProductName,
           url: item.Url
         });
-        redirectItemDetails(item.Results.DocId, item.Results.Document.url[0]);
+        console.log(item);
+        redirectItemDetails(item.Results.DocId, item.Url);
       }
     }), item.Thumb && item.Thumb.Url && /*#__PURE__*/React__default.createElement("div", null, /*#__PURE__*/React__default.createElement("img", {
       className: "hawk-sqItemImage-thumb",
@@ -32281,25 +32284,22 @@ function CustomSuggestionList(_ref2) {
   }
 
   function redirectItemDetails(id, url) {
-    var getProducts = products.find(function (productItem) {
-      return productItem.Results.DocId === id;
-    }); // const getContent = content.find(productItem => productItem.Results.DocId === id);
-    // const getUrl = getProducts === undefined ? getContent!.Url : getProducts.Url;
-
-    var path = id.split('?');
-    var getUrlParam = window.location.pathname.split('/');
-    var findUrlIndex = getUrlParam.find(function (param) {
-      return param === path[0].slice(1);
-    });
-
-    if (getProducts === undefined) {
-      history.push({
-        pathname: findUrlIndex === undefined ? "".concat(window.location.pathname).concat(path[0]) : window.location.pathname,
-        search: "".concat(path[1])
-      });
-    } else if (url) {
+    if (url) {
       window.location.assign(url);
-    }
+    } // const getProducts = products.find(productItem => productItem.Results.DocId === id);
+    // const path = id.split('?');
+    // const getUrlParam = window.location.pathname.split('/');
+    // const findUrlIndex = getUrlParam.find(param => param === path[0].slice(1));
+    // if (getProducts === undefined) {
+    // 	history.push({
+    // 		pathname:
+    // 			findUrlIndex === undefined ? `${window.location.pathname}${path[0]}` : window.location.pathname,
+    // 		search: `${path[1]}`,
+    // 	});
+    // } else if (url) {
+    // 	window.location.assign(url);
+    // }
+
   }
 
   function redirectDYMitems(searchKeyword, typeId, item) {
