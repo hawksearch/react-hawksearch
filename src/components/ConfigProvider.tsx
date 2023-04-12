@@ -45,7 +45,7 @@ export function useHawkConfig() {
 			'No HawksearchConfig is available, did you forget to wrap your components in a ConfigProvider component?'
 		);
 	}
-
+		
 	return context;
 }
 
