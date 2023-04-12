@@ -7877,6 +7877,7 @@ function useHawkState(initialSearch) {
       }
     });
     var difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
+    var selectionValue = negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue;
 
     if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
       // we're selecting this facet, and it's already selected
@@ -7885,7 +7886,7 @@ function useHawkState(initialSearch) {
 
       if (selState === FacetSelectionState.Selected && negate || selState === FacetSelectionState.Negated && !negate) {
         // if we're toggling from negation to non-negation or vice versa, then push the new selection
-        facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
+        facetSelections[facetField].push(selectionValue);
       } else {
         if (facet.FacetType === FacetType.NestedCheckbox) {
           facetSelections[facetField] = difference;
@@ -7896,18 +7897,17 @@ function useHawkState(initialSearch) {
       if (facet.FacetType === FacetType.NestedCheckbox) {
         var _Object, _Object$Children;
 
-        if (((_Object = Object(facetValue)) === null || _Object === void 0 ? void 0 : (_Object$Children = _Object.Children) === null || _Object$Children === void 0 ? void 0 : _Object$Children.length) > 0) {
-          var _facetSelections$face;
-
-          (_facetSelections$face = facetSelections[facetField]) === null || _facetSelections$face === void 0 ? void 0 : _facetSelections$face.splice(0);
-          facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
-        } else {
-          // not selected, so we want to select it
+        if (!((_Object = Object(facetValue)) !== null && _Object !== void 0 && (_Object$Children = _Object.Children) !== null && _Object$Children !== void 0 && _Object$Children.length) && !negate) {
           handleSelectionOfNestedFacet(facet, facetValue, facetSelections);
-          facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
         }
+
+        if (negate && symbolForNegate) {
+          removeExcludedSelectionInHierarchy(facet, facetValue, facetSelections, symbolForNegate);
+        }
+
+        facetSelections[facetField].push(selectionValue);
       } else {
-        facetSelections[facetField].push(negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue);
+        facetSelections[facetField].push(selectionValue);
       }
     }
 
@@ -7917,6 +7917,41 @@ function useHawkState(initialSearch) {
     }
 
     setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
+  }
+
+  function removeExcludedSelectionInHierarchy(facet, facetValue, facetSelections, symbolForNegate) {
+    var facetPath = Object(facetValue).Path;
+    var selectedFacetValues = Object(facet).Values;
+
+    if (facet) {
+      var children = function children(selectedFacetValues) {
+        selectedFacetValues.forEach(function (values) {
+          if (values.Children.length > 0) {
+            var findSelectedValues = values.Children.filter(function (findChild) {
+              return facetSelections[facetField].includes("".concat(symbolForNegate).concat(findChild.Value));
+            });
+
+            if (findSelectedValues.length) {
+              findSelectedValues.forEach(function (findSelectedValue) {
+                if (facetPath.indexOf(findSelectedValue.Path) === 0 || findSelectedValue.Path.indexOf(facetPath) === 0) {
+                  var _facetSelections$face;
+
+                  var findIndex = facetSelections[facetField].indexOf("".concat(symbolForNegate).concat(findSelectedValue.Value));
+                  (_facetSelections$face = facetSelections[facetField]) === null || _facetSelections$face === void 0 ? void 0 : _facetSelections$face.splice(findIndex, 1);
+                }
+              });
+            }
+
+            if (facetSelections[facetField].length && values.Children) {
+              children(values.Children);
+            }
+          }
+        });
+      };
+
+      var facetField = typeof facet === 'string' ? facet : facet.selectionField;
+      children(selectedFacetValues);
+    }
   }
 
   function handleSelectionOfNestedFacet(facet, facetValue, facetSelections) {
@@ -32073,8 +32108,6 @@ function MessageBox() {
 function CustomPageHtml() {
   var _useHawksearch = useHawksearch(),
       searchResults = _useHawksearch.store.searchResults;
-
-  console.log('customHtml ===>', searchResults === null || searchResults === void 0 ? void 0 : searchResults.CustomHtml);
 
   if (searchResults && searchResults.CustomHtml !== undefined) {
     return /*#__PURE__*/React__default.createElement("div", {
