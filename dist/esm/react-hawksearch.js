@@ -3815,6 +3815,1713 @@ try {
 
 var regenerator = runtime_1;
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$1(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$1(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen); }
+
+function _arrayLikeToArray$1(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+var FacetSelectionState;
+
+(function (FacetSelectionState) {
+  FacetSelectionState[FacetSelectionState["NotSelected"] = 0] = "NotSelected";
+  FacetSelectionState[FacetSelectionState["Selected"] = 1] = "Selected";
+  FacetSelectionState[FacetSelectionState["Negated"] = 2] = "Negated";
+})(FacetSelectionState || (FacetSelectionState = {}));
+
+var SearchStore = /*#__PURE__*/function () {
+  /** This represents the next search request that will be executed. */
+
+  /**
+   * Whether or not the next search request will perform history actions (pushing the search into browser
+   * history).
+   */
+
+  /** Whether or not a search request is waiting for completion. */
+
+  /** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
+  function SearchStore(initial) {
+    _classCallCheck(this, SearchStore);
+
+    _defineProperty(this, "pendingSearch", void 0);
+
+    _defineProperty(this, "doHistory", void 0);
+
+    _defineProperty(this, "isLoading", void 0);
+
+    _defineProperty(this, "itemsToCompare", void 0);
+
+    _defineProperty(this, "itemsToCompareIds", void 0);
+
+    _defineProperty(this, "comparedResults", void 0);
+
+    _defineProperty(this, "isLandingPageExpired", void 0);
+
+    _defineProperty(this, "IsAutocompleteRecommendationEnabled", void 0);
+
+    _defineProperty(this, "negativeFacetValuePrefix", void 0);
+
+    _defineProperty(this, "productDetails", void 0);
+
+    _defineProperty(this, "previewDate", void 0);
+
+    _defineProperty(this, "smartBar", void 0);
+
+    _defineProperty(this, "searchResults", void 0);
+
+    _defineProperty(this, "requestError", void 0);
+
+    _defineProperty(this, "language", void 0);
+
+    Object.assign(this, initial);
+  }
+  /**
+   * Returns whether or not this is the initial load of the search results.
+   */
+
+
+  _createClass(SearchStore, [{
+    key: "isInitialLoad",
+    get: function get() {
+      return this.isLoading && !this.searchResults;
+    }
+    /**
+     * Determines whether or not the given facet and facet value is selected, and returns info regarding the selection.
+     * @param facet The facet for which the facet value will be checked for selection.
+     * @param facetValue The facet value that will be checked for selection.
+     */
+
+  }, {
+    key: "isFacetSelected",
+    value: function isFacetSelected(facet, facetValue, symbolForNegate) {
+      var facetName = typeof facet === 'string' ? facet : facet.Name;
+      var facetField = typeof facet === 'string' ? facet : facet.selectionField;
+      var valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
+      var valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
+
+      if (!valueValue) {
+        console.error("Facet ".concat(facetName, " (").concat(facetField, ") has no facet value for ").concat(valueLabel));
+        return {
+          state: FacetSelectionState.NotSelected
+        };
+      }
+
+      var facetSelections = this.pendingSearch.FacetSelections;
+
+      if (!facetSelections || !facetSelections[facetField]) {
+        return {
+          state: FacetSelectionState.NotSelected
+        };
+      }
+
+      var selectionIdx = facetSelections[facetField].indexOf(valueValue);
+      var negationIdx = facetSelections[facetField].indexOf("".concat(symbolForNegate).concat(valueValue));
+
+      if (selectionIdx !== -1) {
+        // if the exact facet value exists, then we're normally selected
+        return {
+          state: FacetSelectionState.Selected,
+          selectedValue: valueValue,
+          selectionIndex: selectionIdx
+        };
+      } else if (negationIdx !== -1) {
+        // if the facet value is selected but prefixed with a -, then we're negated
+        return {
+          state: FacetSelectionState.Negated,
+          selectedValue: "".concat(symbolForNegate).concat(valueValue),
+          selectionIndex: negationIdx
+        };
+      }
+
+      return {
+        state: FacetSelectionState.NotSelected
+      };
+    }
+    /**
+     * Returns an object containing the selections that have been made in both the next search request and also
+     * in the previous search request. This should be used when iterating selections instead of pulling the values
+     * out from the search result or pending search - as this will merge the values together and provide an accurate
+     * view of all facet selections.
+     */
+
+  }, {
+    key: "facetSelections",
+    get: function get() {
+      var _this = this;
+
+      var _this$pendingSearch = this.pendingSearch,
+          clientSelections = _this$pendingSearch.FacetSelections,
+          SearchWithin = _this$pendingSearch.SearchWithin,
+          searchResults = this.searchResults,
+          negativeFacetValuePrefix = this.negativeFacetValuePrefix;
+      var selections = {};
+
+      if (!clientSelections && !SearchWithin) {
+        return selections;
+      } // if we've made selections on the client, transform these into more detailed selections.
+      // the client-side selections are just facet fields and values without any labels - so we
+      // need to combine this information with the list of facets received from the server in the
+      // previous search in order to return a rich list of selections
+
+
+      var facets = searchResults ? searchResults.Facets : null;
+
+      if (!facets) {
+        // but we can only do this if we've received facet information from the server. without this
+        // info we can't determine what labels should be used
+        return selections;
+      } // manually handle the `searchWithin` selection, as this doesn't usually behave like a normal facet selection
+      // but instead a field on the search request
+
+
+      if (SearchWithin) {
+        var facet = facets.find(function (f) {
+          return f.selectionField === 'searchWithin';
+        });
+
+        if (facet) {
+          selections.searchWithin = {
+            facet: facet,
+            label: facet.Name,
+            items: [{
+              label: SearchWithin,
+              value: SearchWithin
+            }]
+          };
+        }
+      }
+
+      if (!clientSelections) {
+        return selections;
+      }
+
+      Object.keys(clientSelections).forEach(function (fieldName) {
+        var selectionValues = clientSelections[fieldName];
+
+        if (!selectionValues) {
+          // if this selection has no values, it's not really selected
+          return;
+        }
+
+        var facet = facets.find(function (f) {
+          return f.selectionField === fieldName;
+        });
+
+        if (!facet) {
+          // if there's no matching facet from the server, we can't show this since we'll have no labels
+          return;
+        }
+
+        var items = [];
+
+        if (facet.FieldType === 'range') {
+          // if the facet this selection is for is a range, there won't be a matching value and thus there won't be a label.
+          // so because of this we'll just use the selection value as the label
+          selectionValues.forEach(function (selectionValue) {
+            items.push({
+              label: selectionValue,
+              value: selectionValue
+            });
+          });
+        } else if (facet.FieldType === 'tab') {
+          // do not return the selection value for tab facet
+          return;
+        } else {
+          // for other types of facets, try to find a matching value
+          selectionValues.forEach(function (selectionValue) {
+            var matchingVal = _this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
+
+            if (!matchingVal || !matchingVal.Label) {
+              // if there's no matching value from the server, we cannot display because there would
+              // be no label - same if there's no label at all
+              return;
+            }
+
+            items.push({
+              label: matchingVal.Label,
+              value: selectionValue,
+              path: matchingVal.Path
+            });
+          });
+        }
+
+        selections[fieldName] = {
+          facet: facet,
+          label: facet.Name,
+          items: items
+        };
+      });
+      return selections;
+    }
+  }, {
+    key: "findMatchingValue",
+    value: function findMatchingValue(selectionValue, facetValues, symbolForNegate) {
+      var matchingValue = null;
+
+      if (!facetValues || facetValues.length === 0) {
+        return null;
+      }
+
+      var _iterator = _createForOfIteratorHelper(facetValues),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var facetValue = _step.value;
+          var isMatchingVal = facetValue.Value === selectionValue || "".concat(symbolForNegate).concat(facetValue.Value) === selectionValue; // loop through children
+
+          if (!isMatchingVal) {
+            matchingValue = this.findMatchingValue(selectionValue, facetValue.Children, symbolForNegate);
+          } else {
+            matchingValue = facetValue;
+          }
+
+          if (matchingValue) {
+            return matchingValue;
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return matchingValue;
+    }
+  }]);
+
+  return SearchStore;
+}();
+
+var Pagination =
+/** Number of total items in the result set. */
+
+/** The page number returned. */
+
+/** The number of items returned for the page. */
+
+/** The total number of pages for the result set - with the current @see MaxPerPage. */
+
+/** Set of pagination options */
+function Pagination(init) {
+  _classCallCheck(this, Pagination);
+
+  _defineProperty(this, "NofResults", void 0);
+
+  _defineProperty(this, "CurrentPage", void 0);
+
+  _defineProperty(this, "MaxPerPage", void 0);
+
+  _defineProperty(this, "NofPages", void 0);
+
+  _defineProperty(this, "Items", void 0);
+
+  Object.assign(this, init);
+  this.Items = init.Items.map(function (i) {
+    return new PaginationItem(i);
+  });
+};
+var PaginationItem =
+/** Display label for user's pagination option (i.e. 24 per page). */
+
+/** The maximum number of items that will be returned per page when this option is selected. */
+
+/** Indicates if this is the option selected. Only one pagination item will have this set to `true`. */
+
+/** Indicates if this is the default option. Only one pagination item will have this set to `true`. */
+function PaginationItem(init) {
+  _classCallCheck(this, PaginationItem);
+
+  _defineProperty(this, "Label", void 0);
+
+  _defineProperty(this, "PageSize", void 0);
+
+  _defineProperty(this, "Selected", void 0);
+
+  _defineProperty(this, "Default", void 0);
+
+  Object.assign(this, init);
+};
+
+var Result = /*#__PURE__*/function () {
+  function Result(init) {
+    _classCallCheck(this, Result);
+
+    _defineProperty(this, "quantity", void 0);
+
+    _defineProperty(this, "DocId", void 0);
+
+    _defineProperty(this, "Score", void 0);
+
+    _defineProperty(this, "Document", void 0);
+
+    _defineProperty(this, "Explain", void 0);
+
+    _defineProperty(this, "IsPin", void 0);
+
+    _defineProperty(this, "BestFragment", void 0);
+
+    Object.assign(this, init);
+  }
+
+  _createClass(Result, [{
+    key: "getDocumentValue",
+    value:
+    /** Unique identifier for this search result item. */
+
+    /** Calculated relevancy score. */
+
+    /**
+     * Contains the fields for the search result item, as an object of string keys to an array
+     * of string values. The keys correspond to the name of the field within the hawk dashboard,
+     * and the value of the map is an array of strings for each of the values for that field.
+     */
+
+    /**
+     * Returns a single document value, by the given field name. If the field does not exist in
+     * the document, or has no values, then `undefined` is returned instead.
+     * @param field The field within the result document to retrieve the value of.
+     */
+    function getDocumentValue(field) {
+      if (this.Document) {
+        var values = this.Document[field];
+
+        if (values && values.length > 0) {
+          return values[0];
+        }
+      }
+
+      return undefined;
+    }
+  }, {
+    key: "getHittedChildAttributeValue",
+    value: function getHittedChildAttributeValue(field) {
+      if (!this.Document) {
+        return undefined;
+      }
+
+      var childAttributesFieldName = 'hawk_child_attributes_hits';
+      var attributes = this.Document[childAttributesFieldName];
+
+      if (!attributes || attributes.length === 0) {
+        return undefined;
+      }
+
+      var values = attributes[0].Items[0];
+
+      if (values && values[field] && values[field].length > 0) {
+        return values[field][0];
+      }
+
+      return undefined;
+    }
+  }]);
+
+  return Result;
+}();
+
+var Sorting =
+/** The sorting items. */
+function Sorting(init) {
+  _classCallCheck(this, Sorting);
+
+  _defineProperty(this, "Items", void 0);
+
+  Object.assign(this, init);
+  this.Items = init.Items.map(function (i) {
+    return new SortingItem(i);
+  });
+};
+var SortingItem =
+/** Name of the sorting option. This is the label to display to users. */
+
+/**
+ * The value to be used to specify the sort order once user selects it. This value is passed in the @see Request.SortBy
+ * field in the @see Request object.
+ */
+
+/** Indicates if this sorting option was configured to be the default. */
+
+/** Indicates if this sorting option is currently being used for the current result set. */
+function SortingItem(init) {
+  _classCallCheck(this, SortingItem);
+
+  _defineProperty(this, "Label", void 0);
+
+  _defineProperty(this, "Value", void 0);
+
+  _defineProperty(this, "IsDefault", void 0);
+
+  _defineProperty(this, "Selected", void 0);
+
+  Object.assign(this, init);
+};
+
+var Selections = function Selections(init) {
+  var _this = this;
+
+  _classCallCheck(this, Selections);
+
+  Object.assign(this, init);
+  Object.keys(init).forEach(function (key) {
+    var selFacet = init[key];
+    _this[key] = new SelectionFacet(selFacet);
+  });
+};
+var SelectionFacet =
+/** Display name for facet. */
+
+/** Will contain an entry for each selection made within the facet. */
+function SelectionFacet(init) {
+  _classCallCheck(this, SelectionFacet);
+
+  _defineProperty(this, "Label", void 0);
+
+  _defineProperty(this, "Items", void 0);
+
+  Object.assign(this, init);
+  this.Items = init.Items.map(function (i) {
+    return new SelectionFacetValue(i);
+  });
+};
+var SelectionFacetValue =
+/** Display label for facet value. */
+
+/** Value for facet value. */
+function SelectionFacetValue(init) {
+  _classCallCheck(this, SelectionFacetValue);
+
+  _defineProperty(this, "Label", void 0);
+
+  _defineProperty(this, "Value", void 0);
+
+  Object.assign(this, init);
+};
+
+var Value =
+/** Label of the value to display. */
+
+/** Value to use when setting the facet value selection. */
+
+/** Number of results in current set that have this facet value. */
+
+/** Indicates if this facet value has been selected. */
+
+/**
+ * Used for displaying the slider facet. @see RangeStart indicates what the starting point of the range
+ * to display, either on basis of what the user selected by sliding the slider, or if they have no
+ * selection it reflects the lowest price product.
+ */
+
+/**
+ * Used for displaying the slider facet. @see RangeEnd indicates what the end point of the range to
+ * display is, either on basis of what the user selected by sliding the slider, or if they have no
+ * selection, it reflects the highest price product.
+ */
+
+/**
+ * Used for displaying the slider facet. @see RangeMin indicates lowest value for the range in the list
+ * of products displayed.
+ */
+
+/**
+ * Used for displaying the slider facet. @see RangeMax indicates highest value for the range in the list
+ * of products displayed.
+ */
+
+/** Used for nested facets. */
+
+/** Set of pagination options */
+function Value(init) {
+  _classCallCheck(this, Value);
+
+  _defineProperty(this, "Label", void 0);
+
+  _defineProperty(this, "Value", void 0);
+
+  _defineProperty(this, "Count", void 0);
+
+  _defineProperty(this, "Selected", void 0);
+
+  _defineProperty(this, "RangeStart", void 0);
+
+  _defineProperty(this, "RangeEnd", void 0);
+
+  _defineProperty(this, "RangeMin", void 0);
+
+  _defineProperty(this, "RangeMax", void 0);
+
+  _defineProperty(this, "Path", void 0);
+
+  _defineProperty(this, "Children", void 0);
+
+  _defineProperty(this, "Level", void 0);
+
+  Object.assign(this, init);
+};
+
+var Swatch =
+/** Match this value to the @see Value object in the @see Values array of @see Facet. */
+
+/** Name of the asset. */
+
+/** URL of the asset. */
+
+/** Indicates if value is the default. */
+
+/** Color of the asset. */
+function Swatch(init) {
+  _classCallCheck(this, Swatch);
+
+  _defineProperty(this, "Value", void 0);
+
+  _defineProperty(this, "AssetName", void 0);
+
+  _defineProperty(this, "AssetUrl", void 0);
+
+  _defineProperty(this, "IsDefault", void 0);
+
+  _defineProperty(this, "Color", void 0);
+
+  Object.assign(this, init);
+};
+
+var Range =
+/** Label of the value to display. */
+
+/** Value to use when setting the facet value selection. */
+
+/** Indicates if the values are numeric. */
+
+/** Lower value of the range. */
+
+/** Upper value of the range. */
+
+/** Asset Url */
+function Range(init) {
+  _classCallCheck(this, Range);
+
+  _defineProperty(this, "Label", void 0);
+
+  _defineProperty(this, "Value", void 0);
+
+  _defineProperty(this, "IsNumeric", void 0);
+
+  _defineProperty(this, "LBound", void 0);
+
+  _defineProperty(this, "UBound", void 0);
+
+  _defineProperty(this, "AssetFullUrl", void 0);
+
+  Object.assign(this, init);
+};
+
+var Facet = /*#__PURE__*/function () {
+  function Facet(init) {
+    _classCallCheck(this, Facet);
+
+    _defineProperty(this, "FacetId", void 0);
+
+    _defineProperty(this, "Name", void 0);
+
+    _defineProperty(this, "Field", void 0);
+
+    _defineProperty(this, "FieldType", void 0);
+
+    _defineProperty(this, "FacetType", void 0);
+
+    _defineProperty(this, "DisplayType", void 0);
+
+    _defineProperty(this, "MaxCount", void 0);
+
+    _defineProperty(this, "MinHitCount", void 0);
+
+    _defineProperty(this, "ParamName", void 0);
+
+    _defineProperty(this, "SortBy", void 0);
+
+    _defineProperty(this, "ExpandSelection", void 0);
+
+    _defineProperty(this, "IsNumeric", void 0);
+
+    _defineProperty(this, "IsCurrency", void 0);
+
+    _defineProperty(this, "CurrencySymbol", void 0);
+
+    _defineProperty(this, "IsCollapsible", void 0);
+
+    _defineProperty(this, "IsCollapsedDefault", void 0);
+
+    _defineProperty(this, "IsVisible", void 0);
+
+    _defineProperty(this, "ShowItemsCount", void 0);
+
+    _defineProperty(this, "IsSearch", void 0);
+
+    _defineProperty(this, "ScrollHeight", void 0);
+
+    _defineProperty(this, "ScrollThreshold", void 0);
+
+    _defineProperty(this, "TruncateThreshold", void 0);
+
+    _defineProperty(this, "SearchThreshold", void 0);
+
+    _defineProperty(this, "Tooltip", void 0);
+
+    _defineProperty(this, "AlwaysVisible", void 0);
+
+    _defineProperty(this, "SortOrder", void 0);
+
+    _defineProperty(this, "NofVisible", void 0);
+
+    _defineProperty(this, "SwatchData", void 0);
+
+    _defineProperty(this, "FacetRangeDisplayType", void 0);
+
+    _defineProperty(this, "PreloadChildren", void 0);
+
+    _defineProperty(this, "ShowSliderInputs", void 0);
+
+    _defineProperty(this, "Ranges", void 0);
+
+    _defineProperty(this, "Values", void 0);
+
+    _defineProperty(this, "DataType", void 0);
+
+    Object.assign(this, init);
+    this.SwatchData = init.SwatchData.map(function (s) {
+      return new Swatch(s);
+    });
+    this.Ranges = init.Ranges.map(function (r) {
+      return new Range(r);
+    });
+    this.Values = init.Values.map(function (v) {
+      return new Value(v);
+    });
+  }
+
+  _createClass(Facet, [{
+    key: "shouldTruncate",
+    get:
+    /** Unique identifier of the facet. */
+
+    /** Display name of the facet. */
+
+    /** The name of the field that is linked to this facet. */
+
+    /** Indicates the maximum number of facet values that are returned. */
+
+    /** Indicates the minimum number of results each facet value needs to have in order to be returned. */
+
+    /**
+     * If this is set, it is to be used as the facet name if passed in the `FacetSelections`. If not set,
+     * the value of the Field object would be used. (This is only applicable when a slider and range
+     * facets are both configured for the same field.)
+     */
+
+    /**
+     * Indicates the sorting logic that is used for this facet’s values. The possible values for this
+     * are the parameters for sorting set options that are configured in "Workbench > Data Configuration
+     * > Sorting/Pagination".
+     */
+
+    /** Indicates if the user should be able to apply more than one filter value from this facet. */
+
+    /** Indicates if facet values are numeric. */
+
+    /** Indicates if facet values are currency (and should be displayed appropriately). */
+
+    /** Indicates currency symbol in case of currency type facets */
+
+    /** Indicates if the facet can be collapsed and expanded by the user. */
+
+    /** If @see IsCollapsible is `true`, this indicates if the facet should initially be collapsed or expanded. */
+
+    /** Indicates if the facet is set to be visible. */
+
+    /** Indicates if the facet count set to be visible. */
+
+    /**
+     * Indicates if search is enabled for this facet. If it is enabled, a search box should be available for
+     * users to filter the facet values by typing in the search box.
+     */
+
+    /**
+     * If facet display type is Scrolling, this value is the height in pixels for the window inside scroll box.
+     * Only to be used if @see DisplayType is `"scrolling"`.
+     */
+
+    /**
+     * If the number of facet values exceeds this number and @see DisplayType is `"scrolling"`, then the facet
+     * should be displayed as scrolling list; if not, display as `"default"`.
+     */
+
+    /**
+     * If the number of facet values exceeds this number and @see DisplayType is `"truncate"`, then the facet
+     * should be displayed as truncated list; if not, display as `"default"`.
+     */
+
+    /**
+     * To be used if @see IsSearch is `true`. The number of facet values must be this number or higher for the
+     * facet search box to display.
+     */
+
+    /** Text to display when user hovers over a help icon. */
+
+    /**
+     * If `false`, indicates that sometimes this facet will not be returned. The conditions that trigger its
+     * display are maintained in the Workbench.
+     */
+
+    /**
+     * The display order of the facet in the facet list.
+     */
+
+    /** This is maximum number of values that could be returned for the facet. */
+
+    /** Will be included if @see FacetType is `"swatch"`. */
+
+    /** Indicates type of facet range display. */
+
+    /** Indicates if setting in Workbench is set to On or Off. */
+
+    /**
+     * To be used if @see FacetType is `"slider"`. If @see ShowSliderInputs is `true`, input boxes should be
+     * available for user to enter values.
+     */
+
+    /** Always present, but will only be populated if the facet is numeric and not a slider. */
+
+    /** The values for this facet. */
+    // Data type for datetime facet type
+
+    /** Whether or not the facet should be rendered as truncated. */
+    function get() {
+      // the facet does truncated listing of values if configured for truncating and we have too many facets
+      return this.DisplayType === 'truncating' && this.Values.length > this.TruncateThreshold;
+    }
+    /** Whether or not the facet should have a quick lookup search input. */
+
+  }, {
+    key: "shouldSearch",
+    get: function get() {
+      // the facet should have a search box if configured to do so, and the number of facet values is greater
+      // than the threshold
+      return this.IsSearch && this.Values.length > this.SearchThreshold;
+    }
+    /**
+     * Returns the name of the key when using this facet for a selection. This will take into consideration
+     * @see ParamName and @see Field in determining which value should be returned.
+     */
+
+  }, {
+    key: "selectionField",
+    get: function get() {
+      return this.ParamName ? this.ParamName : this.Field;
+    }
+  }]);
+
+  return Facet;
+}();
+
+var Rule = function Rule(init) {
+  _classCallCheck(this, Rule);
+
+  _defineProperty(this, "RuleType", void 0);
+
+  _defineProperty(this, "Field", void 0);
+
+  _defineProperty(this, "Condition", void 0);
+
+  _defineProperty(this, "Value", void 0);
+
+  _defineProperty(this, "Operator", void 0);
+
+  _defineProperty(this, "Rules", void 0);
+
+  _defineProperty(this, "Parent", void 0);
+
+  Object.assign(this, init);
+
+  if (init.Parent) {
+    this.Parent = new Rule(init.Parent);
+  }
+
+  this.Rules = init.Rules ? init.Rules.map(function (i) {
+    return new Rule(i);
+  }) : [];
+};
+var RuleType;
+
+(function (RuleType) {
+  RuleType[RuleType["Group"] = 0] = "Group";
+  RuleType[RuleType["Eval"] = 1] = "Eval";
+})(RuleType || (RuleType = {}));
+
+var RuleOperatorType;
+
+(function (RuleOperatorType) {
+  RuleOperatorType[RuleOperatorType["All"] = 0] = "All";
+  RuleOperatorType[RuleOperatorType["Any"] = 1] = "Any";
+  RuleOperatorType[RuleOperatorType["None"] = 2] = "None";
+})(RuleOperatorType || (RuleOperatorType = {}));
+
+var BannerTrigger = function BannerTrigger(init) {
+  _classCallCheck(this, BannerTrigger);
+
+  _defineProperty(this, "BannerGroupId", void 0);
+
+  _defineProperty(this, "Name", void 0);
+
+  _defineProperty(this, "SortOrder", void 0);
+
+  _defineProperty(this, "Rule", void 0);
+
+  Object.assign(this, init);
+  this.Rule = new Rule(this.Rule);
+};
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+var FeaturedItems = function FeaturedItems(init) {
+  _classCallCheck(this, FeaturedItems);
+
+  _defineProperty(this, "Items", void 0);
+
+  Object.assign(this, init);
+
+  if (init && init.Items) {
+    this.Items = init.Items ? init.Items.map(function (i) {
+      return new FeaturedItem(i);
+    }) : [];
+  }
+};
+var Merchandising = function Merchandising(init) {
+  _classCallCheck(this, Merchandising);
+
+  _defineProperty(this, "Items", void 0);
+
+  Object.assign(this, init);
+
+  if (init && init.Items) {
+    this.Items = init.Items ? init.Items.map(function (i) {
+      return new MerchandisingItem(i);
+    }) : [];
+  }
+};
+var PageContentItem = function PageContentItem(init) {
+  _classCallCheck(this, PageContentItem);
+
+  _defineProperty(this, "Zone", void 0);
+
+  _defineProperty(this, "ContentType", void 0);
+
+  _defineProperty(this, "ImageUrl", void 0);
+
+  _defineProperty(this, "AltTag", void 0);
+
+  _defineProperty(this, "ForwardUrl", void 0);
+
+  _defineProperty(this, "Output", void 0);
+
+  _defineProperty(this, "WidgetArgs", void 0);
+
+  _defineProperty(this, "Title", void 0);
+
+  _defineProperty(this, "Name", void 0);
+
+  _defineProperty(this, "DateFrom", void 0);
+
+  _defineProperty(this, "DateTo", void 0);
+
+  _defineProperty(this, "IsMobile", void 0);
+
+  _defineProperty(this, "MobileContentType", void 0);
+
+  _defineProperty(this, "MobileImageUrl", void 0);
+
+  _defineProperty(this, "MobileOutput", void 0);
+
+  _defineProperty(this, "MobileWidgetArgs", void 0);
+
+  _defineProperty(this, "IsTrackingEnabled", void 0);
+
+  _defineProperty(this, "MobileIsTrackingEnabled", void 0);
+
+  _defineProperty(this, "FeaturedItems", void 0);
+
+  _defineProperty(this, "Items", void 0);
+
+  _defineProperty(this, "Target", void 0);
+
+  _defineProperty(this, "MobileTarget", void 0);
+
+  _defineProperty(this, "MobileAltTag", void 0);
+
+  _defineProperty(this, "MobileForwardUrl", void 0);
+
+  _defineProperty(this, "MobileWidth", void 0);
+
+  _defineProperty(this, "MobileHeight", void 0);
+
+  _defineProperty(this, "Trigger", void 0);
+
+  _defineProperty(this, "BannerId", void 0);
+
+  _defineProperty(this, "CampaignId", void 0);
+
+  _defineProperty(this, "ImageTitle", void 0);
+
+  Object.assign(this, init);
+
+  if (init.FeaturedItems) {
+    this.FeaturedItems = init.FeaturedItems.map(function (i) {
+      return new Result(i);
+    });
+  }
+
+  if (init.Trigger) {
+    this.Trigger = new BannerTrigger(init.Trigger);
+  }
+};
+var FeaturedItem = /*#__PURE__*/function (_PageContentItem) {
+  _inherits(FeaturedItem, _PageContentItem);
+
+  var _super = _createSuper(FeaturedItem);
+
+  function FeaturedItem(init) {
+    var _this;
+
+    _classCallCheck(this, FeaturedItem);
+
+    _this = _super.call(this, init);
+
+    _defineProperty(_assertThisInitialized(_this), "Items", void 0);
+
+    Object.assign(_assertThisInitialized(_this), init);
+    _this.Items = init.Items.map(function (i) {
+      return new Result(i);
+    });
+    return _this;
+  }
+
+  return FeaturedItem;
+}(PageContentItem);
+var MerchandisingItem = /*#__PURE__*/function (_PageContentItem2) {
+  _inherits(MerchandisingItem, _PageContentItem2);
+
+  var _super2 = _createSuper(MerchandisingItem);
+
+  function MerchandisingItem(init) {
+    var _this2;
+
+    _classCallCheck(this, MerchandisingItem);
+
+    _this2 = _super2.call(this, init);
+    Object.assign(_assertThisInitialized(_this2), init);
+    return _this2;
+  }
+
+  return MerchandisingItem;
+}(PageContentItem);
+
+var PageContent = function PageContent(init) {
+  _classCallCheck(this, PageContent);
+
+  _defineProperty(this, "ZoneName", void 0);
+
+  _defineProperty(this, "Items", void 0);
+
+  Object.assign(this, init);
+  this.Items = init.Items.map(function (i) {
+    return new PageContentItem(i);
+  });
+};
+
+var Response =
+/** Indicates if request was successful. */
+
+/** Summary of pagination details and a set of pagination options. */
+
+/**
+ * The Keyword value that was sent to Hawksearch in the request. If no Keyword was set in the
+ * request, the value will be empty.
+ */
+
+/**
+ * If this is populated, it indicates that the Keyword value returned 0 results, but the results
+ * in this response are from this AdjustedKeyword.  A message should be displayed to the user
+ * informing them that their search was corrected to this string.
+ *
+ * This is the result of Auto Correct, which is configured in the Workbench > Keyword Search >
+ * Did You Mean.
+ */
+
+/** An entry in the array for each item returned in search results. */
+
+/**
+ * Will contain an entry for each facet that has one or more selections. Will be empty if no facet
+ * selections have been made.
+ */
+
+/**
+ * If any strings are returned in the array, they should be displayed to the user as suggested
+ * search terms.
+ *
+ * This is the result of Did You Mean, which is configured in the Workbench > Keyword Search >
+ * Did You Mean.
+ */
+
+/**
+ * Merchandising can be placed by using Campaigns in the Hawksearch Workbench. The Campaign will
+ * determine if the content should appear and in what zone.
+ */
+// TODO: merchandising object
+// TODO: featured items object
+
+/**
+ * Properties that gets populated when user requests landing page related results
+ *
+ */
+// end of landing page related fields
+function Response(init) {
+  _classCallCheck(this, Response);
+
+  _defineProperty(this, "Success", void 0);
+
+  _defineProperty(this, "Pagination", void 0);
+
+  _defineProperty(this, "Keyword", void 0);
+
+  _defineProperty(this, "AdjustedKeyword", void 0);
+
+  _defineProperty(this, "Results", void 0);
+
+  _defineProperty(this, "Facets", void 0);
+
+  _defineProperty(this, "Selections", void 0);
+
+  _defineProperty(this, "Sorting", void 0);
+
+  _defineProperty(this, "DidYouMean", void 0);
+
+  _defineProperty(this, "Merchandising", void 0);
+
+  _defineProperty(this, "FeaturedItems", void 0);
+
+  _defineProperty(this, "SearchDuration", void 0);
+
+  _defineProperty(this, "DocExplain", void 0);
+
+  _defineProperty(this, "Breadcrumb", void 0);
+
+  _defineProperty(this, "CustomHtml", void 0);
+
+  _defineProperty(this, "HeaderTitle", void 0);
+
+  _defineProperty(this, "MetaDescription", void 0);
+
+  _defineProperty(this, "MetaKeywords", void 0);
+
+  _defineProperty(this, "MetaRobots", void 0);
+
+  _defineProperty(this, "Name", void 0);
+
+  _defineProperty(this, "Next", void 0);
+
+  _defineProperty(this, "Prev", void 0);
+
+  _defineProperty(this, "PageHeading", void 0);
+
+  _defineProperty(this, "PageContent", void 0);
+
+  _defineProperty(this, "RelCanonical", void 0);
+
+  _defineProperty(this, "PageLayoutId", void 0);
+
+  _defineProperty(this, "TrackingId", void 0);
+
+  _defineProperty(this, "VisitorTargets", void 0);
+
+  _defineProperty(this, "Redirect", void 0);
+
+  Object.assign(this, init);
+  this.Pagination = new Pagination(init.Pagination);
+  this.Merchandising = new Merchandising(init.Merchandising);
+  this.FeaturedItems = new FeaturedItems(init.FeaturedItems);
+  this.Results = init.Results.map(function (r) {
+    return new Result(r);
+  });
+  this.Facets = init.Facets.map(function (f) {
+    return new Facet(f);
+  });
+  this.PageContent = init.PageContent ? init.PageContent.map(function (p) {
+    return new PageContent(p);
+  }) : [];
+  this.Selections = new Selections(init.Selections);
+  this.Sorting = new Sorting(init.Sorting);
+};
+
+var ContentType;
+
+(function (ContentType) {
+  ContentType["Image"] = "image";
+  ContentType["Widget"] = "widget";
+  ContentType["Featured"] = "featured";
+  ContentType["Custom"] = "custom";
+  ContentType["LandingPage"] = "landingPage";
+})(ContentType || (ContentType = {}));
+
+var E_T;
+
+(function (E_T) {
+  E_T[E_T["pageLoad"] = 1] = "pageLoad";
+  E_T[E_T["search"] = 2] = "search";
+  E_T[E_T["click"] = 3] = "click";
+  E_T[E_T["addToCart"] = 4] = "addToCart";
+  E_T[E_T["rate"] = 5] = "rate";
+  E_T[E_T["sale"] = 6] = "sale";
+  E_T[E_T["bannerClick"] = 7] = "bannerClick";
+  E_T[E_T["bannerImpression"] = 8] = "bannerImpression";
+  E_T[E_T["recommendationClick"] = 10] = "recommendationClick";
+  E_T[E_T["autoCompleteClick"] = 11] = "autoCompleteClick";
+  E_T[E_T["add2CartMultiple"] = 14] = "add2CartMultiple";
+  E_T[E_T["autoCompleteItemClick"] = 18] = "autoCompleteItemClick";
+  E_T[E_T["autoCompleteCategoryClick"] = 17] = "autoCompleteCategoryClick";
+})(E_T || (E_T = {}));
+
+var P_T;
+
+(function (P_T) {
+  P_T[P_T["item"] = 1] = "item";
+  P_T[P_T["landing"] = 2] = "landing";
+  P_T[P_T["cart"] = 3] = "cart";
+  P_T[P_T["order"] = 4] = "order";
+  P_T[P_T["custom"] = 5] = "custom";
+})(P_T || (P_T = {}));
+
+var SuggestType;
+
+(function (SuggestType) {
+  SuggestType[SuggestType["PopularSearches"] = 1] = "PopularSearches";
+  SuggestType[SuggestType["TopCategories"] = 2] = "TopCategories";
+  SuggestType[SuggestType["TopProductMatches"] = 3] = "TopProductMatches";
+  SuggestType[SuggestType["TopContentMatches"] = 4] = "TopContentMatches";
+  SuggestType[SuggestType["TrendingProducts"] = 5] = "TrendingProducts";
+})(SuggestType || (SuggestType = {}));
+
+var SearchType;
+
+(function (SearchType) {
+  SearchType[SearchType["Initial"] = 1] = "Initial";
+  SearchType[SearchType["Refinement"] = 2] = "Refinement";
+})(SearchType || (SearchType = {}));
+
+var TrackEventNameMapping = {
+  Click: 'click',
+  Cart: '',
+  CopyRequestTracking: '',
+  RequestTracking: '',
+  Search: 'searchtracking',
+  Sale: 'sale',
+  RecommendationImpression: '',
+  RecommendationClick: 'recommendationclick',
+  Rate: 'rate',
+  PageLoad: 'pageload',
+  Identify: '',
+  BannerImpression: 'bannerimpression',
+  BannerClick: 'bannerclick',
+  AutocompleteClick: 'autocompleteclick',
+  Add2CartMultiple: 'add2cartmultiple',
+  Add2Cart: 'add2cart',
+  AutoCompleteItemClick: 'autocompleteitemclick',
+  AutoCompleteCategoryClick: 'autocompletecategoryclick'
+};
+var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart', 'autocompleteitemclick', 'autocompletecategoryclick'];
+
+var TrackingEvent = /*#__PURE__*/function () {
+  /**
+   * The Singleton's constructor should always be private to prevent direct
+   * construction calls with the `new` operator.
+   */
+  function TrackingEvent() {
+    _classCallCheck(this, TrackingEvent);
+
+    _defineProperty(this, "trackingURL", void 0);
+
+    _defineProperty(this, "clientGUID", void 0);
+
+    _defineProperty(this, "trackConfig", void 0);
+
+    _defineProperty(this, "language", void 0);
+  }
+  /**
+   * The static method that controls the access to the singleton instance.
+   *
+   * This implementation let you subclass the Singleton class while keeping
+   * just one instance of each subclass around.
+   */
+
+
+  _createClass(TrackingEvent, [{
+    key: "setTrackingURL",
+    value:
+    /**
+     * Finally, any singleton should define some business logic, which can be
+     * executed on its instance.
+     */
+    function setTrackingURL(url) {
+      this.trackingURL = url;
+    }
+  }, {
+    key: "getTrackingURL",
+    value: function getTrackingURL() {
+      return this.trackingURL;
+    }
+  }, {
+    key: "setClientGUID",
+    value: function setClientGUID(guid) {
+      this.clientGUID = guid;
+    }
+  }, {
+    key: "getClientGUID",
+    value: function getClientGUID() {
+      return this.getClientGUID;
+    }
+  }, {
+    key: "getVisitorExpiry",
+    value: function getVisitorExpiry() {
+      var d = new Date(); // 1 year
+
+      d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
+      return d.toUTCString();
+    }
+  }, {
+    key: "getVisitExpiry",
+    value: function getVisitExpiry() {
+      var d = new Date(); // 4 hours
+
+      d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
+      return d.toUTCString();
+    }
+  }, {
+    key: "setLanguage",
+    value: function setLanguage(language) {
+      this.language = language;
+    }
+  }, {
+    key: "getLanguageParams",
+    value: function getLanguageParams() {
+      var params = {};
+
+      if (this.language) {
+        params = {
+          CustomDictionary: {
+            language: this.language
+          }
+        };
+      }
+
+      return params;
+    }
+  }, {
+    key: "createGuid",
+    value: function createGuid() {
+      var s = [];
+      var hexDigits = '0123456789abcdef';
+
+      for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+      }
+
+      s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
+      // tslint:disable-next-line: no-bitwise
+
+      s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+      s[8] = s[13] = s[18] = s[23] = '-';
+      var uuid = s.join('');
+      return uuid;
+    }
+  }, {
+    key: "setTrackConfig",
+    value: function setTrackConfig(value) {
+      this.trackConfig = value;
+    }
+  }, {
+    key: "getCookie",
+    value: function getCookie(name) {
+      var nameEQ = name + '=';
+      var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
+
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1, c.length);
+        }
+
+        if (c.indexOf(nameEQ) === 0) {
+          return c.substring(nameEQ.length, c.length);
+        }
+      }
+
+      return null;
+    }
+  }, {
+    key: "setCookie",
+    value: function setCookie(name, value, expiry) {
+      var expires;
+
+      if (expiry) {
+        expires = '; expires=' + expiry;
+      } else {
+        expires = '';
+      }
+
+      document.cookie = name + '=' + value + expires + '; path=/';
+    }
+  }, {
+    key: "writePageLoad",
+    value: function writePageLoad(pageType) {
+      var c = document.documentElement;
+      var pl = {
+        EventType: E_T.pageLoad,
+        EventData: btoa(JSON.stringify({
+          PageTypeId: P_T[pageType],
+          RequestPath: window.location.pathname,
+          Qs: window.location.search,
+          ViewportHeight: c.clientHeight,
+          ViewportWidth: c.clientWidth
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeSearchTracking",
+    value: function writeSearchTracking(trackingId, typeId, keyword) {
+      var guid = this.createGuid();
+
+      if (typeId === SearchType.Initial) {
+        this.setCookie('hawk_query_id', guid);
+      }
+
+      var queryId = this.getCookie('hawk_query_id') || guid;
+      var c = document.documentElement;
+      var pl = {
+        EventType: E_T.search,
+        EventData: btoa(JSON.stringify({
+          QueryId: queryId,
+          TrackingId: trackingId,
+          TypeId: typeId,
+          ViewportHeight: c.clientHeight,
+          ViewportWidth: c.clientWidth,
+          keyword: encodeURIComponent(keyword)
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeClick",
+    value: function writeClick(event, uniqueId, trackingId, url) {
+      var c = document.documentElement;
+      var pl = {
+        EventType: E_T.click,
+        EventData: btoa(JSON.stringify({
+          Url: url,
+          Qs: window.location.search,
+          RequestPath: window.location.pathname,
+          TrackingId: trackingId,
+          UniqueId: uniqueId,
+          ViewportHeight: c.clientHeight,
+          ViewportWidth: c.clientWidth,
+          ScrollX: window.scrollX,
+          ScrollY: window.scrollY,
+          MouseX: event.clientX,
+          MouseY: event.clientY
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeBannerClick",
+    value: function writeBannerClick(bannerId, campaignId, trackingId) {
+      var pl = {
+        EventType: E_T.bannerClick,
+        EventData: btoa(JSON.stringify({
+          CampaignId: campaignId,
+          BannerId: bannerId,
+          TrackingId: trackingId
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeBannerImpression",
+    value: function writeBannerImpression(bannerId, campaignId, trackingId) {
+      var pl = {
+        EventType: E_T.bannerImpression,
+        EventData: btoa(JSON.stringify({
+          CampaignId: campaignId,
+          BannerId: bannerId,
+          TrackingId: trackingId
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeSale",
+    value: function writeSale(orderNo, itemList, total, subTotal, tax, currency) {
+      var pl = {
+        EventType: E_T.sale,
+        EventData: btoa(JSON.stringify({
+          OrderNo: orderNo,
+          ItemList: itemList,
+          Total: total,
+          Tax: tax,
+          SubTotal: subTotal,
+          Currency: currency
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeAdd2Cart",
+    value: function writeAdd2Cart(uniqueId, price, quantity, currency) {
+      var pl = {
+        EventType: E_T.addToCart,
+        EventData: btoa(JSON.stringify({
+          UniqueId: uniqueId,
+          Quantity: quantity,
+          Price: price,
+          Currency: currency
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeAdd2CartMultiple",
+    value: function writeAdd2CartMultiple(args) {
+      var pl = {
+        EventType: E_T.add2CartMultiple,
+        EventData: btoa(JSON.stringify({
+          ItemsList: args
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeRate",
+    value: function writeRate(uniqueId, value) {
+      var pl = {
+        EventType: E_T.rate,
+        EventData: btoa(JSON.stringify({
+          UniqueId: uniqueId,
+          Value: value
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeRecommendationClick",
+    value: function writeRecommendationClick(widgetGuid, uniqueId, itemIndex, requestId) {
+      var pl = {
+        EventType: E_T.recommendationClick,
+        EventData: btoa(JSON.stringify({
+          ItemIndex: itemIndex,
+          RequestId: requestId,
+          UniqueId: uniqueId,
+          WidgetGuid: widgetGuid
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeAutoCompleteClick",
+    value: function writeAutoCompleteClick(keyword, suggestType, name, url) {
+      var pl = {
+        EventType: E_T.autoCompleteClick,
+        EventData: btoa(JSON.stringify({
+          Keyword: keyword,
+          Name: name,
+          SuggestType: suggestType,
+          Url: url
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeAutoCompleteCategoryClick",
+    value: function writeAutoCompleteCategoryClick(field, value, url) {
+      var pl = {
+        EventType: E_T.autoCompleteCategoryClick,
+        EventData: btoa(JSON.stringify({
+          Field: field,
+          Value: value,
+          Url: url
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "writeAutoCompleteItemClick",
+    value: function writeAutoCompleteItemClick(itemId, url) {
+      var pl = {
+        EventType: E_T.autoCompleteItemClick,
+        EventData: btoa(JSON.stringify({
+          ItemId: itemId,
+          Url: url
+        }))
+      };
+      this.mr(pl);
+    }
+  }, {
+    key: "mr",
+    value: function () {
+      var _mr = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(data) {
+        var visitId, visitorId, languageParams, pl;
+        return regenerator.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                visitId = this.getCookie('hawk_visit_id');
+                visitorId = this.getCookie('hawk_visitor_id');
+                languageParams = this.getLanguageParams();
+
+                if (!visitId) {
+                  this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
+                  visitId = this.getCookie('hawk_visit_id');
+                }
+
+                if (!visitorId) {
+                  this.setCookie('hawk_visitor_id', this.createGuid(), this.getVisitorExpiry());
+                  visitorId = this.getCookie('hawk_visitor_id');
+                }
+
+                pl = Object.assign({
+                  ClientGuid: this.clientGUID,
+                  VisitId: visitId,
+                  VisitorId: visitorId // TrackingProperties: hs.Context,
+                  // CustomDictionary: hs.Context.Custom,
+
+                }, languageParams, data);
+                _context.next = 8;
+                return fetch(this.trackingURL, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(pl)
+                })["catch"](function (error) {
+                  console.error('Error:', error);
+                });
+
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function mr(_x) {
+        return _mr.apply(this, arguments);
+      }
+
+      return mr;
+    }()
+  }, {
+    key: "track",
+    value: function track(eventName, args) {
+      if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
+        return;
+      }
+
+      switch (eventName.toLowerCase()) {
+        case 'pageload':
+          // HawkSearch.Context.add("uniqueid", "123456789");
+          return this.writePageLoad(args.pageType);
+
+        case 'searchtracking':
+          // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
+          // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Refinement});
+          return this.writeSearchTracking(args.trackingId, args.typeId, args.keyword);
+        // CHANGED
+
+        case 'click':
+          // HawkSearch.Tracking.track('click',{event: e, uniqueId: "33333", trackingId: "75a0801a-a93c-4bcb-81f1-f4b011f616e3"});
+          return this.writeClick(args.event, args.uniqueId, args.trackingId, args.url);
+        // CHANGED
+
+        case 'bannerclick':
+          // HawkSearch.Tracking.track('bannerclick',{bannerId: 1, campaignId: 2, trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
+          return this.writeBannerClick(args.bannerId, args.campaignId, args.trackingId);
+        // CHANGED
+
+        case 'bannerimpression':
+          // HawkSearch.Tracking.track('bannerimpression',{bannerId: "2", campaignId: "2", trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
+          return this.writeBannerImpression(args.bannerId, args.campaignId, args.trackingId);
+        // CHANGED
+
+        case 'sale':
+          // HawkSearch.Tracking.track('sale', {orderNo: 'order_123',itemList: [{uniqueid: '123456789', itemPrice: 12.99, quantity: 2}], total: 25.98, subTotal: 22, tax: 3.98, currency: 'USD'});
+          return this.writeSale(args.orderNo, args.itemList, args.total, args.subTotal, args.tax, args.currency);
+
+        case 'add2cart':
+          // HawkSearch.Tracking.track('add2cart',{uniqueId: '123456789', price: 19.99, quantity: 3, currency: 'USD'});
+          return this.writeAdd2Cart(args.uniqueId, args.price, args.quantity, args.currency);
+
+        case 'add2cartmultiple':
+          // HawkSearch.Tracking.track('add2cartmultiple', [{uniqueId: '123456789',price: 15.97,quantity: 1,currency: 'USD'},{uniqueId: '987465321', price: 18.00, quantity: 1, currency: 'USD'}]);
+          return this.writeAdd2CartMultiple(args);
+
+        case 'rate':
+          // HawkSearch.Tracking.track('rate', {uniqueId: '123456789',value: 3.00});
+          return this.writeRate(args.uniqueId, args.value);
+
+        case 'recommendationclick':
+          // HawkSearch.Tracking.track('recommendationclick',{uniqueId: "223222", itemIndex: "222", widgetGuid:"2d652a1e-2e05-4414-9d76-51979109f724", requestId:"2d652a1e-2e05-4414-9d76-51979109f724"});
+          return this.writeRecommendationClick(args.widgetGuid, args.uniqueId, args.itemIndex, args.requestId);
+
+        case 'autocompleteclick':
+          // HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
+          return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
+        // CHANGED
+
+        case 'autocompleteitemclick':
+          return this.writeAutoCompleteItemClick(args.itemId, args.url);
+
+        case 'autocompletecategoryclick':
+          return this.writeAutoCompleteCategoryClick(args.field, args.value, args.url);
+      }
+    }
+  }, {
+    key: "isEnabled",
+    value: function isEnabled(eventName) {
+      return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(function (e) {
+        return TrackEventNameMapping[e] === eventName;
+      })));
+    }
+  }], [{
+    key: "getInstance",
+    value: function getInstance(url) {
+      if (!TrackingEvent.instance) {
+        TrackingEvent.instance = new TrackingEvent();
+      }
+
+      return TrackingEvent.instance;
+    }
+  }]);
+
+  return TrackingEvent;
+}(); // export TrackingEvent.getInstance();
+
+
+_defineProperty(TrackingEvent, "instance", void 0);
+
+var TrackingEvent$1 = TrackingEvent.getInstance();
+
 var bind = function bind(fn, thisArg) {
   return function wrap() {
     var args = new Array(arguments.length);
@@ -5071,1163 +6778,178 @@ axios_1.default = default_1;
 
 var axios$1 = axios_1;
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+var FacetType;
 
-function _unsupportedIterableToArray$1(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$1(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen); }
+(function (FacetType) {
+  FacetType["Checkbox"] = "checkbox";
+  FacetType["NestedCheckbox"] = "nestedcheckbox";
+  FacetType["Link"] = "link";
+  FacetType["Nestedlink"] = "nestedlinklist";
+  FacetType["Slider"] = "slider";
+  FacetType["Swatch"] = "swatch";
+  FacetType["Rating"] = "rating";
+  FacetType["Size"] = "size";
+  FacetType["SearchWithin"] = "search";
+  FacetType["RecentSearches"] = "recentsearches";
+  FacetType["RelatedSearches"] = "related";
+  FacetType["OpenRange"] = "openRange";
+  FacetType["Distance"] = "distance";
+})(FacetType || (FacetType = {}));
 
-function _arrayLikeToArray$1(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-var FacetSelectionState;
+function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+var getVisitorExpiry = function getVisitorExpiry() {
+  var d = new Date(); // 1 year
 
-(function (FacetSelectionState) {
-  FacetSelectionState[FacetSelectionState["NotSelected"] = 0] = "NotSelected";
-  FacetSelectionState[FacetSelectionState["Selected"] = 1] = "Selected";
-  FacetSelectionState[FacetSelectionState["Negated"] = 2] = "Negated";
-})(FacetSelectionState || (FacetSelectionState = {}));
+  d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
+  return d.toUTCString();
+};
+var getVisitExpiry = function getVisitExpiry() {
+  var d = new Date(); // 4 hours
 
-var SearchStore = /*#__PURE__*/function () {
-  /** This represents the next search request that will be executed. */
+  d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
+  return d.toUTCString();
+};
+var createGuid = function createGuid() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
 
-  /**
-   * Whether or not the next search request will perform history actions (pushing the search into browser
-   * history).
-   */
-
-  /** Whether or not a search request is waiting for completion. */
-
-  /** The results of the last search request, if one has been performed. Otherwise, `undefined`. */
-  function SearchStore(initial) {
-    _classCallCheck(this, SearchStore);
-
-    _defineProperty(this, "pendingSearch", void 0);
-
-    _defineProperty(this, "doHistory", void 0);
-
-    _defineProperty(this, "isLoading", void 0);
-
-    _defineProperty(this, "itemsToCompare", void 0);
-
-    _defineProperty(this, "itemsToCompareIds", void 0);
-
-    _defineProperty(this, "comparedResults", void 0);
-
-    _defineProperty(this, "isLandingPageExpired", void 0);
-
-    _defineProperty(this, "IsAutocompleteRecommendationEnabled", void 0);
-
-    _defineProperty(this, "negativeFacetValuePrefix", void 0);
-
-    _defineProperty(this, "productDetails", void 0);
-
-    _defineProperty(this, "previewDate", void 0);
-
-    _defineProperty(this, "smartBar", void 0);
-
-    _defineProperty(this, "searchResults", void 0);
-
-    _defineProperty(this, "requestError", void 0);
-
-    _defineProperty(this, "language", void 0);
-
-    Object.assign(this, initial);
+  for (var i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
   }
-  /**
-   * Returns whether or not this is the initial load of the search results.
-   */
 
+  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
+  // tslint:disable-next-line: no-bitwise
 
-  _createClass(SearchStore, [{
-    key: "isInitialLoad",
-    get: function get() {
-      return this.isLoading && !this.searchResults;
+  s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+  s[8] = s[13] = s[18] = s[23] = '-';
+  var uuid = s.join('');
+  return uuid;
+};
+var createWidgetId = function createWidgetId() {
+  var s = [];
+  var hexDigits = '0123456789abcdef';
+
+  for (var i = 0; i < 16; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+
+  var uuid = s.join('');
+  return uuid;
+};
+var getCookie = function getCookie(name) {
+  var nameEQ = name + '=';
+  var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
+
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1, c.length);
     }
-    /**
-     * Determines whether or not the given facet and facet value is selected, and returns info regarding the selection.
-     * @param facet The facet for which the facet value will be checked for selection.
-     * @param facetValue The facet value that will be checked for selection.
-     */
 
-  }, {
-    key: "isFacetSelected",
-    value: function isFacetSelected(facet, facetValue, symbolForNegate) {
-      var facetName = typeof facet === 'string' ? facet : facet.Name;
-      var facetField = typeof facet === 'string' ? facet : facet.selectionField;
-      var valueValue = typeof facetValue === 'string' ? facetValue : facetValue.Value;
-      var valueLabel = typeof facetValue === 'string' ? facetValue : facetValue.Label;
-
-      if (!valueValue) {
-        console.error("Facet ".concat(facetName, " (").concat(facetField, ") has no facet value for ").concat(valueLabel));
-        return {
-          state: FacetSelectionState.NotSelected
-        };
-      }
-
-      var facetSelections = this.pendingSearch.FacetSelections;
-
-      if (!facetSelections || !facetSelections[facetField]) {
-        return {
-          state: FacetSelectionState.NotSelected
-        };
-      }
-
-      var selectionIdx = facetSelections[facetField].indexOf(valueValue);
-      var negationIdx = facetSelections[facetField].indexOf("".concat(symbolForNegate).concat(valueValue));
-
-      if (selectionIdx !== -1) {
-        // if the exact facet value exists, then we're normally selected
-        return {
-          state: FacetSelectionState.Selected,
-          selectedValue: valueValue,
-          selectionIndex: selectionIdx
-        };
-      } else if (negationIdx !== -1) {
-        // if the facet value is selected but prefixed with a -, then we're negated
-        return {
-          state: FacetSelectionState.Negated,
-          selectedValue: "".concat(symbolForNegate).concat(valueValue),
-          selectionIndex: negationIdx
-        };
-      }
-
-      return {
-        state: FacetSelectionState.NotSelected
-      };
+    if (c.indexOf(nameEQ) === 0) {
+      return c.substring(nameEQ.length, c.length);
     }
-    /**
-     * Returns an object containing the selections that have been made in both the next search request and also
-     * in the previous search request. This should be used when iterating selections instead of pulling the values
-     * out from the search result or pending search - as this will merge the values together and provide an accurate
-     * view of all facet selections.
-     */
+  }
 
-  }, {
-    key: "facetSelections",
-    get: function get() {
-      var _this = this;
+  return null;
+};
+var setCookie = function setCookie(name, value, expiry) {
+  var expires;
 
-      var _this$pendingSearch = this.pendingSearch,
-          clientSelections = _this$pendingSearch.FacetSelections,
-          SearchWithin = _this$pendingSearch.SearchWithin,
-          searchResults = this.searchResults,
-          negativeFacetValuePrefix = this.negativeFacetValuePrefix;
-      var selections = {};
+  if (expiry) {
+    expires = '; expires=' + expiry;
+  } else {
+    expires = '';
+  }
 
-      if (!clientSelections && !SearchWithin) {
-        return selections;
-      } // if we've made selections on the client, transform these into more detailed selections.
-      // the client-side selections are just facet fields and values without any labels - so we
-      // need to combine this information with the list of facets received from the server in the
-      // previous search in order to return a rich list of selections
+  document.cookie = name + '=' + value + expires + '; path=/';
+};
 
+function getRecentFacetExpiry() {
+  var d = new Date(); // 12 hours
 
-      var facets = searchResults ? searchResults.Facets : null;
+  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
+  return d.toUTCString();
+}
 
-      if (!facets) {
-        // but we can only do this if we've received facet information from the server. without this
-        // info we can't determine what labels should be used
-        return selections;
-      } // manually handle the `searchWithin` selection, as this doesn't usually behave like a normal facet selection
-      // but instead a field on the search request
+var getParsedObject = function getParsedObject(facetC, siteDirectory) {
+  if (!facetC) {
+    return {};
+  }
 
+  var dict = {};
+  (facetC || '').split(',').forEach(function (element) {
+    var splitText = element.split('|');
 
-      if (SearchWithin) {
-        var facet = facets.find(function (f) {
-          return f.selectionField === 'searchWithin';
-        });
-
-        if (facet) {
-          selections.searchWithin = {
-            facet: facet,
-            label: facet.Name,
-            items: [{
-              label: SearchWithin,
-              value: SearchWithin
-            }]
-          };
-        }
+    if (siteDirectory) {
+      if (splitText.length > 2) {
+        dict[splitText[0]] = dict[splitText[0]] || {};
+        dict[splitText[0]][splitText[1]] = splitText[2];
       }
+    } else {
+      dict[splitText[0]] = splitText[1];
+    }
+  });
+  return dict;
+};
 
-      if (!clientSelections) {
-        return selections;
-      }
-
-      Object.keys(clientSelections).forEach(function (fieldName) {
-        var selectionValues = clientSelections[fieldName];
-
-        if (!selectionValues) {
-          // if this selection has no values, it's not really selected
-          return;
-        }
-
-        var facet = facets.find(function (f) {
-          return f.selectionField === fieldName;
-        });
-
-        if (!facet) {
-          // if there's no matching facet from the server, we can't show this since we'll have no labels
-          return;
-        }
-
-        var items = [];
-
-        if (facet.FieldType === 'range') {
-          // if the facet this selection is for is a range, there won't be a matching value and thus there won't be a label.
-          // so because of this we'll just use the selection value as the label
-          selectionValues.forEach(function (selectionValue) {
-            items.push({
-              label: selectionValue,
-              value: selectionValue
-            });
-          });
-        } else if (facet.FieldType === 'tab') {
-          // do not return the selection value for tab facet
-          return;
-        } else {
-          // for other types of facets, try to find a matching value
-          selectionValues.forEach(function (selectionValue) {
-            var matchingVal = _this.findMatchingValue(selectionValue, facet.Values, negativeFacetValuePrefix);
-
-            if (!matchingVal || !matchingVal.Label) {
-              // if there's no matching value from the server, we cannot display because there would
-              // be no label - same if there's no label at all
-              return;
-            }
-
-            items.push({
-              label: matchingVal.Label,
-              value: selectionValue,
-              path: matchingVal.Path
-            });
-          });
-        }
-
-        selections[fieldName] = {
-          facet: facet,
-          label: facet.Name,
-          items: items
-        };
+function getStringifyObject(obj) {
+  var items = [];
+  Object.keys(obj).forEach(function (element) {
+    if (_typeof(obj[element]) === 'object') {
+      Object.keys(obj[element]).forEach(function (key, index) {
+        var item = element + '|' + key + '|' + obj[element][key];
+        items.push(item);
       });
-      return selections;
+    } else {
+      var item = element + '|' + obj[element];
+      items.push(item);
     }
-  }, {
-    key: "findMatchingValue",
-    value: function findMatchingValue(selectionValue, facetValues, symbolForNegate) {
-      var matchingValue = null;
+  });
+  return items.join(',');
+}
 
-      if (!facetValues || facetValues.length === 0) {
-        return null;
-      }
+var setRecentSearch = function setRecentSearch(siteDirectory, val) {
+  var cookie = getCookie(FacetType.RecentSearches);
 
-      var _iterator = _createForOfIteratorHelper(facetValues),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var facetValue = _step.value;
-          var isMatchingVal = facetValue.Value === selectionValue || "".concat(symbolForNegate).concat(facetValue.Value) === selectionValue; // loop through children
-
-          if (!isMatchingVal) {
-            matchingValue = this.findMatchingValue(selectionValue, facetValue.Children, symbolForNegate);
-          } else {
-            matchingValue = facetValue;
-          }
-
-          if (matchingValue) {
-            return matchingValue;
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-
-      return matchingValue;
+  if (!cookie) {
+    if (siteDirectory) {
+      setCookie(FacetType.RecentSearches, "".concat(siteDirectory, "|").concat(val, "|1"), getRecentFacetExpiry());
+    } else {
+      setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
     }
-  }]);
 
-  return SearchStore;
-}();
-
-var Pagination =
-/** Number of total items in the result set. */
-
-/** The page number returned. */
-
-/** The number of items returned for the page. */
-
-/** The total number of pages for the result set - with the current @see MaxPerPage. */
-
-/** Set of pagination options */
-function Pagination(init) {
-  _classCallCheck(this, Pagination);
-
-  _defineProperty(this, "NofResults", void 0);
-
-  _defineProperty(this, "CurrentPage", void 0);
-
-  _defineProperty(this, "MaxPerPage", void 0);
-
-  _defineProperty(this, "NofPages", void 0);
-
-  _defineProperty(this, "Items", void 0);
-
-  Object.assign(this, init);
-  this.Items = init.Items.map(function (i) {
-    return new PaginationItem(i);
-  });
-};
-var PaginationItem =
-/** Display label for user's pagination option (i.e. 24 per page). */
-
-/** The maximum number of items that will be returned per page when this option is selected. */
-
-/** Indicates if this is the option selected. Only one pagination item will have this set to `true`. */
-
-/** Indicates if this is the default option. Only one pagination item will have this set to `true`. */
-function PaginationItem(init) {
-  _classCallCheck(this, PaginationItem);
-
-  _defineProperty(this, "Label", void 0);
-
-  _defineProperty(this, "PageSize", void 0);
-
-  _defineProperty(this, "Selected", void 0);
-
-  _defineProperty(this, "Default", void 0);
-
-  Object.assign(this, init);
-};
-
-var Result = /*#__PURE__*/function () {
-  function Result(init) {
-    _classCallCheck(this, Result);
-
-    _defineProperty(this, "quantity", void 0);
-
-    _defineProperty(this, "DocId", void 0);
-
-    _defineProperty(this, "Score", void 0);
-
-    _defineProperty(this, "Document", void 0);
-
-    _defineProperty(this, "Explain", void 0);
-
-    _defineProperty(this, "IsPin", void 0);
-
-    _defineProperty(this, "BestFragment", void 0);
-
-    Object.assign(this, init);
+    return;
   }
 
-  _createClass(Result, [{
-    key: "getDocumentValue",
-    value:
-    /** Unique identifier for this search result item. */
+  var dict = getParsedObject(cookie, siteDirectory);
 
-    /** Calculated relevancy score. */
+  if (siteDirectory) {
+    dict[siteDirectory] = dict[siteDirectory] && _typeof(dict[siteDirectory]) === 'object' ? dict[siteDirectory] : {};
 
-    /**
-     * Contains the fields for the search result item, as an object of string keys to an array
-     * of string values. The keys correspond to the name of the field within the hawk dashboard,
-     * and the value of the map is an array of strings for each of the values for that field.
-     */
-
-    /**
-     * Returns a single document value, by the given field name. If the field does not exist in
-     * the document, or has no values, then `undefined` is returned instead.
-     * @param field The field within the result document to retrieve the value of.
-     */
-    function getDocumentValue(field) {
-      if (this.Document) {
-        var values = this.Document[field];
-
-        if (values && values.length > 0) {
-          return values[0];
-        }
-      }
-
-      return undefined;
+    if (dict[siteDirectory][val]) {
+      dict[siteDirectory][val] = Number(dict[siteDirectory][val]) + 1;
+    } else {
+      dict[siteDirectory] = _objectSpread$3(_objectSpread$3({}, dict[siteDirectory]), {}, _defineProperty({}, val, 1));
     }
-  }, {
-    key: "getHittedChildAttributeValue",
-    value: function getHittedChildAttributeValue(field) {
-      if (!this.Document) {
-        return undefined;
-      }
-
-      var childAttributesFieldName = 'hawk_child_attributes_hits';
-      var attributes = this.Document[childAttributesFieldName];
-
-      if (!attributes || attributes.length === 0) {
-        return undefined;
-      }
-
-      var values = attributes[0].Items[0];
-
-      if (values && values[field] && values[field].length > 0) {
-        return values[field][0];
-      }
-
-      return undefined;
+  } else {
+    if (dict[val]) {
+      dict[val] = Number(dict[val]) + 1;
+    } else {
+      dict = _objectSpread$3(_objectSpread$3({}, dict), {}, _defineProperty({}, val, 1));
     }
-  }]);
-
-  return Result;
-}();
-
-var Sorting =
-/** The sorting items. */
-function Sorting(init) {
-  _classCallCheck(this, Sorting);
-
-  _defineProperty(this, "Items", void 0);
-
-  Object.assign(this, init);
-  this.Items = init.Items.map(function (i) {
-    return new SortingItem(i);
-  });
-};
-var SortingItem =
-/** Name of the sorting option. This is the label to display to users. */
-
-/**
- * The value to be used to specify the sort order once user selects it. This value is passed in the @see Request.SortBy
- * field in the @see Request object.
- */
-
-/** Indicates if this sorting option was configured to be the default. */
-
-/** Indicates if this sorting option is currently being used for the current result set. */
-function SortingItem(init) {
-  _classCallCheck(this, SortingItem);
-
-  _defineProperty(this, "Label", void 0);
-
-  _defineProperty(this, "Value", void 0);
-
-  _defineProperty(this, "IsDefault", void 0);
-
-  _defineProperty(this, "Selected", void 0);
-
-  Object.assign(this, init);
-};
-
-var Selections = function Selections(init) {
-  var _this = this;
-
-  _classCallCheck(this, Selections);
-
-  Object.assign(this, init);
-  Object.keys(init).forEach(function (key) {
-    var selFacet = init[key];
-    _this[key] = new SelectionFacet(selFacet);
-  });
-};
-var SelectionFacet =
-/** Display name for facet. */
-
-/** Will contain an entry for each selection made within the facet. */
-function SelectionFacet(init) {
-  _classCallCheck(this, SelectionFacet);
-
-  _defineProperty(this, "Label", void 0);
-
-  _defineProperty(this, "Items", void 0);
-
-  Object.assign(this, init);
-  this.Items = init.Items.map(function (i) {
-    return new SelectionFacetValue(i);
-  });
-};
-var SelectionFacetValue =
-/** Display label for facet value. */
-
-/** Value for facet value. */
-function SelectionFacetValue(init) {
-  _classCallCheck(this, SelectionFacetValue);
-
-  _defineProperty(this, "Label", void 0);
-
-  _defineProperty(this, "Value", void 0);
-
-  Object.assign(this, init);
-};
-
-var Value =
-/** Label of the value to display. */
-
-/** Value to use when setting the facet value selection. */
-
-/** Number of results in current set that have this facet value. */
-
-/** Indicates if this facet value has been selected. */
-
-/**
- * Used for displaying the slider facet. @see RangeStart indicates what the starting point of the range
- * to display, either on basis of what the user selected by sliding the slider, or if they have no
- * selection it reflects the lowest price product.
- */
-
-/**
- * Used for displaying the slider facet. @see RangeEnd indicates what the end point of the range to
- * display is, either on basis of what the user selected by sliding the slider, or if they have no
- * selection, it reflects the highest price product.
- */
-
-/**
- * Used for displaying the slider facet. @see RangeMin indicates lowest value for the range in the list
- * of products displayed.
- */
-
-/**
- * Used for displaying the slider facet. @see RangeMax indicates highest value for the range in the list
- * of products displayed.
- */
-
-/** Used for nested facets. */
-
-/** Set of pagination options */
-function Value(init) {
-  _classCallCheck(this, Value);
-
-  _defineProperty(this, "Label", void 0);
-
-  _defineProperty(this, "Value", void 0);
-
-  _defineProperty(this, "Count", void 0);
-
-  _defineProperty(this, "Selected", void 0);
-
-  _defineProperty(this, "RangeStart", void 0);
-
-  _defineProperty(this, "RangeEnd", void 0);
-
-  _defineProperty(this, "RangeMin", void 0);
-
-  _defineProperty(this, "RangeMax", void 0);
-
-  _defineProperty(this, "Path", void 0);
-
-  _defineProperty(this, "Children", void 0);
-
-  _defineProperty(this, "Level", void 0);
-
-  Object.assign(this, init);
-};
-
-var Swatch =
-/** Match this value to the @see Value object in the @see Values array of @see Facet. */
-
-/** Name of the asset. */
-
-/** URL of the asset. */
-
-/** Indicates if value is the default. */
-
-/** Color of the asset. */
-function Swatch(init) {
-  _classCallCheck(this, Swatch);
-
-  _defineProperty(this, "Value", void 0);
-
-  _defineProperty(this, "AssetName", void 0);
-
-  _defineProperty(this, "AssetUrl", void 0);
-
-  _defineProperty(this, "IsDefault", void 0);
-
-  _defineProperty(this, "Color", void 0);
-
-  Object.assign(this, init);
-};
-
-var Range =
-/** Label of the value to display. */
-
-/** Value to use when setting the facet value selection. */
-
-/** Indicates if the values are numeric. */
-
-/** Lower value of the range. */
-
-/** Upper value of the range. */
-
-/** Asset Url */
-function Range(init) {
-  _classCallCheck(this, Range);
-
-  _defineProperty(this, "Label", void 0);
-
-  _defineProperty(this, "Value", void 0);
-
-  _defineProperty(this, "IsNumeric", void 0);
-
-  _defineProperty(this, "LBound", void 0);
-
-  _defineProperty(this, "UBound", void 0);
-
-  _defineProperty(this, "AssetFullUrl", void 0);
-
-  Object.assign(this, init);
-};
-
-var Facet = /*#__PURE__*/function () {
-  function Facet(init) {
-    _classCallCheck(this, Facet);
-
-    _defineProperty(this, "FacetId", void 0);
-
-    _defineProperty(this, "Name", void 0);
-
-    _defineProperty(this, "Field", void 0);
-
-    _defineProperty(this, "FieldType", void 0);
-
-    _defineProperty(this, "FacetType", void 0);
-
-    _defineProperty(this, "DisplayType", void 0);
-
-    _defineProperty(this, "MaxCount", void 0);
-
-    _defineProperty(this, "MinHitCount", void 0);
-
-    _defineProperty(this, "ParamName", void 0);
-
-    _defineProperty(this, "SortBy", void 0);
-
-    _defineProperty(this, "ExpandSelection", void 0);
-
-    _defineProperty(this, "IsNumeric", void 0);
-
-    _defineProperty(this, "IsCurrency", void 0);
-
-    _defineProperty(this, "CurrencySymbol", void 0);
-
-    _defineProperty(this, "IsCollapsible", void 0);
-
-    _defineProperty(this, "IsCollapsedDefault", void 0);
-
-    _defineProperty(this, "IsVisible", void 0);
-
-    _defineProperty(this, "ShowItemsCount", void 0);
-
-    _defineProperty(this, "IsSearch", void 0);
-
-    _defineProperty(this, "ScrollHeight", void 0);
-
-    _defineProperty(this, "ScrollThreshold", void 0);
-
-    _defineProperty(this, "TruncateThreshold", void 0);
-
-    _defineProperty(this, "SearchThreshold", void 0);
-
-    _defineProperty(this, "Tooltip", void 0);
-
-    _defineProperty(this, "AlwaysVisible", void 0);
-
-    _defineProperty(this, "SortOrder", void 0);
-
-    _defineProperty(this, "NofVisible", void 0);
-
-    _defineProperty(this, "SwatchData", void 0);
-
-    _defineProperty(this, "FacetRangeDisplayType", void 0);
-
-    _defineProperty(this, "PreloadChildren", void 0);
-
-    _defineProperty(this, "ShowSliderInputs", void 0);
-
-    _defineProperty(this, "Ranges", void 0);
-
-    _defineProperty(this, "Values", void 0);
-
-    _defineProperty(this, "DataType", void 0);
-
-    Object.assign(this, init);
-    this.SwatchData = init.SwatchData.map(function (s) {
-      return new Swatch(s);
-    });
-    this.Ranges = init.Ranges.map(function (r) {
-      return new Range(r);
-    });
-    this.Values = init.Values.map(function (v) {
-      return new Value(v);
-    });
   }
 
-  _createClass(Facet, [{
-    key: "shouldTruncate",
-    get:
-    /** Unique identifier of the facet. */
-
-    /** Display name of the facet. */
-
-    /** The name of the field that is linked to this facet. */
-
-    /** Indicates the maximum number of facet values that are returned. */
-
-    /** Indicates the minimum number of results each facet value needs to have in order to be returned. */
-
-    /**
-     * If this is set, it is to be used as the facet name if passed in the `FacetSelections`. If not set,
-     * the value of the Field object would be used. (This is only applicable when a slider and range
-     * facets are both configured for the same field.)
-     */
-
-    /**
-     * Indicates the sorting logic that is used for this facet’s values. The possible values for this
-     * are the parameters for sorting set options that are configured in "Workbench > Data Configuration
-     * > Sorting/Pagination".
-     */
-
-    /** Indicates if the user should be able to apply more than one filter value from this facet. */
-
-    /** Indicates if facet values are numeric. */
-
-    /** Indicates if facet values are currency (and should be displayed appropriately). */
-
-    /** Indicates currency symbol in case of currency type facets */
-
-    /** Indicates if the facet can be collapsed and expanded by the user. */
-
-    /** If @see IsCollapsible is `true`, this indicates if the facet should initially be collapsed or expanded. */
-
-    /** Indicates if the facet is set to be visible. */
-
-    /** Indicates if the facet count set to be visible. */
-
-    /**
-     * Indicates if search is enabled for this facet. If it is enabled, a search box should be available for
-     * users to filter the facet values by typing in the search box.
-     */
-
-    /**
-     * If facet display type is Scrolling, this value is the height in pixels for the window inside scroll box.
-     * Only to be used if @see DisplayType is `"scrolling"`.
-     */
-
-    /**
-     * If the number of facet values exceeds this number and @see DisplayType is `"scrolling"`, then the facet
-     * should be displayed as scrolling list; if not, display as `"default"`.
-     */
-
-    /**
-     * If the number of facet values exceeds this number and @see DisplayType is `"truncate"`, then the facet
-     * should be displayed as truncated list; if not, display as `"default"`.
-     */
-
-    /**
-     * To be used if @see IsSearch is `true`. The number of facet values must be this number or higher for the
-     * facet search box to display.
-     */
-
-    /** Text to display when user hovers over a help icon. */
-
-    /**
-     * If `false`, indicates that sometimes this facet will not be returned. The conditions that trigger its
-     * display are maintained in the Workbench.
-     */
-
-    /**
-     * The display order of the facet in the facet list.
-     */
-
-    /** This is maximum number of values that could be returned for the facet. */
-
-    /** Will be included if @see FacetType is `"swatch"`. */
-
-    /** Indicates type of facet range display. */
-
-    /** Indicates if setting in Workbench is set to On or Off. */
-
-    /**
-     * To be used if @see FacetType is `"slider"`. If @see ShowSliderInputs is `true`, input boxes should be
-     * available for user to enter values.
-     */
-
-    /** Always present, but will only be populated if the facet is numeric and not a slider. */
-
-    /** The values for this facet. */
-    // Data type for datetime facet type
-
-    /** Whether or not the facet should be rendered as truncated. */
-    function get() {
-      // the facet does truncated listing of values if configured for truncating and we have too many facets
-      return this.DisplayType === 'truncating' && this.Values.length > this.TruncateThreshold;
-    }
-    /** Whether or not the facet should have a quick lookup search input. */
-
-  }, {
-    key: "shouldSearch",
-    get: function get() {
-      // the facet should have a search box if configured to do so, and the number of facet values is greater
-      // than the threshold
-      return this.IsSearch && this.Values.length > this.SearchThreshold;
-    }
-    /**
-     * Returns the name of the key when using this facet for a selection. This will take into consideration
-     * @see ParamName and @see Field in determining which value should be returned.
-     */
-
-  }, {
-    key: "selectionField",
-    get: function get() {
-      return this.ParamName ? this.ParamName : this.Field;
-    }
-  }]);
-
-  return Facet;
-}();
-
-var Rule = function Rule(init) {
-  _classCallCheck(this, Rule);
-
-  _defineProperty(this, "RuleType", void 0);
-
-  _defineProperty(this, "Field", void 0);
-
-  _defineProperty(this, "Condition", void 0);
-
-  _defineProperty(this, "Value", void 0);
-
-  _defineProperty(this, "Operator", void 0);
-
-  _defineProperty(this, "Rules", void 0);
-
-  _defineProperty(this, "Parent", void 0);
-
-  Object.assign(this, init);
-
-  if (init.Parent) {
-    this.Parent = new Rule(init.Parent);
-  }
-
-  this.Rules = init.Rules ? init.Rules.map(function (i) {
-    return new Rule(i);
-  }) : [];
+  var str = getStringifyObject(dict);
+  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
 };
-var RuleType;
-
-(function (RuleType) {
-  RuleType[RuleType["Group"] = 0] = "Group";
-  RuleType[RuleType["Eval"] = 1] = "Eval";
-})(RuleType || (RuleType = {}));
-
-var RuleOperatorType;
-
-(function (RuleOperatorType) {
-  RuleOperatorType[RuleOperatorType["All"] = 0] = "All";
-  RuleOperatorType[RuleOperatorType["Any"] = 1] = "Any";
-  RuleOperatorType[RuleOperatorType["None"] = 2] = "None";
-})(RuleOperatorType || (RuleOperatorType = {}));
-
-var BannerTrigger = function BannerTrigger(init) {
-  _classCallCheck(this, BannerTrigger);
-
-  _defineProperty(this, "BannerGroupId", void 0);
-
-  _defineProperty(this, "Name", void 0);
-
-  _defineProperty(this, "SortOrder", void 0);
-
-  _defineProperty(this, "Rule", void 0);
-
-  Object.assign(this, init);
-  this.Rule = new Rule(this.Rule);
+var deleteCookie = function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-var FeaturedItems = function FeaturedItems(init) {
-  _classCallCheck(this, FeaturedItems);
-
-  _defineProperty(this, "Items", void 0);
-
-  Object.assign(this, init);
-
-  if (init && init.Items) {
-    this.Items = init.Items ? init.Items.map(function (i) {
-      return new FeaturedItem(i);
-    }) : [];
-  }
-};
-var Merchandising = function Merchandising(init) {
-  _classCallCheck(this, Merchandising);
-
-  _defineProperty(this, "Items", void 0);
-
-  Object.assign(this, init);
-
-  if (init && init.Items) {
-    this.Items = init.Items ? init.Items.map(function (i) {
-      return new MerchandisingItem(i);
-    }) : [];
-  }
-};
-var PageContentItem = function PageContentItem(init) {
-  _classCallCheck(this, PageContentItem);
-
-  _defineProperty(this, "Zone", void 0);
-
-  _defineProperty(this, "ContentType", void 0);
-
-  _defineProperty(this, "ImageUrl", void 0);
-
-  _defineProperty(this, "AltTag", void 0);
-
-  _defineProperty(this, "ForwardUrl", void 0);
-
-  _defineProperty(this, "Output", void 0);
-
-  _defineProperty(this, "WidgetArgs", void 0);
-
-  _defineProperty(this, "Title", void 0);
-
-  _defineProperty(this, "Name", void 0);
-
-  _defineProperty(this, "DateFrom", void 0);
-
-  _defineProperty(this, "DateTo", void 0);
-
-  _defineProperty(this, "IsMobile", void 0);
-
-  _defineProperty(this, "MobileContentType", void 0);
-
-  _defineProperty(this, "MobileImageUrl", void 0);
-
-  _defineProperty(this, "MobileOutput", void 0);
-
-  _defineProperty(this, "MobileWidgetArgs", void 0);
-
-  _defineProperty(this, "IsTrackingEnabled", void 0);
-
-  _defineProperty(this, "MobileIsTrackingEnabled", void 0);
-
-  _defineProperty(this, "FeaturedItems", void 0);
-
-  _defineProperty(this, "Items", void 0);
-
-  _defineProperty(this, "Target", void 0);
-
-  _defineProperty(this, "MobileTarget", void 0);
-
-  _defineProperty(this, "MobileAltTag", void 0);
-
-  _defineProperty(this, "MobileForwardUrl", void 0);
-
-  _defineProperty(this, "MobileWidth", void 0);
-
-  _defineProperty(this, "MobileHeight", void 0);
-
-  _defineProperty(this, "Trigger", void 0);
-
-  _defineProperty(this, "BannerId", void 0);
-
-  _defineProperty(this, "CampaignId", void 0);
-
-  _defineProperty(this, "ImageTitle", void 0);
-
-  Object.assign(this, init);
-
-  if (init.FeaturedItems) {
-    this.FeaturedItems = init.FeaturedItems.map(function (i) {
-      return new Result(i);
-    });
-  }
-
-  if (init.Trigger) {
-    this.Trigger = new BannerTrigger(init.Trigger);
-  }
-};
-var FeaturedItem = /*#__PURE__*/function (_PageContentItem) {
-  _inherits(FeaturedItem, _PageContentItem);
-
-  var _super = _createSuper(FeaturedItem);
-
-  function FeaturedItem(init) {
-    var _this;
-
-    _classCallCheck(this, FeaturedItem);
-
-    _this = _super.call(this, init);
-
-    _defineProperty(_assertThisInitialized(_this), "Items", void 0);
-
-    Object.assign(_assertThisInitialized(_this), init);
-    _this.Items = init.Items.map(function (i) {
-      return new Result(i);
-    });
-    return _this;
-  }
-
-  return FeaturedItem;
-}(PageContentItem);
-var MerchandisingItem = /*#__PURE__*/function (_PageContentItem2) {
-  _inherits(MerchandisingItem, _PageContentItem2);
-
-  var _super2 = _createSuper(MerchandisingItem);
-
-  function MerchandisingItem(init) {
-    var _this2;
-
-    _classCallCheck(this, MerchandisingItem);
-
-    _this2 = _super2.call(this, init);
-    Object.assign(_assertThisInitialized(_this2), init);
-    return _this2;
-  }
-
-  return MerchandisingItem;
-}(PageContentItem);
-
-var PageContent = function PageContent(init) {
-  _classCallCheck(this, PageContent);
-
-  _defineProperty(this, "ZoneName", void 0);
-
-  _defineProperty(this, "Items", void 0);
-
-  Object.assign(this, init);
-  this.Items = init.Items.map(function (i) {
-    return new PageContentItem(i);
-  });
-};
-
-var Response =
-/** Indicates if request was successful. */
-
-/** Summary of pagination details and a set of pagination options. */
-
-/**
- * The Keyword value that was sent to Hawksearch in the request. If no Keyword was set in the
- * request, the value will be empty.
- */
-
-/**
- * If this is populated, it indicates that the Keyword value returned 0 results, but the results
- * in this response are from this AdjustedKeyword.  A message should be displayed to the user
- * informing them that their search was corrected to this string.
- *
- * This is the result of Auto Correct, which is configured in the Workbench > Keyword Search >
- * Did You Mean.
- */
-
-/** An entry in the array for each item returned in search results. */
-
-/**
- * Will contain an entry for each facet that has one or more selections. Will be empty if no facet
- * selections have been made.
- */
-
-/**
- * If any strings are returned in the array, they should be displayed to the user as suggested
- * search terms.
- *
- * This is the result of Did You Mean, which is configured in the Workbench > Keyword Search >
- * Did You Mean.
- */
-
-/**
- * Merchandising can be placed by using Campaigns in the Hawksearch Workbench. The Campaign will
- * determine if the content should appear and in what zone.
- */
-// TODO: merchandising object
-// TODO: featured items object
-
-/**
- * Properties that gets populated when user requests landing page related results
- *
- */
-// end of landing page related fields
-function Response(init) {
-  _classCallCheck(this, Response);
-
-  _defineProperty(this, "Success", void 0);
-
-  _defineProperty(this, "Pagination", void 0);
-
-  _defineProperty(this, "Keyword", void 0);
-
-  _defineProperty(this, "AdjustedKeyword", void 0);
-
-  _defineProperty(this, "Results", void 0);
-
-  _defineProperty(this, "Facets", void 0);
-
-  _defineProperty(this, "Selections", void 0);
-
-  _defineProperty(this, "Sorting", void 0);
-
-  _defineProperty(this, "DidYouMean", void 0);
-
-  _defineProperty(this, "Merchandising", void 0);
-
-  _defineProperty(this, "FeaturedItems", void 0);
-
-  _defineProperty(this, "SearchDuration", void 0);
-
-  _defineProperty(this, "DocExplain", void 0);
-
-  _defineProperty(this, "Breadcrumb", void 0);
-
-  _defineProperty(this, "CustomHtml", void 0);
-
-  _defineProperty(this, "HeaderTitle", void 0);
-
-  _defineProperty(this, "MetaDescription", void 0);
-
-  _defineProperty(this, "MetaKeywords", void 0);
-
-  _defineProperty(this, "MetaRobots", void 0);
-
-  _defineProperty(this, "Name", void 0);
-
-  _defineProperty(this, "Next", void 0);
-
-  _defineProperty(this, "Prev", void 0);
-
-  _defineProperty(this, "PageHeading", void 0);
-
-  _defineProperty(this, "PageContent", void 0);
-
-  _defineProperty(this, "RelCanonical", void 0);
-
-  _defineProperty(this, "PageLayoutId", void 0);
-
-  _defineProperty(this, "TrackingId", void 0);
-
-  _defineProperty(this, "VisitorTargets", void 0);
-
-  _defineProperty(this, "Redirect", void 0);
-
-  Object.assign(this, init);
-  this.Pagination = new Pagination(init.Pagination);
-  this.Merchandising = new Merchandising(init.Merchandising);
-  this.FeaturedItems = new FeaturedItems(init.FeaturedItems);
-  this.Results = init.Results.map(function (r) {
-    return new Result(r);
-  });
-  this.Facets = init.Facets.map(function (f) {
-    return new Facet(f);
-  });
-  this.PageContent = init.PageContent ? init.PageContent.map(function (p) {
-    return new PageContent(p);
-  }) : [];
-  this.Selections = new Selections(init.Selections);
-  this.Sorting = new Sorting(init.Sorting);
-};
-
-var ContentType;
-
-(function (ContentType) {
-  ContentType["Image"] = "image";
-  ContentType["Widget"] = "widget";
-  ContentType["Featured"] = "featured";
-  ContentType["Custom"] = "custom";
-  ContentType["LandingPage"] = "landingPage";
-})(ContentType || (ContentType = {}));
 
 var AuthToken = /*#__PURE__*/function () {
   /**
@@ -6626,9 +7348,9 @@ var HawkClient = /*#__PURE__*/function () {
   return HawkClient;
 }();
 
-function ownKeys$2(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$3(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$2(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$2(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useMergableState(initialValue, typeConstructor) {
   var _useState = useState(new typeConstructor(initialValue)),
       _useState2 = _slicedToArray$1(_useState, 2),
@@ -6642,7 +7364,7 @@ function useMergableState(initialValue, typeConstructor) {
         // so we derive the new state from the previous state
         var newState = value(prevState); // and then set the new merged state
 
-        return new typeConstructor(_objectSpread$3(_objectSpread$3({}, prevState), newState));
+        return new typeConstructor(_objectSpread$4(_objectSpread$4({}, prevState), newState));
       });
       return;
     } // otherwise, the new state was simply passed in
@@ -6650,734 +7372,12 @@ function useMergableState(initialValue, typeConstructor) {
 
     setState(function (prevState) {
       // merge state together and set it
-      return new typeConstructor(_objectSpread$3(_objectSpread$3({}, prevState), value));
+      return new typeConstructor(_objectSpread$4(_objectSpread$4({}, prevState), value));
     });
   }
 
   return [state, setStateAndMerge];
 }
-
-var FacetType;
-
-(function (FacetType) {
-  FacetType["Checkbox"] = "checkbox";
-  FacetType["NestedCheckbox"] = "nestedcheckbox";
-  FacetType["Link"] = "link";
-  FacetType["Nestedlink"] = "nestedlinklist";
-  FacetType["Slider"] = "slider";
-  FacetType["Swatch"] = "swatch";
-  FacetType["Rating"] = "rating";
-  FacetType["Size"] = "size";
-  FacetType["SearchWithin"] = "search";
-  FacetType["RecentSearches"] = "recentsearches";
-  FacetType["RelatedSearches"] = "related";
-  FacetType["OpenRange"] = "openRange";
-  FacetType["Distance"] = "distance";
-})(FacetType || (FacetType = {}));
-
-var E_T;
-
-(function (E_T) {
-  E_T[E_T["pageLoad"] = 1] = "pageLoad";
-  E_T[E_T["search"] = 2] = "search";
-  E_T[E_T["click"] = 3] = "click";
-  E_T[E_T["addToCart"] = 4] = "addToCart";
-  E_T[E_T["rate"] = 5] = "rate";
-  E_T[E_T["sale"] = 6] = "sale";
-  E_T[E_T["bannerClick"] = 7] = "bannerClick";
-  E_T[E_T["bannerImpression"] = 8] = "bannerImpression";
-  E_T[E_T["recommendationClick"] = 10] = "recommendationClick";
-  E_T[E_T["autoCompleteClick"] = 11] = "autoCompleteClick";
-  E_T[E_T["add2CartMultiple"] = 14] = "add2CartMultiple";
-  E_T[E_T["autoCompleteItemClick"] = 18] = "autoCompleteItemClick";
-  E_T[E_T["autoCompleteCategoryClick"] = 17] = "autoCompleteCategoryClick";
-})(E_T || (E_T = {}));
-
-var P_T;
-
-(function (P_T) {
-  P_T[P_T["item"] = 1] = "item";
-  P_T[P_T["landing"] = 2] = "landing";
-  P_T[P_T["cart"] = 3] = "cart";
-  P_T[P_T["order"] = 4] = "order";
-  P_T[P_T["custom"] = 5] = "custom";
-})(P_T || (P_T = {}));
-
-var SuggestType;
-
-(function (SuggestType) {
-  SuggestType[SuggestType["PopularSearches"] = 1] = "PopularSearches";
-  SuggestType[SuggestType["TopCategories"] = 2] = "TopCategories";
-  SuggestType[SuggestType["TopProductMatches"] = 3] = "TopProductMatches";
-  SuggestType[SuggestType["TopContentMatches"] = 4] = "TopContentMatches";
-  SuggestType[SuggestType["TrendingProducts"] = 5] = "TrendingProducts";
-})(SuggestType || (SuggestType = {}));
-
-var SearchType;
-
-(function (SearchType) {
-  SearchType[SearchType["Initial"] = 1] = "Initial";
-  SearchType[SearchType["Refinement"] = 2] = "Refinement";
-})(SearchType || (SearchType = {}));
-
-var TrackEventNameMapping = {
-  Click: 'click',
-  Cart: '',
-  CopyRequestTracking: '',
-  RequestTracking: '',
-  Search: 'searchtracking',
-  Sale: 'sale',
-  RecommendationImpression: '',
-  RecommendationClick: 'recommendationclick',
-  Rate: 'rate',
-  PageLoad: 'pageload',
-  Identify: '',
-  BannerImpression: 'bannerimpression',
-  BannerClick: 'bannerclick',
-  AutocompleteClick: 'autocompleteclick',
-  Add2CartMultiple: 'add2cartmultiple',
-  Add2Cart: 'add2cart',
-  AutoCompleteItemClick: 'autocompleteitemclick',
-  AutoCompleteCategoryClick: 'autocompletecategoryclick'
-};
-var AvailableEvents = ['click', 'pageload', 'searchtracking', 'autocompleteclick', 'bannerclick', 'bannerimpression', 'sale', 'add2cart', 'autocompleteitemclick', 'autocompletecategoryclick'];
-
-var TrackingEvent = /*#__PURE__*/function () {
-  /**
-   * The Singleton's constructor should always be private to prevent direct
-   * construction calls with the `new` operator.
-   */
-  function TrackingEvent() {
-    _classCallCheck(this, TrackingEvent);
-
-    _defineProperty(this, "trackingURL", void 0);
-
-    _defineProperty(this, "clientGUID", void 0);
-
-    _defineProperty(this, "trackConfig", void 0);
-
-    _defineProperty(this, "language", void 0);
-  }
-  /**
-   * The static method that controls the access to the singleton instance.
-   *
-   * This implementation let you subclass the Singleton class while keeping
-   * just one instance of each subclass around.
-   */
-
-
-  _createClass(TrackingEvent, [{
-    key: "setTrackingURL",
-    value:
-    /**
-     * Finally, any singleton should define some business logic, which can be
-     * executed on its instance.
-     */
-    function setTrackingURL(url) {
-      this.trackingURL = url;
-    }
-  }, {
-    key: "getTrackingURL",
-    value: function getTrackingURL() {
-      return this.trackingURL;
-    }
-  }, {
-    key: "setClientGUID",
-    value: function setClientGUID(guid) {
-      this.clientGUID = guid;
-    }
-  }, {
-    key: "getClientGUID",
-    value: function getClientGUID() {
-      return this.getClientGUID;
-    }
-  }, {
-    key: "getVisitorExpiry",
-    value: function getVisitorExpiry() {
-      var d = new Date(); // 1 year
-
-      d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
-      return d.toUTCString();
-    }
-  }, {
-    key: "getVisitExpiry",
-    value: function getVisitExpiry() {
-      var d = new Date(); // 4 hours
-
-      d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
-      return d.toUTCString();
-    }
-  }, {
-    key: "setLanguage",
-    value: function setLanguage(language) {
-      this.language = language;
-    }
-  }, {
-    key: "getLanguageParams",
-    value: function getLanguageParams() {
-      var params = {};
-
-      if (this.language) {
-        params = {
-          CustomDictionary: {
-            language: this.language
-          }
-        };
-      }
-
-      return params;
-    }
-  }, {
-    key: "createGuid",
-    value: function createGuid() {
-      var s = [];
-      var hexDigits = '0123456789abcdef';
-
-      for (var i = 0; i < 36; i++) {
-        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-      }
-
-      s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
-      // tslint:disable-next-line: no-bitwise
-
-      s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-
-      s[8] = s[13] = s[18] = s[23] = '-';
-      var uuid = s.join('');
-      return uuid;
-    }
-  }, {
-    key: "setTrackConfig",
-    value: function setTrackConfig(value) {
-      this.trackConfig = value;
-    }
-  }, {
-    key: "getCookie",
-    value: function getCookie(name) {
-      var nameEQ = name + '=';
-      var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
-
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-
-        while (c.charAt(0) === ' ') {
-          c = c.substring(1, c.length);
-        }
-
-        if (c.indexOf(nameEQ) === 0) {
-          return c.substring(nameEQ.length, c.length);
-        }
-      }
-
-      return null;
-    }
-  }, {
-    key: "setCookie",
-    value: function setCookie(name, value, expiry) {
-      var expires;
-
-      if (expiry) {
-        expires = '; expires=' + expiry;
-      } else {
-        expires = '';
-      }
-
-      document.cookie = name + '=' + value + expires + '; path=/';
-    }
-  }, {
-    key: "writePageLoad",
-    value: function writePageLoad(pageType) {
-      var c = document.documentElement;
-      var pl = {
-        EventType: E_T.pageLoad,
-        EventData: btoa(JSON.stringify({
-          PageTypeId: P_T[pageType],
-          RequestPath: window.location.pathname,
-          Qs: window.location.search,
-          ViewportHeight: c.clientHeight,
-          ViewportWidth: c.clientWidth
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeSearchTracking",
-    value: function writeSearchTracking(trackingId, typeId, keyword) {
-      var guid = this.createGuid();
-
-      if (typeId === SearchType.Initial) {
-        this.setCookie('hawk_query_id', guid);
-      }
-
-      var queryId = this.getCookie('hawk_query_id') || guid;
-      var c = document.documentElement;
-      var pl = {
-        EventType: E_T.search,
-        EventData: btoa(JSON.stringify({
-          QueryId: queryId,
-          TrackingId: trackingId,
-          TypeId: typeId,
-          ViewportHeight: c.clientHeight,
-          ViewportWidth: c.clientWidth,
-          keyword: encodeURIComponent(keyword)
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeClick",
-    value: function writeClick(event, uniqueId, trackingId, url) {
-      var c = document.documentElement;
-      var pl = {
-        EventType: E_T.click,
-        EventData: btoa(JSON.stringify({
-          Url: url,
-          Qs: window.location.search,
-          RequestPath: window.location.pathname,
-          TrackingId: trackingId,
-          UniqueId: uniqueId,
-          ViewportHeight: c.clientHeight,
-          ViewportWidth: c.clientWidth,
-          ScrollX: window.scrollX,
-          ScrollY: window.scrollY,
-          MouseX: event.clientX,
-          MouseY: event.clientY
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeBannerClick",
-    value: function writeBannerClick(bannerId, campaignId, trackingId) {
-      var pl = {
-        EventType: E_T.bannerClick,
-        EventData: btoa(JSON.stringify({
-          CampaignId: campaignId,
-          BannerId: bannerId,
-          TrackingId: trackingId
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeBannerImpression",
-    value: function writeBannerImpression(bannerId, campaignId, trackingId) {
-      var pl = {
-        EventType: E_T.bannerImpression,
-        EventData: btoa(JSON.stringify({
-          CampaignId: campaignId,
-          BannerId: bannerId,
-          TrackingId: trackingId
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeSale",
-    value: function writeSale(orderNo, itemList, total, subTotal, tax, currency) {
-      var pl = {
-        EventType: E_T.sale,
-        EventData: btoa(JSON.stringify({
-          OrderNo: orderNo,
-          ItemList: itemList,
-          Total: total,
-          Tax: tax,
-          SubTotal: subTotal,
-          Currency: currency
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeAdd2Cart",
-    value: function writeAdd2Cart(uniqueId, price, quantity, currency) {
-      var pl = {
-        EventType: E_T.addToCart,
-        EventData: btoa(JSON.stringify({
-          UniqueId: uniqueId,
-          Quantity: quantity,
-          Price: price,
-          Currency: currency
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeAdd2CartMultiple",
-    value: function writeAdd2CartMultiple(args) {
-      var pl = {
-        EventType: E_T.add2CartMultiple,
-        EventData: btoa(JSON.stringify({
-          ItemsList: args
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeRate",
-    value: function writeRate(uniqueId, value) {
-      var pl = {
-        EventType: E_T.rate,
-        EventData: btoa(JSON.stringify({
-          UniqueId: uniqueId,
-          Value: value
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeRecommendationClick",
-    value: function writeRecommendationClick(widgetGuid, uniqueId, itemIndex, requestId) {
-      var pl = {
-        EventType: E_T.recommendationClick,
-        EventData: btoa(JSON.stringify({
-          ItemIndex: itemIndex,
-          RequestId: requestId,
-          UniqueId: uniqueId,
-          WidgetGuid: widgetGuid
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeAutoCompleteClick",
-    value: function writeAutoCompleteClick(keyword, suggestType, name, url) {
-      var pl = {
-        EventType: E_T.autoCompleteClick,
-        EventData: btoa(JSON.stringify({
-          Keyword: keyword,
-          Name: name,
-          SuggestType: suggestType,
-          Url: url
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeAutoCompleteCategoryClick",
-    value: function writeAutoCompleteCategoryClick(field, value, url) {
-      var pl = {
-        EventType: E_T.autoCompleteCategoryClick,
-        EventData: btoa(JSON.stringify({
-          Field: field,
-          Value: value,
-          Url: url
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "writeAutoCompleteItemClick",
-    value: function writeAutoCompleteItemClick(itemId, url) {
-      var pl = {
-        EventType: E_T.autoCompleteItemClick,
-        EventData: btoa(JSON.stringify({
-          ItemId: itemId,
-          Url: url
-        }))
-      };
-      this.mr(pl);
-    }
-  }, {
-    key: "mr",
-    value: function () {
-      var _mr = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(data) {
-        var visitId, visitorId, languageParams, pl;
-        return regenerator.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                visitId = this.getCookie('hawk_visit_id');
-                visitorId = this.getCookie('hawk_visitor_id');
-                languageParams = this.getLanguageParams();
-
-                if (!visitId) {
-                  this.setCookie('hawk_visit_id', this.createGuid(), this.getVisitExpiry());
-                  visitId = this.getCookie('hawk_visit_id');
-                }
-
-                if (!visitorId) {
-                  this.setCookie('hawk_visitor_id', this.createGuid(), this.getVisitorExpiry());
-                  visitorId = this.getCookie('hawk_visitor_id');
-                }
-
-                pl = Object.assign({
-                  ClientGuid: this.clientGUID,
-                  VisitId: visitId,
-                  VisitorId: visitorId // TrackingProperties: hs.Context,
-                  // CustomDictionary: hs.Context.Custom,
-
-                }, languageParams, data);
-                _context.next = 8;
-                return fetch(this.trackingURL, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(pl)
-                })["catch"](function (error) {
-                  console.error('Error:', error);
-                });
-
-              case 8:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function mr(_x) {
-        return _mr.apply(this, arguments);
-      }
-
-      return mr;
-    }()
-  }, {
-    key: "track",
-    value: function track(eventName, args) {
-      if (!this.trackingURL || !this.clientGUID || !this.isEnabled(eventName)) {
-        return;
-      }
-
-      switch (eventName.toLowerCase()) {
-        case 'pageload':
-          // HawkSearch.Context.add("uniqueid", "123456789");
-          return this.writePageLoad(args.pageType);
-
-        case 'searchtracking':
-          // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
-          // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Refinement});
-          return this.writeSearchTracking(args.trackingId, args.typeId, args.keyword);
-        // CHANGED
-
-        case 'click':
-          // HawkSearch.Tracking.track('click',{event: e, uniqueId: "33333", trackingId: "75a0801a-a93c-4bcb-81f1-f4b011f616e3"});
-          return this.writeClick(args.event, args.uniqueId, args.trackingId, args.url);
-        // CHANGED
-
-        case 'bannerclick':
-          // HawkSearch.Tracking.track('bannerclick',{bannerId: 1, campaignId: 2, trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
-          return this.writeBannerClick(args.bannerId, args.campaignId, args.trackingId);
-        // CHANGED
-
-        case 'bannerimpression':
-          // HawkSearch.Tracking.track('bannerimpression',{bannerId: "2", campaignId: "2", trackingId:"2d652a1e-2e05-4414-9d76-51979109f724"});
-          return this.writeBannerImpression(args.bannerId, args.campaignId, args.trackingId);
-        // CHANGED
-
-        case 'sale':
-          // HawkSearch.Tracking.track('sale', {orderNo: 'order_123',itemList: [{uniqueid: '123456789', itemPrice: 12.99, quantity: 2}], total: 25.98, subTotal: 22, tax: 3.98, currency: 'USD'});
-          return this.writeSale(args.orderNo, args.itemList, args.total, args.subTotal, args.tax, args.currency);
-
-        case 'add2cart':
-          // HawkSearch.Tracking.track('add2cart',{uniqueId: '123456789', price: 19.99, quantity: 3, currency: 'USD'});
-          return this.writeAdd2Cart(args.uniqueId, args.price, args.quantity, args.currency);
-
-        case 'add2cartmultiple':
-          // HawkSearch.Tracking.track('add2cartmultiple', [{uniqueId: '123456789',price: 15.97,quantity: 1,currency: 'USD'},{uniqueId: '987465321', price: 18.00, quantity: 1, currency: 'USD'}]);
-          return this.writeAdd2CartMultiple(args);
-
-        case 'rate':
-          // HawkSearch.Tracking.track('rate', {uniqueId: '123456789',value: 3.00});
-          return this.writeRate(args.uniqueId, args.value);
-
-        case 'recommendationclick':
-          // HawkSearch.Tracking.track('recommendationclick',{uniqueId: "223222", itemIndex: "222", widgetGuid:"2d652a1e-2e05-4414-9d76-51979109f724", requestId:"2d652a1e-2e05-4414-9d76-51979109f724"});
-          return this.writeRecommendationClick(args.widgetGuid, args.uniqueId, args.itemIndex, args.requestId);
-
-        case 'autocompleteclick':
-          // HawkSearch.Tracking.track('autocompleteclick',{keyword: "test", suggestType: HawkSearch.Tracking.SuggestType.PopularSearches, name:"tester", url:"/test"});
-          return this.writeAutoCompleteClick(args.keyword, args.suggestType, args.name, args.url);
-        // CHANGED
-
-        case 'autocompleteitemclick':
-          return this.writeAutoCompleteItemClick(args.itemId, args.url);
-
-        case 'autocompletecategoryclick':
-          return this.writeAutoCompleteCategoryClick(args.field, args.value, args.url);
-      }
-    }
-  }, {
-    key: "isEnabled",
-    value: function isEnabled(eventName) {
-      return Boolean(AvailableEvents.includes(eventName) && (!this.trackConfig || this.trackConfig.find(function (e) {
-        return TrackEventNameMapping[e] === eventName;
-      })));
-    }
-  }], [{
-    key: "getInstance",
-    value: function getInstance(url) {
-      if (!TrackingEvent.instance) {
-        TrackingEvent.instance = new TrackingEvent();
-      }
-
-      return TrackingEvent.instance;
-    }
-  }]);
-
-  return TrackingEvent;
-}(); // export TrackingEvent.getInstance();
-
-
-_defineProperty(TrackingEvent, "instance", void 0);
-
-var TrackingEvent$1 = TrackingEvent.getInstance();
-
-function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-var getVisitorExpiry = function getVisitorExpiry() {
-  var d = new Date(); // 1 year
-
-  d.setTime(d.getTime() + 360 * 24 * 60 * 60 * 1000);
-  return d.toUTCString();
-};
-var getVisitExpiry = function getVisitExpiry() {
-  var d = new Date(); // 4 hours
-
-  d.setTime(d.getTime() + 4 * 60 * 60 * 1000);
-  return d.toUTCString();
-};
-var createGuid = function createGuid() {
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-
-  for (var i = 0; i < 36; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-
-  s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
-  // tslint:disable-next-line: no-bitwise
-
-  s[19] = hexDigits.substr(s[19] & 0x3 | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
-
-  s[8] = s[13] = s[18] = s[23] = '-';
-  var uuid = s.join('');
-  return uuid;
-};
-var createWidgetId = function createWidgetId() {
-  var s = [];
-  var hexDigits = '0123456789abcdef';
-
-  for (var i = 0; i < 16; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-
-  var uuid = s.join('');
-  return uuid;
-};
-var getCookie = function getCookie(name) {
-  var nameEQ = name + '=';
-  var ca = document.cookie.split(';'); // tslint:disable-next-line: prefer-for-of
-
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1, c.length);
-    }
-
-    if (c.indexOf(nameEQ) === 0) {
-      return c.substring(nameEQ.length, c.length);
-    }
-  }
-
-  return null;
-};
-var setCookie = function setCookie(name, value, expiry) {
-  var expires;
-
-  if (expiry) {
-    expires = '; expires=' + expiry;
-  } else {
-    expires = '';
-  }
-
-  document.cookie = name + '=' + value + expires + '; path=/';
-};
-
-function getRecentFacetExpiry() {
-  var d = new Date(); // 12 hours
-
-  d.setTime(d.getTime() + 12 * 60 * 60 * 1000);
-  return d.toUTCString();
-}
-
-var getParsedObject = function getParsedObject(facetC, siteDirectory) {
-  if (!facetC) {
-    return {};
-  }
-
-  var dict = {};
-  (facetC || '').split(',').forEach(function (element) {
-    var splitText = element.split('|');
-
-    if (siteDirectory) {
-      if (splitText.length > 2) {
-        dict[splitText[0]] = dict[splitText[0]] || {};
-        dict[splitText[0]][splitText[1]] = splitText[2];
-      }
-    } else {
-      dict[splitText[0]] = splitText[1];
-    }
-  });
-  return dict;
-};
-
-function getStringifyObject(obj) {
-  var items = [];
-  Object.keys(obj).forEach(function (element) {
-    if (_typeof(obj[element]) === 'object') {
-      Object.keys(obj[element]).forEach(function (key, index) {
-        var item = element + '|' + key + '|' + obj[element][key];
-        items.push(item);
-      });
-    } else {
-      var item = element + '|' + obj[element];
-      items.push(item);
-    }
-  });
-  return items.join(',');
-}
-
-var setRecentSearch = function setRecentSearch(siteDirectory, val) {
-  var cookie = getCookie(FacetType.RecentSearches);
-
-  if (!cookie) {
-    if (siteDirectory) {
-      setCookie(FacetType.RecentSearches, "".concat(siteDirectory, "|").concat(val, "|1"), getRecentFacetExpiry());
-    } else {
-      setCookie(FacetType.RecentSearches, "".concat(val, "|1"), getRecentFacetExpiry());
-    }
-
-    return;
-  }
-
-  var dict = getParsedObject(cookie, siteDirectory);
-
-  if (siteDirectory) {
-    dict[siteDirectory] = dict[siteDirectory] && _typeof(dict[siteDirectory]) === 'object' ? dict[siteDirectory] : {};
-
-    if (dict[siteDirectory][val]) {
-      dict[siteDirectory][val] = Number(dict[siteDirectory][val]) + 1;
-    } else {
-      dict[siteDirectory] = _objectSpread$4(_objectSpread$4({}, dict[siteDirectory]), {}, _defineProperty({}, val, 1));
-    }
-  } else {
-    if (dict[val]) {
-      dict[val] = Number(dict[val]) + 1;
-    } else {
-      dict = _objectSpread$4(_objectSpread$4({}, dict), {}, _defineProperty({}, val, 1));
-    }
-  }
-
-  var str = getStringifyObject(dict);
-  setCookie(FacetType.RecentSearches, str, getRecentFacetExpiry());
-};
-var deleteCookie = function deleteCookie(name) {
-  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-};
 
 function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
@@ -7768,21 +7768,24 @@ function useHawkState(initialSearch) {
 
     var removeSearchParams = config.removeSearchParams && fromInput;
     setStore(function (prevState) {
-      var _prevState$searchResu;
-
-      var tab = (_prevState$searchResu = prevState.searchResults) === null || _prevState$searchResu === void 0 ? void 0 : _prevState$searchResu.Facets.find(function (f) {
-        return f.FieldType === 'tab';
-      });
-      var facetValue = (tab || {}).Values ? tab === null || tab === void 0 ? void 0 : tab.Values.find(function (v) {
-        return v.Selected;
-      }) : undefined;
-
-      if (!removeSearchParams && tab !== null && tab !== void 0 && tab.Field && !(pendingSearch.FacetSelections || {})[tab.Field] && facetValue !== null && facetValue !== void 0 && facetValue.Value) {
-        pendingSearch = _objectSpread$5(_objectSpread$5({}, pendingSearch), {}, {
-          FacetSelections: _objectSpread$5(_objectSpread$5({}, pendingSearch.FacetSelections), {}, _defineProperty({}, tab.Field, [facetValue.Value]))
-        });
-      }
-
+      /** 
+      	const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
+      	const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
+      			if (
+      		!removeSearchParams &&
+      		tab?.Field &&
+      		!(pendingSearch.FacetSelections || {})[tab.Field] &&
+      		facetValue?.Value
+      	) {
+      		pendingSearch = {
+      			...pendingSearch,
+      			FacetSelections: {
+      				...pendingSearch.FacetSelections,
+      				[tab.Field]: [facetValue.Value],
+      			},
+      		};
+      	}
+      */
       var newState = {
         pendingSearch: removeSearchParams ? pendingSearch : _objectSpread$5(_objectSpread$5({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
