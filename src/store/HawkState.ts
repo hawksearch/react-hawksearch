@@ -1,22 +1,22 @@
-import { useEffect } from 'react';
-import axios, { CancelToken } from 'axios';
-
-import { SearchStore, FacetSelectionState } from './Store';
-import HawkClient from 'net/HawkClient';
-import { Response, Request, FacetSelections, Result } from 'models/Search';
-import { useMergableState } from 'util/MergableState';
-import { useHawkConfig } from 'components/ConfigProvider';
-import { Facet, Value } from 'models/Facets';
-import { FacetType } from 'models/Facets/FacetType';
 import { Response as CompareDataResponse, Request as CompareItemRequest } from 'models/CompareItems';
+import { Facet, Value } from 'models/Facets';
+import { FacetSelectionState, SearchStore } from './Store';
+import { FacetSelections, Request, Response, Result } from 'models/Search';
 import { Request as ProductDetailsRequest, Response as ProductDetailsResponse } from 'models/ProductDetails';
-import { Request as PinItemRequest } from 'models/PinItems';
-import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
-import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import TrackingEvent, { SearchType } from 'components/TrackingEvent';
-import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry, setRecentSearch } from 'helpers/utils';
-import { ClientSelectionValue } from './ClientSelections';
+import axios, { CancelToken } from 'axios';
+import { createGuid, getCookie, getVisitExpiry, getVisitorExpiry, setCookie, setRecentSearch } from 'helpers/utils';
+
 import { Request as ClientIdRequest } from 'components/ui/MessageBox/Request';
+import { ClientSelectionValue } from './ClientSelections';
+import { FacetType } from 'models/Facets/FacetType';
+import HawkClient from 'net/HawkClient';
+import { Request as PinItemRequest } from 'models/PinItems';
+import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
+import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
+import { useEffect } from 'react';
+import { useHawkConfig } from 'components/ConfigProvider';
+import { useMergableState } from 'util/MergableState';
 
 interface ClientData {
 	VisitorId: string;
@@ -325,24 +325,25 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		const removeSearchParams = config.removeSearchParams && fromInput;
 
 		setStore(prevState => {
-			const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
-			const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
+			/** 
+				const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
+				const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
 
-			if (
-				!removeSearchParams &&
-				tab?.Field &&
-				!(pendingSearch.FacetSelections || {})[tab.Field] &&
-				facetValue?.Value
-			) {
-				pendingSearch = {
-					...pendingSearch,
-					FacetSelections: {
-						...pendingSearch.FacetSelections,
-						[tab.Field]: [facetValue.Value],
-					},
-				};
-			}
-
+				if (
+					!removeSearchParams &&
+					tab?.Field &&
+					!(pendingSearch.FacetSelections || {})[tab.Field] &&
+					facetValue?.Value
+				) {
+					pendingSearch = {
+						...pendingSearch,
+						FacetSelections: {
+							...pendingSearch.FacetSelections,
+							[tab.Field]: [facetValue.Value],
+						},
+					};
+				}
+			*/
 			const newState = {
 				pendingSearch: removeSearchParams ? pendingSearch : { ...prevState.pendingSearch, ...pendingSearch },
 				doHistory,
