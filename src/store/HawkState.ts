@@ -442,6 +442,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			}
 		});
 		const difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
+		const selectionValue = negate ? `${symbolForNegate}${valueValue}` : valueValue;
 		if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
 			// we're selecting this facet, and it's already selected
 
@@ -453,7 +454,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				(selState === FacetSelectionState.Negated && !negate)
 			) {
 				// if we're toggling from negation to non-negation or vice versa, then push the new selection
-				facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
+				facetSelections[facetField]!.push(selectionValue);
 			} else {
 				if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
 					facetSelections[facetField] = difference;
@@ -462,16 +463,15 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 			}
 		} else {
 			if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
-				if (Object(facetValue)?.Children?.length > 0) {
-					facetSelections[facetField]?.splice(0);
-					facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
-				} else {
-					// not selected, so we want to select it
+				if (!Object(facetValue)?.Children?.length && !negate) {
 					handleSelectionOfNestedFacet(facet, facetValue, facetSelections);
-					facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
 				}
+				if (negate && symbolForNegate) {
+					removeExcludedSelectionInHierarchy(facet, facetValue, facetSelections, symbolForNegate);
+				}
+				facetSelections[facetField]!.push(selectionValue);
 			} else {
-				facetSelections[facetField]!.push(negate ? `${symbolForNegate}${valueValue}` : valueValue);
+				facetSelections[facetField]!.push(selectionValue);
 			}
 		}
 
@@ -481,6 +481,33 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		}
 
 		setSearchSelections(facetSelections, store.pendingSearch.SearchWithin);
+	}
+
+	function removeExcludedSelectionInHierarchy(facet: Facet | string, facetValue: Value | string, facetSelections: FacetSelections | [], symbolForNegate: string) {
+		const facetPath = Object(facetValue).Path;
+		const selectedFacetValues = Object(facet).Values;
+		if (facet) {
+			const facetField = typeof facet === 'string' ? facet : facet.selectionField;
+			function children(selectedFacetValues) {
+				selectedFacetValues.forEach((values) => {
+					if (values.Children.length > 0) {
+						const findSelectedValues = values.Children.filter(findChild => facetSelections[facetField].includes(`${symbolForNegate}${findChild.Value}`));
+						if (findSelectedValues.length) {
+							findSelectedValues.forEach((findSelectedValue) => {
+								if (facetPath.indexOf(findSelectedValue.Path) === 0 || findSelectedValue.Path.indexOf(facetPath) === 0) {
+									const findIndex = facetSelections[facetField].indexOf(`${symbolForNegate}${findSelectedValue.Value}`);
+									facetSelections[facetField]?.splice(findIndex, 1);
+								}
+							})
+						}
+						if (facetSelections[facetField].length && values.Children) {
+							children(values.Children)
+						}
+					}
+				})
+			}
+			children(selectedFacetValues)
+		}
 	}
 
 	function handleSelectionOfNestedFacet(
