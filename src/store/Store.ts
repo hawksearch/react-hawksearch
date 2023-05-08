@@ -1,6 +1,7 @@
-import { Response, Request, Result } from 'models/Search';
-import { Value, Facet } from 'models/Facets';
-import { ClientSelections, ClientSelectionValue } from 'store/ClientSelections';
+import { ClientSelectionValue, ClientSelections } from 'store/ClientSelections';
+import { Facet, Value } from 'models/Facets';
+import { Request, Response, Result } from 'models/Search';
+
 import Selections from 'components/ui/Facets/Selections';
 
 export enum FacetSelectionState {
