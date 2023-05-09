@@ -8232,7 +8232,8 @@ function useHawkState(initialSearch) {
     setStore: setStore,
     setPreviewDate: setPreviewDate,
     setSmartBar: setSmartBar,
-    getLandingPageData: getLandingPageData
+    getLandingPageData: getLandingPageData,
+    getClientData: getClientData
   };
   return [store, actor];
 }
@@ -9014,7 +9015,8 @@ function SearchSuggestions(_ref) {
       config = _useHawkConfig.config;
 
   var _useHawksearch = useHawksearch(),
-      store = _useHawksearch.store;
+      store = _useHawksearch.store,
+      getClientData = _useHawksearch.actor.getClientData;
 
   var client = new HawkClient(config);
 
@@ -9114,35 +9116,6 @@ function SearchSuggestions(_ref) {
       }, _callee, null, [[2, 8]]);
     }));
     return _doAutocomplete.apply(this, arguments);
-  }
-
-  function getClientData() {
-    var visitId = getCookie('hawk_visit_id');
-    var visitorId = getCookie('hawk_visitor_id');
-
-    if (!visitId) {
-      setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
-      visitId = getCookie('hawk_visit_id');
-    }
-
-    if (!visitorId) {
-      setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
-      visitorId = getCookie('hawk_visitor_id');
-    }
-
-    var clientData = {
-      VisitorId: visitorId || '',
-      VisitId: visitId || '',
-      UserAgent: navigator.userAgent
-    };
-
-    if (store.language) {
-      clientData.Custom = {
-        language: store.language
-      };
-    }
-
-    return clientData;
   }
 
   return /*#__PURE__*/React__default.createElement("div", {
@@ -19898,7 +19871,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25369,7 +25342,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 

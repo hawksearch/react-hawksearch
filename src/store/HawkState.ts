@@ -12,6 +12,7 @@ import { ClientSelectionValue } from './ClientSelections';
 import { FacetType } from 'models/Facets/FacetType';
 import HawkClient from 'net/HawkClient';
 import { Request as PinItemRequest } from 'models/PinItems';
+import React from 'react'
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
 import { useEffect } from 'react';
@@ -118,6 +119,8 @@ export interface SearchActor {
 	setSmartBar(data: { [key: string]: string }): void;
 
 	getLandingPageData(request: ClientIdRequest): object;
+
+	getClientData(): ClientData;
 }
 
 export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, SearchActor] {
@@ -768,6 +771,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setPreviewDate,
 		setSmartBar,
 		getLandingPageData,
+		getClientData,
 	};
 
 	return [store, actor];

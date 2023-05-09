@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { ControllerStateAndHelpers } from 'downshift';
+import { Category, Product, Response } from 'models/Autocomplete';
+import React, { useEffect, useState } from 'react';
 import axios, { CancelToken } from 'axios';
+import { createGuid, getCookie, getVisitExpiry, getVisitorExpiry, setCookie } from 'helpers/utils';
 
+import { ControllerStateAndHelpers } from 'downshift';
+import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
 import HawkClient from 'net/HawkClient';
-import { Response, Product, Category } from 'models/Autocomplete';
-import { useHawkConfig } from 'components/ConfigProvider';
 import SearchSuggestionsList from './SearchSuggestionsList';
 import { Suggestion } from 'models/Autocomplete/Suggestion';
-import { CustomSuggestionListProps } from 'components/ui/AutoComplete/CustomSuggestionList';
-import { getCookie, setCookie, createGuid, getVisitExpiry, getVisitorExpiry } from 'helpers/utils';
+import { useHawkConfig } from 'components/ConfigProvider';
 import { useHawksearch } from 'components/StoreProvider';
 
 interface ClientData {
@@ -33,7 +33,7 @@ export interface SearchSuggestionsProps {
 
 function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: SearchSuggestionsProps) {
 	const { config } = useHawkConfig();
-	const { store } = useHawksearch();
+	const { store, actor: { getClientData } } = useHawksearch();
 
 	const client = new HawkClient(config);
 
@@ -101,35 +101,6 @@ function SearchSuggestions({ query, downshift, onViewMatches, SuggestionList }: 
 		if (response) {
 			setResults(response);
 		}
-	}
-
-	function getClientData() {
-		let visitId = getCookie('hawk_visit_id');
-		let visitorId = getCookie('hawk_visitor_id');
-
-		if (!visitId) {
-			setCookie('hawk_visit_id', createGuid(), getVisitExpiry());
-			visitId = getCookie('hawk_visit_id');
-		}
-
-		if (!visitorId) {
-			setCookie('hawk_visitor_id', createGuid(), getVisitorExpiry());
-			visitorId = getCookie('hawk_visitor_id');
-		}
-
-		const clientData: ClientData = {
-			VisitorId: visitorId || '',
-			VisitId: visitId || '',
-			UserAgent: navigator.userAgent,
-		};
-
-		if (store.language) {
-			clientData.Custom = {
-				language: store.language,
-			};
-		}
-
-		return clientData;
 	}
 
 	return (
