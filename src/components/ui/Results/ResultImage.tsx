@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { Result } from 'models/Search';
 import PlaceholderImage from './PlaceholderImage';
+import { Result } from 'models/Search';
 
 export interface ResultImageProps {
 	item: Result;

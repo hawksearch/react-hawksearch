@@ -1,5 +1,6 @@
+import { fromBinary, isBase64, toBinary } from 'helpers/utils';
+
 import { Console } from 'console';
-import { toBinary, fromBinary, isBase64 } from 'helpers/utils';
 
 enum E_T {
 	pageLoad = 1,
@@ -198,18 +199,22 @@ class TrackingEvent {
 		document.cookie = name + '=' + value + expires + '; path=/';
 	}
 
-	private writePageLoad(pageType) {
+	private writePageLoad(pageType, uniqueId = undefined) {
 		const c = document.documentElement;
+		const eventData = {
+			PageTypeId: P_T[pageType],
+			RequestPath: window.location.pathname,
+			Qs: window.location.search,
+			ViewportHeight: c.clientHeight,
+			ViewportWidth: c.clientWidth,
+		};
+		if (uniqueId) {
+			eventData['UniqueId'] = uniqueId
+		}
 		const pl = {
 			EventType: E_T.pageLoad,
 			EventData: btoa(
-				JSON.stringify({
-					PageTypeId: P_T[pageType],
-					RequestPath: window.location.pathname,
-					Qs: window.location.search,
-					ViewportHeight: c.clientHeight,
-					ViewportWidth: c.clientWidth,
-				})
+				JSON.stringify(eventData)
 			),
 		};
 		this.mr(pl);
@@ -450,7 +455,7 @@ class TrackingEvent {
 		switch (eventName.toLowerCase()) {
 			case 'pageload':
 				// HawkSearch.Context.add("uniqueid", "123456789");
-				return this.writePageLoad(args.pageType);
+				return this.writePageLoad(args.pageType, args.uniqueId);
 			case 'searchtracking':
 				// HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
 				// HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Refinement});

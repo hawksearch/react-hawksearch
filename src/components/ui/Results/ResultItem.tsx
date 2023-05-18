@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Result } from 'models/Search';
 import ResultImage from './ResultImage';
 
@@ -13,7 +12,7 @@ function ResultItem({ item }: ResultItemProps) {
 	return (
 		<div className="hawk-results__item">
 			<ResultImage item={item} />
-
+ 
 			<div className="hawk-results__item-name">
 				<span>{itemName}</span>
 			</div>
