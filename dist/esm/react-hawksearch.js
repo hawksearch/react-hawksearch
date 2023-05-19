@@ -5185,16 +5185,23 @@ var TrackingEvent = /*#__PURE__*/function () {
   }, {
     key: "writePageLoad",
     value: function writePageLoad(pageType) {
+      var uniqueId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : undefined;
       var c = document.documentElement;
+      var eventData = {
+        PageTypeId: P_T[pageType],
+        RequestPath: window.location.pathname,
+        Qs: window.location.search,
+        ViewportHeight: c.clientHeight,
+        ViewportWidth: c.clientWidth
+      };
+
+      if (uniqueId) {
+        eventData['UniqueId'] = uniqueId;
+      }
+
       var pl = {
         EventType: E_T.pageLoad,
-        EventData: btoa(JSON.stringify({
-          PageTypeId: P_T[pageType],
-          RequestPath: window.location.pathname,
-          Qs: window.location.search,
-          ViewportHeight: c.clientHeight,
-          ViewportWidth: c.clientWidth
-        }))
+        EventData: btoa(JSON.stringify(eventData))
       };
       this.mr(pl);
     }
@@ -5441,7 +5448,7 @@ var TrackingEvent = /*#__PURE__*/function () {
       switch (eventName.toLowerCase()) {
         case 'pageload':
           // HawkSearch.Context.add("uniqueid", "123456789");
-          return this.writePageLoad(args.pageType);
+          return this.writePageLoad(args.pageType, args.uniqueId);
 
         case 'searchtracking':
           // HawkSearch.Tracking.track("searchtracking", {trackingId:"a9bd6e50-e434-45b9-9f66-489eca07ad0a", typeId: HawkSearch.Tracking.SearchType.Initial});
@@ -19871,7 +19878,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-
+//# sourceMappingURL=performance-now.js.map
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25342,6 +25349,7 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
+//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
