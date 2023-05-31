@@ -1,4 +1,5 @@
 import { FacetSelections, Request } from 'models/Search/Request';
+
 import { SearchStore } from '../store/Store';
 
 /** Represents parts of the browser query string that are fixed and are always single strings. */
@@ -101,12 +102,27 @@ export function parseLocation(location: Location, searchUrl: string): Partial<Re
 	// customUrl have priority over keywords
 	if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
 		searchRequest.Keyword = undefined;
-		const pathname = location.pathname;
-		searchRequest.CustomUrl = pathname
-			.split('/')
-			.filter(path => path !== searchUrl && path !== '')
-			.join('/');
-		searchRequest.CustomUrl = searchRequest.CustomUrl ? '/' + searchRequest.CustomUrl : undefined;
+		const pathnames = location.pathname.split('/');
+		const searchUrlPaths = searchUrl.split('/').filter(path => path);
+		let flag = false;
+		const paths: string[] = [];
+		pathnames.filter(path => path).forEach((path, index) => {
+			if (flag || path !== searchUrlPaths[index]) {
+				flag = true;
+				paths.push(path)
+			}
+		});
+
+		if (paths.length) {
+			if (pathnames[pathnames.length - 1] === '') {
+				searchRequest.CustomUrl = '/' + paths.join('/') + '/';
+			} else {
+				searchRequest.CustomUrl = '/' + paths.join('/');
+			}
+		}
+		else {
+			searchRequest.CustomUrl = undefined
+		}
 	}
 	return searchRequest;
 }

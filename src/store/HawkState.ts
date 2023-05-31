@@ -15,6 +15,7 @@ import { Request as PinItemRequest } from 'models/PinItems';
 import React from 'react'
 import { Request as RebuildIndexRequest } from 'models/RebuildIndex';
 import { Request as SortingOrderRequest } from 'models/PinItemsOrder';
+import { parseLocation } from 'util/QueryString';
 import { useEffect } from 'react';
 import { useHawkConfig } from 'components/ConfigProvider';
 import { useMergableState } from 'util/MergableState';
@@ -171,6 +172,7 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 		setStore({ isLoading: true });
 
 		let searchResults: Response | null = null;
+		let parsedLocation = parseLocation(location, config.siteDirectory ? config.siteDirectory : '');
 		const searchParams = {
 			// the search request being executed is spread from the pendingSearch
 			...store.pendingSearch,
@@ -187,6 +189,10 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				: store.pendingSearch.SearchWithin,
 			SmartBar: store.pendingSearch.SmartBar,
 		};
+
+		if(parsedLocation.CustomUrl) {
+			Object.assign(searchParams, { CustomUrl: parsedLocation.CustomUrl });
+		}
 
 		// The index name in the configuration takes priority over the one supplied from the URL
 		if (config.indexName) {

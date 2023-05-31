@@ -7358,6 +7358,298 @@ var HawkClient = /*#__PURE__*/function () {
 function ownKeys$3(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread$4(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$3(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$3(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
+
+function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+/** Represents parts of the browser query string that are fixed and are always single strings. */
+var DefaultParams;
+
+(function (DefaultParams) {
+  DefaultParams["keyword"] = "keyword";
+  DefaultParams["sort"] = "sort";
+  DefaultParams["pg"] = "pg";
+  DefaultParams["lp"] = "lp";
+  DefaultParams["PageId"] = "PageId";
+  DefaultParams["lpurl"] = "lpurl";
+  DefaultParams["mpp"] = "mpp";
+  DefaultParams["searchWithin"] = "searchWithin";
+  DefaultParams["is100Coverage"] = "is100Coverage";
+  DefaultParams["indexName"] = "indexName";
+  DefaultParams["ignoreSpellcheck"] = "ignoreSpellcheck";
+  DefaultParams["language"] = "language";
+})(DefaultParams || (DefaultParams = {}));
+var rangeFacets = [];
+function addToRangeFacets(facetName) {
+  if (!rangeFacets.includes(facetName)) {
+    rangeFacets.push(facetName);
+  }
+}
+/**
+ * Parses the input query string and returns an object that can be used to build a search request.
+ * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
+ * for every selected facet.
+ * @param search The input query string.
+ */
+
+function parseQueryStringToObject(search) {
+  var params = new URLSearchParams(urlStringToParamEntries(search));
+  var defaul = {};
+  var facet = {};
+  params.forEach(function (value, key) {
+    if (DefaultParams[key]) {
+      // `keyword` is special and should never be turned into an array
+      if (key === 'keyword') {
+        defaul[key] = value;
+      } else {
+        defaul[key] = encodeURIComponent(value);
+      }
+    } else {
+      // everything else should be turned into an array
+      if (!value) {
+        // no useful value for this query param, so skip it
+        return;
+      } // NOTE: Don't pass these values as facet selection
+
+
+      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
+        return;
+      } // multiple selections are split by commas, so split into an array
+
+
+      var multipleValues = value.split(',');
+
+      if (DefaultParams[key.split("-")[0]]) {
+        facet[key.split("-")[0]] = multipleValues.map(function (i) {
+          return decodeURIComponent(i).replace('::', ',');
+        });
+      } else {
+        facet[key] = multipleValues.map(function (i) {
+          return decodeURIComponent(i).replace('::', ',');
+        });
+      }
+    }
+  });
+  return {
+    defaul: defaul,
+    facet: facet
+  };
+}
+/**
+ * Parses the abosulte url into a `HawkClient` client search request object.
+ * @param location The input location
+ */
+
+
+function parseLocation(location, searchUrl) {
+  var searchRequest = parseSearchQueryString(location.search); // customUrl have priority over keywords
+
+  if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
+    searchRequest.Keyword = undefined;
+    var pathnames = location.pathname.split('/');
+    var searchUrlPaths = searchUrl.split('/').filter(function (path) {
+      return path;
+    });
+    var flag = false;
+    var paths = [];
+    pathnames.filter(function (path) {
+      return path;
+    }).forEach(function (path, index) {
+      if (flag || path !== searchUrlPaths[index]) {
+        flag = true;
+        paths.push(path);
+      }
+    });
+
+    if (paths.length) {
+      if (pathnames[pathnames.length - 1] === '') {
+        searchRequest.CustomUrl = '/' + paths.join('/') + '/';
+      } else {
+        searchRequest.CustomUrl = '/' + paths.join('/');
+      }
+    } else {
+      searchRequest.CustomUrl = undefined;
+    }
+  }
+
+  return searchRequest;
+}
+/**
+ * Parses the input query string into a `HawkClient` client search request object.
+ * @param search The input query string.
+ */
+
+function parseSearchQueryString(search) {
+  var _parseQueryStringToOb = parseQueryStringToObject(search),
+      defaul = _parseQueryStringToOb.defaul,
+      facet = _parseQueryStringToOb.facet; // extract out components, including facet selections
+
+
+  var keyword = defaul.keyword,
+      sort = defaul.sort,
+      pg = defaul.pg,
+      mpp = defaul.mpp,
+      lp = defaul.lp,
+      PageId = defaul.PageId,
+      lpurl = defaul.lpurl,
+      searchWithin = defaul.searchWithin,
+      is100Coverage = defaul.is100Coverage,
+      indexName = defaul.indexName,
+      ignoreSpellcheck = defaul.ignoreSpellcheck; // ignore landing pages if keyword is passed
+
+  var pageId = lp || PageId;
+  return {
+    Keyword: lpurl || pageId ? '' : keyword,
+    SortBy: sort,
+    PageNo: pg ? Number(pg) : undefined,
+    MaxPerPage: mpp ? Number(mpp) : undefined,
+    PageId: pageId ? Number(pageId) : undefined,
+    CustomUrl: lpurl,
+    SearchWithin: searchWithin,
+    Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
+    FacetSelections: facet,
+    IndexName: indexName,
+    IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
+  };
+}
+function checkIfUrlRefsLandingPage(path, searchUrl) {
+  if (!path) {
+    // if there's no path, this request can't be for a landing page
+    return false;
+  }
+
+  if (!path.endsWith('/')) {
+    path = path + '/';
+  }
+
+  if (!searchUrl.endsWith('/')) {
+    searchUrl = searchUrl + '/';
+  }
+
+  return path !== searchUrl;
+}
+/**
+ * Converts a search query object (such as one returned from `parseSearchQueryString`) and converts
+ * it into a browser query string
+ * @param queryObj The query object to convert to a query string.
+ */
+
+function convertObjectToQueryString(queryObj) {
+  var queryStringValues = [];
+
+  for (var key in queryObj["default"]) {
+    if (queryObj["default"].hasOwnProperty(key)) {
+      var value = queryObj["default"][key];
+
+      if (value === undefined || value === null) {
+        // if any of the special keys just aren't defined or are null, don't include them in
+        // the query string
+        continue;
+      }
+
+      if (typeof key !== 'string') {
+        throw new Error("".concat(key, " must be a string"));
+      } // certain strings are special and are never arrays
+
+
+      if (key === 'keyword') {
+        queryStringValues.push(key + '=' + value);
+      } else {
+        queryStringValues.push(key + '=' + encodeURIComponent(value));
+      }
+    }
+  }
+
+  for (var _key in queryObj.facet) {
+    if (queryObj.facet.hasOwnProperty(_key)) {
+      var values = queryObj.facet[_key];
+
+      if (values) {
+        // handle comma escaping - if any of the values contains a comma, they need to be escaped first
+        var escapedValues = [];
+
+        var _iterator = _createForOfIteratorHelper$1(values),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var unescapedValue = _step.value;
+
+            if (rangeFacets.includes(_key)) {
+              unescapedValue = unescapedValue.replace(',', '::');
+            }
+
+            escapedValues.push(encodeURIComponent(unescapedValue));
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+
+        if (DefaultParams[_key]) {
+          queryStringValues.push(_key + "-facet" + '=' + escapedValues.join(','));
+        } else {
+          queryStringValues.push(_key + '=' + escapedValues.join(','));
+        }
+      }
+    }
+  }
+
+  return '?' + queryStringValues.join('&');
+}
+/**
+ * Converts a partial search request object into a browser query string.
+ * @param searchRequest The search request object to convert.
+ */
+
+
+function getSearchQueryString(searchRequest, store) {
+  var searchQuery = {
+    "default": {
+      keyword: searchRequest.Keyword,
+      sort: searchRequest.SortBy,
+      pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
+      mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
+      is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
+      searchWithin: searchRequest.SearchWithin,
+      indexName: searchRequest.IndexName,
+      language: searchRequest.Language,
+      ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
+    },
+    facet: _objectSpread$4({}, searchRequest.FacetSelections)
+  };
+  return convertObjectToQueryString(searchQuery);
+}
+
+function urlStringToParamEntries(searchQuery) {
+  if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
+    if (searchQuery[0] === '?') {
+      searchQuery = searchQuery.slice(1);
+    }
+
+    return searchQuery.split('&').map(function (i) {
+      var entries = i.split('=');
+
+      if (entries.length === 2) {
+        return entries;
+      } else if (entries.length > 2) {
+        return [entries[0], entries.slice(0, 1).join('')];
+      } else {
+        return [entries.join(''), ''];
+      }
+    });
+  } else {
+    return searchQuery;
+  }
+}
+
+function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useMergableState(initialValue, typeConstructor) {
   var _useState = useState(new typeConstructor(initialValue)),
       _useState2 = _slicedToArray$1(_useState, 2),
@@ -7371,7 +7663,7 @@ function useMergableState(initialValue, typeConstructor) {
         // so we derive the new state from the previous state
         var newState = value(prevState); // and then set the new merged state
 
-        return new typeConstructor(_objectSpread$4(_objectSpread$4({}, prevState), newState));
+        return new typeConstructor(_objectSpread$5(_objectSpread$5({}, prevState), newState));
       });
       return;
     } // otherwise, the new state was simply passed in
@@ -7379,22 +7671,22 @@ function useMergableState(initialValue, typeConstructor) {
 
     setState(function (prevState) {
       // merge state together and set it
-      return new typeConstructor(_objectSpread$4(_objectSpread$4({}, prevState), value));
+      return new typeConstructor(_objectSpread$5(_objectSpread$5({}, prevState), value));
     });
   }
 
   return [state, setStateAndMerge];
 }
 
-function _createForOfIteratorHelper$1(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-function _unsupportedIterableToArray$2(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$2(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen); }
+function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
 
-function _arrayLikeToArray$2(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function ownKeys$4(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread$5(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$4(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$4(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 function useHawkState(initialSearch) {
   var _useHawkConfig = useHawkConfig(),
       config = _useHawkConfig.config;
@@ -7451,7 +7743,7 @@ function useHawkState(initialSearch) {
 
   function _search() {
     _search = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(cancellationToken) {
-      var searchResults, searchParams, selectedFacets;
+      var searchResults, parsedLocation, searchParams, selectedFacets;
       return regenerator.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -7460,7 +7752,8 @@ function useHawkState(initialSearch) {
                 isLoading: true
               });
               searchResults = null;
-              searchParams = _objectSpread$5(_objectSpread$5({}, store.pendingSearch), {}, {
+              parsedLocation = parseLocation(location, config.siteDirectory ? config.siteDirectory : '');
+              searchParams = _objectSpread$6(_objectSpread$6({}, store.pendingSearch), {}, {
                 // pass parameter for extended response
                 IsInPreview: config.isInPreview,
                 // and override some of the request fields with config values
@@ -7469,7 +7762,14 @@ function useHawkState(initialSearch) {
                 Keyword: store.pendingSearch.Keyword ? decodeURIComponent(store.pendingSearch.Keyword || '') : store.pendingSearch.Keyword,
                 SearchWithin: store.pendingSearch.SearchWithin ? decodeURIComponent(decodeURIComponent(store.pendingSearch.SearchWithin || '')) : store.pendingSearch.SearchWithin,
                 SmartBar: store.pendingSearch.SmartBar
-              }); // The index name in the configuration takes priority over the one supplied from the URL
+              });
+
+              if (parsedLocation.CustomUrl) {
+                Object.assign(searchParams, {
+                  CustomUrl: parsedLocation.CustomUrl
+                });
+              } // The index name in the configuration takes priority over the one supplied from the URL
+
 
               if (config.indexName) {
                 Object.assign(searchParams, {
@@ -7479,7 +7779,7 @@ function useHawkState(initialSearch) {
 
 
               if (!(config.indexNameRequired && !searchParams.IndexName)) {
-                _context.next = 7;
+                _context.next = 9;
                 break;
               }
 
@@ -7488,40 +7788,40 @@ function useHawkState(initialSearch) {
               });
               return _context.abrupt("return");
 
-            case 7:
-              _context.prev = 7;
-              _context.next = 10;
+            case 9:
+              _context.prev = 9;
+              _context.next = 12;
               return client.search(searchParams, cancellationToken);
 
-            case 10:
+            case 12:
               searchResults = _context.sent;
-              _context.next = 19;
+              _context.next = 21;
               break;
 
-            case 13:
-              _context.prev = 13;
-              _context.t0 = _context["catch"](7);
+            case 15:
+              _context.prev = 15;
+              _context.t0 = _context["catch"](9);
 
               if (!axios$1.isCancel(_context.t0)) {
-                _context.next = 17;
+                _context.next = 19;
                 break;
               }
 
               return _context.abrupt("return");
 
-            case 17:
+            case 19:
               console.error('Search request error:', _context.t0);
               setStore({
                 requestError: true
               });
 
-            case 19:
+            case 21:
               setStore({
                 isLoading: false
               });
 
               if (!searchResults) {
-                _context.next = 24;
+                _context.next = 26;
                 break;
               }
 
@@ -7554,18 +7854,18 @@ function useHawkState(initialSearch) {
                 });
               }
 
-              _context.next = 25;
+              _context.next = 27;
               break;
 
-            case 24:
+            case 26:
               return _context.abrupt("return");
 
-            case 25:
+            case 27:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[7, 13]]);
+      }, _callee, null, [[9, 15]]);
     }));
     return _search.apply(this, arguments);
   }
@@ -7794,7 +8094,7 @@ function useHawkState(initialSearch) {
       	}
       */
       var newState = {
-        pendingSearch: removeSearchParams ? pendingSearch : _objectSpread$5(_objectSpread$5({}, prevState.pendingSearch), pendingSearch),
+        pendingSearch: removeSearchParams ? pendingSearch : _objectSpread$6(_objectSpread$6({}, prevState.pendingSearch), pendingSearch),
         doHistory: doHistory
       };
 
@@ -8012,7 +8312,7 @@ function useHawkState(initialSearch) {
 
     facetSelections[facetField] = [];
 
-    var _iterator = _createForOfIteratorHelper$1(facetValues),
+    var _iterator = _createForOfIteratorHelper$2(facetValues),
         _step;
 
     try {
@@ -8191,7 +8491,7 @@ function useHawkState(initialSearch) {
     };
 
     if (store.pendingSearch.ClientData) {
-      clientData = _objectSpread$5(_objectSpread$5({}, clientData), {}, {
+      clientData = _objectSpread$6(_objectSpread$6({}, clientData), {}, {
         PreviewBuckets: store.pendingSearch.ClientData.PreviewBuckets
       });
     }
@@ -8335,279 +8635,6 @@ function StoreProvider(_ref) {
 
 function useHawksearch() {
   return useContext(HawkContext);
-}
-
-function ownKeys$5(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread$6(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys$5(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys$5(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _createForOfIteratorHelper$2(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray$3(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray$3(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen); }
-
-function _arrayLikeToArray$3(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-/** Represents parts of the browser query string that are fixed and are always single strings. */
-var DefaultParams;
-
-(function (DefaultParams) {
-  DefaultParams["keyword"] = "keyword";
-  DefaultParams["sort"] = "sort";
-  DefaultParams["pg"] = "pg";
-  DefaultParams["lp"] = "lp";
-  DefaultParams["PageId"] = "PageId";
-  DefaultParams["lpurl"] = "lpurl";
-  DefaultParams["mpp"] = "mpp";
-  DefaultParams["searchWithin"] = "searchWithin";
-  DefaultParams["is100Coverage"] = "is100Coverage";
-  DefaultParams["indexName"] = "indexName";
-  DefaultParams["ignoreSpellcheck"] = "ignoreSpellcheck";
-  DefaultParams["language"] = "language";
-})(DefaultParams || (DefaultParams = {}));
-var rangeFacets = [];
-function addToRangeFacets(facetName) {
-  if (!rangeFacets.includes(facetName)) {
-    rangeFacets.push(facetName);
-  }
-}
-/**
- * Parses the input query string and returns an object that can be used to build a search request.
- * The object returned will usually have the keys: `keyword`, `sort`, `pg`,`lp`,`lpurl`, `mpp`, and then more keys
- * for every selected facet.
- * @param search The input query string.
- */
-
-function parseQueryStringToObject(search) {
-  var params = new URLSearchParams(urlStringToParamEntries(search));
-  var defaul = {};
-  var facet = {};
-  params.forEach(function (value, key) {
-    if (DefaultParams[key]) {
-      // `keyword` is special and should never be turned into an array
-      if (key === 'keyword') {
-        defaul[key] = value;
-      } else {
-        defaul[key] = encodeURIComponent(value);
-      }
-    } else {
-      // everything else should be turned into an array
-      if (!value) {
-        // no useful value for this query param, so skip it
-        return;
-      } // NOTE: Don't pass these values as facet selection
-
-
-      if (['prv', 'hawkaid', 'token', 'refreshToken'].indexOf(key) !== -1) {
-        return;
-      } // multiple selections are split by commas, so split into an array
-
-
-      var multipleValues = value.split(',');
-
-      if (DefaultParams[key.split("-")[0]]) {
-        facet[key.split("-")[0]] = multipleValues.map(function (i) {
-          return decodeURIComponent(i).replace('::', ',');
-        });
-      } else {
-        facet[key] = multipleValues.map(function (i) {
-          return decodeURIComponent(i).replace('::', ',');
-        });
-      }
-    }
-  });
-  return {
-    defaul: defaul,
-    facet: facet
-  };
-}
-/**
- * Parses the abosulte url into a `HawkClient` client search request object.
- * @param location The input location
- */
-
-
-function parseLocation(location, searchUrl) {
-  var searchRequest = parseSearchQueryString(location.search); // customUrl have priority over keywords
-
-  if (checkIfUrlRefsLandingPage(location.pathname, searchUrl)) {
-    searchRequest.Keyword = undefined;
-    var pathname = location.pathname;
-    searchRequest.CustomUrl = pathname.split('/').filter(function (path) {
-      return path !== searchUrl && path !== '';
-    }).join('/');
-    searchRequest.CustomUrl = searchRequest.CustomUrl ? '/' + searchRequest.CustomUrl : undefined;
-  }
-
-  return searchRequest;
-}
-/**
- * Parses the input query string into a `HawkClient` client search request object.
- * @param search The input query string.
- */
-
-function parseSearchQueryString(search) {
-  var _parseQueryStringToOb = parseQueryStringToObject(search),
-      defaul = _parseQueryStringToOb.defaul,
-      facet = _parseQueryStringToOb.facet; // extract out components, including facet selections
-
-
-  var keyword = defaul.keyword,
-      sort = defaul.sort,
-      pg = defaul.pg,
-      mpp = defaul.mpp,
-      lp = defaul.lp,
-      PageId = defaul.PageId,
-      lpurl = defaul.lpurl,
-      searchWithin = defaul.searchWithin,
-      is100Coverage = defaul.is100Coverage,
-      indexName = defaul.indexName,
-      ignoreSpellcheck = defaul.ignoreSpellcheck; // ignore landing pages if keyword is passed
-
-  var pageId = lp || PageId;
-  return {
-    Keyword: lpurl || pageId ? '' : keyword,
-    SortBy: sort,
-    PageNo: pg ? Number(pg) : undefined,
-    MaxPerPage: mpp ? Number(mpp) : undefined,
-    PageId: pageId ? Number(pageId) : undefined,
-    CustomUrl: lpurl,
-    SearchWithin: searchWithin,
-    Is100CoverageTurnedOn: is100Coverage ? Boolean(is100Coverage) : undefined,
-    FacetSelections: facet,
-    IndexName: indexName,
-    IgnoreSpellcheck: ignoreSpellcheck ? ignoreSpellcheck === 'true' : undefined
-  };
-}
-function checkIfUrlRefsLandingPage(path, searchUrl) {
-  if (!path) {
-    // if there's no path, this request can't be for a landing page
-    return false;
-  }
-
-  if (!path.endsWith('/')) {
-    path = path + '/';
-  }
-
-  if (!searchUrl.endsWith('/')) {
-    searchUrl = searchUrl + '/';
-  }
-
-  return path !== searchUrl;
-}
-/**
- * Converts a search query object (such as one returned from `parseSearchQueryString`) and converts
- * it into a browser query string
- * @param queryObj The query object to convert to a query string.
- */
-
-function convertObjectToQueryString(queryObj) {
-  var queryStringValues = [];
-
-  for (var key in queryObj["default"]) {
-    if (queryObj["default"].hasOwnProperty(key)) {
-      var value = queryObj["default"][key];
-
-      if (value === undefined || value === null) {
-        // if any of the special keys just aren't defined or are null, don't include them in
-        // the query string
-        continue;
-      }
-
-      if (typeof key !== 'string') {
-        throw new Error("".concat(key, " must be a string"));
-      } // certain strings are special and are never arrays
-
-
-      if (key === 'keyword') {
-        queryStringValues.push(key + '=' + value);
-      } else {
-        queryStringValues.push(key + '=' + encodeURIComponent(value));
-      }
-    }
-  }
-
-  for (var _key in queryObj.facet) {
-    if (queryObj.facet.hasOwnProperty(_key)) {
-      var values = queryObj.facet[_key];
-
-      if (values) {
-        // handle comma escaping - if any of the values contains a comma, they need to be escaped first
-        var escapedValues = [];
-
-        var _iterator = _createForOfIteratorHelper$2(values),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var unescapedValue = _step.value;
-
-            if (rangeFacets.includes(_key)) {
-              unescapedValue = unescapedValue.replace(',', '::');
-            }
-
-            escapedValues.push(encodeURIComponent(unescapedValue));
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-
-        if (DefaultParams[_key]) {
-          queryStringValues.push(_key + "-facet" + '=' + escapedValues.join(','));
-        } else {
-          queryStringValues.push(_key + '=' + escapedValues.join(','));
-        }
-      }
-    }
-  }
-
-  return '?' + queryStringValues.join('&');
-}
-/**
- * Converts a partial search request object into a browser query string.
- * @param searchRequest The search request object to convert.
- */
-
-
-function getSearchQueryString(searchRequest, store) {
-  var searchQuery = {
-    "default": {
-      keyword: searchRequest.Keyword,
-      sort: searchRequest.SortBy,
-      pg: searchRequest.PageNo ? String(searchRequest.PageNo) : undefined,
-      mpp: searchRequest.MaxPerPage ? String(searchRequest.MaxPerPage) : undefined,
-      is100Coverage: searchRequest.Is100CoverageTurnedOn ? String(searchRequest.Is100CoverageTurnedOn) : undefined,
-      searchWithin: searchRequest.SearchWithin,
-      indexName: searchRequest.IndexName,
-      language: searchRequest.Language,
-      ignoreSpellcheck: !searchRequest.IgnoreSpellcheck || !searchRequest.IgnoreSpellcheck ? undefined : String(searchRequest.IgnoreSpellcheck)
-    },
-    facet: _objectSpread$6({}, searchRequest.FacetSelections)
-  };
-  return convertObjectToQueryString(searchQuery);
-}
-
-function urlStringToParamEntries(searchQuery) {
-  if (searchQuery && typeof searchQuery === 'string' && searchQuery.length) {
-    if (searchQuery[0] === '?') {
-      searchQuery = searchQuery.slice(1);
-    }
-
-    return searchQuery.split('&').map(function (i) {
-      var entries = i.split('=');
-
-      if (entries.length === 2) {
-        return entries;
-      } else if (entries.length > 2) {
-        return [entries[0], entries.slice(0, 1).join('')];
-      } else {
-        return [entries.join(''), ''];
-      }
-    });
-  } else {
-    return searchQuery;
-  }
 }
 
 function Hawksearch(props) {
