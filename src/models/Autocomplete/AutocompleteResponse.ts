@@ -1,3 +1,5 @@
+import { Category } from "./Category";
+
 export interface AutocompleteRequest {
 	ClientGuid: string;
 	Keyword: string;
@@ -24,7 +26,7 @@ export interface AutocompleteResponse {
 		FieldQSValue: string | '';
 		FieldQSName: string | '';
 		IsRecommended: boolean | null;
-	}>;
+	}> | Category[];
 
 	Products:
 		| Array<{
