@@ -47,7 +47,7 @@ function Checkbox() {
 							className="hawk-facet-rail__facet-btn"
 							aria-pressed={isSelected}
 						>
-							{renderCheckMark(isSelected)}
+							<input type='checkbox' defaultChecked={isSelected} />
 							{rangeValueAssetUrl !== '' ? (
 								<>
 									<span className="hawk-selectionInner">
@@ -106,7 +106,7 @@ function Checkbox() {
 							className="hawk-facet-rail__facet-btn"
 							aria-pressed={isSelected}
 						>
-							{renderCheckMark(isSelected)}
+							{!isNegated && <input type='checkbox' checked={isSelected} onChange={() => {}} />}
 
 							<span
 								style={isNegated ? { textDecoration: 'line-through' } : undefined}
@@ -114,32 +114,21 @@ function Checkbox() {
 							>
 								<div dangerouslySetInnerHTML={{ __html: decodedLabel }} />
 							</span>
+							{renderFacetActions(value.Value || '', isNegated)}
 						</button>
-
-						{renderFacetActions(value.Value || '', isNegated)}
 					</li>
 				);
 			});
 		}
 	}
 
-	function renderCheckMark(isSelected: boolean) {
-		return (
-			<span
-				className={
-					isSelected
-						? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked'
-						: 'hawk-facet-rail__facet-checkbox'
-				}
-			>
-				{isSelected ? <CheckmarkSVG class="hawk-facet-rail__facet-checkbox-icon" /> : null}
-			</span>
-		);
-	}
 	function renderFacetActions(value: string, isNegated: boolean) {
 		return (
 			<button
-				onClick={e => actor.negateFacet(value)}
+				onClick={e => {
+					e.stopPropagation();
+					actor.negateFacet(value);
+				}}
 				className="hawk-facet-rail__facet-btn-exclude"
 				aria-describedby="visually-hidden"
 			>

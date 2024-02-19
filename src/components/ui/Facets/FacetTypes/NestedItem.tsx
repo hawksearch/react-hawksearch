@@ -106,15 +106,7 @@ function NestedItem(item: NestedItemProps) {
 					className="hawk-facet-rail__facet-btn"
 					aria-pressed={item.isSelected}
 				>
-					<span
-						className={
-							item.isSelected
-								? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked'
-								: 'hawk-facet-rail__facet-checkbox'
-						}
-					>
-						{item.isSelected ? <CheckmarkSVG class="hawk-facet-rail__facet-checkbox-icon" /> : null}
-					</span>
+					{!item.isNegated && <input type="checkbox" checked={item.isSelected} onChange={() => {}} />}
 
 					<span
 						style={item.isNegated ? { textDecoration: 'line-through' } : undefined}
@@ -122,36 +114,46 @@ function NestedItem(item: NestedItemProps) {
 					>
 						{item.hierarchyValue.Label} ({item.hierarchyValue.Count})
 					</span>
+					<button
+						onClick={e => {
+							e.stopPropagation();
+							item.onValueSelected(hierarchyValue, true);
+						}}
+						className="hawk-facet-rail__facet-btn-exclude"
+						aria-describedby="visually-hidden"
+					>
+						{item.isNegated ? (
+							<>
+								<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
+								<span id="visually-hidden" className="visually-hidden">
+									Include facet
+								</span>
+							</>
+						) : (
+							<>
+								<DashCircleSVG />
+								<span id="visually-hidden" className="visually-hidden">
+									Exclude facet
+								</span>
+							</>
+						)}
+					</button>
 				</button>
 
-				<button
-					onClick={e => item.onValueSelected(hierarchyValue, true)}
-					className="hawk-facet-rail__facet-btn-exclude"
-					aria-describedby="visually-hidden"
-				>
-					{item.isNegated ? (
-						<>
-							<PlusCircleSVG class="hawk-facet-rail__facet-btn-include" />
-							<span id="visually-hidden" className="visually-hidden">
-								Include facet
-							</span>
-						</>
-					) : (
-						<>
-							<DashCircleSVG />
-							<span id="visually-hidden" className="visually-hidden">
-								Exclude facet
-							</span>
-						</>
-					)}
-				</button>
 				{hierarchyChildren.length > 0 ? (
 					<button
 						className={getCollapseStateClass(isExpanded)}
 						aria-expanded="false"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
-						&nbsp;
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path
+								fill-rule="evenodd"
+								clip-rule="evenodd"
+								d="M4.86517 8.4259C5.19061 8.10046 5.71825 8.10046 6.04368 8.4259L9.99988 12.3821L13.9561 8.4259C14.2815 8.10047 14.8092 8.10047 15.1346 8.4259C15.46 8.75134 15.46 9.27898 15.1346 9.60441L10.5891 14.1499C10.2637 14.4753 9.73606 14.4753 9.41063 14.1499L4.86517 9.60441C4.53973 9.27898 4.53973 8.75134 4.86517 8.4259Z"
+								fill="black"
+							/>
+						</svg>
 					</button>
 				) : null}
 			</div>
