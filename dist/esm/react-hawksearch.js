@@ -8124,14 +8124,6 @@ function useHawkState(initialSearch) {
       PageNo: undefined
     });
   } // NOTE: It will return the difference from 1st array
-  // i.e ['a', 'b', 'c'] - ['c', 'd', 'f'] => ['a', 'b']
-
-
-  function differenceOfArrays(array1, array2) {
-    return array1.filter(function (i) {
-      return array2.indexOf(i) < 0;
-    });
-  }
   /**
    * Toggles a facet value for the next search request that will be executed. Internally, this will call
    * `setSearch` to configure the next search with this selected facet.
@@ -8186,23 +8178,10 @@ function useHawkState(initialSearch) {
         valuesToRemoved.push(item.value);
       }
     });
-    var difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
     var selectionValue = negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue;
 
-    if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
-      // we're selecting this facet, and it's already selected
-      // first, remove it from our selections
+    if (selectionIndex !== undefined) {
       facetSelections[facetField].splice(selectionIndex, 1);
-
-      if (selState === FacetSelectionState.Selected && negate || selState === FacetSelectionState.Negated && !negate) {
-        // if we're toggling from negation to non-negation or vice versa, then push the new selection
-        facetSelections[facetField].push(selectionValue);
-      } else {
-        if (facet.FacetType === FacetType.NestedCheckbox) {
-          facetSelections[facetField] = difference;
-        } // if we're not toggling the negation, nothing to do because we already removed the selection above
-
-      }
     } else {
       if (facet.FacetType === FacetType.NestedCheckbox) {
         var _Object, _Object$Children;
@@ -11791,7 +11770,18 @@ function NestedItem(item) {
     onClick: function onClick() {
       return setIsExpanded(!isExpanded);
     }
-  }, /*#__PURE__*/React__default.createElement("svg", {
+  }, isExpanded ? /*#__PURE__*/React__default.createElement("svg", {
+    width: "20",
+    height: "20",
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React__default.createElement("path", {
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M15.1299 13.7759C14.8018 14.0986 14.2742 14.0943 13.9515 13.7662L10.0001 9.74896L6.04877 13.7662C5.72603 14.0943 5.19841 14.0986 4.8703 13.7759C4.54218 13.4532 4.53782 12.9256 4.86056 12.5974L9.40601 7.97622C9.56267 7.81696 9.77672 7.72726 10.0001 7.72726C10.2235 7.72726 10.4376 7.81696 10.5942 7.97623L15.1397 12.5974C15.4624 12.9256 15.4581 13.4532 15.1299 13.7759Z",
+    fill: "black"
+  })) : /*#__PURE__*/React__default.createElement("svg", {
     width: "20",
     height: "20",
     viewBox: "0 0 20 20",
