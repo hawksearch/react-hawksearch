@@ -8078,7 +8078,7 @@ function useHawkState(initialSearch) {
       /** 
       	const tab = prevState.searchResults?.Facets.find(f => f.FieldType === 'tab');
       	const facetValue = (tab || {}).Values ? tab?.Values.find(v => v.Selected) : undefined;
-      		if (
+      			if (
       		!removeSearchParams &&
       		tab?.Field &&
       		!(pendingSearch.FacetSelections || {})[tab.Field] &&
@@ -9655,6 +9655,10 @@ function Link() {
     }
   }
 
+  function onValueSelected(facetValue, isNegated) {
+    isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
+  }
+
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -9663,8 +9667,9 @@ function Link() {
     className: "hawk-facet-rail__facet-list"
   }, facetValues.map(function (value) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
-    var selectionState = store.isFacetSelected(facet, value).state;
+    var selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
+    var isNegated = selectionState === FacetSelectionState.Negated;
     return /*#__PURE__*/React__default.createElement("li", {
       key: value.Value,
       className: "hawk-facet-rail__facet-list-item"
@@ -9675,8 +9680,27 @@ function Link() {
       className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
       "aria-pressed": isSelected
     }, /*#__PURE__*/React__default.createElement("span", {
+      style: isNegated ? {
+        textDecoration: 'line-through',
+        color: 'black'
+      } : undefined,
       className: "hawk-facet-rail__facet-name"
-    }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Count, ")") : '')));
+    }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Count, ")") : ''), /*#__PURE__*/React__default.createElement("button", {
+      onClick: function onClick(e) {
+        e.stopPropagation();
+        onValueSelected(value, true);
+      },
+      className: "hawk-facet-rail__facet-btn-exclude",
+      "aria-describedby": "visually-hidden"
+    }, isNegated ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusCircleSVG, {
+      "class": "hawk-facet-rail__facet-btn-include"
+    }), /*#__PURE__*/React__default.createElement("span", {
+      id: "visually-hidden",
+      className: "visually-hidden"
+    }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
+      id: "visually-hidden",
+      className: "visually-hidden"
+    }, "Exclude facet")))));
   }))), renderer.renderTruncation());
 }
 
@@ -19925,7 +19949,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -20668,9 +20692,9 @@ function PlaceHolderSVG(props) {
     focusable: "false",
     "aria-hidden": "true"
   }, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("g", null, /*#__PURE__*/createElement("path", {
-    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6 C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3 c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2 c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0 l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
+    d: "M0,437.8c0,28.5,23.2,51.6,51.6,51.6h386.2c28.5,0,51.6-23.2,51.6-51.6V51.6c0-28.5-23.2-51.6-51.6-51.6H51.6\r C23.1,0,0,23.2,0,51.6C0,51.6,0,437.8,0,437.8z M437.8,464.9H51.6c-14.9,0-27.1-12.2-27.1-27.1v-64.5l92.8-92.8l79.3,79.3\r c4.8,4.8,12.5,4.8,17.3,0l143.2-143.2l107.8,107.8v113.4C464.9,452.7,452.7,464.9,437.8,464.9z M51.6,24.5h386.2\r c14.9,0,27.1,12.2,27.1,27.1v238.1l-99.2-99.1c-4.8-4.8-12.5-4.8-17.3,0L205.2,333.8l-79.3-79.3c-4.8-4.8-12.5-4.8-17.3,0\r l-84.1,84.1v-287C24.5,36.7,36.7,24.5,51.6,24.5z"
   }), /*#__PURE__*/createElement("path", {
-    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96 c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
+    d: "M151.7,196.1c34.4,0,62.3-28,62.3-62.3s-28-62.3-62.3-62.3s-62.3,28-62.3,62.3S117.3,196.1,151.7,196.1z M151.7,96\r c20.9,0,37.8,17,37.8,37.8s-17,37.8-37.8,37.8s-37.8-17-37.8-37.8S130.8,96,151.7,96z"
   }))));
 }
 
@@ -25396,7 +25420,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
