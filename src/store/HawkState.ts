@@ -450,26 +450,11 @@ export function useHawkState(initialSearch?: Partial<Request>): [SearchStore, Se
 				valuesToRemoved.push(item.value);
 			}
 		});
-		const difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
+				
 		const selectionValue = negate ? `${symbolForNegate}${valueValue}` : valueValue;
-		if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
-			// we're selecting this facet, and it's already selected
 
-			// first, remove it from our selections
-			facetSelections[facetField]!.splice(selectionIndex!, 1);
-
-			if (
-				(selState === FacetSelectionState.Selected && negate) ||
-				(selState === FacetSelectionState.Negated && !negate)
-			) {
-				// if we're toggling from negation to non-negation or vice versa, then push the new selection
-				facetSelections[facetField]!.push(selectionValue);
-			} else {
-				if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
-					facetSelections[facetField] = difference;
-				}
-				// if we're not toggling the negation, nothing to do because we already removed the selection above
-			}
+		if(selectionIndex !== undefined) {
+			facetSelections[facetField]!.splice(selectionIndex, 1);
 		} else {
 			if ((facet as Facet).FacetType === FacetType.NestedCheckbox) {
 				if (!Object(facetValue)?.Children?.length && !negate) {

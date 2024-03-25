@@ -8124,14 +8124,6 @@ function useHawkState(initialSearch) {
       PageNo: undefined
     });
   } // NOTE: It will return the difference from 1st array
-  // i.e ['a', 'b', 'c'] - ['c', 'd', 'f'] => ['a', 'b']
-
-
-  function differenceOfArrays(array1, array2) {
-    return array1.filter(function (i) {
-      return array2.indexOf(i) < 0;
-    });
-  }
   /**
    * Toggles a facet value for the next search request that will be executed. Internally, this will call
    * `setSearch` to configure the next search with this selected facet.
@@ -8186,23 +8178,10 @@ function useHawkState(initialSearch) {
         valuesToRemoved.push(item.value);
       }
     });
-    var difference = differenceOfArrays(facetSelections[facetField] || [], valuesToRemoved || []);
     var selectionValue = negate ? "".concat(symbolForNegate).concat(valueValue) : valueValue;
 
-    if (selState === FacetSelectionState.Selected || selState === FacetSelectionState.Negated) {
-      // we're selecting this facet, and it's already selected
-      // first, remove it from our selections
+    if (selectionIndex !== undefined) {
       facetSelections[facetField].splice(selectionIndex, 1);
-
-      if (selState === FacetSelectionState.Selected && negate || selState === FacetSelectionState.Negated && !negate) {
-        // if we're toggling from negation to non-negation or vice versa, then push the new selection
-        facetSelections[facetField].push(selectionValue);
-      } else {
-        if (facet.FacetType === FacetType.NestedCheckbox) {
-          facetSelections[facetField] = difference;
-        } // if we're not toggling the negation, nothing to do because we already removed the selection above
-
-      }
     } else {
       if (facet.FacetType === FacetType.NestedCheckbox) {
         var _Object, _Object$Children;
@@ -9402,32 +9381,16 @@ function useFacet() {
  */
 function DashCircleSVG(props) {
   return /*#__PURE__*/createElement("svg", {
-    viewBox: "0 0 32 32",
-    className: 'icon icon-help-header ' + props["class"],
-    focusable: "false",
-    "aria-hidden": "true"
+    width: "20",
+    height: "20",
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
   }, /*#__PURE__*/createElement("path", {
-    fill: "#5c5c5c",
-    d: "M16 0c8.837 0 16 7.163 16 16s-7.163 16-16 16c-8.837 0-16-7.163-16-16v0c0-8.837 7.163-16 16-16v0z"
-  }), /*#__PURE__*/createElement("path", {
-    fill: "#fff",
-    d: "M21.51 17.594h-11.733c-0.884 0-1.6-0.716-1.6-1.6s0.716-1.6 1.6-1.6h11.733c0.884 0 1.6 0.716 1.6 1.6s-0.716 1.6-1.6 1.6z"
-  }));
-}
-
-/**
- * Checkmark SVG
- *
- * @returns
- */
-function CheckmarkSVG(props) {
-  return /*#__PURE__*/createElement("svg", {
-    viewBox: "0 0 32 32",
-    className: 'icon ' + props["class"],
-    focusable: "false",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/createElement("path", {
-    d: "M27 4l-15 15-7-7-5 5 12 12 20-20z"
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M3.46967 2.46979C3.76256 2.1769 4.23744 2.1769 4.53033 2.46979L6.8312 4.77066C7.81683 4.30208 8.88472 4.00001 10 4.00001C14.9706 4.00001 19 10 19 10C19 10 17.7007 11.9348 15.6675 13.607L17.4534 15.3929C17.7463 15.6858 17.7463 16.1606 17.4534 16.4535C17.1605 16.7464 16.6856 16.7464 16.3927 16.4535L3.46967 3.53045C3.17678 3.23756 3.17678 2.76269 3.46967 2.46979ZM14.6013 12.5408C14.8576 12.3344 15.1069 12.1185 15.3478 11.8967C16.092 11.2113 16.6994 10.5212 17.1218 10C16.6994 9.47879 16.092 8.78876 15.3478 8.10336C13.7997 6.67759 11.9075 5.50001 10 5.50001C9.31672 5.50001 8.63539 5.65111 7.97114 5.9106L9.17532 7.11478C9.43734 7.04003 9.71399 7.00001 10 7.00001C11.6569 7.00001 13 8.34315 13 10C13 10.286 12.96 10.5627 12.8852 10.8247L14.6013 12.5408ZM7.18892 8.9499C7.06678 9.27673 7 9.63057 7 10C7 11.6569 8.34315 13 10 13C10.3694 13 10.7233 12.9332 11.0501 12.8111L7.18892 8.9499ZM1 10C1 10 5.02944 16 10 16C11.1916 16 12.3291 15.6552 13.3699 15.1309L12.2415 14.0025C11.5104 14.3148 10.7564 14.5 10 14.5C8.09254 14.5 6.2003 13.3224 4.65222 11.8967C3.90801 11.2113 3.30063 10.5212 2.87823 10C3.30063 9.47879 3.90801 8.78876 4.65222 8.10336C4.94519 7.83354 5.25048 7.5726 5.56588 7.32685L4.49793 6.2589C2.37008 7.9599 1 10 1 10Z",
+    fill: "black"
   }));
 }
 
@@ -9438,12 +9401,24 @@ function CheckmarkSVG(props) {
  */
 function PlusCircleSVG(props) {
   return /*#__PURE__*/createElement("svg", {
+    width: "20",
+    height: "20",
     viewBox: "0 0 20 20",
-    className: 'icon ' + props["class"],
-    focusable: "false",
-    "aria-hidden": "true"
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
   }, /*#__PURE__*/createElement("path", {
-    d: "M11 9v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM10 20c-5.523 0-10-4.477-10-10s4.477-10 10-10v0c5.523 0 10 4.477 10 10s-4.477 10-10 10v0z"
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M1 10C1 10 5.02944 16 10 16C14.9706 16 19 10 19 10C19 10 14.9706 4 10 4C5.02944 4 1 10 1 10ZM2.87823 10C3.30063 10.5212 3.90801 11.2112 4.65222 11.8966C6.2003 13.3224 8.09254 14.5 10 14.5C11.9075 14.5 13.7997 13.3224 15.3478 11.8966C16.092 11.2112 16.6994 10.5212 17.1218 10C16.6994 9.47878 16.092 8.78876 15.3478 8.10335C13.7997 6.67758 11.9075 5.5 10 5.5C8.09254 5.5 6.2003 6.67758 4.65222 8.10335C3.90801 8.78876 3.30063 9.47878 2.87823 10Z",
+    fill: "black"
+  }), /*#__PURE__*/createElement("path", {
+    d: "M13 10C13 11.6569 11.6569 13 10 13C8.34315 13 7 11.6569 7 10C7 8.34315 8.34315 7 10 7C11.6569 7 13 8.34315 13 10Z",
+    fill: "black"
+  }), /*#__PURE__*/createElement("path", {
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M18.2938 9.06381C18.2916 9.06107 18.2894 9.05833 18.2871 9.05559C17.832 8.49393 17.175 7.74697 16.364 7C14.735 5.49974 12.4851 4 10 4C7.51494 4 5.26501 5.49974 3.63604 7C2.82499 7.74697 2.16804 8.49392 1.71287 9.05559C1.71125 9.05758 1.70964 9.05957 1.70803 9.06156C1.25212 9.62458 1 10 1 10C1 10 1.2539 10.3781 1.71287 10.9444C2.16804 11.5061 2.82499 12.253 3.63604 13C5.26501 14.5003 7.51494 16 10 16C12.4851 16 14.735 14.5003 16.364 13C17.175 12.253 17.832 11.5061 18.2871 10.9444C18.2885 10.9427 18.2899 10.9411 18.2912 10.9394C18.7476 10.3758 19 10 19 10C19 10 18.7486 9.62558 18.2938 9.06381ZM17.1218 10C17.0705 9.93671 17.0165 9.87094 16.9598 9.80298C16.5499 9.31128 16.0016 8.70553 15.3478 8.10335C13.7997 6.67758 11.9075 5.5 10 5.5C8.09254 5.5 6.2003 6.67758 4.65222 8.10335C4.60551 8.14636 4.55935 8.18939 4.51374 8.2324C3.83251 8.8747 3.27412 9.51149 2.87823 10C2.92952 10.0633 2.98354 10.1291 3.0402 10.197C3.45015 10.6887 3.99838 11.2945 4.65222 11.8966C6.2003 13.3224 8.09254 14.5 10 14.5C11.9075 14.5 13.7997 13.3224 15.3478 11.8966C16.092 11.2112 16.6994 10.5212 17.1218 10ZM10 11.5C10.8284 11.5 11.5 10.8284 11.5 10C11.5 9.17157 10.8284 8.5 10 8.5C9.17157 8.5 8.5 9.17157 8.5 10C8.5 10.8284 9.17157 11.5 10 11.5ZM10 13C11.6569 13 13 11.6569 13 10C13 8.34315 11.6569 7 10 7C8.34315 7 7 8.34315 7 10C7 11.6569 8.34315 13 10 13Z",
+    fill: "black"
   }));
 }
 
@@ -9493,7 +9468,10 @@ function Checkbox() {
           },
           className: "hawk-facet-rail__facet-btn",
           "aria-pressed": isSelected
-        }, renderCheckMark(isSelected), rangeValueAssetUrl !== '' ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
+        }, /*#__PURE__*/React__default.createElement("input", {
+          type: "checkbox",
+          defaultChecked: isSelected
+        }), rangeValueAssetUrl !== '' ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement("span", {
           className: "hawk-selectionInner"
         }, /*#__PURE__*/React__default.createElement("span", {
           className: "hawk-range-asset",
@@ -9537,7 +9515,11 @@ function Checkbox() {
           },
           className: "hawk-facet-rail__facet-btn",
           "aria-pressed": isSelected
-        }, renderCheckMark(isSelected), /*#__PURE__*/React__default.createElement("span", {
+        }, !isNegated && /*#__PURE__*/React__default.createElement("input", {
+          type: "checkbox",
+          checked: isSelected,
+          onChange: function onChange() {}
+        }), /*#__PURE__*/React__default.createElement("span", {
           style: isNegated ? {
             textDecoration: 'line-through'
           } : undefined,
@@ -9546,23 +9528,16 @@ function Checkbox() {
           dangerouslySetInnerHTML: {
             __html: decodedLabel
           }
-        }))), renderFacetActions(value.Value || '', isNegated));
+        })), renderFacetActions(value.Value || '', isNegated)));
       });
     }
-  }
-
-  function renderCheckMark(isSelected) {
-    return /*#__PURE__*/React__default.createElement("span", {
-      className: isSelected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'
-    }, isSelected ? /*#__PURE__*/React__default.createElement(CheckmarkSVG, {
-      "class": "hawk-facet-rail__facet-checkbox-icon"
-    }) : null);
   }
 
   function renderFacetActions(value, isNegated) {
     return /*#__PURE__*/React__default.createElement("button", {
       onClick: function onClick(e) {
-        return actor.negateFacet(value);
+        e.stopPropagation();
+        actor.negateFacet(value);
       },
       className: "hawk-facet-rail__facet-btn-exclude",
       "aria-describedby": "visually-hidden"
@@ -9680,6 +9655,10 @@ function Link() {
     }
   }
 
+  function onValueSelected(facetValue, isNegated) {
+    isNegated ? actor.negateFacet(facetValue) : actor.selectFacet(facetValue);
+  }
+
   return /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__facet-values"
   }, /*#__PURE__*/React__default.createElement("div", {
@@ -9688,8 +9667,9 @@ function Link() {
     className: "hawk-facet-rail__facet-list"
   }, facetValues.map(function (value) {
     // facets can be selected or negated, so explicitly check that the facet is not selected
-    var selectionState = store.isFacetSelected(facet, value).state;
+    var selectionState = store.isFacetSelected(facet, value, store.negativeFacetValuePrefix).state;
     var isSelected = selectionState !== FacetSelectionState.NotSelected;
+    var isNegated = selectionState === FacetSelectionState.Negated;
     return /*#__PURE__*/React__default.createElement("li", {
       key: value.Value,
       className: "hawk-facet-rail__facet-list-item"
@@ -9700,8 +9680,27 @@ function Link() {
       className: isSelected ? 'hawk-facet-rail__facet-btn selected' : 'hawk-facet-rail__facet-btn',
       "aria-pressed": isSelected
     }, /*#__PURE__*/React__default.createElement("span", {
+      style: isNegated ? {
+        textDecoration: 'line-through',
+        color: 'black'
+      } : undefined,
       className: "hawk-facet-rail__facet-name"
-    }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Count, ")") : '')));
+    }, value.Label, " ", facet.ShowItemsCount ? "(".concat(value.Count, ")") : ''), /*#__PURE__*/React__default.createElement("button", {
+      onClick: function onClick(e) {
+        e.stopPropagation();
+        onValueSelected(value, true);
+      },
+      className: "hawk-facet-rail__facet-btn-exclude",
+      "aria-describedby": "visually-hidden"
+    }, isNegated ? /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(PlusCircleSVG, {
+      "class": "hawk-facet-rail__facet-btn-include"
+    }), /*#__PURE__*/React__default.createElement("span", {
+      id: "visually-hidden",
+      className: "visually-hidden"
+    }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
+      id: "visually-hidden",
+      className: "visually-hidden"
+    }, "Exclude facet")))));
   }))), renderer.renderTruncation());
 }
 
@@ -11765,18 +11764,19 @@ function NestedItem(item) {
     },
     className: "hawk-facet-rail__facet-btn",
     "aria-pressed": item.isSelected
-  }, /*#__PURE__*/React__default.createElement("span", {
-    className: item.isSelected ? 'hawk-facet-rail__facet-checkbox hawk-facet-rail__facet-checkbox--checked' : 'hawk-facet-rail__facet-checkbox'
-  }, item.isSelected ? /*#__PURE__*/React__default.createElement(CheckmarkSVG, {
-    "class": "hawk-facet-rail__facet-checkbox-icon"
-  }) : null), /*#__PURE__*/React__default.createElement("span", {
+  }, !item.isNegated && /*#__PURE__*/React__default.createElement("input", {
+    type: "checkbox",
+    checked: item.isSelected,
+    onChange: function onChange() {}
+  }), /*#__PURE__*/React__default.createElement("span", {
     style: item.isNegated ? {
       textDecoration: 'line-through'
     } : undefined,
     className: "hawk-facet-rail__facet-name"
-  }, item.hierarchyValue.Label, " (", item.hierarchyValue.Count, ")")), /*#__PURE__*/React__default.createElement("button", {
+  }, item.hierarchyValue.Label, " (", item.hierarchyValue.Count, ")"), /*#__PURE__*/React__default.createElement("button", {
     onClick: function onClick(e) {
-      return item.onValueSelected(hierarchyValue, true);
+      e.stopPropagation();
+      item.onValueSelected(hierarchyValue, true);
     },
     className: "hawk-facet-rail__facet-btn-exclude",
     "aria-describedby": "visually-hidden"
@@ -11788,13 +11788,35 @@ function NestedItem(item) {
   }, "Include facet")) : /*#__PURE__*/React__default.createElement(React__default.Fragment, null, /*#__PURE__*/React__default.createElement(DashCircleSVG, null), /*#__PURE__*/React__default.createElement("span", {
     id: "visually-hidden",
     className: "visually-hidden"
-  }, "Exclude facet"))), hierarchyChildren.length > 0 ? /*#__PURE__*/React__default.createElement("button", {
+  }, "Exclude facet")))), hierarchyChildren.length > 0 ? /*#__PURE__*/React__default.createElement("button", {
     className: getCollapseStateClass(isExpanded),
     "aria-expanded": "false",
     onClick: function onClick() {
       return setIsExpanded(!isExpanded);
     }
-  }, "\xA0") : null), isExpanded && hierarchyChildren ? /*#__PURE__*/React__default.createElement("div", {
+  }, isExpanded ? /*#__PURE__*/React__default.createElement("svg", {
+    width: "20",
+    height: "20",
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React__default.createElement("path", {
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M15.1299 13.7759C14.8018 14.0986 14.2742 14.0943 13.9515 13.7662L10.0001 9.74896L6.04877 13.7662C5.72603 14.0943 5.19841 14.0986 4.8703 13.7759C4.54218 13.4532 4.53782 12.9256 4.86056 12.5974L9.40601 7.97622C9.56267 7.81696 9.77672 7.72726 10.0001 7.72726C10.2235 7.72726 10.4376 7.81696 10.5942 7.97623L15.1397 12.5974C15.4624 12.9256 15.4581 13.4532 15.1299 13.7759Z",
+    fill: "black"
+  })) : /*#__PURE__*/React__default.createElement("svg", {
+    width: "20",
+    height: "20",
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React__default.createElement("path", {
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M4.86517 8.4259C5.19061 8.10046 5.71825 8.10046 6.04368 8.4259L9.99988 12.3821L13.9561 8.4259C14.2815 8.10047 14.8092 8.10047 15.1346 8.4259C15.46 8.75134 15.46 9.27898 15.1346 9.60441L10.5891 14.1499C10.2637 14.4753 9.73606 14.4753 9.41063 14.1499L4.86517 9.60441C4.53973 9.27898 4.53973 8.75134 4.86517 8.4259Z",
+    fill: "black"
+  }))) : null), isExpanded && hierarchyChildren ? /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__w-100"
   }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawkFacet-group-inside"
@@ -17814,7 +17836,29 @@ function NestedLinkItem(item) {
     onClick: function onClick() {
       return setIsExpanded(!isExpanded);
     }
-  }, "\xA0") : null), isExpanded && hierarchyChildren ? /*#__PURE__*/React__default.createElement("div", {
+  }, isExpanded ? /*#__PURE__*/React__default.createElement("svg", {
+    width: "20",
+    height: "20",
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React__default.createElement("path", {
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M4.86517 8.4259C5.19061 8.10046 5.71825 8.10046 6.04368 8.4259L9.99988 12.3821L13.9561 8.4259C14.2815 8.10047 14.8092 8.10047 15.1346 8.4259C15.46 8.75134 15.46 9.27898 15.1346 9.60441L10.5891 14.1499C10.2637 14.4753 9.73606 14.4753 9.41063 14.1499L4.86517 9.60441C4.53973 9.27898 4.53973 8.75134 4.86517 8.4259Z",
+    fill: "black"
+  })) : /*#__PURE__*/React__default.createElement("svg", {
+    width: "20",
+    height: "20",
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React__default.createElement("path", {
+    "fill-rule": "evenodd",
+    "clip-rule": "evenodd",
+    d: "M15.1299 13.7759C14.8018 14.0986 14.2742 14.0943 13.9515 13.7662L10.0001 9.74896L6.04877 13.7662C5.72603 14.0943 5.19841 14.0986 4.8703 13.7759C4.54218 13.4532 4.53782 12.9256 4.86056 12.5974L9.40601 7.97622C9.56267 7.81696 9.77672 7.72726 10.0001 7.72726C10.2235 7.72726 10.4376 7.81696 10.5942 7.97623L15.1397 12.5974C15.4624 12.9256 15.4581 13.4532 15.1299 13.7759Z",
+    fill: "black"
+  }))) : null), isExpanded && hierarchyChildren ? /*#__PURE__*/React__default.createElement("div", {
     className: "hawk-facet-rail__w-100"
   }, /*#__PURE__*/React__default.createElement("ul", {
     className: "hawkFacet-group-inside"
@@ -19905,7 +19949,7 @@ var performanceNow = createCommonjsModule(function (module) {
 
 }).call(commonjsGlobal);
 
-//# sourceMappingURL=performance-now.js.map
+
 });
 
 var root = typeof window === 'undefined' ? commonjsGlobal : window
@@ -25376,7 +25420,6 @@ var Popper = function () {
 Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
-//# sourceMappingURL=popper.js.map
 
 var key = '__global_unique_id__';
 
@@ -31908,6 +31951,15 @@ function QueryStringListener() {
       store = _useHawksearch.store,
       actor = _useHawksearch.actor;
 
+  var performSearch = function performSearch() {
+    var searchRequest = parseSearchQueryString(location.search);
+    actor.setSearch(searchRequest, // explicitly flag this next search as not needing to push additional history, since this search
+    // _is_ the result of history.
+
+    /*doHistory*/
+    false);
+  };
+
   useEffect(function () {
     // listen to history so that when we navigate backward/forward, trigger a new search based off
     // the new query string
@@ -31918,12 +31970,7 @@ function QueryStringListener() {
         return;
       }
 
-      var searchRequest = parseSearchQueryString(location.search);
-      actor.setSearch(searchRequest, // explicitly flag this next search as not needing to push additional history, since this search
-      // _is_ the result of history.
-
-      /*doHistory*/
-      false);
+      performSearch();
     });
     return function () {
       unlisten();
@@ -31945,6 +31992,7 @@ function QueryStringListener() {
   useEffect(function () {
     var params = new URLSearchParams(location.search);
     AuthToken$1.setTokens(params.get('token') || '', (params.get('refreshToken') || '').replace(' ', '+') || '');
+    performSearch();
   }, []);
   return null;
 }
