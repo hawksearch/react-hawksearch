@@ -31,7 +31,7 @@ To build the bundles, the following commands can be used:
 
 To run a full build (which includes checks, tests, etc):
 
--   `npm run build:prod` or `npm run build:dev`.
+-   `npm run package`.
 
 The outputs of these builds will be located in `/dist`
 
